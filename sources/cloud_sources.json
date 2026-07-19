@@ -1,0 +1,22 @@
+{
+  "_meta": {
+    "name": "网盘搜索源配置",
+    "type": "cloud_sources",
+    "description": "用于存放网盘 CMS、网盘 SPA、论坛型网盘搜索源，替代 video_sources.json"
+  },
+  "dyname": "网盘资源聚合",
+  "dyzuozhe": "vbox-ios",
+  "cloudSites": [
+    {
+      "name": "PanSou盘搜",
+      "type": "spa",
+      "searchurl": "https://so.252035.xyz",
+      "detailBase": "https://so.252035.xyz",
+      "apiSearch": "https://so.252035.xyz/api/search?kw={kw}",
+      "resultField": "data.merged_by_type",
+      "titleField": "note",
+      "urlField": "url",
+      "enabled": true
+    }
+  ]
+}

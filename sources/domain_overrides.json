@@ -1,0 +1,8 @@
+{
+  "_meta": {
+    "name": "域名覆盖配置",
+    "type": "domain_overrides",
+    "description": "用于替换默认源或 Swift 原生平台的失效域名；福利平台只使用这里的域名覆盖，不使用远程源控制显示"
+  },
+  "overrides": []
+}

@@ -1,0 +1,92 @@
+[
+  {
+    "host": "https://jszyapi.com",
+    "fullUrl": "https://jszyapi.com/api.php/provide/vod",
+    "sourceFile": "sources/api_sources.json",
+    "sourceKey": "jszy",
+    "sourceName": "极速资源",
+    "field": "api",
+    "jsonPath": "sites[0].api"
+  },
+  {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/api_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "apiSources",
+    "jsonPath": "files.apiSources"
+  },
+  {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/cloud_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "cloudSources",
+    "jsonPath": "files.cloudSources"
+  },
+  {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/spider_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "spiderSources",
+    "jsonPath": "files.spiderSources"
+  },
+  {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/domain_overrides.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "domainOverrides",
+    "jsonPath": "files.domainOverrides"
+  },
+  {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/parsers.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "parsers",
+    "jsonPath": "files.parsers"
+  },
+  {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/disabled_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "disabledSources",
+    "jsonPath": "files.disabledSources"
+  },
+  {
+    "host": "https://so.252035.xyz",
+    "fullUrl": "https://so.252035.xyz",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "PanSou盘搜",
+    "field": "searchurl",
+    "jsonPath": "cloudSites[0].searchurl"
+  },
+  {
+    "host": "https://so.252035.xyz",
+    "fullUrl": "https://so.252035.xyz",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "PanSou盘搜",
+    "field": "detailBase",
+    "jsonPath": "cloudSites[0].detailBase"
+  },
+  {
+    "host": "https://so.252035.xyz",
+    "fullUrl": "https://so.252035.xyz/api/search?kw={kw",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "PanSou盘搜",
+    "field": "apiSearch",
+    "jsonPath": "cloudSites[0].apiSearch"
+  }
+]

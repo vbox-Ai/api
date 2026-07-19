@@ -1,0 +1,9 @@
+{
+  "_meta": {
+    "name": "JS 蜘蛛和站源配置",
+    "type": "spider_sources",
+    "description": "用于存放 TVBox / drpy / JS 蜘蛛 / 站源类配置，后期从 default_subscribe.json 分阶段迁移"
+  },
+  "spider": "",
+  "sites": []
+}

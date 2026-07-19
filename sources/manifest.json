@@ -1,0 +1,22 @@
+{
+  "_meta": {
+    "name": "vbox 远程默认源 manifest",
+    "type": "manifest",
+    "description": "远程默认源入口文件，负责声明 API 源、网盘源、JS/站源、域名覆盖、解析器、禁用列表等配置地址"
+  },
+  "schemaVersion": 1,
+  "configVersion": "2026.07.19.1",
+  "minAppVersion": "1.0.0",
+  "updatedAt": "2026-07-19T00:00:00Z",
+  "ttlSeconds": 21600,
+  "files": {
+    "apiSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/api_sources.json",
+    "cloudSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/cloud_sources.json",
+    "spiderSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/spider_sources.json",
+    "domainOverrides": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/domain_overrides.json",
+    "parsers": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/parsers.json",
+    "disabledSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/disabled_sources.json"
+  },
+  "disabledKeys": [],
+  "forceRefresh": false
+}

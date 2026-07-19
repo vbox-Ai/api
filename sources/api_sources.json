@@ -1,0 +1,23 @@
+{
+  "_meta": {
+    "name": "API 采集源配置",
+    "type": "api_sources",
+    "description": "用于存放 AppleCMS / TVBox API 采集源，替代 ibox_sources.json 和 builtinFallbackSites"
+  },
+  "spider": "",
+  "sites": [
+    {
+      "key": "jszy",
+      "name": "极速资源",
+      "type": 1,
+      "api": "https://jszyapi.com/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 100,
+      "group": "api"
+    }
+  ],
+  "parses": []
+}

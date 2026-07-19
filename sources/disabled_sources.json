@@ -1,0 +1,9 @@
+{
+  "_meta": {
+    "name": "禁用源配置",
+    "type": "disabled_sources",
+    "description": "用于临时禁用远程默认源中的失效 key 或域名，不影响用户自定义源"
+  },
+  "disabledKeys": [],
+  "disabledHosts": []
+}
