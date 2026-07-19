@@ -1,6 +1,16 @@
 name: Check Source Domains
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "sources/**"
+      - "domain-monitor/extract_domains.py"
+      - "domain-monitor/check_domains.py"
+      - ".github/workflows/check-domains.yml"
+      - "README.md"
+      - "docs/**"
   schedule:
     - cron: "0 18 * * 0"
   workflow_dispatch:
@@ -36,14 +46,20 @@ jobs:
           git push
 
       - name: Send email
-        if: ${{ secrets.SMTP_SERVER != '' && secrets.SMTP_USERNAME != '' && secrets.SMTP_PASSWORD != '' && secrets.MAIL_TO != '' }}
+        if: ${{ env.SMTP_SERVER != '' && env.SMTP_USERNAME != '' && env.SMTP_PASSWORD != '' && env.MAIL_TO != '' }}
         uses: dawidd6/action-send-mail@v3
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
         with:
-          server_address: ${{ secrets.SMTP_SERVER }}
-          server_port: ${{ secrets.SMTP_PORT }}
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
+          server_address: ${{ env.SMTP_SERVER }}
+          server_port: ${{ env.SMTP_PORT }}
+          username: ${{ env.SMTP_USERNAME }}
+          password: ${{ env.SMTP_PASSWORD }}
           subject: vbox 远程源每周检测报告
-          to: ${{ secrets.MAIL_TO }}
-          from: ${{ secrets.SMTP_USERNAME }}
+          to: ${{ env.MAIL_TO }}
+          from: ${{ env.SMTP_USERNAME }}
           body: file://domain-monitor/check-results.md
