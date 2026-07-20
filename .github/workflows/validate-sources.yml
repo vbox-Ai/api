@@ -78,20 +78,25 @@ jobs:
               print(f"ERROR: manifest.json missing fields: {missing}")
               sys.exit(1)
 
-          required_files = ["apiSources", "cloudSources", "spiderSources",
-                            "domainOverrides", "parsers", "disabledSources"]
-          missing_files = [f for f in required_files if f not in manifest.get("files", {})]
-          if missing_files:
-              print(f"ERROR: manifest.files missing entries: {missing_files}")
+          # 新版：只检查 allSources；兼容旧版 6 字段
+          files = manifest.get("files", {})
+          has_all_sources = "allSources" in files
+          has_old_files = all(f in files for f in ["apiSources", "cloudSources", "spiderSources",
+                                                     "domainOverrides", "parsers", "disabledSources"])
+          if not has_all_sources and not has_old_files:
+              print("ERROR: manifest.files must contain 'allSources' (new) or all 6 legacy fields")
               sys.exit(1)
 
           print(f"SUCCESS: manifest.json structure valid (configVersion={manifest['configVersion']})")
-          print(f"  API Sources: {manifest['files']['apiSources']}")
-          print(f"  Cloud Sources: {manifest['files']['cloudSources']}")
-          print(f"  Spider Sources: {manifest['files']['spiderSources']}")
-          print(f"  Domain Overrides: {manifest['files']['domainOverrides']}")
-          print(f"  Parsers: {manifest['files']['parsers']}")
-          print(f"  Disabled Sources: {manifest['files']['disabledSources']}")
+          if has_all_sources:
+              print(f"  All Sources: {files['allSources']}")
+          else:
+              print(f"  API Sources: {files.get('apiSources', 'N/A')}")
+              print(f"  Cloud Sources: {files.get('cloudSources', 'N/A')}")
+              print(f"  Spider Sources: {files.get('spiderSources', 'N/A')}")
+              print(f"  Domain Overrides: {files.get('domainOverrides', 'N/A')}")
+              print(f"  Parsers: {files.get('parsers', 'N/A')}")
+              print(f"  Disabled Sources: {files.get('disabledSources', 'N/A')}")
         shell: python
 
       - name: Detect source changes
