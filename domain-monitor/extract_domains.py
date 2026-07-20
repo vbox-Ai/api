@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES_DIR = ROOT / "sources"
 OUT_DIR = ROOT / "domain-monitor"
-URL_RE = re.compile(r"https?://[^\s\"'<>\\)\]}]+")
+URL_RE = re.compile(r"https?://[^\s\"'<>]+")
 
 
 def walk(value, path=""):

@@ -57,7 +57,7 @@
     },
     {
       "name": "小斑资源",
-      "type": "forum",
+      "type": "cms",
       "searchurl": "http://xsayang.fun:12512/index.php/vod/search.html?wd=",
       "detailBase": "http://xsayang.fun:12512",
       "enabled": true,
