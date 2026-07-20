@@ -51,8 +51,17 @@ jobs:
           git commit -m "chore: update weekly domain check results" || echo "No changes"
           git push
 
+      - name: Check mail config
+        id: mail_config
+        run: |
+          if [ -n "$SMTP_SERVER" ] && [ -n "$SMTP_PORT" ] && [ -n "$SMTP_USERNAME" ] && [ -n "$SMTP_PASSWORD" ] && [ -n "$MAIL_TO" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Send email
-        if: ${{ env.SMTP_SERVER != '' && env.SMTP_PORT != '' && env.SMTP_USERNAME != '' && env.SMTP_PASSWORD != '' && env.MAIL_TO != '' }}
+        if: ${{ steps.mail_config.outputs.enabled == 'true' }}
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ env.SMTP_SERVER }}
