@@ -1,0 +1,95 @@
+name: Validate Sources
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "sources/**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "sources/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate JSON files
+        run: |
+          import json, os, sys, glob
+
+          errors = []
+          source_dir = "sources"
+          json_files = sorted(glob.glob(f"{source_dir}/*.json"))
+
+          if not json_files:
+              print("WARNING: No JSON files found in sources/")
+              sys.exit(0)
+
+          print(f"Found {len(json_files)} JSON files to validate\n")
+
+          for f in json_files:
+              try:
+                  with open(f, "r", encoding="utf-8") as fh:
+                      data = json.load(fh)
+                  print(f"  OK  {f}")
+              except json.JSONDecodeError as e:
+                  errors.append(f"  FAIL {f}: {e}")
+                  print(f"  FAIL {f}: {e}")
+              except Exception as e:
+                  errors.append(f"  FAIL {f}: {e}")
+                  print(f"  FAIL {f}: {e}")
+
+          print()
+          if errors:
+              print(f"ERROR: {len(errors)} file(s) failed validation")
+              for e in errors:
+                  print(e)
+              sys.exit(1)
+          else:
+              print(f"SUCCESS: All {len(json_files)} files are valid JSON")
+              sys.exit(0)
+        shell: python
+
+      - name: Validate manifest structure
+        run: |
+          import json, sys
+
+          with open("sources/manifest.json", "r", encoding="utf-8") as f:
+              manifest = json.load(f)
+
+          required_fields = ["schemaVersion", "configVersion", "files"]
+          missing = [f for f in required_fields if f not in manifest]
+          if missing:
+              print(f"ERROR: manifest.json missing fields: {missing}")
+              sys.exit(1)
+
+          required_files = ["apiSources", "cloudSources", "spiderSources",
+                            "domainOverrides", "parsers", "disabledSources"]
+          missing_files = [f for f in required_files if f not in manifest.get("files", {})]
+          if missing_files:
+              print(f"ERROR: manifest.files missing entries: {missing_files}")
+              sys.exit(1)
+
+          print(f"SUCCESS: manifest.json structure valid (configVersion={manifest['configVersion']})")
+          print(f"  API Sources: {manifest['files']['apiSources']}")
+          print(f"  Cloud Sources: {manifest['files']['cloudSources']}")
+          print(f"  Spider Sources: {manifest['files']['spiderSources']}")
+          print(f"  Domain Overrides: {manifest['files']['domainOverrides']}")
+          print(f"  Parsers: {manifest['files']['parsers']}")
+          print(f"  Disabled Sources: {manifest['files']['disabledSources']}")
+        shell: python

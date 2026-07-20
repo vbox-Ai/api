@@ -2,7 +2,7 @@
   "_meta": {
     "name": "禁用源配置",
     "type": "disabled_sources",
-    "description": "当前检测失败或暂不可用的远程默认源 host；active 源文件已暂时排除这些 host，后续 App 端会接入过滤逻辑。"
+    "description": "当前检测失败或暂不可用的远程默认源 host。用于过滤 api_sources.json、cloud_sources.json 以及 SpiderManager.builtinFallbackSites 硬编码兜底源。api_sources.json 中已排除的 host 仍保留在此处，以便过滤硬编码兜底源。"
   },
   "disabledKeys": [],
   "disabledHosts": [
