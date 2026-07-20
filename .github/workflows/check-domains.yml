@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "sources/**"
+      - "domain-monitor/merge_sources.py"
       - "domain-monitor/extract_domains.py"
       - "domain-monitor/check_domains.py"
       - ".github/workflows/check-domains.yml"
@@ -21,6 +22,13 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+      SMTP_PORT: ${{ secrets.SMTP_PORT }}
+      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      MAIL_TO: ${{ secrets.MAIL_TO }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,8 +38,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: pip install requests --break-system-packages
+      - name: Merge sources
+        run: python domain-monitor/merge_sources.py
 
       - name: Extract domains
         run: python domain-monitor/extract_domains.py
@@ -43,19 +51,19 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add domain-monitor/domains.json domain-monitor/domains.txt domain-monitor/check-results.json domain-monitor/check-results.md
-          git diff --cached --quiet || git commit -m "chore: update weekly domain check results"
+          git add sources/all_sources.json sources/manifest.json sources/manifest.version domain-monitor/domains.json domain-monitor/domains.txt domain-monitor/check-results.json domain-monitor/check-results.md
+          git commit -m "chore: auto merge sources + update domain check results" || echo "No changes"
           git push
 
       - name: Send email
-        if: ${{ success() && (secrets.SMTP_SERVER || '') != '' && (secrets.SMTP_USERNAME || '') != '' && (secrets.SMTP_PASSWORD || '') != '' && (secrets.MAIL_TO || '') != '' }}
+        if: ${{ env.SMTP_SERVER != '' && env.SMTP_PORT != '' && env.SMTP_USERNAME != '' && env.SMTP_PASSWORD != '' && env.MAIL_TO != '' }}
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: ${{ secrets.SMTP_SERVER }}
-          server_port: ${{ secrets.SMTP_PORT }}
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
+          server_address: ${{ env.SMTP_SERVER }}
+          server_port: ${{ env.SMTP_PORT }}
+          username: ${{ env.SMTP_USERNAME }}
+          password: ${{ env.SMTP_PASSWORD }}
           subject: vbox 远程源每周检测报告
-          to: ${{ secrets.MAIL_TO }}
-          from: ${{ secrets.SMTP_USERNAME }}
+          to: ${{ env.MAIL_TO }}
+          from: ${{ env.SMTP_USERNAME }}
           body: file://domain-monitor/check-results.md
