@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
@@ -93,3 +93,142 @@ jobs:
           print(f"  Parsers: {manifest['files']['parsers']}")
           print(f"  Disabled Sources: {manifest['files']['disabledSources']}")
         shell: python
+
+      - name: Detect source changes
+        run: |
+          import json, os, sys, hashlib
+
+          BASELINE = "sources/.source-baseline.json"
+
+          def extract_counts():
+              counts = {}
+              detail = {}
+
+              # api_sources.json
+              try:
+                  with open("sources/api_sources.json", "r") as f:
+                      data = json.load(f)
+                  sites = data.get("sites", [])
+                  counts["api_sources"] = len(sites)
+                  detail["api_sources"] = {s.get("key", "?"): s.get("name", "?") for s in sites}
+              except: pass
+
+              # cloud_sources.json
+              try:
+                  with open("sources/cloud_sources.json", "r") as f:
+                      data = json.load(f)
+                  cloud = data.get("cloudSites", [])
+                  counts["cloud_sources"] = len(cloud)
+                  detail["cloud_sources"] = {s.get("name", "?"): s.get("name", "?") for s in cloud}
+              except: pass
+
+              # spider_sources.json
+              try:
+                  with open("sources/spider_sources.json", "r") as f:
+                      data = json.load(f)
+                  sites = data.get("sites", [])
+                  counts["spider_sources"] = len(sites)
+                  detail["spider_sources"] = {s.get("key", "?"): s.get("name", "?") for s in sites}
+              except: pass
+
+              # domain_overrides.json
+              try:
+                  with open("sources/domain_overrides.json", "r") as f:
+                      data = json.load(f)
+                  overrides = data.get("overrides", [])
+                  counts["domain_overrides"] = len(overrides)
+              except: pass
+
+              # parsers.json
+              try:
+                  with open("sources/parsers.json", "r") as f:
+                      data = json.load(f)
+                  parses = data.get("parses", [])
+                  counts["parsers"] = len(parses)
+              except: pass
+
+              # disabled_sources.json
+              try:
+                  with open("sources/disabled_sources.json", "r") as f:
+                      data = json.load(f)
+                  keys = data.get("disabledKeys", [])
+                  hosts = data.get("disabledHosts", [])
+                  counts["disabled_sources"] = {"keys": len(keys), "hosts": len(hosts)}
+              except: pass
+
+              return counts, detail
+
+          current_counts, current_detail = extract_counts()
+
+          print("Current source counts:")
+          for k, v in current_counts.items():
+              print(f"  {k}: {v}")
+
+          print("\n--- Source Change Report ---")
+
+          if os.path.exists(BASELINE):
+              with open(BASELINE, "r") as f:
+                  baseline = json.load(f)
+
+              changes = []
+              old_counts = baseline.get("counts", {})
+              old_detail = baseline.get("detail", {})
+
+              for file_key in current_counts:
+                  old = old_counts.get(file_key)
+                  new = current_counts[file_key]
+
+                  if isinstance(new, dict):
+                      old_keys = old.get("keys", 0) if isinstance(old, dict) else 0
+                      new_keys = new.get("keys", 0)
+                      old_hosts = old.get("hosts", 0) if isinstance(old, dict) else 0
+                      new_hosts = new.get("hosts", 0)
+                      if old_keys != new_keys:
+                          changes.append(f"  {file_key}: disabledKeys {old_keys} → {new_keys}")
+                      if old_hosts != new_hosts:
+                          changes.append(f"  {file_key}: disabledHosts {old_hosts} → {new_hosts}")
+                  elif old != new:
+                      delta = new - old
+                      sign = "+" if delta > 0 else ""
+                      changes.append(f"  {file_key}: {old} → {new} ({sign}{delta})")
+
+                      # Show added/removed sources
+                      if file_key in current_detail and file_key in old_detail:
+                          old_keys = set(old_detail.get(file_key, {}).keys())
+                          new_keys = set(current_detail.get(file_key, {}).keys())
+                          added = new_keys - old_keys
+                          removed = old_keys - new_keys
+                          if added:
+                              for k in sorted(added):
+                                  changes.append(f"    + {current_detail[file_key][k]}")
+                          if removed:
+                              for k in sorted(removed):
+                                  changes.append(f"    - {old_detail[file_key].get(k, k)}")
+
+              if changes:
+                  print("CHANGES DETECTED:")
+                  for c in changes:
+                      print(c)
+                  print(f"\n::notice title=Source Changes::{len(changes)} change(s) detected in sources/")
+              else:
+                  print("No changes detected (source counts unchanged).")
+          else:
+              print("No baseline found — creating initial baseline.")
+              changes = []
+
+          # Save/update baseline
+          os.makedirs(os.path.dirname(BASELINE), exist_ok=True)
+          baseline_data = {"counts": current_counts, "detail": current_detail}
+          with open(BASELINE, "w") as f:
+              json.dump(baseline_data, f, indent=2, ensure_ascii=False, sort_keys=True)
+          print(f"\nBaseline updated: {BASELINE}")
+        shell: python
+
+      - name: Commit baseline
+        if: success()
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add sources/.source-baseline.json
+          git diff --cached --quiet || git commit -m "chore: update source baseline"
+          git push
