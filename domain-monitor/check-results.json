@@ -6,7 +6,12 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "disabledHosts[0]",
-    "jsonPath": "disabledHosts[0]"
+    "jsonPath": "disabledHosts[0]",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 15034,
+    "error": "timed out",
+    "attempts": 3
   },
   {
     "host": "http://2xiaopan.fun",
@@ -15,7 +20,12 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "disabledHosts[1]",
-    "jsonPath": "disabledHosts[1]"
+    "jsonPath": "disabledHosts[1]",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 26,
+    "error": "[Errno -2] Name or service not known",
+    "attempts": 3
   },
   {
     "host": "http://caiji.dyttzyapi.com",
@@ -24,7 +34,12 @@
     "sourceKey": "dyttzy",
     "sourceName": "电影天堂",
     "field": "api",
-    "jsonPath": "sites[3].api"
+    "jsonPath": "sites[3].api",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 1757,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "http://feimao888.fun",
@@ -33,7 +48,12 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "disabledHosts[2]",
-    "jsonPath": "disabledHosts[2]"
+    "jsonPath": "disabledHosts[2]",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 73,
+    "error": "[Errno -2] Name or service not known",
+    "attempts": 3
   },
   {
     "host": "http://feimo.fun",
@@ -42,7 +62,12 @@
     "sourceKey": "feimo",
     "sourceName": "飞猫影视",
     "field": "api",
-    "jsonPath": "sites[9].api"
+    "jsonPath": "sites[9].api",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 201,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "http://feimo.fun",
@@ -51,7 +76,12 @@
     "sourceKey": null,
     "sourceName": "飞猫影视",
     "field": "searchurl",
-    "jsonPath": "cloudSites[14].searchurl"
+    "jsonPath": "cloudSites[14].searchurl",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 123,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "http://feimo.fun",
@@ -60,7 +90,12 @@
     "sourceKey": null,
     "sourceName": "飞猫影视",
     "field": "detailBase",
-    "jsonPath": "cloudSites[14].detailBase"
+    "jsonPath": "cloudSites[14].detailBase",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 195,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "http://v12-1-hulucms.nmgzxrl.com",
@@ -69,7 +104,12 @@
     "sourceKey": "qijicms",
     "sourceName": "奇迹影视",
     "field": "api",
-    "jsonPath": "sites[8].api"
+    "jsonPath": "sites[8].api",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 2386,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "http://www.miqk.cc",
@@ -78,7 +118,12 @@
     "sourceKey": "builtin_至臻影视",
     "sourceName": "至臻影视",
     "field": "api",
-    "jsonPath": "sites[14].api"
+    "jsonPath": "sites[14].api",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 272,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "http://www.miqk.cc",
@@ -87,7 +132,12 @@
     "sourceKey": null,
     "sourceName": "至臻影视",
     "field": "searchurl",
-    "jsonPath": "cloudSites[4].searchurl"
+    "jsonPath": "cloudSites[4].searchurl",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 160,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "http://www.miqk.cc",
@@ -96,7 +146,12 @@
     "sourceKey": null,
     "sourceName": "至臻影视",
     "field": "detailBase",
-    "jsonPath": "cloudSites[4].detailBase"
+    "jsonPath": "cloudSites[4].detailBase",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 256,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "http://www.revohd.com",
@@ -105,7 +160,12 @@
     "sourceKey": null,
     "sourceName": "清影资源",
     "field": "searchurl",
-    "jsonPath": "cloudSites[11].searchurl"
+    "jsonPath": "cloudSites[11].searchurl",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 15040,
+    "error": "timed out",
+    "attempts": 3
   },
   {
     "host": "http://www.revohd.com",
@@ -114,7 +174,12 @@
     "sourceKey": null,
     "sourceName": "清影资源",
     "field": "detailBase",
-    "jsonPath": "cloudSites[11].detailBase"
+    "jsonPath": "cloudSites[11].detailBase",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 15035,
+    "error": "timed out",
+    "attempts": 3
   },
   {
     "host": "http://xsayang.fun:12512",
@@ -123,7 +188,12 @@
     "sourceKey": null,
     "sourceName": "小斑资源",
     "field": "searchurl",
-    "jsonPath": "cloudSites[5].searchurl"
+    "jsonPath": "cloudSites[5].searchurl",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 989,
+    "error": "Remote end closed connection without response",
+    "attempts": 3
   },
   {
     "host": "http://xsayang.fun:12512",
@@ -132,7 +202,12 @@
     "sourceKey": null,
     "sourceName": "小斑资源",
     "field": "detailBase",
-    "jsonPath": "cloudSites[5].detailBase"
+    "jsonPath": "cloudSites[5].detailBase",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 981,
+    "error": "Remote end closed connection without response",
+    "attempts": 3
   },
   {
     "host": "http://zltaa.sbjson.com",
@@ -141,7 +216,12 @@
     "sourceKey": "sbjson",
     "sourceName": "SBJSON影视",
     "field": "api",
-    "jsonPath": "sites[6].api"
+    "jsonPath": "sites[6].api",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 771,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://360zyzz.com",
@@ -150,7 +230,12 @@
     "sourceKey": "360zyzz",
     "sourceName": "360资源",
     "field": "api",
-    "jsonPath": "sites[5].api"
+    "jsonPath": "sites[5].api",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 771,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://666.666291.xyz",
@@ -159,7 +244,12 @@
     "sourceKey": null,
     "sourceName": "木偶资源",
     "field": "searchurl",
-    "jsonPath": "cloudSites[1].searchurl"
+    "jsonPath": "cloudSites[1].searchurl",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 15459,
+    "error": "timed out",
+    "attempts": 3
   },
   {
     "host": "https://666.666291.xyz",
@@ -168,7 +258,12 @@
     "sourceKey": null,
     "sourceName": "木偶资源",
     "field": "detailBase",
-    "jsonPath": "cloudSites[1].detailBase"
+    "jsonPath": "cloudSites[1].detailBase",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 15275,
+    "error": "timed out",
+    "attempts": 3
   },
   {
     "host": "https://api.guangsuapi.com",
@@ -177,7 +272,12 @@
     "sourceKey": "builtin_光速资源",
     "sourceName": "光速资源",
     "field": "api",
-    "jsonPath": "sites[11].api"
+    "jsonPath": "sites[11].api",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 116,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://app7.555618.xyz",
@@ -186,7 +286,12 @@
     "sourceKey": "app7555",
     "sourceName": "555影视",
     "field": "api",
-    "jsonPath": "sites[2].api"
+    "jsonPath": "sites[2].api",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 462,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://bfzyapi.com",
@@ -195,7 +300,12 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "disabledHosts[3]",
-    "jsonPath": "disabledHosts[3]"
+    "jsonPath": "disabledHosts[3]",
+    "ok": false,
+    "statusCode": 500,
+    "responseMs": 1590,
+    "error": "HTTP 500",
+    "attempts": 3
   },
   {
     "host": "https://by1.430520.xyz",
@@ -204,7 +314,12 @@
     "sourceKey": null,
     "sourceName": "430520",
     "field": "searchurl",
-    "jsonPath": "cloudSites[16].searchurl"
+    "jsonPath": "cloudSites[16].searchurl",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 224,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://by1.430520.xyz",
@@ -213,7 +328,12 @@
     "sourceKey": null,
     "sourceName": "430520",
     "field": "detailBase",
-    "jsonPath": "cloudSites[16].detailBase"
+    "jsonPath": "cloudSites[16].detailBase",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 37,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://cj.lziapi.com",
@@ -222,7 +342,12 @@
     "sourceKey": "builtin_量子资源",
     "sourceName": "量子资源",
     "field": "api",
-    "jsonPath": "sites[12].api"
+    "jsonPath": "sites[12].api",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 126,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://hhzyapi.com",
@@ -231,7 +356,12 @@
     "sourceKey": "hhzy",
     "sourceName": "黄河资源",
     "field": "api",
-    "jsonPath": "sites[1].api"
+    "jsonPath": "sites[1].api",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 120,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://in.donw.work",
@@ -240,7 +370,12 @@
     "sourceKey": "donw",
     "sourceName": "DONW影视",
     "field": "api",
-    "jsonPath": "sites[7].api"
+    "jsonPath": "sites[7].api",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 907,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://jszyapi.com",
@@ -249,7 +384,12 @@
     "sourceKey": "jszy",
     "sourceName": "极速资源",
     "field": "api",
-    "jsonPath": "sites[0].api"
+    "jsonPath": "sites[0].api",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 124,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://new-domain.example",
@@ -258,7 +398,12 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "to",
-    "jsonPath": "overrides[0].to"
+    "jsonPath": "overrides[0].to",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 95,
+    "error": "[Errno -2] Name or service not known",
+    "attempts": 3
   },
   {
     "host": "https://new-domain.example",
@@ -267,7 +412,12 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "referer",
-    "jsonPath": "overrides[0].referer"
+    "jsonPath": "overrides[0].referer",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 85,
+    "error": "[Errno -2] Name or service not known",
+    "attempts": 3
   },
   {
     "host": "https://pan.funletu.com",
@@ -276,7 +426,12 @@
     "sourceKey": null,
     "sourceName": "趣盘资源",
     "field": "searchurl",
-    "jsonPath": "cloudSites[17].searchurl"
+    "jsonPath": "cloudSites[17].searchurl",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 1033,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://pan.funletu.com",
@@ -285,7 +440,12 @@
     "sourceKey": null,
     "sourceName": "趣盘资源",
     "field": "detailBase",
-    "jsonPath": "cloudSites[17].detailBase"
+    "jsonPath": "cloudSites[17].detailBase",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 1009,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://pan1.me",
@@ -294,7 +454,12 @@
     "sourceKey": null,
     "sourceName": "123分享",
     "field": "searchurl",
-    "jsonPath": "cloudSites[10].searchurl"
+    "jsonPath": "cloudSites[10].searchurl",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 974,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://pan1.me",
@@ -303,7 +468,12 @@
     "sourceKey": null,
     "sourceName": "123分享",
     "field": "detailBase",
-    "jsonPath": "cloudSites[10].detailBase"
+    "jsonPath": "cloudSites[10].detailBase",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 669,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://pan1.me",
@@ -312,7 +482,12 @@
     "sourceKey": null,
     "sourceName": "123分享",
     "field": "threadURL",
-    "jsonPath": "cloudSites[10].threadURL"
+    "jsonPath": "cloudSites[10].threadURL",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 334,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://raw.githubusercontent.com",
@@ -321,7 +496,12 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "allSources",
-    "jsonPath": "files.allSources"
+    "jsonPath": "files.allSources",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 41,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://sd.sduc.site",
@@ -330,7 +510,12 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "disabledHosts[4]",
-    "jsonPath": "disabledHosts[4]"
+    "jsonPath": "disabledHosts[4]",
+    "ok": false,
+    "statusCode": 521,
+    "responseMs": 925,
+    "error": "HTTP 521",
+    "attempts": 3
   },
   {
     "host": "https://sdzyapi.com",
@@ -339,7 +524,12 @@
     "sourceKey": "builtin_闪电资源",
     "sourceName": "闪电资源",
     "field": "api",
-    "jsonPath": "sites[10].api"
+    "jsonPath": "sites[10].api",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 318,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://so.252035.xyz",
@@ -348,7 +538,12 @@
     "sourceKey": null,
     "sourceName": "PanSou盘搜",
     "field": "searchurl",
-    "jsonPath": "cloudSites[8].searchurl"
+    "jsonPath": "cloudSites[8].searchurl",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 586,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://so.252035.xyz",
@@ -357,7 +552,12 @@
     "sourceKey": null,
     "sourceName": "PanSou盘搜",
     "field": "detailBase",
-    "jsonPath": "cloudSites[8].detailBase"
+    "jsonPath": "cloudSites[8].detailBase",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 562,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://so.252035.xyz",
@@ -366,7 +566,12 @@
     "sourceKey": null,
     "sourceName": "PanSou盘搜",
     "field": "apiSearch",
-    "jsonPath": "cloudSites[8].apiSearch"
+    "jsonPath": "cloudSites[8].apiSearch",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 577,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://sou.makifx.com",
@@ -375,7 +580,12 @@
     "sourceKey": null,
     "sourceName": "音海搜索",
     "field": "searchurl",
-    "jsonPath": "cloudSites[7].searchurl"
+    "jsonPath": "cloudSites[7].searchurl",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 99,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://sou.makifx.com",
@@ -384,7 +594,12 @@
     "sourceKey": null,
     "sourceName": "音海搜索",
     "field": "detailBase",
-    "jsonPath": "cloudSites[7].detailBase"
+    "jsonPath": "cloudSites[7].detailBase",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 46,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://sou.makifx.com",
@@ -393,7 +608,12 @@
     "sourceKey": null,
     "sourceName": "音海搜索",
     "field": "apiSearch",
-    "jsonPath": "cloudSites[7].apiSearch"
+    "jsonPath": "cloudSites[7].apiSearch",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 50,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://tv.yydsys.top",
@@ -402,7 +622,12 @@
     "sourceKey": "builtin_多多资源",
     "sourceName": "多多资源",
     "field": "api",
-    "jsonPath": "sites[13].api"
+    "jsonPath": "sites[13].api",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 393,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://tv.yydsys.top",
@@ -411,7 +636,12 @@
     "sourceKey": null,
     "sourceName": "多多资源",
     "field": "searchurl",
-    "jsonPath": "cloudSites[2].searchurl"
+    "jsonPath": "cloudSites[2].searchurl",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 41,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://tv.yydsys.top",
@@ -420,7 +650,12 @@
     "sourceKey": null,
     "sourceName": "多多资源",
     "field": "detailBase",
-    "jsonPath": "cloudSites[2].detailBase"
+    "jsonPath": "cloudSites[2].detailBase",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 37,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://tyyszyapi.com",
@@ -429,7 +664,12 @@
     "sourceKey": "tyyszy",
     "sourceName": "TY影视",
     "field": "api",
-    "jsonPath": "sites[4].api"
+    "jsonPath": "sites[4].api",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 569,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://wogg.xxooo.cf",
@@ -438,7 +678,12 @@
     "sourceKey": null,
     "sourceName": "玩偶资源",
     "field": "searchurl",
-    "jsonPath": "cloudSites[0].searchurl"
+    "jsonPath": "cloudSites[0].searchurl",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 717,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://wogg.xxooo.cf",
@@ -447,7 +692,12 @@
     "sourceKey": null,
     "sourceName": "玩偶资源",
     "field": "detailBase",
-    "jsonPath": "cloudSites[0].detailBase"
+    "jsonPath": "cloudSites[0].detailBase",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 291,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://woog.nxog.eu.org",
@@ -456,7 +706,12 @@
     "sourceKey": null,
     "sourceName": "欧歌资源",
     "field": "searchurl",
-    "jsonPath": "cloudSites[3].searchurl"
+    "jsonPath": "cloudSites[3].searchurl",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 488,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://woog.nxog.eu.org",
@@ -465,7 +720,12 @@
     "sourceKey": null,
     "sourceName": "欧歌资源",
     "field": "detailBase",
-    "jsonPath": "cloudSites[3].detailBase"
+    "jsonPath": "cloudSites[3].detailBase",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 33,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://www.2xiaopan.top",
@@ -474,7 +734,12 @@
     "sourceKey": null,
     "sourceName": "2小盘",
     "field": "searchurl",
-    "jsonPath": "cloudSites[15].searchurl"
+    "jsonPath": "cloudSites[15].searchurl",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 688,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://www.2xiaopan.top",
@@ -483,7 +748,12 @@
     "sourceKey": null,
     "sourceName": "2小盘",
     "field": "detailBase",
-    "jsonPath": "cloudSites[15].detailBase"
+    "jsonPath": "cloudSites[15].detailBase",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 185,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://www.319312.com",
@@ -492,7 +762,12 @@
     "sourceKey": null,
     "sourceName": "319影社",
     "field": "searchurl",
-    "jsonPath": "cloudSites[12].searchurl"
+    "jsonPath": "cloudSites[12].searchurl",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 1771,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://www.319312.com",
@@ -501,7 +776,12 @@
     "sourceKey": null,
     "sourceName": "319影社",
     "field": "detailBase",
-    "jsonPath": "cloudSites[12].detailBase"
+    "jsonPath": "cloudSites[12].detailBase",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 1694,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://www.91panta.cn",
@@ -510,7 +790,12 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "disabledHosts[5]",
-    "jsonPath": "disabledHosts[5]"
+    "jsonPath": "disabledHosts[5]",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 398,
+    "error": "[Errno 111] Connection refused",
+    "attempts": 3
   },
   {
     "host": "https://www.leijing.xyz",
@@ -519,7 +804,12 @@
     "sourceKey": null,
     "sourceName": "雷鲸资源",
     "field": "searchurl",
-    "jsonPath": "cloudSites[6].searchurl"
+    "jsonPath": "cloudSites[6].searchurl",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 330,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://www.leijing.xyz",
@@ -528,7 +818,12 @@
     "sourceKey": null,
     "sourceName": "雷鲸资源",
     "field": "detailBase",
-    "jsonPath": "cloudSites[6].detailBase"
+    "jsonPath": "cloudSites[6].detailBase",
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 445,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://www.nanf.cc",
@@ -537,7 +832,12 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "disabledHosts[6]",
-    "jsonPath": "disabledHosts[6]"
+    "jsonPath": "disabledHosts[6]",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 106,
+    "error": "[Errno -5] No address associated with hostname",
+    "attempts": 3
   },
   {
     "host": "https://www.rrdynb.com",
@@ -546,7 +846,12 @@
     "sourceKey": null,
     "sourceName": "人人电影",
     "field": "searchurl",
-    "jsonPath": "cloudSites[13].searchurl"
+    "jsonPath": "cloudSites[13].searchurl",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 47,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://www.rrdynb.com",
@@ -555,7 +860,12 @@
     "sourceKey": null,
     "sourceName": "人人电影",
     "field": "detailBase",
-    "jsonPath": "cloudSites[13].detailBase"
+    "jsonPath": "cloudSites[13].detailBase",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 44,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://ysso.cc",
@@ -564,7 +874,12 @@
     "sourceKey": null,
     "sourceName": "奕搜资源",
     "field": "searchurl",
-    "jsonPath": "cloudSites[9].searchurl"
+    "jsonPath": "cloudSites[9].searchurl",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 303,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://ysso.cc",
@@ -573,7 +888,12 @@
     "sourceKey": null,
     "sourceName": "奕搜资源",
     "field": "detailBase",
-    "jsonPath": "cloudSites[9].detailBase"
+    "jsonPath": "cloudSites[9].detailBase",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 176,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://ysso.cc",
@@ -582,7 +902,12 @@
     "sourceKey": null,
     "sourceName": "奕搜资源",
     "field": "apiSearch",
-    "jsonPath": "cloudSites[9].apiSearch"
+    "jsonPath": "cloudSites[9].apiSearch",
+    "ok": true,
+    "statusCode": 403,
+    "responseMs": 174,
+    "error": "HTTP 403",
+    "attempts": 1
   },
   {
     "host": "https://yun.92cj.com",
@@ -591,7 +916,12 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "disabledHosts[7]",
-    "jsonPath": "disabledHosts[7]"
+    "jsonPath": "disabledHosts[7]",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 1304,
+    "error": "Remote end closed connection without response",
+    "attempts": 3
   },
   {
     "host": "https://旧的失效域名.example",
@@ -600,6 +930,11 @@
     "sourceKey": null,
     "sourceName": null,
     "field": "from",
-    "jsonPath": "overrides[0].from"
+    "jsonPath": "overrides[0].from",
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 17,
+    "error": "'latin-1' codec can't encode characters in position 0-5: ordinal not in range(256)",
+    "attempts": 3
   }
 ]
