@@ -48,7 +48,7 @@ jobs:
           git push
 
       - name: Send email
-        if: ${{ secrets.SMTP_SERVER != '' && secrets.SMTP_USERNAME != '' && secrets.SMTP_PASSWORD != '' && secrets.MAIL_TO != '' }}
+        if: ${{ success() && (secrets.SMTP_SERVER || '') != '' && (secrets.SMTP_USERNAME || '') != '' && (secrets.SMTP_PASSWORD || '') != '' && (secrets.MAIL_TO || '') != '' }}
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
