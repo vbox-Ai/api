@@ -65,6 +65,9 @@ def main():
     records = []
 
     for file_path in sorted(SOURCES_DIR.glob("*.json")):
+        if file_path.name in {"disabled_sources.json", "manifest.json"}:
+            print(f"[extract] skip config-only file {file_path}")
+            continue
         try:
             data = json.loads(file_path.read_text(encoding="utf-8"))
         except Exception as exc:

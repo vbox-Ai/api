@@ -2,8 +2,17 @@
   "_meta": {
     "name": "禁用源配置",
     "type": "disabled_sources",
-    "description": "用于临时禁用远程默认源中的失效 key 或域名，不影响用户自定义源"
+    "description": "当前检测失败或暂不可用的远程默认源 host；active 源文件已暂时排除这些 host，后续 App 端会接入过滤逻辑。"
   },
   "disabledKeys": [],
-  "disabledHosts": []
+  "disabledHosts": [
+    "http://103.45.162.207:20720",
+    "http://2xiaopan.fun",
+    "http://feimao888.fun",
+    "https://bfzyapi.com",
+    "https://sd.sduc.site",
+    "https://www.91panta.cn",
+    "https://www.nanf.cc",
+    "https://yun.92cj.com"
+  ]
 }

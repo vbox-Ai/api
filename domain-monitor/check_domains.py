@@ -14,50 +14,70 @@ OUT_DIR = ROOT / "domain-monitor"
 DOMAINS_JSON = OUT_DIR / "domains.json"
 RESULT_JSON = OUT_DIR / "check-results.json"
 RESULT_MD = OUT_DIR / "check-results.md"
-TIMEOUT = 10
+TIMEOUT = 15
+RETRIES = 3
 
 
 def check_url(url):
-    start = time.time()
-    headers = {
-        "User-Agent": "Mozilla/5.0 vbox-domain-monitor/1.0",
-        "Accept": "*/*",
-    }
-    request = Request(url, headers=headers, method="GET")
-    try:
-        with urlopen(request, timeout=TIMEOUT, context=ssl.create_default_context()) as response:
+    last_result = None
+    for attempt in range(1, RETRIES + 1):
+        start = time.time()
+        headers = {
+            "User-Agent": "Mozilla/5.0 vbox-domain-monitor/1.0",
+            "Accept": "*/*",
+        }
+        request = Request(url, headers=headers, method="GET")
+        try:
+            with urlopen(request, timeout=TIMEOUT, context=ssl.create_default_context()) as response:
+                elapsed = int((time.time() - start) * 1000)
+                code = getattr(response, "status", 200)
+                return {
+                    "ok": 200 <= code < 500,
+                    "statusCode": code,
+                    "responseMs": elapsed,
+                    "error": "",
+                    "attempts": attempt,
+                }
+        except HTTPError as exc:
             elapsed = int((time.time() - start) * 1000)
-            code = getattr(response, "status", 200)
-            return {
-                "ok": 200 <= code < 500,
-                "statusCode": code,
+            last_result = {
+                "ok": 200 <= exc.code < 500,
+                "statusCode": exc.code,
                 "responseMs": elapsed,
-                "error": "",
+                "error": f"HTTP {exc.code}",
+                "attempts": attempt,
             }
-    except HTTPError as exc:
-        elapsed = int((time.time() - start) * 1000)
-        return {
-            "ok": 200 <= exc.code < 500,
-            "statusCode": exc.code,
-            "responseMs": elapsed,
-            "error": f"HTTP {exc.code}",
-        }
-    except (URLError, socket.timeout, TimeoutError) as exc:
-        elapsed = int((time.time() - start) * 1000)
-        return {
-            "ok": False,
-            "statusCode": None,
-            "responseMs": elapsed,
-            "error": str(exc.reason if isinstance(exc, URLError) else exc),
-        }
-    except Exception as exc:
-        elapsed = int((time.time() - start) * 1000)
-        return {
-            "ok": False,
-            "statusCode": None,
-            "responseMs": elapsed,
-            "error": str(exc),
-        }
+            if last_result["ok"]:
+                return last_result
+        except (URLError, socket.timeout, TimeoutError) as exc:
+            elapsed = int((time.time() - start) * 1000)
+            last_result = {
+                "ok": False,
+                "statusCode": None,
+                "responseMs": elapsed,
+                "error": str(exc.reason if isinstance(exc, URLError) else exc),
+                "attempts": attempt,
+            }
+        except Exception as exc:
+            elapsed = int((time.time() - start) * 1000)
+            last_result = {
+                "ok": False,
+                "statusCode": None,
+                "responseMs": elapsed,
+                "error": str(exc),
+                "attempts": attempt,
+            }
+        if attempt < RETRIES:
+            time.sleep(attempt)
+    if last_result:
+        return last_result
+    return {
+        "ok": False,
+        "statusCode": None,
+        "responseMs": 0,
+        "error": "unknown error",
+        "attempts": RETRIES,
+    }
 
 
 def markdown_table(results):

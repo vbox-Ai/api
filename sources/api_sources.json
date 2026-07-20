@@ -2,7 +2,7 @@
   "_meta": {
     "name": "API 采集源配置",
     "type": "api_sources",
-    "description": "用于存放 AppleCMS / TVBox API 采集源，替代 ibox_sources.json 和 builtinFallbackSites"
+    "description": "由 vbox-ios 的 ibox_sources.json 和 SpiderManager.builtinFallbackSites 迁移生成"
   },
   "spider": "",
   "sites": [
@@ -15,8 +15,176 @@
       "quickSearch": 0,
       "filterable": 0,
       "enabled": true,
-      "priority": 100,
+      "priority": 1001,
       "group": "api"
+    },
+    {
+      "key": "hhzy",
+      "name": "黄河资源",
+      "type": 1,
+      "api": "https://hhzyapi.com/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 1002,
+      "group": "api"
+    },
+    {
+      "key": "app7555",
+      "name": "555影视",
+      "type": 1,
+      "api": "https://app7.555618.xyz/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 1003,
+      "group": "api"
+    },
+    {
+      "key": "dyttzy",
+      "name": "电影天堂",
+      "type": 1,
+      "api": "http://caiji.dyttzyapi.com/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 1004,
+      "group": "api"
+    },
+    {
+      "key": "tyyszy",
+      "name": "TY影视",
+      "type": 1,
+      "api": "https://tyyszyapi.com/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 1005,
+      "group": "api"
+    },
+    {
+      "key": "360zyzz",
+      "name": "360资源",
+      "type": 1,
+      "api": "https://360zyzz.com/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 1006,
+      "group": "api"
+    },
+    {
+      "key": "sbjson",
+      "name": "SBJSON影视",
+      "type": 1,
+      "api": "http://zltaa.sbjson.com/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 1007,
+      "group": "api"
+    },
+    {
+      "key": "donw",
+      "name": "DONW影视",
+      "type": 1,
+      "api": "https://in.donw.work/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 1008,
+      "group": "api"
+    },
+    {
+      "key": "qijicms",
+      "name": "奇迹影视",
+      "type": 1,
+      "api": "http://v12-1-hulucms.nmgzxrl.com/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 1009,
+      "group": "api"
+    },
+    {
+      "key": "feimo",
+      "name": "飞猫影视",
+      "type": 1,
+      "api": "http://feimo.fun/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 1010,
+      "group": "api"
+    },
+    {
+      "key": "builtin_闪电资源",
+      "name": "闪电资源",
+      "type": 1,
+      "api": "https://sdzyapi.com/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 2001,
+      "group": "builtin_fallback"
+    },
+    {
+      "key": "builtin_光速资源",
+      "name": "光速资源",
+      "type": 1,
+      "api": "https://api.guangsuapi.com/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 2002,
+      "group": "builtin_fallback"
+    },
+    {
+      "key": "builtin_量子资源",
+      "name": "量子资源",
+      "type": 1,
+      "api": "https://cj.lziapi.com/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 2003,
+      "group": "builtin_fallback"
+    },
+    {
+      "key": "builtin_多多资源",
+      "name": "多多资源",
+      "type": 1,
+      "api": "https://tv.yydsys.top/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 2006,
+      "group": "builtin_fallback"
+    },
+    {
+      "key": "builtin_至臻影视",
+      "name": "至臻影视",
+      "type": 1,
+      "api": "http://www.miqk.cc/api.php/provide/vod",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "enabled": true,
+      "priority": 2007,
+      "group": "builtin_fallback"
     }
   ],
   "parses": []

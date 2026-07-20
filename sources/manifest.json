@@ -5,9 +5,9 @@
     "description": "远程默认源入口文件，负责声明 API 源、网盘源、JS/站源、域名覆盖、解析器、禁用列表等配置地址"
   },
   "schemaVersion": 1,
-  "configVersion": "2026.07.19.1",
+  "configVersion": "2026.07.20.1",
   "minAppVersion": "1.0.0",
-  "updatedAt": "2026-07-19T00:00:00Z",
+  "updatedAt": "2026-07-20T01:02:13Z",
   "ttlSeconds": 21600,
   "files": {
     "apiSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/api_sources.json",

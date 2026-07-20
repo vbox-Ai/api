@@ -33,8 +33,8 @@ domain-monitor/
   check_domains.py       自动检测域名状态
   domains.json           自动生成的详细域名列表
   domains.txt            自动生成的纯域名列表
-  check-results.json     Actions 自动生成的检测结果
-  check-results.md       Actions 自动生成的检测报告
+  check-results.json     Actions 自动生成的检测结果，作为 artifact 保存
+  check-results.md       Actions 自动生成的检测报告，作为 artifact 保存并可发送邮件
 
 .github/workflows/
   check-domains.yml      每周检测、手动检测、配置变化自动检测
@@ -42,9 +42,9 @@ domain-monitor/
 
 ## 必须开启的设置
 
-### Actions 写入权限
+### Actions 权限
 
-检测脚本运行后需要把结果提交回仓库，所以必须开启 Actions 写入权限。
+当前检测脚本会把结果上传为 GitHub Actions artifact，不再强制提交回仓库。
 
 设置路径：
 
@@ -52,7 +52,13 @@ domain-monitor/
 Settings → Actions → General → Workflow permissions
 ```
 
-选择：
+推荐选择：
+
+```text
+Read repository contents permission
+```
+
+如果你后续希望重新把检测结果自动提交回仓库，可以再改成：
 
 ```text
 Read and write permissions
@@ -63,8 +69,6 @@ Read and write permissions
 ```text
 Save
 ```
-
-如果没有开启，`check-results.md` 和 `check-results.json` 可能无法自动提交。
 
 ### 邮件 Secrets
 
@@ -134,7 +138,7 @@ README.md
 docs/**
 ```
 
-检测结果文件不会触发下一次检测，避免工作流自己提交结果后无限循环。
+检测结果文件不会提交回仓库，默认在 Actions 运行详情页的 artifact 中下载；如果配置了 SMTP Secrets，也会发送到邮箱。
 
 ## GitHub Pages
 

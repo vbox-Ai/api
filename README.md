@@ -1,6 +1,6 @@
-# vbox 远程默认源配置仓库模板
+# vbox 远程默认源配置仓库
 
-这个目录用于复制到公开仓库 `https://github.com/vbox-Ai/api`。
+这个仓库用于托管 `vbox-ios` 的远程默认源配置。
 
 App 默认入口：
 
@@ -13,8 +13,8 @@ https://raw.githubusercontent.com/vbox-Ai/api/main/sources/manifest.json
 ```text
 sources/
   manifest.json          远程默认源入口
-  api_sources.json       API 采集源
-  cloud_sources.json     网盘搜索源
+  api_sources.json       API 采集源，由 App 旧内置源迁移
+  cloud_sources.json     网盘搜索源，由 App 旧内置源迁移
   spider_sources.json    JS 蜘蛛和站源
   domain_overrides.json  域名覆盖
   parsers.json           解析器和切片源
@@ -23,11 +23,13 @@ sources/
 domain-monitor/
   extract_domains.py     自动提取 sources 目录中的 URL 和域名
   check_domains.py       自动检测域名状态并生成报告
-  domains.json           自动生成
-  domains.txt            自动生成
-  check-results.json     自动生成
-  check-results.md       自动生成
+  domains.json           检测时自动生成的域名明细
+  domains.txt            检测时自动生成的域名列表
+  check-results.json     检测时自动生成的结果明细
+  check-results.md       检测时自动生成的 Markdown 报告
 ```
+
+检测结果会作为 GitHub Actions artifact 保存；如果配置了 SMTP Secrets，也会自动发送到邮箱。
 
 ## 邮件报告
 

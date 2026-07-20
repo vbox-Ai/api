@@ -2,11 +2,91 @@
   "_meta": {
     "name": "网盘搜索源配置",
     "type": "cloud_sources",
-    "description": "用于存放网盘 CMS、网盘 SPA、论坛型网盘搜索源，替代 video_sources.json"
+    "description": "由 vbox-ios 的 video_sources.json 迁移生成"
   },
   "dyname": "网盘资源聚合",
   "dyzuozhe": "vbox-ios",
   "cloudSites": [
+    {
+      "name": "玩偶资源",
+      "type": "cms",
+      "searchurl": "https://wogg.xxooo.cf/index.php/vod/search.html?wd=",
+      "detailBase": "https://wogg.xxooo.cf",
+      "ua": "pc",
+      "enabled": true,
+      "priority": 1002,
+      "group": "cloud"
+    },
+    {
+      "name": "木偶资源",
+      "type": "cms",
+      "searchurl": "https://666.666291.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://666.666291.xyz",
+      "enabled": true,
+      "priority": 1003,
+      "group": "cloud"
+    },
+    {
+      "name": "多多资源",
+      "type": "cms",
+      "searchurl": "https://tv.yydsys.top/index.php/vod/search.html?wd=",
+      "detailBase": "https://tv.yydsys.top",
+      "ua": "pc",
+      "enabled": true,
+      "priority": 1004,
+      "group": "cloud"
+    },
+    {
+      "name": "欧歌资源",
+      "type": "cms",
+      "searchurl": "https://woog.nxog.eu.org/index.php/vod/search.html?wd=",
+      "detailBase": "https://woog.nxog.eu.org",
+      "ua": "pc",
+      "enabled": true,
+      "priority": 1006,
+      "group": "cloud"
+    },
+    {
+      "name": "至臻影视",
+      "type": "cms",
+      "searchurl": "http://www.miqk.cc/index.php/vod/search.html?wd=",
+      "detailBase": "http://www.miqk.cc",
+      "enabled": true,
+      "priority": 1008,
+      "group": "cloud"
+    },
+    {
+      "name": "小斑资源",
+      "type": "forum",
+      "searchurl": "http://xsayang.fun:12512/index.php/vod/search.html?wd=",
+      "detailBase": "http://xsayang.fun:12512",
+      "enabled": true,
+      "priority": 1010,
+      "group": "cloud"
+    },
+    {
+      "name": "雷鲸资源",
+      "type": "cms",
+      "searchurl": "https://www.leijing.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.leijing.xyz",
+      "ua": "pc",
+      "enabled": true,
+      "priority": 1011,
+      "group": "cloud"
+    },
+    {
+      "name": "音海搜索",
+      "type": "spa",
+      "searchurl": "https://sou.makifx.com",
+      "detailBase": "https://sou.makifx.com",
+      "apiSearch": "https://sou.makifx.com/api/search?kw={kw}",
+      "resultField": "data.list",
+      "titleField": "title",
+      "urlField": "url",
+      "enabled": true,
+      "priority": 1013,
+      "group": "cloud"
+    },
     {
       "name": "PanSou盘搜",
       "type": "spa",
@@ -16,7 +96,97 @@
       "resultField": "data.merged_by_type",
       "titleField": "note",
       "urlField": "url",
-      "enabled": true
+      "enabled": true,
+      "priority": 1014,
+      "group": "cloud"
+    },
+    {
+      "name": "奕搜资源",
+      "type": "spa",
+      "searchurl": "https://ysso.cc",
+      "detailBase": "https://ysso.cc",
+      "apiSearch": "https://ysso.cc/api/search?kw={kw}",
+      "resultField": "data.list",
+      "titleField": "title",
+      "urlField": "url",
+      "enabled": true,
+      "priority": 1015,
+      "group": "cloud"
+    },
+    {
+      "name": "123分享",
+      "type": "forum",
+      "searchurl": "https://pan1.me/?search.htm&keyword=",
+      "detailBase": "https://pan1.me",
+      "threadPattern": "\\?thread-(\\d+)\\.htm",
+      "threadURL": "https://pan1.me/?thread-{id}.htm",
+      "enabled": true,
+      "priority": 1016,
+      "group": "cloud"
+    },
+    {
+      "name": "清影资源",
+      "type": "cms",
+      "searchurl": "http://www.revohd.com/index.php/vod/search.html?wd=",
+      "detailBase": "http://www.revohd.com",
+      "enabled": true,
+      "priority": 1017,
+      "group": "cloud"
+    },
+    {
+      "name": "319影社",
+      "type": "cms",
+      "searchurl": "https://www.319312.com/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.319312.com",
+      "enabled": true,
+      "priority": 1018,
+      "group": "cloud"
+    },
+    {
+      "name": "人人电影",
+      "type": "cms",
+      "searchurl": "https://www.rrdynb.com/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.rrdynb.com",
+      "ua": "pc",
+      "enabled": true,
+      "priority": 1019,
+      "group": "cloud"
+    },
+    {
+      "name": "飞猫影视",
+      "type": "cms",
+      "searchurl": "http://feimo.fun/index.php/vod/search.html?wd=",
+      "detailBase": "http://feimo.fun",
+      "enabled": true,
+      "priority": 1020,
+      "group": "cloud"
+    },
+    {
+      "name": "2小盘",
+      "type": "cms",
+      "searchurl": "https://www.2xiaopan.top/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.2xiaopan.top",
+      "enabled": true,
+      "priority": 1021,
+      "group": "cloud"
+    },
+    {
+      "name": "430520",
+      "type": "cms",
+      "searchurl": "https://by1.430520.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://by1.430520.xyz",
+      "enabled": true,
+      "priority": 1022,
+      "group": "cloud"
+    },
+    {
+      "name": "趣盘资源",
+      "type": "cms",
+      "searchurl": "https://pan.funletu.com/index.php/vod/search.html?wd=",
+      "detailBase": "https://pan.funletu.com",
+      "enabled": true,
+      "priority": 1025,
+      "group": "cloud"
     }
   ]
 }
