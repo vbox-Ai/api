@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   check:
@@ -43,13 +43,16 @@ jobs:
       - name: Check domains
         run: python domain-monitor/check_domains.py
 
-      - name: Commit results
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add domain-monitor/domains.json domain-monitor/domains.txt domain-monitor/check-results.json domain-monitor/check-results.md
-          git commit -m "chore: update weekly domain check results" || echo "No changes"
-          git push
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: domain-check-results
+          path: |
+            domain-monitor/domains.json
+            domain-monitor/domains.txt
+            domain-monitor/check-results.json
+            domain-monitor/check-results.md
+          if-no-files-found: error
 
       - name: Check mail config
         id: mail_config
@@ -62,13 +65,35 @@ jobs:
 
       - name: Send email
         if: ${{ steps.mail_config.outputs.enabled == 'true' }}
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: ${{ env.SMTP_SERVER }}
-          server_port: ${{ env.SMTP_PORT }}
-          username: ${{ env.SMTP_USERNAME }}
-          password: ${{ env.SMTP_PASSWORD }}
-          subject: vbox 远程源每周检测报告
-          to: ${{ env.MAIL_TO }}
-          from: ${{ env.SMTP_USERNAME }}
-          body: file://domain-monitor/check-results.md
+        run: |
+          python3 - <<'PY'
+          import os
+          import smtplib
+          from email.message import EmailMessage
+          from pathlib import Path
+
+          server = os.environ["SMTP_SERVER"]
+          port = int(os.environ["SMTP_PORT"])
+          username = os.environ["SMTP_USERNAME"]
+          password = os.environ["SMTP_PASSWORD"]
+          mail_to = os.environ["MAIL_TO"]
+          report_path = Path("domain-monitor/check-results.md")
+          body = report_path.read_text(encoding="utf-8") if report_path.exists() else "未生成检测报告。"
+
+          message = EmailMessage()
+          message["Subject"] = "vbox 远程源每周检测报告"
+          message["From"] = username
+          message["To"] = mail_to
+          message.set_content(body)
+
+          if port == 465:
+              with smtplib.SMTP_SSL(server, port, timeout=30) as smtp:
+                  smtp.login(username, password)
+                  smtp.send_message(message)
+          else:
+              with smtplib.SMTP(server, port, timeout=30) as smtp:
+                  smtp.starttls()
+                  smtp.login(username, password)
+                  smtp.send_message(message)
+          print("邮件发送完成")
+          PY
