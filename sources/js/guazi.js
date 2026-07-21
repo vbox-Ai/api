@@ -1,20 +1,19 @@
 /*
- * 瓜子影视纯 JS 蜘蛛脚本
+ * 瓜子影视纯 JS 蜘蛛脚本 (v1.9.2 关梯版)
  * 运行环境: JavaScriptCore / QuickJS (iOS)
  * 依赖注入: globalThis.http(url, optionsObj) - 同步HTTP请求，options 为对象，返回 {status, content, headers}
  *
  * 加密实现 (纯 JS):
  *   - AES-CBC PKCS7 padding
- *   - RSA PKCS1v15 公钥加密 / 私钥解密 (基于 BigInteger)
+ *   - RSA PKCS1v15 私钥解密 (基于 BigInteger)
  *   - MD5 哈希
  *
- * 业务逻辑 (与 Python 版完全对齐):
- *   - 5个域名轮询
- *   - 设备注册 signUp / 刷新 token refreshToken
- *   - 双层加密请求 (AES加密参数 + RSA加密AES密钥)
- *   - MD5 签名
+ * 业务逻辑 (v1.9.2 关梯版 - 简化协议):
+ *   - 单域名直连 (https://api.w32z7vtd.com)
+ *   - 硬编码 token，无需设备注册/认证
+ *   - 预计算 keys，无需 RSA 公钥加密
  *   - 300秒缓存
- *   - 失败自动重试机制
+ *   - 国内网络可直连，无需梯子
  */
 
 (function() {
@@ -1084,29 +1083,20 @@ var RSA = (function() {
 })();
 
 // ============================================================
-// 瓜子蜘蛛主类
+// 瓜子蜘蛛主类 (v1.9.2 关梯版 - 简化协议，无需设备注册/RSA加密)
 // ============================================================
 function GuaziSpider() {
     this.name = '瓜子';
-    this.hosts = [
-        'https://apinew.uozvr.com',
-        'https://api.w32z7vtd.com',
-        'https://api.6a7nnf7.com',
-        'https://api.umygrx3.com',
-        'https://api.rmedphk.com'
-    ];
-    this.hostIndex = 0;
-    this.host = this.hosts[this.hostIndex];
+    this.host = 'https://api.w32z7vtd.com';
 
-    // AES 固定密钥
-    this.AES_KEY = 'OITxa5OqAYjhswxx';
-    this.AES_IV = 'rCMNwZASNBKZ8mXV';
+    // AES 固定密钥 (v1.9.2)
+    this.AES_KEY = 'mvXBSW7ekreItNsT';
+    this.AES_IV = '2U3IrJL8szAKp0Fj';
 
-    // RSA 公钥参数 (hex)
-    this.RSA_N = 'd4339fbfcbcb0fb1691dd7f4504bae17db9f44530c455c51391e503ae4caabc673ecd09aa8491a23483cb9421c2f44e95a0fa4f04501ca318d8e019e929d079426c0a14c414847da94930aecdff31550cc63b2fe894ba39efe3b9c9722464e05660e1079e4469f5ec0f44906158ff4175ecc51e9ec11e44da42f9db20000f8c9';
-    this.RSA_E = '10001';
+    // 预计算 keys (v1.9.2 硬编码，无需RSA公钥加密)
+    this.PRECOMPUTED_KEYS = 'Qmxi5ciWXbQzkr7o+SUNiUuQxQEf8/AVyUWY4T/BGhcXBIUz4nOyHBGf9A4KbM0iKF3yp9M7WAY0rrs5PzdTAOB45plcS2zZ0wUibcXuGJ29VVGRWKGwE9zu2vLwhfgjTaaDpXo4rby+7GxXTktzJmxvneOUdYeHi+PZsThlvPI=';
 
-    // RSA 私钥参数 (hex) - 用于解密响应
+    // RSA 私钥参数 (hex) - 仅用于解密响应
     this.RSA_PRIV_N = '7ba84aad62e2d734268d34f5a336c4e1074578918dc6e6f195de86ac51b18a6c5f32c301e81a49869713a2e02acb0005a6988a7ad50105b5f062c614d7036beb8f175663e608c0b2e2b63cbdd9621676cc523d3ce8353a67efe85c1756537fdbd46d0337713dc142d14b070a653df08ff702235bec0a6de08f64794aa900f58d';
     this.RSA_PRIV_D = '247fb80b1574ff305570b881087bd200d9b497b1deb726d387f8f6a74635b135eba3800bc006824d47aa7418d688b4a8f653700c7172abccd7f74fa03716bb73912a71657d1669555ebf1585f073719a359d778d757153eed436c9a87fa1db5d731faf44c48625dd6dff99396c377dc00bd87480db94c020fb088a299e4a71d';
     this.RSA_PRIV_P = 'd5c09a90437835ec64179b473d1ad1e97398fd71df92a5f112132a98d6c1f54df8b1a4c99cb5881c2f085f2b3a426cf3df44edcc28ee3aa291472f8530ce1377';
@@ -1115,46 +1105,28 @@ function GuaziSpider() {
     this.RSA_PRIV_DQ = '8f45fc9e1c7a017b2009846a9759256eab5598bf3ef792992bb3e72d61bf21f8d0532de93c6a12699edf76ab86f1babca327f9f9dce313fa135dc0724bee9745';
     this.RSA_PRIV_QINV = '3ffe5c8b2d5b2f7361521b1a395cb9e4c1d79cf8dd7135f415a2e2fb26d76487c84363f8adbd7d995ab57de31b097873f8bd6b1bca1ab7995829fa5ef24f3764';
 
-    this.DEVICE_OLD_KEY = 'aLFBMWpxBrIDAD1Si/KVvm41';
+    // 硬编码 token (v1.9.2)
+    this.token = '1be86e8e18a9fa18b2b8d5432699dad0.ac008ed650fd087bfbecf2fda9d82e9835253ef24843e6b18fcd128b10763497bcf9d53e959f5377cde038c20ccf9d17f604c9b8bb6e61041def86729b2fc7408bd241e23c213ac57f0226ee656e2bb0a583ae0e4f3bf6c6ab6c490c9a6f0d8cdfd366aacf5d83193671a8f77cd1af1ff2e9145de92ec43ec87cf4bdc563f6e919fe32861b0e93b118ec37d8035fbb3c.59dd05c5d9a8ae726528783128218f15fe6f2c0c8145eddab112b374fcfe3d79';
 
-    // 设备信息
-    this.deviceId = String(864150060000000 + Math.floor(Math.random() * 10000));
-    this.deviceKey = this._genDeviceKey();
-    this.token = '';
-    this.tokenId = '';
-    this.registered = false;
-
-    // 请求头
+    // 请求头 (v1.9.2)
     this.header = {
-        'User-Agent': 'Lavf/57.83.100',
-        'code': 'GZ0369',
-        'deviceId': this.deviceId,
-        'lang': 'zh_cn',
         'Cache-Control': 'no-cache',
+        'Version': '2406025',
+        'PackageName': 'com.uf076bf0c246.qe439f0d5e.m8aaf56b725a.ifeb647346f',
+        'Ver': '1.9.2',
+        'Referer': this.host,
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Version': '2604028',
-        'PackageName': 'com.ae06aebdbb.y286327f5a.ofe849883320260517',
-        'Ver': '3.0.3.2',
-        'api-ver': '3.0.3.2',
-        'Referer': this.host
+        'User-Agent': 'okhttp/3.12.0'
     };
 
     // 缓存
     this.cache = {};
     this.cacheTimeout = 300;
-
-    // 初始化 token
-    this._initToken();
 }
 
-GuaziSpider.prototype._genDeviceKey = function() {
-    var chars = '0123456789ABCDEF';
-    var key = '';
-    for (var i = 0; i < 40; i++) {
-        key += chars.charAt(Math.floor(Math.random() * 16));
-    }
-    return key;
-};
+// ============================================================
+// 基础工具方法
+// ============================================================
 
 GuaziSpider.prototype._getTime = function() {
     return Math.floor(Date.now() / 1000);
@@ -1188,18 +1160,6 @@ GuaziSpider.prototype._aesDecrypt = function(hexText, key, iv) {
         return Base64.utf8Decode(decrypted);
     } catch (e) {
         console.log('AES解密失败: ' + e.message);
-        return '';
-    }
-};
-
-// RSA 公钥加密 -> base64
-GuaziSpider.prototype._rsaEncrypt = function(text) {
-    try {
-        var plainBytes = Base64.utf8Encode(text);
-        var encrypted = RSA.encryptPublic(plainBytes, this.RSA_N, this.RSA_E);
-        return Base64.encode(encrypted);
-    } catch (e) {
-        console.log('RSA加密失败: ' + e.message);
         return '';
     }
 };
@@ -1255,108 +1215,34 @@ GuaziSpider.prototype._post = function(url, headers, data) {
     }
 };
 
-// ---------- 设备注册与认证 ----------
-GuaziSpider.prototype._initToken = function() {
-    console.log('===== 初始化设备认证 =====');
+// ============================================================
+// 加密请求核心 (v1.9.2 简化版)
+// ============================================================
+
+// 发送加密请求 (v1.9.2: 无需设备认证，使用预计算keys)
+GuaziSpider.prototype._sendEncryptedRequest = function(data, path) {
     try {
-        if (!this.registered) {
-            this._signUp();
-        }
-        this._refreshToken();
-    } catch (e) {
-        console.log('初始化token失败: ' + e.message);
-        // 兜底 token
-        this.token = '024212ef0975c5306a1434e113a46463.bc77313e11a248558a6ca244ca980944ec3421fa480c50e0229ad91f1cb15aea582603202cd71796885c9e5163e500f1b72f737059aff1ddb8beea47c5a331d6760540345b7f88b2302a0e6e09589f9dcf3ff9175d8c905f990203f5fc04748008ea7a366571cbf5b09509a873dcfba3cf1d5590385f5f7ef6e01d1850974aa220eb5178c89e61c24411af9b9a19435e.06fde789ece48d9b33c5dc857e04e9b5838f08264d928b87237d3476c4484b46';
-    }
-};
-
-GuaziSpider.prototype._signUp = function() {
-    console.log('注册新设备...');
-    var params = {
-        new_key: this.deviceKey,
-        old_key: this.DEVICE_OLD_KEY,
-        phone_type: 1,
-        code: ''
-    };
-    var result = this._authRequest('/App/Authentication/Device/signUp', params);
-    this._applyAuth(result);
-    this.registered = true;
-};
-
-GuaziSpider.prototype._signIn = function() {
-    console.log('设备登录...');
-    var params = {
-        new_key: this.deviceKey,
-        old_key: this.DEVICE_OLD_KEY
-    };
-    var result = this._authRequest('/App/Authentication/Device/signIn', params);
-    this._applyAuth(result);
-};
-
-GuaziSpider.prototype._applyAuth = function(result) {
-    if (!result) throw new Error('认证响应为空');
-    var newToken = result.token || '';
-    if (!newToken) {
-        throw new Error('认证失败，无token返回: ' + JSON.stringify(result));
-    }
-    this.token = newToken;
-    var newTokenId = result.app_user_id || '';
-    if (newTokenId) {
-        this.tokenId = newTokenId;
-    }
-    console.log('获取token成功, token前缀: ' + this.token.substring(0, 30) + '...');
-};
-
-GuaziSpider.prototype._refreshToken = function() {
-    console.log('刷新token...');
-    var result = this._authRequest('/App/Authentication/Authenticator/refresh', {});
-    this._applyAuth(result);
-};
-
-GuaziSpider.prototype._authRequest = function(path, params) {
-    return this._sendEncryptedRequest(params, path, true);
-};
-
-// ---------- 业务请求核心 ----------
-GuaziSpider.prototype._ensureToken = function() {
-    if (!this.token || !this.tokenId) {
-        if (this.registered) {
-            this._signIn();
-        } else {
-            this._signUp();
-        }
-        this._refreshToken();
-    }
-};
-
-GuaziSpider.prototype._sendEncryptedRequest = function(data, path, isAuth) {
-    try {
-        if (!isAuth) {
-            this._ensureToken();
-        }
-
         // 1. 参数转 JSON 并 AES 加密
         var jsonParams = JSON.stringify(data);
         var encrypted = this._aesEncrypt(jsonParams, this.AES_KEY, this.AES_IV);
         var requestKey = encrypted.toUpperCase();
 
-        // 2. RSA 加密 iv/key JSON
-        var keyJson = JSON.stringify({ iv: this.AES_IV, key: this.AES_KEY });
-        var keys = this._rsaEncrypt(keyJson);
+        // 2. 使用预计算的 keys (无需RSA加密)
+        var keys = this.PRECOMPUTED_KEYS;
 
         // 3. 生成签名
         var t = String(this._getTime());
         var signStr = 'token_id=,token=' + this.token + ',phone_type=1,request_key=' + requestKey +
-                      ',app_id=1,time=' + t + ',keys=' + keys + '*&zvdvdvddbfikkkumtmdwqppp?|4Y!s!2br';
+                      ',app_id=1,time=' + t + ',keys=' + keys + '*&zvdvdvvdbfikkkumtmdwqppp?|4Y!s!2br';
         var signature = this._getMd5(signStr);
 
-        // 4. 构建请求体
+        // 4. 构建请求体 (v1.9.2: phone_model xiaomi-22021211rc)
         var body = {
             token: this.token,
             token_id: '',
             phone_type: '1',
             time: t,
-            phone_model: 'xiaomi-25031',
+            phone_model: 'xiaomi-22021211rc',
             keys: keys,
             request_key: requestKey,
             signature: signature,
@@ -1386,7 +1272,7 @@ GuaziSpider.prototype._sendEncryptedRequest = function(data, path, isAuth) {
         var encryptedResponse = dataSection.response_key || '';
         var encryptedKeys = dataSection.keys || '';
 
-        // 6. 解密响应
+        // 6. 解密响应: RSA解密keys获取key/iv -> AES解密response_key
         var decryptedKeysJson = this._rsaDecrypt(encryptedKeys);
         if (!decryptedKeysJson) throw new Error('RSA解密keys失败');
         var keyInfo = JSON.parse(decryptedKeysJson);
@@ -1403,7 +1289,7 @@ GuaziSpider.prototype._sendEncryptedRequest = function(data, path, isAuth) {
     }
 };
 
-// 带重试和域名轮询的数据获取
+// 数据获取 (v1.9.2 简化版: 无重试/域名轮询/认证)
 GuaziSpider.prototype._getData = function(data, path, useCache) {
     try {
         if (useCache === undefined) useCache = true;
@@ -1418,38 +1304,12 @@ GuaziSpider.prototype._getData = function(data, path, useCache) {
             }
         }
 
-        for (var attempt = 0; attempt < 3; attempt++) {
-            var tried = 0;
-            while (tried < this.hosts.length) {
-                this.host = this.hosts[this.hostIndex];
-                this.header.Referer = this.host;
-                var result = this._sendEncryptedRequest(data, path, false);
-                if (result !== null) {
-                    console.log('请求成功: ' + path + ', 域名: ' + this.host);
-                    if (useCache && cacheKey) {
-                        this.cache[cacheKey] = { data: result, timestamp: this._getTime() };
-                    }
-                    return result;
-                }
-                // 切换域名
-                this.hostIndex = (this.hostIndex + 1) % this.hosts.length;
-                tried++;
+        var result = this._sendEncryptedRequest(data, path);
+        if (result !== null) {
+            if (useCache && cacheKey) {
+                this.cache[cacheKey] = { data: result, timestamp: this._getTime() };
             }
-            // 所有域名失败，尝试重新认证
-            if (attempt < 2) {
-                console.log('所有域名失败，尝试重新认证...');
-                try {
-                    this.registered = false;
-                    this.token = '';
-                    this.tokenId = '';
-                    this._ensureToken();
-                } catch (e) {
-                    console.log('重新认证失败: ' + e.message);
-                }
-                this.hostIndex = 0;
-            } else {
-                break;
-            }
+            return result;
         }
         return null;
     } catch (e) {
@@ -1487,7 +1347,6 @@ GuaziSpider.prototype._getCachedData = function(cacheKey, data, path) {
 // ============================================================
 
 GuaziSpider.prototype.init = function(extend) {
-    // 初始化已在构造函数中完成
     return {};
 };
 
@@ -1602,7 +1461,8 @@ GuaziSpider.prototype.detailContent = function(ids) {
     try {
         var vodId = ids[0].split('/')[0];
         var t = String(this._getTime());
-        var body1 = { token_id: this.tokenId, vod_id: vodId, mobile_time: t, token: this.token };
+        // v1.9.2: 使用硬编码 token_id
+        var body1 = { token_id: '1649412', vod_id: vodId, mobile_time: t, token: this.token };
         var qdata = this._getData(body1, '/App/IndexPlay/playInfo');
         var body2 = { vurl_cloud_id: '2', vod_d_id: vodId };
         var jdata = this._getData(body2, '/App/Resource/Vurl/show');
