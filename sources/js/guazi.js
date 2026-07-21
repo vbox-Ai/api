@@ -288,14 +288,20 @@ var spider = {
         // 核心 API 请求
         function apiRequest(data, path) {
             try {
+                print('>>> apiRequest start: ' + path);
+
                 // AES 加密请求数据
-                var requestKey = AES.encrypt(JSON.stringify(data), AES_KEY, AES_IV);
-                if (!requestKey) return null;
+                var jsonData = JSON.stringify(data);
+                print('>>> apiRequest data: ' + jsonData.substring(0, 80));
+                var requestKey = AES.encrypt(jsonData, AES_KEY, AES_IV);
+                if (!requestKey) { print('>>> AES encrypt failed'); return null; }
+                print('>>> requestKey: ' + requestKey.substring(0, 40) + '...');
 
                 // 生成签名
                 var t = Math.floor(Date.now() / 1000).toString();
                 var signStr = 'token_id=,token=' + TOKEN + ',phone_type=1,request_key=' + requestKey + ',app_id=1,time=' + t + ',keys=' + SIGN_KEYS + '*&zvdvdvddbfikkkumtmdwqppp?|4Y!s!2br';
                 var signature = md5(signStr);
+                print('>>> sign=' + signature.substring(0, 20) + '..., t=' + t);
 
                 // 构建请求体
                 var postBody = {
@@ -311,32 +317,58 @@ var spider = {
                     'ad_version': '1'
                 };
 
-                // 发送请求
+                // 发送请求 — req() 读 opts.data（不是body），返回 {data: content, ...} 对象
                 var bodyStr = encodeParams(postBody);
                 var url = HOST + path;
-                var respStr = req(url, {
+                print('>>> req url=' + url + ', bodyLen=' + bodyStr.length);
+
+                var respObj = req(url, {
                     method: 'POST',
                     headers: HEADER,
-                    body: bodyStr
+                    data: bodyStr
                 });
 
-                if (!respStr) return null;
+                if (!respObj) { print('>>> req returned null'); return null; }
+                print('>>> req resp type=' + typeof respObj);
+
+                var respStr = '';
+                if (typeof respObj === 'string') {
+                    respStr = respObj;
+                } else if (respObj.data) {
+                    respStr = respObj.data;
+                } else if (respObj.content) {
+                    respStr = respObj.content;
+                } else {
+                    print('>>> req resp has no data/content');
+                    return null;
+                }
+                print('>>> respStr len=' + respStr.length + ', head=' + respStr.substring(0, 60));
+
                 var respJson = JSON.parse(respStr);
-                if (!respJson || !respJson.data) return null;
+                if (!respJson || !respJson.data) {
+                    print('>>> respJson has no .data');
+                    return null;
+                }
+                print('>>> respJson.code=' + (respJson.code || 'null'));
 
                 var dataResp = respJson.data;
 
                 // RSA 解密响应密钥
                 var bodykiJson = rsaDecrypt(dataResp.keys, RSA_PK);
-                if (!bodykiJson) return null;
+                if (!bodykiJson) { print('>>> rsaDecrypt failed'); return null; }
                 var bodyki = JSON.parse(bodykiJson);
+                print('>>> bodyki.key=' + bodyki.key + ', iv=' + bodyki.iv);
 
                 // AES 解密响应数据
                 var decrypted = AES.decrypt(dataResp.response_key, bodyki.key, bodyki.iv);
-                if (!decrypted) return null;
-                return JSON.parse(decrypted);
+                if (!decrypted) { print('>>> AES decrypt failed'); return null; }
+                print('>>> decrypted len=' + decrypted.length + ', head=' + decrypted.substring(0, 60));
+
+                var result = JSON.parse(decrypted);
+                print('>>> apiRequest OK: ' + path);
+                return result;
             } catch (e) {
-                print('apiRequest error (' + path + '): ' + e);
+                print('>>> apiRequest ERROR (' + path + '): ' + e);
                 return null;
             }
         }
