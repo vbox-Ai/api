@@ -64,7 +64,7 @@ var spider = {
                 if (!respObj) { print('>>> tx req null'); return null; }
                 var respStr = (typeof respObj === 'string') ? respObj : (respObj.data || respObj.content || '');
                 if (!respStr) { print('>>> tx empty resp'); return null; }
-                return JSON.parse(respStr);
+                return (typeof respStr === 'object') ? respStr : JSON.parse(respStr);
             } catch (e) {
                 print('>>> tx postJson ERROR: ' + e);
                 return null;

@@ -344,7 +344,7 @@ var spider = {
                 }
                 print('>>> respStr len=' + respStr.length + ', head=' + respStr.substring(0, 60));
 
-                var respJson = JSON.parse(respStr);
+                var respJson = (typeof respStr === 'object') ? respStr : JSON.parse(respStr);
                 if (!respJson || !respJson.data) {
                     print('>>> respJson has no .data');
                     return null;

@@ -107,7 +107,7 @@ var spider = {
                 if (!respObj) { print('>>> xk req null: ' + endpoint); return {}; }
                 var respStr = (typeof respObj === 'string') ? respObj : (respObj.data || respObj.content || '');
                 if (!respStr) { print('>>> xk empty resp: ' + endpoint); return {}; }
-                var respJson = JSON.parse(respStr);
+                var respJson = (typeof respStr === 'object') ? respStr : JSON.parse(respStr);
                 if (respJson.code !== undefined && respJson.code !== 0) { print('>>> xk code=' + respJson.code + ': ' + endpoint); return {}; }
                 var encrypted = respJson.data;
                 if (!encrypted) { print('>>> xk no encrypted data: ' + endpoint); return {}; }
