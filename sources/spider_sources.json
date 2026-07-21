@@ -7,6 +7,17 @@
   "spider": "./jar/pg.jar;md5;dffec63fb83a2b31b8606bd4bf6bead9",
   "sites": [
     {
+      "key": "drpy_js_瓜子",
+      "name": "影视 | 瓜子[js]",
+      "type": 3,
+      "api": "./js/瓜子.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "ext": "",
+      "timeout": 30
+    },
+    {
       "key": "drpy_js_豆瓣",
       "name": "搜索 | 豆瓣[js]",
       "type": 3,
@@ -1838,7 +1849,7 @@
       "ext": "./js/drpy.js"
     }
   ],
-  "siteCount": 226,
+  "siteCount": 227,
   "jarSiteCount": 71,
   "jarSitesNotIncluded": [
     "豆瓣",
