@@ -1529,7 +1529,36 @@ GuaziSpider.prototype.homeContent = function(filter) {
         ];
     }
 
-    return { class: classes, filters: filters, list: [] };
+    // 首页推荐：获取热门电影（按热度排序，第一页前30条）
+    var list = [];
+    try {
+        var body = {
+            area: '0',
+            year: '0',
+            pageSize: '30',
+            sort: 'd_hits',
+            page: '1',
+            tid: '1'
+        };
+        var data = this._getData(body, '/App/IndexList/indexList');
+        if (data && data.list) {
+            for (var j = 0; j < data.list.length; j++) {
+                var item = data.list[j];
+                var vodContinu = item.vod_continu || 0;
+                var remarks = vodContinu === 0 ? '电影' : ('更新至' + vodContinu + '集');
+                list.push({
+                    vod_id: item.vod_id + '/' + vodContinu,
+                    vod_name: item.vod_name || '',
+                    vod_pic: item.vod_pic || '',
+                    vod_remarks: remarks
+                });
+            }
+        }
+    } catch (e) {
+        console.log('首页推荐获取失败: ' + e.message);
+    }
+
+    return { class: classes, filters: filters, list: list };
 };
 
 GuaziSpider.prototype.homeVideoContent = function() {
@@ -1712,31 +1741,31 @@ function getSpider() {
 globalThis.__JS_SPIDER__ = {
     init: function(extend) {
         var s = getSpider();
-        return JSON.stringify(s.init(extend));
+        return s.init(extend);
     },
     homeContent: function(filter) {
         var s = getSpider();
-        return JSON.stringify(s.homeContent(filter));
+        return s.homeContent(filter);
     },
     homeVideoContent: function() {
         var s = getSpider();
-        return JSON.stringify(s.homeVideoContent());
+        return s.homeVideoContent();
     },
     categoryContent: function(tid, pg, filter, extend) {
         var s = getSpider();
-        return JSON.stringify(s.categoryContent(tid, pg, filter, extend));
+        return s.categoryContent(tid, pg, filter, extend);
     },
     detailContent: function(ids) {
         var s = getSpider();
-        return JSON.stringify(s.detailContent(ids));
+        return s.detailContent(ids);
     },
     searchContent: function(key, quick, pg) {
         var s = getSpider();
-        return JSON.stringify(s.searchContent(key, quick, pg));
+        return s.searchContent(key, quick, pg);
     },
     playerContent: function(flag, id, vipFlags) {
         var s = getSpider();
-        return JSON.stringify(s.playerContent(flag, id, vipFlags));
+        return s.playerContent(flag, id, vipFlags);
     }
 };
 
