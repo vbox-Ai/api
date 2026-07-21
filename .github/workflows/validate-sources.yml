@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -236,4 +238,5 @@ jobs:
           git config user.email "github-actions@github.com"
           git add sources/.source-baseline.json
           git diff --cached --quiet || git commit -m "chore: update source baseline"
+          git pull --rebase origin main || true
           git push

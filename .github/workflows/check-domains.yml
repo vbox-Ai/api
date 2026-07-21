@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -53,6 +55,7 @@ jobs:
           git config user.email "github-actions@github.com"
           git add sources/all_sources.json sources/manifest.json sources/manifest.version domain-monitor/domains.json domain-monitor/domains.txt domain-monitor/check-results.json domain-monitor/check-results.md
           git commit -m "chore: auto merge sources + update domain check results" || echo "No changes"
+          git pull --rebase origin main || true
           git push
 
       - name: Send email
