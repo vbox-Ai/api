@@ -387,6 +387,28 @@
         "timeout": 30
       },
       {
+        "key": "js_腾讯视频",
+        "name": "官源 | 腾讯视频[js]",
+        "type": 3,
+        "api": "./js/txsp.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "js_星空4K",
+        "name": "影视 | 星空4K[js]",
+        "type": 3,
+        "api": "./js/xk4k.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
         "key": "drpy_js_豆瓣",
         "name": "搜索 | 豆瓣[js]",
         "type": 3,
@@ -2218,7 +2240,7 @@
         "ext": "./js/drpy.js"
       }
     ],
-    "siteCount": 227,
+    "siteCount": 229,
     "jarSiteCount": 71,
     "jarSitesNotIncluded": [
       "豆瓣",
