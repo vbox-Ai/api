@@ -1,7 +1,7 @@
 /*
  * 瓜子影视纯 JS 蜘蛛脚本
  * 运行环境: JavaScriptCore / QuickJS (iOS)
- * 依赖注入: globalThis.http(url, optionsJSON) - 同步HTTP请求，返回JSON字符串 {status, content, headers}
+ * 依赖注入: globalThis.http(url, optionsObj) - 同步HTTP请求，options 为对象，返回 {status, content, headers}
  *
  * 加密实现 (纯 JS):
  *   - AES-CBC PKCS7 padding
@@ -1240,8 +1240,7 @@ GuaziSpider.prototype._post = function(url, headers, data) {
             headers: headers,
             body: body
         };
-        var resultStr = http(url, JSON.stringify(options));
-        var result = JSON.parse(resultStr);
+        var result = http(url, options);
         return {
             status: result.status,
             content: result.content,
