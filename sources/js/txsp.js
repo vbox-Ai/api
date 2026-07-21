@@ -253,34 +253,67 @@ var spider = {
             detailContent: function(ids) {
                 try {
                     var cid = ids[0];
-                    // 并行请求详情和选集列表（JS 串行执行）
+                    print('>>> tx detailContent cid=' + cid);
+
                     var vbody = { page_params: { req_from: 'web', cid: cid, vid: '', lid: '', page_type: 'detail_operation', page_id: 'detail_page_introduction' }, has_cache: 1 };
                     var ebody = { page_params: { req_from: 'web_vsite', page_id: 'vsite_episode_list', page_type: 'detail_operation', id_type: '1', page_size: '', cid: cid, vid: '', lid: '', page_num: '', page_context: '', detail_page_type: '1' }, has_cache: 1 };
 
                     var vdata = getDetailData(vbody);
-                    var data = getDetailData(ebody);
-
-                    // 获取选集列表（含多 tab 处理）
-                    var pdata = processTabs(data, ebody, ids);
-                    if (!pdata || pdata.length === 0) {
+                    print('>>> tx vdata=' + (vdata ? 'ok' : 'null'));
+                    if (!vdata || !vdata.data || !vdata.data.module_list_datas) {
+                        print('>>> tx vdata structure invalid');
                         return { list: [{ vod_play_from: '暂无资源', vod_play_url: '' }] };
                     }
 
-                    // 提取演员
+                    var data = getDetailData(ebody);
+                    print('>>> tx edata=' + (data ? 'ok' : 'null'));
+
+                    // 从详情接口安全提取基础信息
+                    var d = {};
+                    try {
+                        d = vdata.data.module_list_datas[0].module_datas[0].item_data_lists.item_datas[0].item_params || {};
+                    } catch(ee) { print('>>> tx extract d ERROR: ' + ee); }
+
+                    // 提取演员（容错）
                     var actors = [];
                     try {
                         var starList = vdata.data.module_list_datas[0].module_datas[0].item_data_lists.item_datas[0].sub_items.star_list.item_datas;
                         for (var a = 0; a < starList.length; a++) actors.push(starList[a].item_params.name);
                     } catch(e) {}
 
+                    // 提取选集列表
+                    var pdata = [];
+                    try {
+                        pdata = processTabs(data, ebody, ids);
+                    } catch(e) {
+                        print('>>> tx processTabs ERROR: ' + e);
+                    }
+                    print('>>> tx pdata count=' + pdata.length);
+
+                    if (!pdata || pdata.length === 0) {
+                        return {
+                            list: [{
+                                vod_id: cid,
+                                vod_name: d.title || '',
+                                vod_pic: d.image_url || d.new_pic_hz || '',
+                                vod_content: d.cover_description || '',
+                                vod_play_from: '暂无资源',
+                                vod_play_url: ''
+                            }]
+                        };
+                    }
+
                     // 分离正片和预告
                     var names = ['腾讯视频', '预告片'];
                     var plist = [], ylist = [];
                     for (var i = 0; i < pdata.length; i++) {
                         var k = pdata[i];
-                        if (!k.item_id) continue;
-                        var pid = k.item_params.union_title + '$' + cid + '@' + k.item_id;
-                        if ((k.item_params.union_title || '').indexOf('预告') >= 0) {
+                        var itemId = k.item_id;
+                        var title = (k.item_params || {}).union_title || '';
+                        if (!itemId && !title) continue;
+                        if (!itemId) itemId = '';
+                        var pid = title + '$' + cid + '@' + itemId;
+                        if (title.indexOf('预告') >= 0) {
                             ylist.push(pid);
                         } else {
                             plist.push(pid);
@@ -292,7 +325,7 @@ var spider = {
                     if (plist.length > 0) { finalNames.push(names[0]); urls.push(plist.join('#')); }
                     if (ylist.length > 0) { finalNames.push(names[1]); urls.push(ylist.join('#')); }
 
-                    var d = vdata.data.module_list_datas[0].module_datas[0].item_data_lists.item_datas[0].item_params;
+                    print('>>> tx episodes: ' + plist.length + ' main, ' + ylist.length + ' preview');
                     return {
                         list: [{
                             vod_id: cid,

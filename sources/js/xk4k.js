@@ -102,15 +102,18 @@ var spider = {
             try {
                 var body = data ? encodeParams(data) : '';
                 var url = API + endpoint;
+                print('>>> xk post: ' + url + ' bodyLen=' + body.length);
                 var respObj = req(url, { method: 'POST', headers: HEADER, data: body });
                 if (!respObj) { print('>>> xk req null: ' + endpoint); return {}; }
                 var respStr = (typeof respObj === 'string') ? respObj : (respObj.data || respObj.content || '');
                 if (!respStr) { print('>>> xk empty resp: ' + endpoint); return {}; }
                 var respJson = JSON.parse(respStr);
-                if (respJson.code !== 0) { print('>>> xk code=' + respJson.code + ': ' + endpoint); return {}; }
+                if (respJson.code !== undefined && respJson.code !== 0) { print('>>> xk code=' + respJson.code + ': ' + endpoint); return {}; }
                 var encrypted = respJson.data;
-                if (!encrypted) return {};
-                return decryptData(encrypted);
+                if (!encrypted) { print('>>> xk no encrypted data: ' + endpoint); return {}; }
+                var result = decryptData(encrypted);
+                print('>>> xk post OK: ' + endpoint + ' keys=' + Object.keys(result).join(','));
+                return result;
             } catch (e) {
                 print('>>> xk ERROR (' + endpoint + '): ' + e);
                 return {};
