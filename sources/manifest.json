@@ -5,9 +5,9 @@
     "description": "远程默认源入口文件，files.allSources 为合并后的唯一数据文件（CI 自动从 6 个源文件生成）"
   },
   "schemaVersion": 1,
-  "configVersion": "2026.07.20.4",
+  "configVersion": "2026.07.20.5",
   "minAppVersion": "1.0.0",
-  "updatedAt": "2026-07-21T04:01:54Z",
+  "updatedAt": "2026-07-21T04:03:29Z",
   "ttlSeconds": 21600,
   "files": {
     "allSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/all_sources.json"
