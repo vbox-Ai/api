@@ -1238,7 +1238,7 @@ GuaziSpider.prototype._post = function(url, headers, data) {
         var options = {
             method: 'POST',
             headers: headers,
-            body: body
+            data: body
         };
         var result = http(url, options);
         return {
