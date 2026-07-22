@@ -247,16 +247,6 @@
         "group": "cloud"
       },
       {
-        "name": "雷鲸资源",
-        "type": "cms",
-        "searchurl": "https://www.leijing.xyz/index.php/vod/search.html?wd=",
-        "detailBase": "https://www.leijing.xyz",
-        "ua": "pc",
-        "enabled": true,
-        "priority": 1011,
-        "group": "cloud"
-      },
-      {
         "name": "音海搜索",
         "type": "spa",
         "searchurl": "https://sou.makifx.com",
@@ -307,15 +297,6 @@
         "group": "cloud"
       },
       {
-        "name": "清影资源",
-        "type": "cms",
-        "searchurl": "http://www.revohd.com/index.php/vod/search.html?wd=",
-        "detailBase": "http://www.revohd.com",
-        "enabled": true,
-        "priority": 1017,
-        "group": "cloud"
-      },
-      {
         "name": "319影社",
         "type": "wordpress",
         "searchurl": "https://www.319312.com/?s=",
@@ -350,15 +331,6 @@
         "detailBase": "https://www.2xiaopan.top",
         "enabled": true,
         "priority": 1021,
-        "group": "cloud"
-      },
-      {
-        "name": "430520",
-        "type": "cms",
-        "searchurl": "https://by1.430520.xyz/index.php/vod/search.html?wd=",
-        "detailBase": "https://by1.430520.xyz",
-        "enabled": true,
-        "priority": 1022,
         "group": "cloud"
       }
     ]

@@ -51,7 +51,7 @@
     "sourceKey": null,
     "sourceName": "飞猫影视",
     "field": "searchurl",
-    "jsonPath": "cloudSites[14].searchurl"
+    "jsonPath": "cloudSites[12].searchurl"
   },
   {
     "host": "http://feimo.fun",
@@ -60,7 +60,7 @@
     "sourceKey": null,
     "sourceName": "飞猫影视",
     "field": "detailBase",
-    "jsonPath": "cloudSites[14].detailBase"
+    "jsonPath": "cloudSites[12].detailBase"
   },
   {
     "host": "http://v12-1-hulucms.nmgzxrl.com",
@@ -97,24 +97,6 @@
     "sourceName": "至臻影视",
     "field": "detailBase",
     "jsonPath": "cloudSites[4].detailBase"
-  },
-  {
-    "host": "http://www.revohd.com",
-    "fullUrl": "http://www.revohd.com/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "清影资源",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[11].searchurl"
-  },
-  {
-    "host": "http://www.revohd.com",
-    "fullUrl": "http://www.revohd.com",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "清影资源",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[11].detailBase"
   },
   {
     "host": "http://xsayang.fun:12512",
@@ -198,24 +180,6 @@
     "jsonPath": "disabledHosts[3]"
   },
   {
-    "host": "https://by1.430520.xyz",
-    "fullUrl": "https://by1.430520.xyz/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "430520",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[16].searchurl"
-  },
-  {
-    "host": "https://by1.430520.xyz",
-    "fullUrl": "https://by1.430520.xyz",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "430520",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[16].detailBase"
-  },
-  {
     "host": "https://cj.lziapi.com",
     "fullUrl": "https://cj.lziapi.com/api.php/provide/vod",
     "sourceFile": "sources/api_sources.json",
@@ -276,7 +240,7 @@
     "sourceKey": null,
     "sourceName": "123分享",
     "field": "searchurl",
-    "jsonPath": "cloudSites[10].searchurl"
+    "jsonPath": "cloudSites[9].searchurl"
   },
   {
     "host": "https://pan1.me",
@@ -285,7 +249,7 @@
     "sourceKey": null,
     "sourceName": "123分享",
     "field": "detailBase",
-    "jsonPath": "cloudSites[10].detailBase"
+    "jsonPath": "cloudSites[9].detailBase"
   },
   {
     "host": "https://pan1.me",
@@ -294,7 +258,7 @@
     "sourceKey": null,
     "sourceName": "123分享",
     "field": "threadURL",
-    "jsonPath": "cloudSites[10].threadURL"
+    "jsonPath": "cloudSites[9].threadURL"
   },
   {
     "host": "https://raw.githubusercontent.com",
@@ -384,7 +348,7 @@
     "sourceKey": null,
     "sourceName": "PanSou盘搜",
     "field": "searchurl",
-    "jsonPath": "cloudSites[8].searchurl"
+    "jsonPath": "cloudSites[7].searchurl"
   },
   {
     "host": "https://so.252035.xyz",
@@ -393,7 +357,7 @@
     "sourceKey": null,
     "sourceName": "PanSou盘搜",
     "field": "detailBase",
-    "jsonPath": "cloudSites[8].detailBase"
+    "jsonPath": "cloudSites[7].detailBase"
   },
   {
     "host": "https://so.252035.xyz",
@@ -402,7 +366,7 @@
     "sourceKey": null,
     "sourceName": "PanSou盘搜",
     "field": "apiSearch",
-    "jsonPath": "cloudSites[8].apiSearch"
+    "jsonPath": "cloudSites[7].apiSearch"
   },
   {
     "host": "https://sou.makifx.com",
@@ -411,7 +375,7 @@
     "sourceKey": null,
     "sourceName": "音海搜索",
     "field": "searchurl",
-    "jsonPath": "cloudSites[7].searchurl"
+    "jsonPath": "cloudSites[6].searchurl"
   },
   {
     "host": "https://sou.makifx.com",
@@ -420,7 +384,7 @@
     "sourceKey": null,
     "sourceName": "音海搜索",
     "field": "detailBase",
-    "jsonPath": "cloudSites[7].detailBase"
+    "jsonPath": "cloudSites[6].detailBase"
   },
   {
     "host": "https://sou.makifx.com",
@@ -429,7 +393,7 @@
     "sourceKey": null,
     "sourceName": "音海搜索",
     "field": "apiSearch",
-    "jsonPath": "cloudSites[7].apiSearch"
+    "jsonPath": "cloudSites[6].apiSearch"
   },
   {
     "host": "https://tv.yydsys.top",
@@ -510,7 +474,7 @@
     "sourceKey": null,
     "sourceName": "2小盘",
     "field": "searchurl",
-    "jsonPath": "cloudSites[15].searchurl"
+    "jsonPath": "cloudSites[13].searchurl"
   },
   {
     "host": "https://www.2xiaopan.top",
@@ -519,7 +483,7 @@
     "sourceKey": null,
     "sourceName": "2小盘",
     "field": "detailBase",
-    "jsonPath": "cloudSites[15].detailBase"
+    "jsonPath": "cloudSites[13].detailBase"
   },
   {
     "host": "https://www.319312.com",
@@ -528,7 +492,7 @@
     "sourceKey": null,
     "sourceName": "319影社",
     "field": "searchurl",
-    "jsonPath": "cloudSites[12].searchurl"
+    "jsonPath": "cloudSites[10].searchurl"
   },
   {
     "host": "https://www.319312.com",
@@ -537,7 +501,7 @@
     "sourceKey": null,
     "sourceName": "319影社",
     "field": "detailBase",
-    "jsonPath": "cloudSites[12].detailBase"
+    "jsonPath": "cloudSites[10].detailBase"
   },
   {
     "host": "https://www.91panta.cn",
@@ -547,24 +511,6 @@
     "sourceName": null,
     "field": "disabledHosts[5]",
     "jsonPath": "disabledHosts[5]"
-  },
-  {
-    "host": "https://www.leijing.xyz",
-    "fullUrl": "https://www.leijing.xyz/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "雷鲸资源",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[6].searchurl"
-  },
-  {
-    "host": "https://www.leijing.xyz",
-    "fullUrl": "https://www.leijing.xyz",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "雷鲸资源",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[6].detailBase"
   },
   {
     "host": "https://www.nanf.cc",
@@ -582,7 +528,7 @@
     "sourceKey": null,
     "sourceName": "人人电影",
     "field": "searchurl",
-    "jsonPath": "cloudSites[13].searchurl"
+    "jsonPath": "cloudSites[11].searchurl"
   },
   {
     "host": "https://www.rrdynb.com",
@@ -591,7 +537,7 @@
     "sourceKey": null,
     "sourceName": "人人电影",
     "field": "detailBase",
-    "jsonPath": "cloudSites[13].detailBase"
+    "jsonPath": "cloudSites[11].detailBase"
   },
   {
     "host": "https://ysso.cc",
@@ -600,7 +546,7 @@
     "sourceKey": null,
     "sourceName": "奕搜资源",
     "field": "searchurl",
-    "jsonPath": "cloudSites[9].searchurl"
+    "jsonPath": "cloudSites[8].searchurl"
   },
   {
     "host": "https://ysso.cc",
@@ -609,7 +555,7 @@
     "sourceKey": null,
     "sourceName": "奕搜资源",
     "field": "detailBase",
-    "jsonPath": "cloudSites[9].detailBase"
+    "jsonPath": "cloudSites[8].detailBase"
   },
   {
     "host": "https://ysso.cc",
@@ -618,7 +564,7 @@
     "sourceKey": null,
     "sourceName": "奕搜资源",
     "field": "apiSearch",
-    "jsonPath": "cloudSites[9].apiSearch"
+    "jsonPath": "cloudSites[8].apiSearch"
   },
   {
     "host": "https://yun.92cj.com",
