@@ -1,7 +1,7 @@
 {
   "counts": {
     "api_sources": 15,
-    "cloud_sources": 14,
+    "cloud_sources": 13,
     "disabled_sources": {
       "hosts": 0,
       "keys": 0
@@ -41,7 +41,6 @@
       "欧歌资源": "欧歌资源",
       "玩偶资源": "玩偶资源",
       "至臻影视": "至臻影视",
-      "音海搜索": "音海搜索",
       "飞猫影视": "飞猫影视"
     },
     "spider_sources": {
