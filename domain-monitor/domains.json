@@ -324,6 +324,60 @@
     "jsonPath": "files.allSources"
   },
   {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/api_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "apiSources",
+    "jsonPath": "files.apiSources"
+  },
+  {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/cloud_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "cloudSources",
+    "jsonPath": "files.cloudSources"
+  },
+  {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/spider_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "spiderSources",
+    "jsonPath": "files.spiderSources"
+  },
+  {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/domain_overrides.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "domainOverrides",
+    "jsonPath": "files.domainOverrides"
+  },
+  {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/parsers.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "parsers",
+    "jsonPath": "files.parsers"
+  },
+  {
+    "host": "https://raw.githubusercontent.com",
+    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/disabled_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "disabledSources",
+    "jsonPath": "files.disabledSources"
+  },
+  {
     "host": "https://sd.sduc.site",
     "fullUrl": "https://sd.sduc.site",
     "sourceFile": "sources/disabled_sources.json",
