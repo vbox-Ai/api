@@ -10,7 +10,7 @@
     {
       "name": "玩偶资源",
       "type": "cms",
-      "searchurl": "https://wogg.xxooo.cf/index.php/vod/search.html?wd=",
+      "searchurl": "https://wogg.xxooo.cf/vodsearch/-",
       "detailBase": "https://wogg.xxooo.cf",
       "ua": "pc",
       "enabled": true,
@@ -135,8 +135,8 @@
     },
     {
       "name": "319影社",
-      "type": "cms",
-      "searchurl": "https://www.319312.com/index.php/vod/search.html?wd=",
+      "type": "wordpress",
+      "searchurl": "https://www.319312.com/?s=",
       "detailBase": "https://www.319312.com",
       "enabled": true,
       "priority": 1018,
@@ -144,8 +144,8 @@
     },
     {
       "name": "人人电影",
-      "type": "cms",
-      "searchurl": "https://www.rrdynb.com/index.php/vod/search.html?wd=",
+      "type": "dedecms",
+      "searchurl": "https://www.rrdynb.com/plus/search.php?keyword=",
       "detailBase": "https://www.rrdynb.com",
       "ua": "pc",
       "enabled": true,
@@ -177,15 +177,6 @@
       "detailBase": "https://by1.430520.xyz",
       "enabled": true,
       "priority": 1022,
-      "group": "cloud"
-    },
-    {
-      "name": "趣盘资源",
-      "type": "cms",
-      "searchurl": "https://pan.funletu.com/index.php/vod/search.html?wd=",
-      "detailBase": "https://pan.funletu.com",
-      "enabled": true,
-      "priority": 1025,
       "group": "cloud"
     }
   ]
