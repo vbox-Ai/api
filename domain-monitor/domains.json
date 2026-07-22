@@ -270,24 +270,6 @@
     "jsonPath": "overrides[0].referer"
   },
   {
-    "host": "https://pan.funletu.com",
-    "fullUrl": "https://pan.funletu.com/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "趣盘资源",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[17].searchurl"
-  },
-  {
-    "host": "https://pan.funletu.com",
-    "fullUrl": "https://pan.funletu.com",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "趣盘资源",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[17].detailBase"
-  },
-  {
     "host": "https://pan1.me",
     "fullUrl": "https://pan1.me/?search.htm&keyword=",
     "sourceFile": "sources/cloud_sources.json",
@@ -487,7 +469,7 @@
   },
   {
     "host": "https://wogg.xxooo.cf",
-    "fullUrl": "https://wogg.xxooo.cf/index.php/vod/search.html?wd=",
+    "fullUrl": "https://wogg.xxooo.cf/vodsearch/-",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "玩偶资源",
@@ -541,7 +523,7 @@
   },
   {
     "host": "https://www.319312.com",
-    "fullUrl": "https://www.319312.com/index.php/vod/search.html?wd=",
+    "fullUrl": "https://www.319312.com/?s=",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "319影社",
@@ -595,7 +577,7 @@
   },
   {
     "host": "https://www.rrdynb.com",
-    "fullUrl": "https://www.rrdynb.com/index.php/vod/search.html?wd=",
+    "fullUrl": "https://www.rrdynb.com/plus/search.php?keyword=",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "人人电影",
