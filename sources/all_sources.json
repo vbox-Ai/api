@@ -195,7 +195,7 @@
         "searchurl": "https://wogg.xxooo.cf/vodsearch/-",
         "detailBase": "https://wogg.xxooo.cf",
         "ua": "pc",
-        "enabled": true,
+        "enabled": false,
         "priority": 1002,
         "group": "cloud"
       },
@@ -247,19 +247,6 @@
         "group": "cloud"
       },
       {
-        "name": "音海搜索",
-        "type": "spa",
-        "searchurl": "https://sou.makifx.com",
-        "detailBase": "https://sou.makifx.com",
-        "apiSearch": "https://sou.makifx.com/api/search?kw={kw}",
-        "resultField": "data.list",
-        "titleField": "title",
-        "urlField": "url",
-        "enabled": true,
-        "priority": 1013,
-        "group": "cloud"
-      },
-      {
         "name": "PanSou盘搜",
         "type": "spa",
         "searchurl": "https://so.252035.xyz",
@@ -281,7 +268,7 @@
         "resultField": "data.list",
         "titleField": "title",
         "urlField": "url",
-        "enabled": true,
+        "enabled": false,
         "priority": 1015,
         "group": "cloud"
       },
