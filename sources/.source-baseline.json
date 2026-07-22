@@ -3,10 +3,10 @@
     "api_sources": 15,
     "cloud_sources": 14,
     "disabled_sources": {
-      "hosts": 8,
+      "hosts": 0,
       "keys": 0
     },
-    "domain_overrides": 1,
+    "domain_overrides": 0,
     "parsers": 0,
     "spider_sources": 229
   },
