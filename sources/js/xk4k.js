@@ -268,7 +268,7 @@ var spider = {
                 }
             },
 
-            searchContent: function(key, quick, pg) {
+            searchContent: function(key, pg) {
                 try {
                     var page = Math.max(parseInt(pg) || 1, 1);
                     var data = post('searchList', { keywords: key, page: page });

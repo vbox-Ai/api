@@ -346,7 +346,7 @@ var spider = {
                 }
             },
 
-            searchContent: function(key, quick, pg) {
+            searchContent: function(key, pg) {
                 try {
                     var searchHeader = mergeHeaders({ 'Content-Type': 'application/json' });
                     var body = {
