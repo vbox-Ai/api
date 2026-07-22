@@ -2280,34 +2280,13 @@
     ]
   },
   "domainOverrides": {
-    "overrides": [
-      {
-        "platformKey": "heiliaobdy",
-        "displayName": "黑料不打烊",
-        "from": "https://旧的失效域名.example",
-        "to": "https://new-domain.example",
-        "ua": "pc",
-        "referer": "https://new-domain.example/",
-        "enabled": false,
-        "updatedAt": "2026-07-20",
-        "description": "示例配置，待后续填入实际失效域名后启用"
-      }
-    ]
+    "overrides": []
   },
   "parsers": {
     "parses": []
   },
   "disabledSources": {
     "disabledKeys": [],
-    "disabledHosts": [
-      "http://103.45.162.207:20720",
-      "http://2xiaopan.fun",
-      "http://feimao888.fun",
-      "https://bfzyapi.com",
-      "https://sd.sduc.site",
-      "https://www.91panta.cn",
-      "https://www.nanf.cc",
-      "https://yun.92cj.com"
-    ]
+    "disabledHosts": []
   }
 }

@@ -1,23 +1,5 @@
 [
   {
-    "host": "http://103.45.162.207:20720",
-    "fullUrl": "http://103.45.162.207:20720",
-    "sourceFile": "sources/disabled_sources.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "disabledHosts[0]",
-    "jsonPath": "disabledHosts[0]"
-  },
-  {
-    "host": "http://2xiaopan.fun",
-    "fullUrl": "http://2xiaopan.fun",
-    "sourceFile": "sources/disabled_sources.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "disabledHosts[1]",
-    "jsonPath": "disabledHosts[1]"
-  },
-  {
     "host": "http://caiji.dyttzyapi.com",
     "fullUrl": "http://caiji.dyttzyapi.com/api.php/provide/vod",
     "sourceFile": "sources/api_sources.json",
@@ -25,15 +7,6 @@
     "sourceName": "电影天堂",
     "field": "api",
     "jsonPath": "sites[3].api"
-  },
-  {
-    "host": "http://feimao888.fun",
-    "fullUrl": "http://feimao888.fun",
-    "sourceFile": "sources/disabled_sources.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "disabledHosts[2]",
-    "jsonPath": "disabledHosts[2]"
   },
   {
     "host": "http://feimo.fun",
@@ -171,15 +144,6 @@
     "jsonPath": "sites[2].api"
   },
   {
-    "host": "https://bfzyapi.com",
-    "fullUrl": "https://bfzyapi.com",
-    "sourceFile": "sources/disabled_sources.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "disabledHosts[3]",
-    "jsonPath": "disabledHosts[3]"
-  },
-  {
     "host": "https://cj.lziapi.com",
     "fullUrl": "https://cj.lziapi.com/api.php/provide/vod",
     "sourceFile": "sources/api_sources.json",
@@ -214,24 +178,6 @@
     "sourceName": "极速资源",
     "field": "api",
     "jsonPath": "sites[0].api"
-  },
-  {
-    "host": "https://new-domain.example",
-    "fullUrl": "https://new-domain.example",
-    "sourceFile": "sources/domain_overrides.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "to",
-    "jsonPath": "overrides[0].to"
-  },
-  {
-    "host": "https://new-domain.example",
-    "fullUrl": "https://new-domain.example/",
-    "sourceFile": "sources/domain_overrides.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "referer",
-    "jsonPath": "overrides[0].referer"
   },
   {
     "host": "https://pan1.me",
@@ -322,15 +268,6 @@
     "sourceName": null,
     "field": "disabledSources",
     "jsonPath": "files.disabledSources"
-  },
-  {
-    "host": "https://sd.sduc.site",
-    "fullUrl": "https://sd.sduc.site",
-    "sourceFile": "sources/disabled_sources.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "disabledHosts[4]",
-    "jsonPath": "disabledHosts[4]"
   },
   {
     "host": "https://sdzyapi.com",
@@ -504,24 +441,6 @@
     "jsonPath": "cloudSites[10].detailBase"
   },
   {
-    "host": "https://www.91panta.cn",
-    "fullUrl": "https://www.91panta.cn",
-    "sourceFile": "sources/disabled_sources.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "disabledHosts[5]",
-    "jsonPath": "disabledHosts[5]"
-  },
-  {
-    "host": "https://www.nanf.cc",
-    "fullUrl": "https://www.nanf.cc",
-    "sourceFile": "sources/disabled_sources.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "disabledHosts[6]",
-    "jsonPath": "disabledHosts[6]"
-  },
-  {
     "host": "https://www.rrdynb.com",
     "fullUrl": "https://www.rrdynb.com/plus/search.php?keyword=",
     "sourceFile": "sources/cloud_sources.json",
@@ -565,23 +484,5 @@
     "sourceName": "奕搜资源",
     "field": "apiSearch",
     "jsonPath": "cloudSites[8].apiSearch"
-  },
-  {
-    "host": "https://yun.92cj.com",
-    "fullUrl": "https://yun.92cj.com",
-    "sourceFile": "sources/disabled_sources.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "disabledHosts[7]",
-    "jsonPath": "disabledHosts[7]"
-  },
-  {
-    "host": "https://旧的失效域名.example",
-    "fullUrl": "https://旧的失效域名.example",
-    "sourceFile": "sources/domain_overrides.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "from",
-    "jsonPath": "overrides[0].from"
   }
 ]

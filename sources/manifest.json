@@ -5,9 +5,9 @@
     "description": "远程默认源入口文件，同时提供 allSources 合并包与 6 个独立文件 URL，保持与旧版客户端兼容"
   },
   "schemaVersion": 1,
-  "configVersion": "2026.07.22.4",
+  "configVersion": "2026.07.22.5",
   "minAppVersion": "1.0.0",
-  "updatedAt": "2026-07-22T17:02:44Z",
+  "updatedAt": "2026-07-22T17:09:25Z",
   "ttlSeconds": 21600,
   "files": {
     "allSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/all_sources.json",
