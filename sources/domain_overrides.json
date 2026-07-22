@@ -4,17 +4,5 @@
     "type": "domain_overrides",
     "description": "用于替换默认源或 Swift 原生平台的失效域名；福利平台只使用这里的域名覆盖，不使用远程源控制显示"
   },
-  "overrides": [
-    {
-      "platformKey": "heiliaobdy",
-      "displayName": "黑料不打烊",
-      "from": "https://旧的失效域名.example",
-      "to": "https://new-domain.example",
-      "ua": "pc",
-      "referer": "https://new-domain.example/",
-      "enabled": false,
-      "updatedAt": "2026-07-20",
-      "description": "示例配置，待后续填入实际失效域名后启用"
-    }
-  ]
+  "overrides": []
 }
