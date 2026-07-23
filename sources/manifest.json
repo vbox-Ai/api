@@ -10,13 +10,13 @@
   "updatedAt": "2026-07-23T01:31:43Z",
   "ttlSeconds": 21600,
   "files": {
-    "allSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/all_sources.json",
-    "apiSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/api_sources.json",
-    "cloudSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/cloud_sources.json",
-    "spiderSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/spider_sources.json",
-    "domainOverrides": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/domain_overrides.json",
-    "parsers": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/parsers.json",
-    "disabledSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/disabled_sources.json"
+    "allSources": "https://vbox-ai.github.io/api/sources/all_sources.json",
+    "apiSources": "https://vbox-ai.github.io/api/sources/api_sources.json",
+    "cloudSources": "https://vbox-ai.github.io/api/sources/cloud_sources.json",
+    "spiderSources": "https://vbox-ai.github.io/api/sources/spider_sources.json",
+    "domainOverrides": "https://vbox-ai.github.io/api/sources/domain_overrides.json",
+    "parsers": "https://vbox-ai.github.io/api/sources/parsers.json",
+    "disabledSources": "https://vbox-ai.github.io/api/sources/disabled_sources.json"
   },
   "disabledKeys": [],
   "forceRefresh": true
