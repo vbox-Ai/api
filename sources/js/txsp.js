@@ -5,7 +5,8 @@
  * 
  * 修复记录:
  * - 搜索结果：移除 areaBoxList（推荐内容）合并，只保留 normalList（实际搜索结果）
- * - playerContent：parse 改为 0，直接返回 v.qq.com 标准播放页 URL，添加完整 headers
+ * - 搜索结果：增加 CID 长度/类型过滤，排除短视频剪辑（无播放地址的内容）
+ * - playerContent：保持 parse: 1（走用户自定义解析器），与 Python 原版一致
  */
 
 // ===================== 工具函数 =====================
@@ -377,7 +378,8 @@ var spider = {
                     var vlist = [];
                     var validTypes = ['电视剧', '电影', '综艺', '纪录片', '动漫', '少儿', '短剧'];
 
-                    // 【修复】只使用 normalList（实际搜索结果），不再合并 areaBoxList（推荐/猜你想搜）
+                    // 【修复1】只使用 normalList（实际搜索结果），不再合并 areaBoxList（推荐/猜你想搜）
+                    // 【修复2】过滤短视频剪辑：CID 过短或非 mzc 开头的通常是剪辑片段，detailContent 无法获取选集
                     var v = data.data.normalList.itemList;
 
                     for (var i = 0; i < v.length; i++) {
@@ -387,6 +389,12 @@ var spider = {
                         if (!vi.title) continue;
                         if (vi.subTitle && vi.subTitle.indexOf('外站') >= 0) continue;
                         if (!vi.typeName || validTypes.indexOf(vi.typeName) < 0) continue;
+
+                        // 过滤剪辑/花絮：正片 CID 通常以 mzc/szd 等前缀开头且长度 >= 15
+                        var docId = k.doc.id;
+                        if (docId.length < 10) continue;
+                        // 如果 doc.type 存在且不是正片类型，跳过
+                        if (k.doc.type && k.doc.type !== '1' && k.doc.type !== '10') continue;
 
                         var tag = {};
                         if (typeof vi.imgTag === 'string') tag = safeJsonParse(vi.imgTag);
@@ -409,18 +417,10 @@ var spider = {
             playerContent: function(flag, id, vipFlags) {
                 // id 格式: cid@item_id（由 detailContent 的 vod_play_url 中 $ 分隔符后的部分）
                 var parts = id.split('@');
-                if (parts.length < 2) return { parse: 0, url: '', header: {} };
+                if (parts.length < 2) return { jx: 1, parse: 1, url: '', header: '' };
                 var url = HOST + '/x/cover/' + parts[0] + '/' + parts[1] + '.html';
-                // 【修复】parse: 0 直接返回 v.qq.com 标准播放页 URL，走播放器内置解析
-                return {
-                    parse: 0,
-                    url: url,
-                    header: {
-                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-                        'Referer': HOST + '/',
-                        'Origin': HOST
-                    }
-                };
+                // parse: 1 走用户配置的自定义解析器（如 jiexi.69mini.com），由解析器提取真实视频流
+                return { jx: 1, parse: 1, url: url, header: '' };
             }
         };
 
