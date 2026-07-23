@@ -998,8 +998,8 @@
         "key": "drpy_js_腾云驾雾",
         "name": "官源 | 腾讯[js]",
         "type": 3,
-        "api": "./lib/drpy2.min.js",
-        "ext": "./js/腾云驾雾.js"
+        "api": "https://raw.githubusercontent.com/shangyunvip/github/master/js/drpy2.min.js",
+        "ext": "https://raw.githubusercontent.com/shangyunvip/github/master/js/tengxun.js"
       },
       {
         "key": "drpy_js_奇珍异兽",
