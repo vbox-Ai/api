@@ -7,6 +7,7 @@
  * - 搜索结果：移除 areaBoxList（推荐内容）合并，只保留 normalList（实际搜索结果）
  * - 搜索结果：增加 CID 长度/类型过滤，排除短视频剪辑（无播放地址的内容）
  * - playerContent：保持 parse: 1（走用户自定义解析器），与 Python 原版一致
+ * - detailContent：vod_play_url 改为完整 v.qq.com URL，解析器可直接识别
  */
 
 // ===================== 工具函数 =====================
@@ -317,7 +318,7 @@ var spider = {
                         var title = (k.item_params || {}).union_title || '';
                         if (!itemId && !title) continue;
                         if (!itemId) itemId = '';
-                        var pid = title + '$' + cid + '@' + itemId;
+                        var pid = title + '$' + 'https://v.qq.com/x/cover/' + cid + '/' + itemId + '.html';
                         if (title.indexOf('预告') >= 0) {
                             ylist.push(pid);
                         } else {
@@ -415,11 +416,13 @@ var spider = {
             },
 
             playerContent: function(flag, id, vipFlags) {
-                // id 格式: cid@item_id（由 detailContent 的 vod_play_url 中 $ 分隔符后的部分）
+                // id 格式: 新版为完整 v.qq.com URL，旧版为 cid@item_id
+                if (id.indexOf('http') === 0) {
+                    return { jx: 1, parse: 1, url: id, header: '' };
+                }
                 var parts = id.split('@');
                 if (parts.length < 2) return { jx: 1, parse: 1, url: '', header: '' };
                 var url = HOST + '/x/cover/' + parts[0] + '/' + parts[1] + '.html';
-                // parse: 1 走用户配置的自定义解析器（如 jiexi.69mini.com），由解析器提取真实视频流
                 return { jx: 1, parse: 1, url: url, header: '' };
             }
         };
