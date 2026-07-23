@@ -9,6 +9,7 @@
  * - detailContent：vod_play_url 改为完整 v.qq.com URL，解析器可直接识别
  * - HEADER：统一添加 Content-Type: application/json，修复 getPageData/getDetailData 返回空数据
  * - homeContent：新增首页视频列表，调用电视剧频道 API 获取推荐数据
+ * - playerContent：兼容 title$url 格式，防止 App 传入完整 play_url 时解析失败
  */
 
 // ===================== 工具函数 =====================
@@ -462,6 +463,11 @@ var spider = {
             },
 
             playerContent: function(flag, id, vipFlags) {
+                // 兼容 title$url 格式：提取 URL 部分
+                if (id.indexOf('$') >= 0) {
+                    var dollarParts = id.split('$');
+                    id = dollarParts[dollarParts.length - 1];
+                }
                 // id 格式: 新版为完整 v.qq.com URL，旧版为 cid@item_id
                 if (id.indexOf('http') === 0) {
                     return { jx: 1, parse: 1, url: id, header: '' };
