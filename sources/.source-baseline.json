@@ -8,7 +8,7 @@
     },
     "domain_overrides": 0,
     "parsers": 0,
-    "spider_sources": 229
+    "spider_sources": 228
   },
   "detail": {
     "api_sources": {
@@ -234,7 +234,6 @@
       "drpy_js_美益达[V2]": "影视|美益达[V2][js]",
       "drpy_js_美视网": "影视 | 美视网[js]",
       "drpy_js_胖虎": "起飞 | 胖虎[js]",
-      "drpy_js_腾云驾雾": "官源 | 腾讯[js]",
       "drpy_js_花屋影院": "影视 | 花屋影院[js]",
       "drpy_js_花猫TV": "影视 | 花猫TV[js]",
       "drpy_js_荐片": "影视 | 荐片[js]",
