@@ -380,7 +380,7 @@ var spider = {
                     var validTypes = ['电视剧', '电影', '综艺', '纪录片', '动漫', '少儿', '短剧'];
 
                     // 【修复1】只使用 normalList（实际搜索结果），不再合并 areaBoxList（推荐/猜你想搜）
-                    // 【修复2】过滤短视频剪辑：CID 过短或非 mzc 开头的通常是剪辑片段，detailContent 无法获取选集
+                    // 【修复2】viewType=25 为正片（有选集可播放），viewType=100 为剪辑/花絮（无播放地址）
                     var v = data.data.normalList.itemList;
 
                     for (var i = 0; i < v.length; i++) {
@@ -391,11 +391,8 @@ var spider = {
                         if (vi.subTitle && vi.subTitle.indexOf('外站') >= 0) continue;
                         if (!vi.typeName || validTypes.indexOf(vi.typeName) < 0) continue;
 
-                        // 过滤剪辑/花絮：正片 CID 通常以 mzc/szd 等前缀开头且长度 >= 15
-                        var docId = k.doc.id;
-                        if (docId.length < 10) continue;
-                        // 如果 doc.type 存在且不是正片类型，跳过
-                        if (k.doc.type && k.doc.type !== '1' && k.doc.type !== '10') continue;
+                        // 只保留正片（viewType=25），过滤剪辑/花絮/短视频（viewType=100）
+                        if (vi.viewType !== 25) continue;
 
                         var tag = {};
                         if (typeof vi.imgTag === 'string') tag = safeJsonParse(vi.imgTag);
