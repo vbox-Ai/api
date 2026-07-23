@@ -216,24 +216,6 @@
     "jsonPath": "files.allSources"
   },
   {
-    "host": "https://raw.githubusercontent.com",
-    "fullUrl": "https://raw.githubusercontent.com/shangyunvip/github/master/js/drpy2.min.js",
-    "sourceFile": "sources/spider_sources.json",
-    "sourceKey": "drpy_js_腾云驾雾",
-    "sourceName": "官源 | 腾讯[js]",
-    "field": "api",
-    "jsonPath": "sites[90].api"
-  },
-  {
-    "host": "https://raw.githubusercontent.com",
-    "fullUrl": "https://raw.githubusercontent.com/shangyunvip/github/master/js/tengxun.js",
-    "sourceFile": "sources/spider_sources.json",
-    "sourceKey": "drpy_js_腾云驾雾",
-    "sourceName": "官源 | 腾讯[js]",
-    "field": "ext",
-    "jsonPath": "sites[90].ext"
-  },
-  {
     "host": "https://sdzyapi.com",
     "fullUrl": "https://sdzyapi.com/api.php/provide/vod",
     "sourceFile": "sources/api_sources.json",
