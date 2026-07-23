@@ -2,6 +2,10 @@
  * 腾讯视频 JS 蜘蛛
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 纯 JSON API 交互 / 无加密 / 播放走 App 解析器 (parse:1)
+ * 
+ * 修复记录:
+ * - 搜索结果：移除 areaBoxList（推荐内容）合并，只保留 normalList（实际搜索结果）
+ * - playerContent：parse 改为 0，直接返回 v.qq.com 标准播放页 URL，添加完整 headers
  */
 
 // ===================== 工具函数 =====================
@@ -373,13 +377,11 @@ var spider = {
                     var vlist = [];
                     var validTypes = ['电视剧', '电影', '综艺', '纪录片', '动漫', '少儿', '短剧'];
 
+                    // 【修复】只使用 normalList（实际搜索结果），不再合并 areaBoxList（推荐/猜你想搜）
                     var v = data.data.normalList.itemList;
-                    var d = data.data.areaBoxList[0].itemList;
-                    var q = v.concat(d);
-                    if (v.length > 0 && v[0].doc && v[0].doc.id === 'MainNeed') q = d.concat(v);
 
-                    for (var i = 0; i < q.length; i++) {
-                        var k = q[i];
+                    for (var i = 0; i < v.length; i++) {
+                        var k = v[i];
                         if (!k.doc || !k.videoInfo || !k.doc.id) continue;
                         var vi = k.videoInfo;
                         if (!vi.title) continue;
@@ -405,11 +407,20 @@ var spider = {
             },
 
             playerContent: function(flag, id, vipFlags) {
-                // id 格式: cid@item_id
+                // id 格式: cid@item_id（由 detailContent 的 vod_play_url 中 $ 分隔符后的部分）
                 var parts = id.split('@');
-                if (parts.length < 2) return { parse: 1, url: '', header: '' };
+                if (parts.length < 2) return { parse: 0, url: '', header: {} };
                 var url = HOST + '/x/cover/' + parts[0] + '/' + parts[1] + '.html';
-                return { jx: 1, parse: 1, url: url, header: '' };
+                // 【修复】parse: 0 直接返回 v.qq.com 标准播放页 URL，走播放器内置解析
+                return {
+                    parse: 0,
+                    url: url,
+                    header: {
+                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+                        'Referer': HOST + '/',
+                        'Origin': HOST
+                    }
+                };
             }
         };
 
