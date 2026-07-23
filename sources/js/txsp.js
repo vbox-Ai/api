@@ -7,6 +7,8 @@
  * - 搜索结果：normalList + areaBoxList 双源合并，按 viewType 精确过滤（25=正片, 1=子系列, 100=剪辑）
  * - playerContent：保持 parse: 1（走用户自定义解析器），与 Python 原版一致
  * - detailContent：vod_play_url 改为完整 v.qq.com URL，解析器可直接识别
+ * - HEADER：统一添加 Content-Type: application/json，修复 getPageData/getDetailData 返回空数据
+ * - homeContent：新增首页视频列表，调用电视剧频道 API 获取推荐数据
  */
 
 // ===================== 工具函数 =====================
@@ -37,7 +39,8 @@ var spider = {
         var HEADER = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5410.0 Safari/537.36',
             'origin': HOST,
-            'referer': HOST + '/'
+            'referer': HOST + '/',
+            'Content-Type': 'application/json'
         };
 
         var defaultBody = {
@@ -170,7 +173,29 @@ var spider = {
                     } catch(e) { continue; }
                 }
 
-                return { class: classes, filters: filters };
+                // 获取首页视频列表：取第一个分类（电视剧）的数据
+                var vlist = [];
+                try {
+                    var homeBody = JSON.parse(JSON.stringify(defaultBody));
+                    homeBody.page_params.channel_id = '100113';
+                    homeBody.page_params.filter_params = 'sort=75';
+                    var homeData = getPageData(homeBody);
+                    if (homeData && homeData.data && homeData.data.module_list_datas) {
+                        var hModules = homeData.data.module_list_datas;
+                        var hItems = hModules[hModules.length - 1].module_datas[hModules[hModules.length - 1].module_datas.length - 1].item_data_lists.item_datas;
+                        for (var k = 0; k < hItems.length; k++) {
+                            var hItem = hItems[k];
+                            var hId = (hItem.item_params || {}).cid;
+                            if (!hId) continue;
+                            var vod = extractVodItem(hItem.item_params, hId);
+                            if (vod) vlist.push(vod);
+                        }
+                    }
+                } catch(e) {
+                    print('>>> tx homeContent list ERROR: ' + e);
+                }
+
+                return { class: classes, filters: filters, list: vlist };
             },
 
             homeVideoContent: function() {
