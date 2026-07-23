@@ -217,60 +217,6 @@
   },
   {
     "host": "https://raw.githubusercontent.com",
-    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/api_sources.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "apiSources",
-    "jsonPath": "files.apiSources"
-  },
-  {
-    "host": "https://raw.githubusercontent.com",
-    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/cloud_sources.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "cloudSources",
-    "jsonPath": "files.cloudSources"
-  },
-  {
-    "host": "https://raw.githubusercontent.com",
-    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/spider_sources.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "spiderSources",
-    "jsonPath": "files.spiderSources"
-  },
-  {
-    "host": "https://raw.githubusercontent.com",
-    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/domain_overrides.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "domainOverrides",
-    "jsonPath": "files.domainOverrides"
-  },
-  {
-    "host": "https://raw.githubusercontent.com",
-    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/parsers.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "parsers",
-    "jsonPath": "files.parsers"
-  },
-  {
-    "host": "https://raw.githubusercontent.com",
-    "fullUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/disabled_sources.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "disabledSources",
-    "jsonPath": "files.disabledSources"
-  },
-  {
-    "host": "https://raw.githubusercontent.com",
     "fullUrl": "https://raw.githubusercontent.com/shangyunvip/github/master/js/drpy2.min.js",
     "sourceFile": "sources/spider_sources.json",
     "sourceKey": "drpy_js_腾云驾雾",
@@ -358,6 +304,60 @@
     "sourceName": "TY影视",
     "field": "api",
     "jsonPath": "sites[4].api"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/api_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "apiSources",
+    "jsonPath": "files.apiSources"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/cloud_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "cloudSources",
+    "jsonPath": "files.cloudSources"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/spider_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "spiderSources",
+    "jsonPath": "files.spiderSources"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/domain_overrides.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "domainOverrides",
+    "jsonPath": "files.domainOverrides"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/parsers.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "parsers",
+    "jsonPath": "files.parsers"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/disabled_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "disabledSources",
+    "jsonPath": "files.disabledSources"
   },
   {
     "host": "https://wogg.xxooo.cf",
