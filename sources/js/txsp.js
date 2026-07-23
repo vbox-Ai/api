@@ -4,8 +4,7 @@
  * 纯 JSON API 交互 / 无加密 / 播放走 App 解析器 (parse:1)
  * 
  * 修复记录:
- * - 搜索结果：移除 areaBoxList（推荐内容）合并，只保留 normalList（实际搜索结果）
- * - 搜索结果：增加 CID 长度/类型过滤，排除短视频剪辑（无播放地址的内容）
+ * - 搜索结果：normalList + areaBoxList 双源合并，按 viewType 精确过滤（25=正片, 1=子系列, 100=剪辑）
  * - playerContent：保持 parse: 1（走用户自定义解析器），与 Python 原版一致
  * - detailContent：vod_play_url 改为完整 v.qq.com URL，解析器可直接识别
  */
@@ -377,34 +376,59 @@ var spider = {
                     if (!data || !data.data) return { list: [], page: pg };
 
                     var vlist = [];
+                    var seen = {};
                     var validTypes = ['电视剧', '电影', '综艺', '纪录片', '动漫', '少儿', '短剧'];
 
-                    // 【修复1】只使用 normalList（实际搜索结果），不再合并 areaBoxList（推荐/猜你想搜）
-                    // 【修复2】viewType=25 为正片（有选集可播放），viewType=100 为剪辑/花絮（无播放地址）
-                    var v = data.data.normalList.itemList;
-
-                    for (var i = 0; i < v.length; i++) {
-                        var k = v[i];
-                        if (!k.doc || !k.videoInfo || !k.doc.id) continue;
-                        var vi = k.videoInfo;
-                        if (!vi.title) continue;
-                        if (vi.subTitle && vi.subTitle.indexOf('外站') >= 0) continue;
-                        if (!vi.typeName || validTypes.indexOf(vi.typeName) < 0) continue;
-
-                        // 只保留正片（viewType=25），过滤剪辑/花絮/短视频（viewType=100）
-                        if (vi.viewType !== 25) continue;
-
+                    // 辅助函数：从搜索结果条目构建 vod 对象
+                    function buildItem(k) {
+                        var doc = k.doc || {};
+                        var vi = k.videoInfo || {};
+                        if (!doc.id || !vi.title) return null;
+                        if (vi.subTitle && vi.subTitle.indexOf('外站') >= 0) return null;
+                        if (!vi.typeName || validTypes.indexOf(vi.typeName) < 0) return null;
                         var tag = {};
                         if (typeof vi.imgTag === 'string') tag = safeJsonParse(vi.imgTag);
-
-                        vlist.push({
-                            vod_id: k.doc.id,
+                        return {
+                            vod_id: doc.id,
                             vod_name: removeHtmlTags(vi.title),
                             vod_pic: vi.imgUrl || '',
                             vod_year: (vi.typeName || '') + ' ' + (tag.tag_2 ? tag.tag_2.text : ''),
                             vod_remarks: tag.tag_4 ? tag.tag_4.text : ''
-                        });
+                        };
                     }
+
+                    // 来源1: normalList（实际搜索结果），只取正片 viewType=25
+                    var nl = data.data.normalList.itemList || [];
+                    for (var i = 0; i < nl.length; i++) {
+                        var nk = nl[i];
+                        if (!nk.doc || !nk.videoInfo) continue;
+                        // 只保留正片，过滤剪辑/花絮（viewType=100）
+                        if (nk.videoInfo.viewType !== 25) continue;
+                        var item = buildItem(nk);
+                        if (item && !seen[item.vod_id]) {
+                            seen[item.vod_id] = true;
+                            vlist.push(item);
+                        }
+                    }
+
+                    // 来源2: areaBoxList（推荐/聚合框），正片 viewType=25 或子系列 viewType=1
+                    var ab = (data.data.areaBoxList || [])[0];
+                    if (ab && ab.itemList) {
+                        var abItems = ab.itemList;
+                        for (var j = 0; j < abItems.length; j++) {
+                            var ak = abItems[j];
+                            if (!ak.doc || !ak.videoInfo) continue;
+                            var avt = ak.videoInfo.viewType;
+                            // viewType=25 正片，viewType=1 子系列/合集（均有播放地址）
+                            if (avt !== 25 && avt !== 1) continue;
+                            var aitem = buildItem(ak);
+                            if (aitem && !seen[aitem.vod_id]) {
+                                seen[aitem.vod_id] = true;
+                                vlist.push(aitem);
+                            }
+                        }
+                    }
+
                     return { list: vlist, page: pg };
                 } catch(e) {
                     print('>>> tx searchContent ERROR: ' + e);
