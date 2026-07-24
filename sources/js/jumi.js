@@ -364,9 +364,16 @@ var spider = {
                  * vbox 调用: playerContent(vodId, sourceName, episodeId)
                  * 在 JS 中映射为: playerContent(flag, id, vipFlags)
                  * 所以: flag=vodId, id=sourceName(线路名), vipFlags=episodeId
+                 * TVBox 标准可能只传两个参数 (flag, id): flag=线路名, id=episodeId
                  */
                 var sourceName = id;
                 var episodeId = vipFlags;
+
+                // 兼容 TVBox 标准 2 参数调用
+                if ((episodeId === undefined || episodeId === null || episodeId === '') && sourceName) {
+                    sourceName = flag;
+                    episodeId = id;
+                }
 
                 // 如果 episodeId 含 $ 分割符，取最后一段
                 if (episodeId && episodeId.indexOf('$') >= 0) {
