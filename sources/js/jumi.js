@@ -33,10 +33,13 @@ var spider = {
                 url = HOST + url;
             }
             try {
+                print('>>> jumi fetch start: ' + url);
                 var resp = req(url, { method: 'GET', headers: HEADERS });
                 if (!resp) { print('>>> jumi fetch null: ' + url); return ''; }
+                var status = resp.status || resp.code || 0;
                 var content = resp.content || resp.data || '';
                 if (typeof content === 'object') content = JSON.stringify(content);
+                print('>>> jumi fetch done: ' + url + ' status=' + status + ' len=' + content.length);
                 return content;
             } catch (e) {
                 print('>>> jumi fetch ERROR: ' + e + ' url=' + url);
@@ -212,12 +215,18 @@ var spider = {
                 } else if (Array.isArray(ids) && ids.length > 0) {
                     vid = String(ids[0]).trim();
                 } else {
+                    print('>>> jumi detailContent invalid ids: ' + JSON.stringify(ids));
                     return result;
                 }
 
+                print('>>> jumi detailContent vid=' + vid);
                 var url = '/voddetail2/' + vid + '.html';
                 var html = fetchURL(url);
-                if (!html) return result;
+                if (!html) {
+                    print('>>> jumi detailContent empty html for vid=' + vid);
+                    return result;
+                }
+                print('>>> jumi detailContent html len=' + html.length);
 
                 // 标题
                 var vod_name = reMatch(/<h1[^>]*>([^<]+)<\/h1>/, html);
@@ -273,8 +282,23 @@ var spider = {
                         episodes.push({ name: ep_name, vid: vid, ep_id: ep_id });
                     }
                 }
+                print('>>> jumi detailContent episodes count=' + episodes.length);
 
-                // 如果当前页没提取到，尝试从第一集播放页获取
+                // 如果当前页没提取到，尝试从页面中其他可能的剧集链接提取（兼容老站结构）
+                if (episodes.length === 0) {
+                    var altPattern = /<a[^>]*href="\/eps\/([^"]+)\.html"[^>]*>([^<]*)<\/a>/gi;
+                    while ((em = altPattern.exec(html)) !== null) {
+                        var altHref = em[1];
+                        var altName = em[2].trim();
+                        var altParts = altHref.split('-');
+                        if (altParts.length >= 2 && altParts[0] === vid && altName) {
+                            episodes.push({ name: altName, vid: vid, ep_id: altParts.slice(1).join('-') });
+                        }
+                    }
+                    print('>>> jumi detailContent alt episodes count=' + episodes.length);
+                }
+
+                // 兜底：尝试从第一集播放页获取
                 if (episodes.length === 0) {
                     var firstEpUrl = '/eps/' + vid + '-1.html';
                     var epHtml = fetchURL(firstEpUrl);
@@ -286,6 +310,7 @@ var spider = {
                             episodes.push({ name: ep_name2, vid: ep_vid2, ep_id: ep_id2 });
                         }
                     }
+                    print('>>> jumi detailContent fallback episodes count=' + episodes.length);
                 }
 
                 // ========== 构建 play_from 和 play_url ==========
@@ -306,6 +331,7 @@ var spider = {
                             }
                         }
                     }
+                    print('>>> jumi detailContent sourceNames=' + JSON.stringify(sourceNames));
 
                     // 构建单集标识字符串: vid-ep_id
                     var epIdList = [];
@@ -330,6 +356,11 @@ var spider = {
                     play_url = [''];
                 }
 
+                var finalPlayFrom = play_from.join('$$$');
+                var finalPlayUrl = play_url.join('$$$');
+                print('>>> jumi detailContent play_from=' + finalPlayFrom);
+                print('>>> jumi detailContent play_url=' + finalPlayUrl);
+
                 result.list.push({
                     vod_id: vid,
                     vod_name: vod_name || vid,
@@ -337,8 +368,8 @@ var spider = {
                     vod_director: vod_director,
                     vod_actor: vod_actor,
                     vod_content: vod_content,
-                    vod_play_from: play_from.join('$$$'),
-                    vod_play_url: play_url.join('$$$')
+                    vod_play_from: finalPlayFrom,
+                    vod_play_url: finalPlayUrl
                 });
 
                 return result;
@@ -366,6 +397,7 @@ var spider = {
                  * 所以: flag=vodId, id=sourceName(线路名), vipFlags=episodeId
                  * TVBox 标准可能只传两个参数 (flag, id): flag=线路名, id=episodeId
                  */
+                print('>>> jumi playerContent raw args: flag=' + flag + ' id=' + id + ' vipFlags=' + vipFlags);
                 var sourceName = id;
                 var episodeId = vipFlags;
 
@@ -381,7 +413,10 @@ var spider = {
                     episodeId = parts[parts.length - 1];
                 }
 
+                print('>>> jumi playerContent parsed: sourceName=' + sourceName + ' episodeId=' + episodeId);
+
                 if (!episodeId) {
+                    print('>>> jumi playerContent empty episodeId');
                     return { parse: 1, url: '' };
                 }
 
@@ -392,26 +427,34 @@ var spider = {
                     var watchHtml = fetchURL(watchUrl);
                     if (watchHtml) {
                         var realUrl = extractVideoUrl(watchHtml);
-                        if (realUrl) return { parse: 0, url: realUrl };
+                        if (realUrl) {
+                            print('>>> jumi playerContent watchUrl=' + watchUrl + ' realUrl=' + realUrl);
+                            return { parse: 0, url: realUrl };
+                        }
                     }
+                    print('>>> jumi playerContent fallback watchUrl=' + watchUrl);
                     return { parse: 1, url: watchUrl };
                 }
 
                 // 情况2: episodeId 是 vid-ep_id 格式
                 var idParts = episodeId.split('-');
                 if (idParts.length < 2) {
+                    print('>>> jumi playerContent invalid episodeId format: ' + episodeId);
                     return { parse: 1, url: '' };
                 }
                 var vid = idParts[0];
                 var ep_id = idParts.slice(1).join('-');
                 var epUrl = '/eps/' + vid + '-' + ep_id + '.html';
+                print('>>> jumi playerContent epUrl=' + epUrl);
                 var html = fetchURL(epUrl);
                 if (!html) {
+                    print('>>> jumi playerContent empty epHtml');
                     return { parse: 1, url: '' };
                 }
 
                 // 提取该集所有线路
                 var sources = extractSourcesFromEpPage(html);
+                print('>>> jumi playerContent sources=' + JSON.stringify(sources));
 
                 // 如果指定了 sourceName 且能匹配到对应线路
                 if (sourceName && sourceName !== 'play' && sources.length > 0) {
@@ -432,8 +475,12 @@ var spider = {
                     var watchHtml = fetchURL(sources[0].href);
                     if (watchHtml) {
                         var realUrl = extractVideoUrl(watchHtml);
-                        if (realUrl) return { parse: 0, url: realUrl };
+                        if (realUrl) {
+                            print('>>> jumi playerContent first source realUrl=' + realUrl);
+                            return { parse: 0, url: realUrl };
+                        }
                     }
+                    print('>>> jumi playerContent first source fallback=' + sources[0].href);
                     return { parse: 1, url: sources[0].href };
                 }
 
@@ -443,9 +490,11 @@ var spider = {
                     iframeSrc = reMatch(/<iframe[^>]*src="([^"]+)"/, html);
                 }
                 if (iframeSrc) {
+                    print('>>> jumi playerContent iframe fallback=' + iframeSrc);
                     return { parse: 1, url: iframeSrc };
                 }
 
+                print('>>> jumi playerContent final fallback epUrl=' + epUrl);
                 return { parse: 1, url: epUrl };
             }
         };
