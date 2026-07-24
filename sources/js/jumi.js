@@ -34,7 +34,7 @@ function urlEncode(str) {
 // ===================== 蜘蛛主体 =====================
 var spider = {
     __jsEvalReturn: function() {
-        var HOST = 'https://gimytv.io';
+        var HOST = 'https://gimytw.cc';
         var HEADERS = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -328,11 +328,11 @@ var spider = {
 
                 // 默认取第一个线路
                 if (tabLinks.length > 0) {
-                    watchUrl = tabLinks[0].href;
+                    var watchUrl = tabLinks[0].href;
                     if (watchUrl.indexOf('http') !== 0) watchUrl = HOST + watchUrl;
-                    watchHtml = fetchURL(watchUrl);
+                    var watchHtml = fetchURL(watchUrl);
                     if (watchHtml) {
-                        realUrl = extractVideoUrl(watchHtml);
+                        var realUrl = extractVideoUrl(watchHtml);
                         if (realUrl) {
                             return { parse: 0, url: realUrl };
                         }
