@@ -8,7 +8,7 @@
     },
     "domain_overrides": 0,
     "parsers": 0,
-    "spider_sources": 228
+    "spider_sources": 229
   },
   "detail": {
     "api_sources": {
@@ -267,9 +267,9 @@
       "drpy_js_飞兔影视": "影视 | 飞兔影视[js]",
       "drpy_js_首播影院": "影视 | 首播影院[js]",
       "drpy_js_骚火电影": "影视 | 骚火电影[js]",
+      "js_剧迷": "影视 | 剧迷[js]",
       "js_星空4K": "影视 | 星空4K[js]",
       "js_腾讯视频": "官源 | 腾讯视频[js]",
-      "js_剧迷": "影视 | 剧迷[js]",
       "lf_js_lf_live": "电视 | 直播[js]",
       "lf_js_p2p": "路飞 | 磁力[js]",
       "lf_js_search": "搜索 | 路飞[js]"
