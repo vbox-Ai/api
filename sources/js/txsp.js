@@ -246,7 +246,15 @@ var spider = {
 
                     if (pg == '1') pageBody = JSON.parse(JSON.stringify(defaultBody));
                     pageBody.page_params.channel_id = tid;
-                    pageBody.page_params.filter_params = paramsToStr(params);
+                    // 修复：过滤掉值为 -1 的参数（-1 表示"不过滤"），
+                    // 否则 API 可能将 -1 当作"排除所有"导致返回空数据
+                    var filteredParams = {};
+                    for (var k in params) {
+                        if (params.hasOwnProperty(k) && params[k] !== '-1') {
+                            filteredParams[k] = params[k];
+                        }
+                    }
+                    pageBody.page_params.filter_params = paramsToStr(filteredParams);
 
                     var data = getPageData(pageBody);
                     if (!data || !data.data) return { page: pg, pagecount: 1, limit: 90, total: 0, list: [] };
