@@ -29,6 +29,17 @@
       "timeout": 30
     },
     {
+      "key": "js_剧迷",
+      "name": "影视 | 剧迷[js]",
+      "type": 3,
+      "api": "./js/jumi.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "ext": "",
+      "timeout": 30
+    },
+    {
       "key": "js_星空4K",
       "name": "影视 | 星空4K[js]",
       "type": 3,
