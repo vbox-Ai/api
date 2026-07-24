@@ -8,7 +8,7 @@
     },
     "domain_overrides": 0,
     "parsers": 0,
-    "spider_sources": 229
+    "spider_sources": 228
   },
   "detail": {
     "api_sources": {
@@ -124,7 +124,6 @@
       "drpy_js_农民": "影视 | 农民影视[js]",
       "drpy_js_凌云影视": "影视 | 凌云影视[js]",
       "drpy_js_刺桐[V2]": "影视 | 刺桐[V2][js]",
-      "drpy_js_剧迷su": "影视 | 剧迷su[js]",
       "drpy_js_动漫岛": "动漫 | 动漫岛[js]",
       "drpy_js_北川影视": "影视 | 北川影视[js]",
       "drpy_js_北极狐[V2]": "影视|北极狐[V2][js]",
