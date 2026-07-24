@@ -229,6 +229,8 @@ var spider = {
 
             categoryContent: function(tid, pg, extend) {
                 try {
+                    // 使用局部变量 body，避免与 homeContent 共享 pageBody 导致状态污染
+                    var body = JSON.parse(JSON.stringify(defaultBody));
                     var ext = {};
                     try { ext = typeof extend === 'string' ? JSON.parse(extend) : (extend || {}); } catch(e) {}
 
@@ -244,8 +246,7 @@ var spider = {
                         recommend: ext.recommend || '-1'
                     };
 
-                    if (pg == '1') pageBody = JSON.parse(JSON.stringify(defaultBody));
-                    pageBody.page_params.channel_id = tid;
+                    body.page_params.channel_id = tid;
                     // 修复：过滤掉值为 -1 的参数（-1 表示"不过滤"），
                     // 否则 API 可能将 -1 当作"排除所有"导致返回空数据
                     var filteredParams = {};
@@ -254,16 +255,15 @@ var spider = {
                             filteredParams[k] = params[k];
                         }
                     }
-                    pageBody.page_params.filter_params = paramsToStr(filteredParams);
+                    body.page_params.filter_params = paramsToStr(filteredParams);
 
-                    var data = getPageData(pageBody);
-                    if (!data || !data.data) return { page: pg, pagecount: 1, limit: 90, total: 0, list: [] };
+                    var data = getPageData(body);
+                    if (!data || !data.data) return { page: parseInt(pg), pagecount: 1, limit: 90, total: 0, list: [] };
 
                     var ndata = data.data;
                     var result = {};
                     if (ndata.has_next_page) {
                         result.pagecount = 9999;
-                        pageBody.page_context = ndata.next_page_context;
                     } else {
                         result.pagecount = parseInt(pg);
                     }
@@ -279,13 +279,13 @@ var spider = {
                         if (vod) vlist.push(vod);
                     }
                     result.list = vlist;
-                    result.page = pg;
+                    result.page = parseInt(pg);
                     result.limit = 90;
                     result.total = 999999;
                     return result;
                 } catch(e) {
                     print('>>> tx categoryContent ERROR: ' + e);
-                    return { page: pg, pagecount: 1, limit: 90, total: 0, list: [] };
+                    return { page: parseInt(pg), pagecount: 1, limit: 90, total: 0, list: [] };
                 }
             },
 

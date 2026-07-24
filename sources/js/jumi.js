@@ -34,7 +34,7 @@ function urlEncode(str) {
 // ===================== 蜘蛛主体 =====================
 var spider = {
     __jsEvalReturn: function() {
-        var HOST = 'https://gimytw.cc';
+        var HOST = 'https://gimytv.io';
         var HEADERS = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -278,15 +278,21 @@ var spider = {
 
             playerContent: function(flag, id, vipFlags) {
                 /*
-                 * id 格式: vid-ep_id  例如: 202673237-36
+                 * id 格式: ep_name$vid-ep_id  例如: 20260724下$202664450-2026072-xia
+                 * 先按 $ 分割取最后一段得到 vid-ep_id，再按 - 分割取 vid 和 ep_id（ep_id 可能含 -）
                  */
+                // 兼容 ep_name$vid-ep_id 格式
+                if (id.indexOf('$') >= 0) {
+                    var dollarParts = id.split('$');
+                    id = dollarParts[dollarParts.length - 1];
+                }
                 var parts = id.split('-');
                 if (parts.length < 2) {
                     return { parse: 1, url: '' };
                 }
 
                 var vid = parts[0];
-                var ep_id = parts[1];
+                var ep_id = parts.slice(1).join('-');  // ep_id 可能含多个 -，如 2026072-xia
                 var url = '/eps/' + vid + '-' + ep_id + '.html';
                 var html = fetchURL(url);
 
@@ -351,22 +357,34 @@ var spider = {
         function extractVideoUrl(html) {
             if (!html) return null;
 
-            // 1. video 标签
+            // 1. var url = '...' 或 var url = "..."（DPlayer / Hls.js 配置）
+            var varUrl = reMatch(/var\s+url\s*=\s*['"]([^'"]+)['"]/, html);
+            if (varUrl && (varUrl.indexOf('.m3u8') >= 0 || varUrl.indexOf('.mp4') >= 0)) {
+                return varUrl;
+            }
+
+            // 2. video 标签
             var videoSrc = reMatch(/<video[^>]*src="([^"]+)"/, html);
             if (videoSrc) return videoSrc;
 
-            // 2. iframe
+            // 3. iframe
             var iframeSrc = reMatch(/<iframe[^>]*src="([^"]+)"/, html);
             if (iframeSrc) return iframeSrc;
 
-            // 3. 从 script 中提取 m3u8/mp4
+            // 4. 从 script 中提取 m3u8/mp4
             var m3u8Match = html.match(/https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*/);
             if (m3u8Match) return m3u8Match[0];
 
             var mp4Match = html.match(/https?:\/\/[^\s"'<>]+\.mp4[^\s"'<>]*/);
             if (mp4Match) return mp4Match[0];
 
-            // 4. player 配置 JSON
+            // 5. DPlayer 配置中的 url
+            var dpUrl = reMatch(/url\s*:\s*['"]([^'"]+)['"]/, html);
+            if (dpUrl && (dpUrl.indexOf('.m3u8') >= 0 || dpUrl.indexOf('.mp4') >= 0)) {
+                return dpUrl;
+            }
+
+            // 6. player 配置 JSON
             var playerMatch = html.match(/player\s*=\s*(\{[^;]+\})/);
             if (playerMatch) {
                 try {
@@ -376,7 +394,7 @@ var spider = {
                 } catch(e) {}
             }
 
-            // 5. data-url / data-src / data-video 属性
+            // 7. data-url / data-src / data-video 属性
             var dataUrl = reMatch(/data-url="([^"]+)"/, html);
             if (dataUrl) return dataUrl;
             var dataSrc = reMatch(/data-src="([^"]+)"/, html);
