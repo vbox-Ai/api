@@ -176,6 +176,14 @@ var spider = {
             return null;
         }
 
+        // 播放页需要的请求头（透传给播放器，用于 Referer/UA 校验）
+        function getPlayHeaders() {
+            return {
+                'Referer': HOST + '/',
+                'User-Agent': HEADERS['User-Agent']
+            };
+        }
+
         return {
             init: function(config) { return true; },
 
@@ -333,23 +341,21 @@ var spider = {
                     }
                     print('>>> jumi detailContent sourceNames=' + JSON.stringify(sourceNames));
 
-                    // 构建单集标识字符串: vid-ep_id
-                    var epIdList = [];
-                    for (var i = 0; i < episodes.length; i++) {
-                        epIdList.push(episodes[i].name + '$' + episodes[i].vid + '-' + episodes[i].ep_id);
+                    // vbox-ios 已支持 playerContent 切集并透传 header，详情页不再预解析直链。
+                    // 返回占位符 "vid-ep_id|线路索引"，由 playerContent 根据线路索引动态解析真实地址。
+                    // 好处：1) 详情页请求少、速度快；2) 所有集数都能被 playerContent 解析；3) 真正支持多线路切换。
+                    if (sourceNames.length === 0) {
+                        sourceNames = ['在线播放'];
                     }
-                    var epIdStr = epIdList.join('#');
-
-                    if (sourceNames.length > 1) {
-                        // 多线路：每个线路用同样的剧集ID列表
-                        play_from = sourceNames;
-                        for (var i = 0; i < sourceNames.length; i++) {
-                            play_url.push(epIdStr);
+                    play_from = sourceNames;
+                    for (var sIdx = 0; sIdx < sourceNames.length; sIdx++) {
+                        var lineUrls = [];
+                        for (var i = 0; i < episodes.length; i++) {
+                            var ep = episodes[i];
+                            // 格式: vid-ep_id|线路索引，竖线后数字对应该线路在 sourceNames 中的位置
+                            lineUrls.push(ep.name + '$' + ep.vid + '-' + ep.ep_id + '|' + sIdx);
                         }
-                    } else {
-                        // 单线路
-                        play_from = ['在线播放'];
-                        play_url.push(epIdStr);
+                        play_url.push(lineUrls.join('#'));
                     }
                 } else {
                     play_from = ['在线播放'];
@@ -417,7 +423,7 @@ var spider = {
 
                 if (!episodeId) {
                     print('>>> jumi playerContent empty episodeId');
-                    return { parse: 1, url: '' };
+                    return { parse: 1, url: '', header: getPlayHeaders() };
                 }
 
                 // 情况1: episodeId 已经是完整 watch URL（多线路模式下）
@@ -429,18 +435,26 @@ var spider = {
                         var realUrl = extractVideoUrl(watchHtml);
                         if (realUrl) {
                             print('>>> jumi playerContent watchUrl=' + watchUrl + ' realUrl=' + realUrl);
-                            return { parse: 0, url: realUrl };
+                            return { parse: 0, url: realUrl, header: getPlayHeaders() };
                         }
                     }
                     print('>>> jumi playerContent fallback watchUrl=' + watchUrl);
-                    return { parse: 1, url: watchUrl };
+                    return { parse: 1, url: watchUrl, header: getPlayHeaders() };
                 }
 
-                // 情况2: episodeId 是 vid-ep_id 格式
+                // 情况2: episodeId 是 vid-ep_id|lineIdx 格式（竖线后是对应线路索引）
+                var lineIdx = 0;
+                if (episodeId.indexOf('|') >= 0) {
+                    var pipeParts = episodeId.split('|');
+                    episodeId = pipeParts[0];
+                    lineIdx = parseInt(pipeParts[1]) || 0;
+                    print('>>> jumi playerContent lineIdx=' + lineIdx);
+                }
+
                 var idParts = episodeId.split('-');
                 if (idParts.length < 2) {
                     print('>>> jumi playerContent invalid episodeId format: ' + episodeId);
-                    return { parse: 1, url: '' };
+                    return { parse: 1, url: '', header: getPlayHeaders() };
                 }
                 var vid = idParts[0];
                 var ep_id = idParts.slice(1).join('-');
@@ -449,7 +463,7 @@ var spider = {
                 var html = fetchURL(epUrl);
                 if (!html) {
                     print('>>> jumi playerContent empty epHtml');
-                    return { parse: 1, url: '' };
+                    return { parse: 1, url: '', header: getPlayHeaders() };
                 }
 
                 // 提取该集所有线路
@@ -463,11 +477,27 @@ var spider = {
                             var watchHtml = fetchURL(sources[i].href);
                             if (watchHtml) {
                                 var realUrl = extractVideoUrl(watchHtml);
-                                if (realUrl) return { parse: 0, url: realUrl };
+                                if (realUrl) return { parse: 0, url: realUrl, header: getPlayHeaders() };
                             }
-                            return { parse: 1, url: sources[i].href };
+                            return { parse: 1, url: sources[i].href, header: getPlayHeaders() };
                         }
                     }
+                }
+
+                // 按线路索引选择（detailContent 返回的占位符里带了线路索引）
+                if (lineIdx > 0 && lineIdx < sources.length) {
+                    var selected = sources[lineIdx];
+                    print('>>> jumi playerContent select lineIdx=' + lineIdx + ' name=' + selected.name);
+                    var watchHtml = fetchURL(selected.href);
+                    if (watchHtml) {
+                        var realUrl = extractVideoUrl(watchHtml);
+                        if (realUrl) {
+                            print('>>> jumi playerContent lineIdx realUrl=' + realUrl);
+                            return { parse: 0, url: realUrl, header: getPlayHeaders() };
+                        }
+                    }
+                    print('>>> jumi playerContent lineIdx fallback=' + selected.href);
+                    return { parse: 1, url: selected.href, header: getPlayHeaders() };
                 }
 
                 // 默认取第一个线路
@@ -477,11 +507,11 @@ var spider = {
                         var realUrl = extractVideoUrl(watchHtml);
                         if (realUrl) {
                             print('>>> jumi playerContent first source realUrl=' + realUrl);
-                            return { parse: 0, url: realUrl };
+                            return { parse: 0, url: realUrl, header: getPlayHeaders() };
                         }
                     }
                     print('>>> jumi playerContent first source fallback=' + sources[0].href);
-                    return { parse: 1, url: sources[0].href };
+                    return { parse: 1, url: sources[0].href, header: getPlayHeaders() };
                 }
 
                 // 兜底：直接找 iframe
@@ -491,11 +521,11 @@ var spider = {
                 }
                 if (iframeSrc) {
                     print('>>> jumi playerContent iframe fallback=' + iframeSrc);
-                    return { parse: 1, url: iframeSrc };
+                    return { parse: 1, url: iframeSrc, header: getPlayHeaders() };
                 }
 
                 print('>>> jumi playerContent final fallback epUrl=' + epUrl);
-                return { parse: 1, url: epUrl };
+                return { parse: 1, url: epUrl, header: getPlayHeaders() };
             }
         };
     }

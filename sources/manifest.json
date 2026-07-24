@@ -7,7 +7,7 @@
   "schemaVersion": 1,
   "configVersion": "2026.07.24.5",
   "minAppVersion": "1.0.0",
-  "updatedAt": "2026-07-24T08:40:39Z",
+  "updatedAt": "2026-07-24T10:30:00Z",
   "ttlSeconds": 21600,
   "files": {
     "allSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/all_sources.json",
