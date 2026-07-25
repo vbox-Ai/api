@@ -2196,9 +2196,20 @@
         "type": 3,
         "api": "./lib/drpy2.min.js",
         "ext": "./js/drpy.js"
+      },
+      {
+        "key": "js_tetui",
+        "name": "特推 | 视频[js]",
+        "type": 3,
+        "api": "./js/tetui_spider.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
       }
     ],
-    "siteCount": 229,
+    "siteCount": 230,
     "jarSiteCount": 71,
     "jarSitesNotIncluded": [
       "豆瓣",
