@@ -1,8 +1,9 @@
 /*
- * 剧迷 JS 蜘蛛 v2.0
+ * 剧迷 JS 蜘蛛 v2.1
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 目标站: https://gimytw.cc
  * 修复: 字符串ids处理、playerContent参数顺序、多线路支持
+ * v2.1: 配合 vbox-ios SpiderManager 修复，确认占位符格式 vid-ep_id|lineIdx 与客户端 parseNormalEpisodes 兼容
  */
 
 // ===================== 工具函数 =====================
