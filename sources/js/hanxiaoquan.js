@@ -270,8 +270,8 @@ var spider = {
                 var play_from = [];
                 var play_url = [];
 
-                // 匹配 nav-tabs 中的线路名（<li><a href="#playlist2" data-toggle="tab">云播资源</a> <small>(83)</small></li>）
-                var tabPattern = /<li>\s*<a[^>]*href="#(playlist\d+)"[^>]*>([^<]*)<\/a>\s*(?:<small>[^<]*<\/small>)?\s*<\/li>/gi;
+                // 匹配 nav-tabs 中的线路名（<li><a href="#playlist2" data-toggle="tab"><i class="icon-play"></i> 云播资源</a> <small>(83)</small></li>）
+                var tabPattern = /<li[^>]*>\s*<a[^>]*href="#(playlist\d+)"[^>]*>([\s\S]*?)<\/a>\s*(?:<small>[^<]*<\/small>)?\s*<\/li>/gi;
                 var tabMap = {}; // playlistId -> name
                 var tm;
                 while ((tm = tabPattern.exec(html)) !== null) {
@@ -284,20 +284,40 @@ var spider = {
                 print('>>> hxq detailContent tabMap=' + JSON.stringify(tabMap));
 
                 // 匹配每个 tab-pane 中的剧集列表
-                for (var pid in tabMap) {
-                    if (!tabMap.hasOwnProperty(pid)) continue;
+                // 使用字符串索引方式提取 pane 内容，避免大 HTML 中正则回溯问题
+                var tabPaneStartRe = /<div[^>]*id="(playlist\d+)"[^>]*class="[^"]*tab-pane[^"]*"[^>]*>/gi;
+                var panePositions = [];
+                var pm;
+                while ((pm = tabPaneStartRe.exec(html)) !== null) {
+                    panePositions.push({ id: pm[1], start: pm.index, end: pm.index + pm[0].length });
+                }
 
-                    // 找到对应 tab-pane 的内容
-                    var paneRegex = new RegExp('<div[^>]*id="' + pid + '"[^>]*class="[^"]*tab-pane[^"]*"[^>]*>([\\s\\S]*?)(?=<div[^>]*id="playlist|$)', 'i');
-                    var paneMatch = html.match(paneRegex);
-                    if (!paneMatch) {
-                        // 备用：简单匹配到下一个 tab-pane 或结束
-                        paneRegex = new RegExp('<div[^>]*id="' + pid + '"[^>]*>([\\s\\S]*?)(?=<div[^>]*id="playlist|</div>\\s*</div>\\s*<script)', 'i');
-                        paneMatch = html.match(paneRegex);
+                for (var pi = 0; pi < panePositions.length; pi++) {
+                    var pp = panePositions[pi];
+                    var pid = pp.id;
+                    if (!tabMap[pid]) continue;
+
+                    // pane 内容从 div 结束到下一个 playlist div 开始，或到 </div></div><script
+                    var contentStart = pp.end;
+                    var contentEnd;
+                    if (pi + 1 < panePositions.length) {
+                        contentEnd = panePositions[pi + 1].start;
+                    } else {
+                        // 最后一个 pane: 找到 </div>\s*</div>\s*<script
+                        var endMarker = html.indexOf('</div>', contentStart);
+                        // 跳过嵌套的 </div>，找到双 </div> 后跟 <script
+                        var searchFrom = contentStart;
+                        for (var di = 0; di < 3; di++) {
+                            var divEnd = html.indexOf('</div>', searchFrom);
+                            if (divEnd < 0) break;
+                            searchFrom = divEnd + 6;
+                        }
+                        // 回退到倒数第二个 </div>
+                        var lastDivEnd = html.lastIndexOf('</div>', searchFrom);
+                        var prevDivEnd = html.lastIndexOf('</div>', lastDivEnd - 1);
+                        contentEnd = prevDivEnd > contentStart ? prevDivEnd : searchFrom;
                     }
-                    if (!paneMatch) continue;
-
-                    var paneContent = paneMatch[1];
+                    var paneContent = html.substring(contentStart, contentEnd);
                     var episodes = [];
 
                     // 提取每集：<li id="10"><a title="第01集" href="/play/4394-1-0.html" target="_self">第01集</a></li>
