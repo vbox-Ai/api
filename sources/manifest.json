@@ -5,12 +5,12 @@
     "description": "远程默认源入口文件，所有文件 URL 统一走 jsDelivr CDN，彻底绕过 raw.githubusercontent.com 缓存"
   },
   "schemaVersion": 1,
-  "configVersion": "2026.07.25.1",
+  "configVersion": "2026.07.25.2",
   "minAppVersion": "1.0.0",
-  "updatedAt": "2026-07-25T18:30:00Z",
+  "updatedAt": "2026-07-25T19:05:27Z",
   "ttlSeconds": 21600,
   "files": {
-    "allSources": "https://cdn.jsdelivr.net/gh/vbox-Ai/api@main/sources/all_sources.json",
+    "allSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/all_sources.json",
     "apiSources": "https://cdn.jsdelivr.net/gh/vbox-Ai/api@main/sources/api_sources.json",
     "cloudSources": "https://cdn.jsdelivr.net/gh/vbox-Ai/api@main/sources/cloud_sources.json",
     "spiderSources": "https://cdn.jsdelivr.net/gh/vbox-Ai/api@main/sources/spider_sources.json",
