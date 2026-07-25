@@ -144,60 +144,6 @@
     "jsonPath": "sites[2].api"
   },
   {
-    "host": "https://cdn.jsdelivr.net",
-    "fullUrl": "https://cdn.jsdelivr.net/gh/vbox-Ai/api@main/sources/api_sources.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "apiSources",
-    "jsonPath": "files.apiSources"
-  },
-  {
-    "host": "https://cdn.jsdelivr.net",
-    "fullUrl": "https://cdn.jsdelivr.net/gh/vbox-Ai/api@main/sources/cloud_sources.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "cloudSources",
-    "jsonPath": "files.cloudSources"
-  },
-  {
-    "host": "https://cdn.jsdelivr.net",
-    "fullUrl": "https://cdn.jsdelivr.net/gh/vbox-Ai/api@main/sources/spider_sources.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "spiderSources",
-    "jsonPath": "files.spiderSources"
-  },
-  {
-    "host": "https://cdn.jsdelivr.net",
-    "fullUrl": "https://cdn.jsdelivr.net/gh/vbox-Ai/api@main/sources/domain_overrides.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "domainOverrides",
-    "jsonPath": "files.domainOverrides"
-  },
-  {
-    "host": "https://cdn.jsdelivr.net",
-    "fullUrl": "https://cdn.jsdelivr.net/gh/vbox-Ai/api@main/sources/parsers.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "parsers",
-    "jsonPath": "files.parsers"
-  },
-  {
-    "host": "https://cdn.jsdelivr.net",
-    "fullUrl": "https://cdn.jsdelivr.net/gh/vbox-Ai/api@main/sources/disabled_sources.json",
-    "sourceFile": "sources/manifest.json",
-    "sourceKey": null,
-    "sourceName": null,
-    "field": "disabledSources",
-    "jsonPath": "files.disabledSources"
-  },
-  {
     "host": "https://cj.lziapi.com",
     "fullUrl": "https://cj.lziapi.com/api.php/provide/vod",
     "sourceFile": "sources/api_sources.json",
@@ -340,6 +286,60 @@
     "sourceName": "TY影视",
     "field": "api",
     "jsonPath": "sites[4].api"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/api_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "apiSources",
+    "jsonPath": "files.apiSources"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/cloud_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "cloudSources",
+    "jsonPath": "files.cloudSources"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/spider_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "spiderSources",
+    "jsonPath": "files.spiderSources"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/domain_overrides.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "domainOverrides",
+    "jsonPath": "files.domainOverrides"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/parsers.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "parsers",
+    "jsonPath": "files.parsers"
+  },
+  {
+    "host": "https://vbox-ai.github.io",
+    "fullUrl": "https://vbox-ai.github.io/api/sources/disabled_sources.json",
+    "sourceFile": "sources/manifest.json",
+    "sourceKey": null,
+    "sourceName": null,
+    "field": "disabledSources",
+    "jsonPath": "files.disabledSources"
   },
   {
     "host": "https://wogg.xxooo.cf",
