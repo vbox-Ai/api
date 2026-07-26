@@ -1,13 +1,76 @@
 /*
- * 瓜子影视 JS 蜘蛛 v1.9.2 关梯版
- * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
- * 硬编码 token / 内联加密(RSA+AES+MD5) / 无需翻墙
+ * 瓜子影视 JS 蜘蛛 v3.0.3.2 关梯版
+ * 适配 vbox-ios JSSpiderEngine (JavaScriptCore / type:3 独立引擎)
+ * 动态设备注册获取token / RSA公钥加密+私钥解密 / AES+MD5签名 / 双域名轮询
+ * 移植自 Python 版 gz.py (v3.0.3.2)
+ *
+ * 关键修复 (相比旧版):
+ *  - UTF-8 正确编解码: AES/RSA 加密前先把字符串转成 UTF-8 字节, 中文搜索/筛选不再加密错误
+ *  - 请求响应兼容: req() 返回 {content, status, ok}, 优先读取 content
+ *  - 完整 RSA PKCS1v1.5 公钥加密 + 私钥解密 (响应的 keys 字段)
+ *  - 设备注册 signUp -> refresh 全流程, 失败自动重新认证
+ *  - 双域名轮询 + 3 次重试
  */
+
+// ===================== UTF-8 编解码 (关键修复) =====================
+// JavaScriptCore 的 charCodeAt 返回 UTF-16 code unit, 对中文需要先转 UTF-8 字节
+function utf8Encode(str) {
+    var bytes = [];
+    for (var i = 0; i < str.length; i++) {
+        var c = str.charCodeAt(i);
+        if (c < 0x80) {
+            bytes.push(c);
+        } else if (c < 0x800) {
+            bytes.push(0xC0 | (c >> 6));
+            bytes.push(0x80 | (c & 0x3F));
+        } else if (c < 0xD800 || c >= 0xE000) {
+            bytes.push(0xE0 | (c >> 12));
+            bytes.push(0x80 | ((c >> 6) & 0x3F));
+            bytes.push(0x80 | (c & 0x3F));
+        } else {
+            // 代理对 (Surrogate pair) -> UTF-8 四字节
+            i++;
+            var c2 = str.charCodeAt(i);
+            var cp = 0x10000 + (((c & 0x3FF) << 10) | (c2 & 0x3FF));
+            bytes.push(0xF0 | (cp >> 18));
+            bytes.push(0x80 | ((cp >> 12) & 0x3F));
+            bytes.push(0x80 | ((cp >> 6) & 0x3F));
+            bytes.push(0x80 | (cp & 0x3F));
+        }
+    }
+    return bytes;
+}
+
+function utf8Decode(bytes) {
+    var str = '';
+    var i = 0;
+    while (i < bytes.length) {
+        var b1 = bytes[i++];
+        if (b1 < 0x80) {
+            str += String.fromCharCode(b1);
+        } else if (b1 < 0xE0) {
+            var b2 = bytes[i++];
+            str += String.fromCharCode(((b1 & 0x1F) << 6) | (b2 & 0x3F));
+        } else if (b1 < 0xF0) {
+            var b2 = bytes[i++];
+            var b3 = bytes[i++];
+            str += String.fromCharCode(((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F));
+        } else {
+            var b2 = bytes[i++];
+            var b3 = bytes[i++];
+            var b4 = bytes[i++];
+            var cp = ((b1 & 0x07) << 18) | ((b2 & 0x3F) << 12) | ((b3 & 0x3F) << 6) | (b4 & 0x3F);
+            cp -= 0x10000;
+            str += String.fromCharCode(0xD800 + (cp >> 10), 0xDC00 + (cp & 0x3FF));
+        }
+    }
+    return str;
+}
 
 // ===================== Base64 工具 =====================
 function b64decode(s) {
     var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-    s = s.replace(/[\s\r\n]/g, '');
+    s = String(s).replace(/[\s\r\n]/g, '');
     var pad = (4 - s.length % 4) % 4;
     s += '===='.slice(0, pad);
     var result = [], buf = 0, bits = 0;
@@ -25,16 +88,16 @@ function b64encode(bytes) {
     var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     var result = '';
     for (var i = 0; i < bytes.length; i += 3) {
-        var b1 = bytes[i], b2 = bytes[i+1], b3 = bytes[i+2];
+        var b1 = bytes[i] || 0, b2 = bytes[i+1] || 0, b3 = bytes[i+2] || 0;
         result += chars[b1 >> 2];
-        result += chars[((b1 & 3) << 4) | (b2 >> 4 || 0)];
-        result += (i + 1 < bytes.length) ? chars[((b2 & 15) << 2) | (b3 >> 6 || 0)] : '=';
+        result += chars[((b1 & 3) << 4) | (b2 >> 4)];
+        result += (i + 1 < bytes.length) ? chars[((b2 & 15) << 2) | (b3 >> 6)] : '=';
         result += (i + 2 < bytes.length) ? chars[b3 & 63] : '=';
     }
     return result;
 }
 
-// ===================== MD5 =====================
+// ===================== MD5 (返回大写) =====================
 var md5 = (function() {
     function safeAdd(x, y) { var l = (x & 0xFFFF) + (y & 0xFFFF); return (((x >> 16) + (y >> 16) + (l >> 16)) << 16) | (l & 0xFFFF); }
     function bitRL(n, c) { return (n << c) | (n >>> (32 - c)); }
@@ -68,9 +131,10 @@ var md5 = (function() {
         }
         return [a,b,c,d];
     }
-    function s2b(s){var b=[],m=0xFF;for(var i=0;i<s.length*8;i+=8)b[i>>5]|=(s.charCodeAt(i/8)&m)<<(i%32);return b;}
+    // 关键修复: 用 UTF-8 字节而非 UTF-16 code unit
+    function s2b(s){var b=utf8Encode(s);var arr=[];for(var i=0;i<b.length*8;i+=8)arr[i>>5]|=b[i/8]<<(i%32);return arr;}
     function b2h(b){var h='0123456789abcdef',s='';for(var i=0;i<b.length*4;i++)s+=h.charAt((b[i>>2]>>((i%4)*8+4))&0xF)+h.charAt((b[i>>2]>>((i%4)*8))&0xF);return s;}
-    return function(s){return b2h(binl(s2b(s),s.length*8));};
+    return function(s){return b2h(binl(s2b(s),utf8Encode(s).length*8)).toUpperCase();};
 })();
 
 // ===================== AES-128-CBC =====================
@@ -79,7 +143,6 @@ var AES = (function() {
     var INV_SBOX = [0x52,0x09,0x6a,0xd5,0x30,0x36,0xa5,0x38,0xbf,0x40,0xa3,0x9e,0x81,0xf3,0xd7,0xfb,0x7c,0xe3,0x39,0x82,0x9b,0x2f,0xff,0x87,0x34,0x8e,0x43,0x44,0xc4,0xde,0xe9,0xcb,0x54,0x7b,0x94,0x32,0xa6,0xc2,0x23,0x3d,0xee,0x4c,0x95,0x0b,0x42,0xfa,0xc3,0x4e,0x08,0x2e,0xa1,0x66,0x28,0xd9,0x24,0xb2,0x76,0x5b,0xa2,0x49,0x6d,0x8b,0xd1,0x25,0x72,0xf8,0xf6,0x64,0x86,0x68,0x98,0x16,0xd4,0xa4,0x5c,0xcc,0x5d,0x65,0xb6,0x92,0x6c,0x70,0x48,0x50,0xfd,0xed,0xb9,0xda,0x5e,0x15,0x46,0x57,0xa7,0x8d,0x9d,0x84,0x90,0xd8,0xab,0x00,0x8c,0xbc,0xd3,0x0a,0xf7,0xe4,0x58,0x05,0xb8,0xb3,0x45,0x06,0xd0,0x2c,0x1e,0x8f,0xca,0x3f,0x0f,0x02,0xc1,0xaf,0xbd,0x03,0x01,0x13,0x8a,0x6b,0x3a,0x91,0x11,0x41,0x4f,0x67,0xdc,0xea,0x97,0xf2,0xcf,0xce,0xf0,0xb4,0xe6,0x73,0x96,0xac,0x74,0x22,0xe7,0xad,0x35,0x85,0xe2,0xf9,0x37,0xe8,0x1c,0x75,0xdf,0x6e,0x47,0xf1,0x1a,0x71,0x1d,0x29,0xc5,0x89,0x6f,0xb7,0x62,0x0e,0xaa,0x18,0xbe,0x1b,0xfc,0x56,0x3e,0x4b,0xc6,0xd2,0x79,0x20,0x9a,0xdb,0xc0,0xfe,0x78,0xcd,0x5a,0xf4,0x1f,0xdd,0xa8,0x33,0x88,0x07,0xc7,0x31,0xb1,0x12,0x10,0x59,0x27,0x80,0xec,0x5f,0x60,0x51,0x7f,0xa9,0x19,0xb5,0x4a,0x0d,0x2d,0xe5,0x7a,0x9f,0x93,0xc9,0x9c,0xef,0xa0,0xe0,0x3b,0x4d,0xae,0x2a,0xf5,0xb0,0xc8,0xeb,0xbb,0x3c,0x83,0x53,0x99,0x61,0x17,0x2b,0x04,0x7e,0xba,0x77,0xd6,0x26,0xe1,0x69,0x14,0x63,0x55,0x21,0x0c,0x7d];
     var RCON = [0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1b,0x36];
 
-    function xtime(a) { return ((a<<1)^(a>>7)&0xFF)&0xFF; }
     function mul(a,b){var r=0;for(var i=0;i<8;i++){if(b&1)r^=a;var hi=a&0x80;a=(a<<1)&0xFF;if(hi)a^=0x1b;b>>=1;}return r;}
 
     function keyExpansion(key) {
@@ -95,16 +158,19 @@ var AES = (function() {
         return w;
     }
 
-    function addRoundKey(s, w, r) { for(var i=0;i<4;i++) for(var j=0;j<4;j++) s[i][j]^=w[r*4+j]>>(24-8*i)&0xFF; }
+    // 关键修复: 列 j 对应 w[r*4+j], 行 i 对应该 word 的第 i 字节 (MSB first)
+    function addRoundKey(s, w, r) { for(var i=0;i<4;i++) for(var j=0;j<4;j++) s[i][j]^=(w[r*4+j]>>>(24-8*i))&0xFF; }
     function subBytes(s) { for(var i=0;i<4;i++) for(var j=0;j<4;j++) s[i][j]=SBOX[s[i][j]]; }
     function invSubBytes(s) { for(var i=0;i<4;i++) for(var j=0;j<4;j++) s[i][j]=INV_SBOX[s[i][j]]; }
     function shiftRows(s) { var t; t=s[1][0];s[1][0]=s[1][1];s[1][1]=s[1][2];s[1][2]=s[1][3];s[1][3]=t; t=s[2][0];s[2][0]=s[2][2];s[2][2]=t;t=s[2][1];s[2][1]=s[2][3];s[2][3]=t; t=s[3][3];s[3][3]=s[3][2];s[3][2]=s[3][1];s[3][1]=s[3][0];s[3][0]=t; }
     function invShiftRows(s) { var t; t=s[1][3];s[1][3]=s[1][2];s[1][2]=s[1][1];s[1][1]=s[1][0];s[1][0]=t; t=s[2][0];s[2][0]=s[2][2];s[2][2]=t;t=s[2][1];s[2][1]=s[2][3];s[2][3]=t; t=s[3][0];s[3][0]=s[3][1];s[3][1]=s[3][2];s[3][2]=s[3][3];s[3][3]=t; }
-    function mixColumns(s) { for(var i=0;i<4;i++){var a=s[i][0],b=s[i][1],c=s[i][2],d=s[i][3];s[i][0]=mul(a,2)^mul(b,3)^c^d;s[i][1]=a^mul(b,2)^mul(c,3)^d;s[i][2]=a^b^mul(c,2)^mul(d,3);s[i][3]=mul(a,3)^b^c^mul(d,2);} }
-    function invMixColumns(s) { for(var i=0;i<4;i++){var a=s[i][0],b=s[i][1],c=s[i][2],d=s[i][3];s[i][0]=mul(a,14)^mul(b,11)^mul(c,13)^mul(d,9);s[i][1]=mul(a,9)^mul(b,14)^mul(c,11)^mul(d,13);s[i][2]=mul(a,13)^mul(b,9)^mul(c,14)^mul(d,11);s[i][3]=mul(a,11)^mul(b,13)^mul(c,9)^mul(d,14);} }
+    // 关键修复: MixColumns 必须按列操作, 不是按行
+    function mixColumns(s) { for(var col=0;col<4;col++){var a=s[0][col],b=s[1][col],c=s[2][col],d=s[3][col];s[0][col]=mul(a,2)^mul(b,3)^c^d;s[1][col]=a^mul(b,2)^mul(c,3)^d;s[2][col]=a^b^mul(c,2)^mul(d,3);s[3][col]=mul(a,3)^b^c^mul(d,2);} }
+    function invMixColumns(s) { for(var col=0;col<4;col++){var a=s[0][col],b=s[1][col],c=s[2][col],d=s[3][col];s[0][col]=mul(a,14)^mul(b,11)^mul(c,13)^mul(d,9);s[1][col]=mul(a,9)^mul(b,14)^mul(c,11)^mul(d,13);s[2][col]=mul(a,13)^mul(b,9)^mul(c,14)^mul(d,11);s[3][col]=mul(a,11)^mul(b,13)^mul(c,9)^mul(d,14);} }
 
     function bytesToState(b) { var s=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]; for(var i=0;i<16;i++) s[i%4][Math.floor(i/4)]=b[i]; return s; }
-    function stateToBytes(s) { var b=[]; for(var i=0;i<4;i++) for(var j=0;j<4;j++) b.push(s[i][j]); return b; }
+    // 关键修复: stateToBytes 必须按列读取, 与 bytesToState 的按列填充保持一致
+    function stateToBytes(s) { var b=[]; for(var j=0;j<4;j++) for(var i=0;i<4;i++) b.push(s[i][j]); return b; }
 
     function encryptBlock(input, w) {
         var s = bytesToState(input), nr = w.length / 4 - 1;
@@ -126,114 +192,40 @@ var AES = (function() {
 
     return {
         encrypt: function(plaintext, keyStr, ivStr) {
-            var key=[], iv=[];
-            for(var i=0;i<keyStr.length&&i<16;i++) key.push(keyStr.charCodeAt(i));
-            for(i=0;i<16-key.length;i++) key.push(0);
-            for(i=0;i<ivStr.length&&i<16;i++) iv.push(ivStr.charCodeAt(i));
-            for(i=0;i<16-iv.length;i++) iv.push(0);
+            // 关键修复: 用 UTF-8 字节, 支持中文
+            var key = utf8Encode(keyStr).slice(0, 16);
+            while (key.length < 16) key.push(0);
+            var iv = utf8Encode(ivStr).slice(0, 16);
+            while (iv.length < 16) iv.push(0);
             var w = keyExpansion(key);
-            var pt=[]; for(i=0;i<plaintext.length;i++) pt.push(plaintext.charCodeAt(i));
-            while(pt.length%16!==0) pt.push(16-pt.length%16);
+            // 关键修复: PKCS7 填充 - 计算固定填充值, 且长度为16倍数时追加完整块
+            var pt = utf8Encode(plaintext);
+            var padLen = 16 - (pt.length % 16);
+            for (var p = 0; p < padLen; p++) pt.push(padLen);
             var ct=[];
-            for(i=0;i<pt.length;i+=16){var block=xorBlocks(pt.slice(i,i+16),i===0?iv:ct.slice(i-16,i));ct=ct.concat(encryptBlock(block,w));}
+            for(var i=0;i<pt.length;i+=16){var block=xorBlocks(pt.slice(i,i+16),i===0?iv:ct.slice(i-16,i));ct=ct.concat(encryptBlock(block,w));}
             var hex='';for(i=0;i<ct.length;i++) hex+=('0'+ct[i].toString(16)).slice(-2);
             return hex.toUpperCase();
         },
         decrypt: function(hexStr, keyStr, ivStr) {
-            var key=[], iv=[];
-            for(var i=0;i<keyStr.length&&i<16;i++) key.push(keyStr.charCodeAt(i));
-            for(i=0;i<16-key.length;i++) key.push(0);
-            for(i=0;i<ivStr.length&&i<16;i++) iv.push(ivStr.charCodeAt(i));
-            for(i=0;i<16-iv.length;i++) iv.push(0);
+            var key = utf8Encode(keyStr).slice(0, 16);
+            while (key.length < 16) key.push(0);
+            var iv = utf8Encode(ivStr).slice(0, 16);
+            while (iv.length < 16) iv.push(0);
             var w = keyExpansion(key);
-            var ct=[]; for(i=0;i<hexStr.length;i+=2) ct.push(parseInt(hexStr.substr(i,2),16));
+            var ct=[]; for(var i=0;i<hexStr.length;i+=2) ct.push(parseInt(hexStr.substr(i,2),16));
             var pt=[];
             for(i=0;i<ct.length;i+=16){var dec=decryptBlock(ct.slice(i,i+16),w);var xored=xorBlocks(dec,i===0?iv:ct.slice(i-16,i));pt=pt.concat(xored);}
             var pad=pt[pt.length-1]; if(pad<1||pad>16) pad=0;
             pt=pt.slice(0,pt.length-pad);
-            var str=''; for(i=0;i<pt.length;i++) str+=String.fromCharCode(pt[i]);
-            return str;
+            // 关键修复: 用 UTF-8 解码, 支持中文
+            return utf8Decode(pt);
         }
     };
 })();
 
-// ===================== RSA PKCS1v1_5 解密 (BigInt) =====================
-function rsaDecrypt(encryptedB64, privateKeyPem) {
-    // 解析 PEM
-    var b64 = privateKeyPem.replace(/-----BEGIN[\s\S]*?-----/g, '').replace(/-----END[\s\S]*?-----/g, '').replace(/\s/g, '');
-    var der = b64decode(b64);
-
-    // ASN.1 DER 解析辅助
-    function readTag(buf, offset) {
-        var tag = buf[offset];
-        var len = buf[offset + 1];
-        offset += 2;
-        if (len >= 0x80) {
-            var nb = len & 0x7F;
-            len = 0;
-            for (var i = 0; i < nb; i++) len = (len << 8) | buf[offset + i];
-            offset += nb;
-        }
-        return { tag: tag, offset: offset, length: len };
-    }
-
-    // 读取 INTEGER → BigInt
-    function readInt(buf, offset) {
-        var info = readTag(buf, offset);
-        var val = 0n;
-        for (var i = 0; i < info.length; i++) {
-            val = (val << 8n) | BigInt(buf[info.offset + i]);
-        }
-        return { value: val, end: info.offset + info.length };
-    }
-
-    // 解析 PKCS#8: SEQUENCE { version, algId, OCTET STRING { SEQUENCE { version, n, e, d, ... } } }
-    var pos = 0;
-    var outer = readTag(der, pos); pos = outer.offset; // 外层 SEQUENCE
-    var ver = readInt(der, pos); pos = ver.end; // version INTEGER (0)
-    // 跳过 AlgorithmIdentifier SEQUENCE
-    var algTag = readTag(der, pos);
-    pos = algTag.offset + algTag.length;
-    // 读取 OCTET STRING (内含 RSAPrivateKey)
-    var octInfo = readTag(der, pos); pos = octInfo.offset;
-    // 解析内层 RSAPrivateKey SEQUENCE
-    var inner = readTag(der, pos); pos = inner.offset;
-    var innerVer = readInt(der, pos); pos = innerVer.end; // version
-    var nInt = readInt(der, pos); pos = nInt.end; // n (modulus)
-    var eInt = readInt(der, pos); pos = eInt.end; // e (publicExponent)
-    var dInt = readInt(der, pos); pos = dInt.end; // d (privateExponent)
-
-    var n = nInt.value;
-    var d = dInt.value;
-
-    // Base64 解码密文
-    var encBytes = b64decode(encryptedB64);
-    // 转为 BigInt
-    var c = 0n;
-    for (var i = 0; i < encBytes.length; i++) {
-        c = (c << 8n) | BigInt(encBytes[i]);
-    }
-
-    // RSA 解密: m = c^d mod n
-    var m = modPow(c, d, n);
-
-    // 转回字节数组
-    var decBytes = bigIntToBytes(m, 128);
-
-    // PKCS1 v1.5 去填充: 0x00 0x02 [non-zero padding] 0x00 [message]
-    if (decBytes[0] !== 0x00 || decBytes[1] !== 0x02) return '';
-    var idx = 2;
-    while (idx < decBytes.length && decBytes[idx] !== 0x00) idx++;
-    idx++; // 跳过 0x00 分隔符
-    var result = [];
-    for (var j = idx; j < decBytes.length; j++) result.push(decBytes[j]);
-
-    // 转为字符串
-    var str = '';
-    for (var k = 0; k < result.length; k++) str += String.fromCharCode(result[k]);
-    return str;
-}
-
+// ===================== BigInt 辅助 =====================
+// 注: JavaScriptCore (iOS 16+) 支持 BigInt 字面量 1n
 function modPow(base, exp, mod) {
     base = ((base % mod) + mod) % mod;
     var result = 1n;
@@ -254,25 +246,193 @@ function bigIntToBytes(n, len) {
     return bytes;
 }
 
+// ===================== RSA 公钥加密 (PKCS1v1.5) =====================
+// 用于加密 AES key/iv JSON，生成请求的 keys 字段
+function rsaEncrypt(plaintext, publicKeyB64) {
+    var der = b64decode(publicKeyB64);
+
+    function readTag(buf, offset) {
+        var tag = buf[offset];
+        var len = buf[offset + 1];
+        offset += 2;
+        if (len >= 0x80) {
+            var nb = len & 0x7F;
+            len = 0;
+            for (var i = 0; i < nb; i++) len = (len << 8) | buf[offset + i];
+            offset += nb;
+        }
+        return { tag: tag, offset: offset, length: len };
+    }
+
+    function readInt(buf, offset) {
+        var info = readTag(buf, offset);
+        var val = 0n;
+        for (var i = 0; i < info.length; i++) {
+            val = (val << 8n) | BigInt(buf[info.offset + i]);
+        }
+        return { value: val, end: info.offset + info.length };
+    }
+
+    var pos = 0;
+    var outer = readTag(der, pos); pos = outer.offset;
+    var algSeq = readTag(der, pos); pos = algSeq.offset + algSeq.length;
+    var bitStr = readTag(der, pos); pos = bitStr.offset;
+    pos += 1;
+    var innerSeq = readTag(der, pos); pos = innerSeq.offset;
+    var nInt = readInt(der, pos); pos = nInt.end;
+    var eInt = readInt(der, pos);
+
+    var n = nInt.value;
+    var e = eInt.value;
+
+    // 关键修复: 用 UTF-8 字节
+    var msgBytes = utf8Encode(plaintext);
+
+    var keyLen = 128;
+    var padLen = keyLen - msgBytes.length - 3;
+    if (padLen < 8) return '';
+
+    var padded = [0x00, 0x02];
+    for (var j = 0; j < padLen; j++) {
+        var rb = 0;
+        while (rb === 0) {
+            rb = Math.floor(Math.random() * 256);
+        }
+        padded.push(rb);
+    }
+    padded.push(0x00);
+    padded = padded.concat(msgBytes);
+
+    var m = 0n;
+    for (var k = 0; k < padded.length; k++) {
+        m = (m << 8n) | BigInt(padded[k]);
+    }
+
+    var c = modPow(m, e, n);
+    var encBytes = bigIntToBytes(c, keyLen);
+    return b64encode(encBytes);
+}
+
+// ===================== RSA 私钥解密 (PKCS1v1.5) =====================
+function rsaDecrypt(encryptedB64, privateKeyPem) {
+    var b64 = privateKeyPem.replace(/-----BEGIN[\s\S]*?-----/g, '').replace(/-----END[\s\S]*?-----/g, '').replace(/\s/g, '');
+    var der = b64decode(b64);
+
+    function readTag(buf, offset) {
+        var tag = buf[offset];
+        var len = buf[offset + 1];
+        offset += 2;
+        if (len >= 0x80) {
+            var nb = len & 0x7F;
+            len = 0;
+            for (var i = 0; i < nb; i++) len = (len << 8) | buf[offset + i];
+            offset += nb;
+        }
+        return { tag: tag, offset: offset, length: len };
+    }
+
+    function readInt(buf, offset) {
+        var info = readTag(buf, offset);
+        var val = 0n;
+        for (var i = 0; i < info.length; i++) {
+            val = (val << 8n) | BigInt(buf[info.offset + i]);
+        }
+        return { value: val, end: info.offset + info.length };
+    }
+
+    var pos = 0;
+    var outer = readTag(der, pos); pos = outer.offset;
+    var ver = readInt(der, pos); pos = ver.end;
+    var algTag = readTag(der, pos);
+    pos = algTag.offset + algTag.length;
+    var octInfo = readTag(der, pos); pos = octInfo.offset;
+    var inner = readTag(der, pos); pos = inner.offset;
+    var innerVer = readInt(der, pos); pos = innerVer.end;
+    var nInt = readInt(der, pos); pos = nInt.end;
+    var eInt = readInt(der, pos); pos = eInt.end;
+    var dInt = readInt(der, pos); pos = dInt.end;
+
+    var n = nInt.value;
+    var d = dInt.value;
+
+    var encBytes = b64decode(encryptedB64);
+    var c = 0n;
+    for (var i = 0; i < encBytes.length; i++) {
+        c = (c << 8n) | BigInt(encBytes[i]);
+    }
+
+    var m = modPow(c, d, n);
+    var decBytes = bigIntToBytes(m, 128);
+
+    if (decBytes[0] !== 0x00 || decBytes[1] !== 0x02) return '';
+    var idx = 2;
+    while (idx < decBytes.length && decBytes[idx] !== 0x00) idx++;
+    idx++;
+    var result = [];
+    for (var j = idx; j < decBytes.length; j++) result.push(decBytes[j]);
+
+    // 关键修复: 用 UTF-8 解码
+    return utf8Decode(result);
+}
+
+// ===================== 随机工具 =====================
+function randomDeviceId() {
+    var base = 864150060000000;
+    var r = Math.floor(Math.random() * 10000);
+    return String(base + r);
+}
+
+function randomDeviceKey() {
+    var chars = '0123456789ABCDEF';
+    var s = '';
+    for (var i = 0; i < 40; i++) s += chars.charAt(Math.floor(Math.random() * 16));
+    return s;
+}
+
 // ===================== 蜘蛛主体 =====================
 var spider = {
     __jsEvalReturn: function() {
-        var HOST = 'https://api.w32z7vtd.com';
-        var TOKEN = '1be86e8e18a9fa18b2b8d5432699dad0.ac008ed650fd087bfbecf2fda9d82e9835253ef24843e6b18fcd128b10763497bcf9d53e959f5377cde038c20ccf9d17f604c9b8bb6e61041def86729b2fc7408bd241e23c213ac57f0226ee656e2bb0a583ae0e4f3bf6c6ab6c490c9a6f0d8cdfd366aacf5d83193671a8f77cd1af1ff2e9145de92ec43ec87cf4bdc563f6e919fe32861b0e93b118ec37d8035fbb3c.59dd05c5d9a8ae726528783128218f15fe6f2c0c8145eddab112b374fcfe3d79';
-        var AES_KEY = 'mvXBSW7ekreItNsT';
-        var AES_IV = '2U3IrJL8szAKp0Fj';
-        var SIGN_KEYS = 'Qmxi5ciWXbQzkr7o+SUNiUuQxQEf8/AVyUWY4T/BGhcXBIUz4nOyHBGf9A4KbM0iKF3yp9M7WAY0rrs5PzdTAOB45plcS2zZ0wUibcXuGJ29VVGRWKGwE9zu2vLwhfgjTaaDpXo4rby+7GxXTktzJmxvneOUdYeHi+PZsThlvPI=';
-        var RSA_PK = '-----BEGIN PRIVATE KEY-----\nMIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGAe6hKrWLi1zQmjTT1\nozbE4QdFeJGNxubxld6GrFGximxfMsMB6BpJhpcTouAqywAFppiKetUBBbXwYsYU\n1wNr648XVmPmCMCy4rY8vdliFnbMUj086DU6Z+/oXBdWU3/b1G0DN3E9wULRSwcK\nZT3wj/cCI1vsCm3gj2R5SqkA9Y0CAwEAAQKBgAJH+4CxV0/zBVcLiBCHvSANm0l7\nHetybTh/j2p0Y1sTXro4ALwAaCTUeqdBjWiLSo9lNwDHFyq8zX90+gNxa7c5EqcW\nV9FmlVXr8VhfBzcZo1nXeNdXFT7tQ2yah/odtdcx+vRMSGJd1t/5k5bDd9wAvYdI\nDblMAg+wiKKZ5KcdAkEA1cCakEN4NexkF5tHPRrR6XOY/XHfkqXxEhMqmNbB9U34\nsaTJnLWIHC8IXys6Qmzz30TtzCjuOqKRRy+FMM4TdwJBAJQZFPjsGC+RqcG5UvVM\niMPhnwe/bXEehShK86yJK/g/UiKrO87h3aEu5gcJqBygTq3BBBoH2md3pr/W+hUM\nWBsCQQChfhTIrdDinKi6lRxrdBnn0Ohjg2cwuqK5zzU9p/N+S9x7Ck8wUI53DKm8\njUJE8WAG7WLj/oCOWEh+ic6NIwTdAkEAj0X8nhx6AXsgCYRql1klbqtVmL8+95KZ\nK7PnLWG/IfjQUy3pPGoSaZ7fdquG8bq8oyf5+dzjE/oTXcByS+6XRQJAP/5ciy1b\nL3NhUhsaOVy55MHXnPjdcTX0FaLi+ybXZIfIQ2P4rb19mVq1feMbCXhz+L1rG8oa\nt5lYKfpe8k83ZA==\n-----END PRIVATE KEY-----';
+        // ---- 配置 (v3.0.3.2) ----
+        var HOSTS = [
+            'https://apinew.uozvr.com',
+            'https://api.w32z7vtd.com'
+        ];
+        var hostIndex = 0;
 
-        var HEADER = {
-            'Cache-Control': 'no-cache',
-            'Version': '2406025',
-            'PackageName': 'com.uf076bf0c246.qe439f0d5e.m8aaf56b725a.ifeb647346f',
-            'Ver': '1.9.2',
-            'Referer': HOST,
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'okhttp/3.12.0'
-        };
+        var AES_KEY = 'OITxa5OqAYjhswxx';
+        var AES_IV = 'rCMNwZASNBKZ8mXV';
+
+        var RSA_PUBLIC_KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDUM5+/y8sPsWkd1/RQS64X259EUwxFXFE5HlA65MqrxnPs0JqoSRojSDy5QhwvROlaD6TwRQHKMY2OAZ6SnQeUJsChTEFIR9qUkwrs3/MVUMxjsv6JS6Oe/juclyJGTgVmDhB55EafXsD0SQYVj/QXXsxR6ewR5E2kL52yAAD4yQIDAQAB';
+        var RSA_PRIVATE_KEY = '-----BEGIN RSA PRIVATE KEY-----\nMIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGAe6hKrWLi1zQmjTT1\nozbE4QdFeJGNxubxld6GrFGximxfMsMB6BpJhpcTouAqywAFppiKetUBBbXwYsYU\n1wNr648XVmPmCMCy4rY8vdliFnbMUj086DU6Z+/oXBdWU3/b1G0DN3E9wULRSwcK\nZT3wj/cCI1vsCm3gj2R5SqkA9Y0CAwEAAQKBgAJH+4CxV0/zBVcLiBCHvSANm0l7\nHetybTh/j2p0Y1sTXro4ALwAaCTUeqdBjWiLSo9lNwDHFyq8zX90+gNxa7c5EqcW\nV9FmlVXr8VhfBzcZo1nXeNdXFT7tQ2yah/odtdcx+vRMSGJd1t/5k5bDd9wAvYdI\nDblMAg+wiKKZ5KcdAkEA1cCakEN4NexkF5tHPRrR6XOY/XHfkqXxEhMqmNbB9U34\nsaTJnLWIHC8IXys6Qmzz30TtzCjuOqKRRy+FMM4TdwJBAJQZFPjsGC+RqcG5UvVM\niMPhnwe/bXEehShK86yJK/g/UiKrO87h3aEu5gcJqBygTq3BBBoH2md3pr/W+hUM\nWBsCQQChfhTIrdDinKi6lRxrdBnn0Ohjg2cwuqK5zzU9p/N+S9x7Ck8wUI53DKm8\njUJE8WAG7WLj/oCOWEh+ic6NIwTdAkEAj0X8nhx6AXsgCYRql1klbqtVmL8+95KZ\nK7PnLWG/IfjQUy3pPGoSaZ7fdquG8bq8oyf5+dzjE/oTXcByS+6XRQJAP/5ciy1b\nL3NhUhsaOVy55MHXnPjdcTX0FaLi+ybXZIfIQ2P4rb19mVq1feMbCXhz+L1rG8oa\nt5lYKfpe8k83ZA==\n-----END RSA PRIVATE KEY-----';
+
+        var DEVICE_OLD_KEY = 'aLFBMWpxBrIDAD1Si/KVvm41';
+
+        // 设备信息
+        var deviceId = randomDeviceId();
+        var deviceKey = randomDeviceKey();
+        var token = '';
+        var token_id = '';
+        var registered = false;
+
+        var cache = {};
+        var CACHE_TIMEOUT = 300; // 5分钟
+
+        function makeHeader() {
+            var host = HOSTS[hostIndex];
+            return {
+                'User-Agent': 'Lavf/57.83.100',
+                'code': 'GZ0369',
+                'deviceId': deviceId,
+                'lang': 'zh_cn',
+                'Cache-Control': 'no-cache',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Version': '2604028',
+                'PackageName': 'com.ae06aebdbb.y286327f5a.ofe849883320260517',
+                'Ver': '3.0.3.2',
+                'api-ver': '3.0.3.2',
+                'Referer': host
+            };
+        }
 
         // URL 编码参数
         function encodeParams(obj) {
@@ -285,93 +445,246 @@ var spider = {
             return parts.join('&');
         }
 
-        // 核心 API 请求
-        function apiRequest(data, path) {
+        // ---- 认证流程 ----
+        function authRequest(params, path) {
+            return sendEncryptedRequest(params, path, true);
+        }
+
+        function signUp() {
+            print('>>> guazi signUp...');
+            var params = {
+                new_key: deviceKey,
+                old_key: DEVICE_OLD_KEY,
+                phone_type: 1,
+                code: ''
+            };
+            var result = authRequest(params, '/App/Authentication/Device/signUp');
+            if (result) {
+                applyAuth(result);
+                registered = true;
+            } else {
+                throw 'signUp failed';
+            }
+        }
+
+        function signIn() {
+            print('>>> guazi signIn...');
+            var params = {
+                new_key: deviceKey,
+                old_key: DEVICE_OLD_KEY
+            };
+            var result = authRequest(params, '/App/Authentication/Device/signIn');
+            if (result) {
+                applyAuth(result);
+            } else {
+                throw 'signIn failed';
+            }
+        }
+
+        function refreshToken() {
+            print('>>> guazi refreshToken...');
+            var result = authRequest({}, '/App/Authentication/Authenticator/refresh');
+            if (result) {
+                applyAuth(result);
+            } else {
+                throw 'refresh failed';
+            }
+        }
+
+        function applyAuth(result) {
+            if (!result || !result.token) {
+                throw 'auth result has no token';
+            }
+            token = result.token;
+            if (result.app_user_id) {
+                token_id = String(result.app_user_id);
+            }
+            print('>>> guazi token获取成功, token前缀: ' + token.substring(0, 30) + '...');
+        }
+
+        function ensureToken() {
+            if (!token || !token_id) {
+                if (registered) {
+                    signIn();
+                } else {
+                    signUp();
+                }
+                refreshToken();
+            }
+        }
+
+        // ---- 核心加密请求 ----
+        function sendEncryptedRequest(data, path, isAuth) {
             try {
-                print('>>> apiRequest start: ' + path);
+                if (!isAuth) {
+                    ensureToken();
+                }
 
-                // AES 加密请求数据
-                var jsonData = JSON.stringify(data);
-                print('>>> apiRequest data: ' + jsonData.substring(0, 80));
-                var requestKey = AES.encrypt(jsonData, AES_KEY, AES_IV);
-                if (!requestKey) { print('>>> AES encrypt failed'); return null; }
-                print('>>> requestKey: ' + requestKey.substring(0, 40) + '...');
+                // 1. AES 加密请求参数
+                var jsonParams = JSON.stringify(data);
+                var requestKey = AES.encrypt(jsonParams, AES_KEY, AES_IV);
 
-                // 生成签名
+                // 2. RSA 公钥加密 AES key/iv JSON → keys 字段
+                var keyJson = JSON.stringify({ iv: AES_IV, key: AES_KEY });
+                var keys = rsaEncrypt(keyJson, RSA_PUBLIC_KEY);
+                if (!keys) {
+                    print('>>> guazi RSA加密失败');
+                    return null;
+                }
+
+                // 3. 生成签名 (MD5 大写)
                 var t = Math.floor(Date.now() / 1000).toString();
-                var signStr = 'token_id=,token=' + TOKEN + ',phone_type=1,request_key=' + requestKey + ',app_id=1,time=' + t + ',keys=' + SIGN_KEYS + '*&zvdvdvddbfikkkumtmdwqppp?|4Y!s!2br';
+                var signStr = 'token_id=,token=' + token + ',phone_type=1,request_key=' + requestKey + ',app_id=1,time=' + t + ',keys=' + keys + '*&zvdvdvddbfikkkumtmdwqppp?|4Y!s!2br';
                 var signature = md5(signStr);
-                print('>>> sign=' + signature.substring(0, 20) + '..., t=' + t);
 
-                // 构建请求体
+                // 4. 构建请求体
                 var postBody = {
-                    'token': TOKEN,
-                    'token_id': '',
-                    'phone_type': '1',
-                    'time': t,
-                    'phone_model': 'xiaomi-22021211rc',
-                    'keys': SIGN_KEYS,
-                    'request_key': requestKey,
-                    'signature': signature,
-                    'app_id': '1',
-                    'ad_version': '1'
+                    token: token,
+                    token_id: '',
+                    phone_type: '1',
+                    time: t,
+                    phone_model: 'xiaomi-25031',
+                    keys: keys,
+                    request_key: requestKey,
+                    signature: signature,
+                    app_id: '1',
+                    ad_version: '1'
                 };
 
-                // 发送请求 — req() 读 opts.data（不是body），返回 {data: content, ...} 对象
+                // 5. 发送请求
+                var host = HOSTS[hostIndex];
                 var bodyStr = encodeParams(postBody);
-                var url = HOST + path;
-                print('>>> req url=' + url + ', bodyLen=' + bodyStr.length);
+                var url = host + path;
+                var header = makeHeader();
 
                 var respObj = req(url, {
                     method: 'POST',
-                    headers: HEADER,
+                    headers: header,
                     data: bodyStr
                 });
 
-                if (!respObj) { print('>>> req returned null'); return null; }
-                print('>>> req resp type=' + typeof respObj);
+                if (!respObj) { print('>>> guazi req returned null: ' + path); return null; }
 
+                // 兼容 req() 返回: {content, status, ok, headers}
                 var respStr = '';
                 if (typeof respObj === 'string') {
                     respStr = respObj;
-                } else if (respObj.data) {
-                    respStr = respObj.data;
                 } else if (respObj.content) {
                     respStr = respObj.content;
+                } else if (respObj.data) {
+                    respStr = respObj.data;
+                } else if (respObj.body) {
+                    respStr = respObj.body;
                 } else {
-                    print('>>> req resp has no data/content');
+                    print('>>> guazi req resp has no content/data/body');
                     return null;
                 }
-                print('>>> respStr len=' + respStr.length + ', head=' + respStr.substring(0, 60));
 
-                var respJson = (typeof respStr === 'object') ? respStr : JSON.parse(respStr);
-                if (!respJson || !respJson.data) {
-                    print('>>> respJson has no .data');
+                if (typeof respStr === 'object') {
+                    respStr = JSON.stringify(respStr);
+                }
+
+                var respJson = JSON.parse(respStr);
+                if (!respJson) { print('>>> guazi respJson parse failed'); return null; }
+
+                // 检查业务 code
+                if (respJson.code && respJson.code !== 200) {
+                    print('>>> guazi 业务错误码: ' + respJson.code + ', path: ' + path + ', msg: ' + (respJson.msg || respJson.message || ''));
                     return null;
                 }
-                print('>>> respJson.code=' + (respJson.code || 'null'));
+
+                if (!respJson.data) { print('>>> guazi respJson has no .data'); return null; }
 
                 var dataResp = respJson.data;
+                var encryptedResponse = dataResp.response_key;
+                var encryptedKeys = dataResp.keys;
 
-                // RSA 解密响应密钥
-                var bodykiJson = rsaDecrypt(dataResp.keys, RSA_PK);
-                if (!bodykiJson) { print('>>> rsaDecrypt failed'); return null; }
-                var bodyki = JSON.parse(bodykiJson);
-                print('>>> bodyki.key=' + bodyki.key + ', iv=' + bodyki.iv);
+                if (!encryptedResponse || !encryptedKeys) {
+                    print('>>> guazi data 缺少 response_key 或 keys');
+                    return null;
+                }
 
-                // AES 解密响应数据
-                var decrypted = AES.decrypt(dataResp.response_key, bodyki.key, bodyki.iv);
-                if (!decrypted) { print('>>> AES decrypt failed'); return null; }
-                print('>>> decrypted len=' + decrypted.length + ', head=' + decrypted.substring(0, 60));
+                // 6. RSA 解密响应密钥
+                var decryptedKeysJson = rsaDecrypt(encryptedKeys, RSA_PRIVATE_KEY);
+                if (!decryptedKeysJson) { print('>>> guazi RSA解密失败'); return null; }
+                var keyInfo = JSON.parse(decryptedKeysJson);
 
-                var result = JSON.parse(decrypted);
-                print('>>> apiRequest OK: ' + path);
-                return result;
+                // 7. AES 解密响应数据
+                var decryptedData = AES.decrypt(encryptedResponse, keyInfo.key, keyInfo.iv);
+                if (!decryptedData) { print('>>> guazi AES解密失败'); return null; }
+
+                return JSON.parse(decryptedData);
             } catch (e) {
-                print('>>> apiRequest ERROR (' + path + '): ' + e);
+                print('>>> guazi sendEncryptedRequest ERROR (' + path + '): ' + e);
                 return null;
             }
         }
+
+        // ---- 带重试和域名轮询的数据获取 ----
+        function getData(data, path, useCache) {
+            useCache = useCache !== false;
+            try {
+                var cacheKey = path + '_' + md5(JSON.stringify(data));
+                if (useCache && cache[cacheKey]) {
+                    var cached = cache[cacheKey];
+                    if (Math.floor(Date.now() / 1000) - cached.time < CACHE_TIMEOUT) {
+                        return cached.data;
+                    }
+                }
+
+                for (var attempt = 0; attempt < 3; attempt++) {
+                    var tried = 0;
+                    while (tried < HOSTS.length) {
+                        var result = sendEncryptedRequest(data, path, false);
+                        if (result !== null) {
+                            if (useCache) {
+                                cache[cacheKey] = { data: result, time: Math.floor(Date.now() / 1000) };
+                            }
+                            return result;
+                        }
+                        // 切换域名
+                        hostIndex = (hostIndex + 1) % HOSTS.length;
+                        tried++;
+                    }
+
+                    // 所有域名失败，尝试重新认证
+                    if (attempt < 2) {
+                        print('>>> guazi 所有域名失败，尝试重新认证...');
+                        try {
+                            token = '';
+                            token_id = '';
+                            registered = false;
+                            ensureToken();
+                        } catch (e) {
+                            print('>>> guazi 重新认证失败: ' + e);
+                        }
+                        hostIndex = 0;
+                    } else {
+                        break;
+                    }
+                }
+                return null;
+            } catch (e) {
+                print('>>> guazi getData异常: ' + e);
+                return null;
+            }
+        }
+
+        // ---- 初始化 token ----
+        function initToken() {
+            try {
+                print('>>> guazi 初始化设备认证...');
+                if (!registered) {
+                    signUp();
+                }
+                refreshToken();
+            } catch (e) {
+                print('>>> guazi 初始化token失败: ' + e);
+            }
+        }
+
+        // 启动时初始化
+        initToken();
 
         return {
             init: function(config) {
@@ -440,7 +753,7 @@ var spider = {
                     tid: String(tid)
                 };
 
-                var data = apiRequest(body, '/App/IndexList/indexList');
+                var data = getData(body, '/App/IndexList/indexList', true);
                 var videos = [];
                 if (data && data.list) {
                     for (var i = 0; i < data.list.length; i++) {
@@ -471,19 +784,19 @@ var spider = {
                     // 获取视频详情
                     var t = Math.floor(Date.now() / 1000).toString();
                     var body1 = {
-                        token_id: '1649412',
+                        token_id: token_id,
                         vod_id: vodId,
                         mobile_time: t,
-                        token: TOKEN
+                        token: token
                     };
-                    var qdata = apiRequest(body1, '/App/IndexPlay/playInfo');
+                    var qdata = getData(body1, '/App/IndexPlay/playInfo', true);
 
                     // 获取播放列表
                     var body2 = {
                         vurl_cloud_id: '2',
                         vod_d_id: vodId
                     };
-                    var jdata = apiRequest(body2, '/App/Resource/Vurl/show');
+                    var jdata = getData(body2, '/App/Resource/Vurl/show', true);
 
                     if (!qdata || !qdata.vodInfo) return { list: [] };
                     var vod = qdata.vodInfo;
@@ -497,7 +810,7 @@ var spider = {
                         vod_actor: vod.vod_actor || '',
                         vod_director: vod.vod_director || '',
                         vod_content: (vod.vod_use_content || '').trim(),
-                        vod_play_from: '拾光请你看瓜子',
+                        vod_play_from: '瓜子影视',
                         vod_play_url: ''
                     };
 
@@ -526,7 +839,7 @@ var spider = {
                     videoDetail.vod_play_url = playList.join('#');
                     return { list: [videoDetail] };
                 } catch (e) {
-                    print('detailContent error: ' + e);
+                    print('>>> guazi detailContent error: ' + e);
                     return { list: [] };
                 }
             },
@@ -540,7 +853,7 @@ var spider = {
                         page: String(pg)
                     };
 
-                    var data = apiRequest(body, '/App/Index/findMoreVod');
+                    var data = getData(body, '/App/Index/findMoreVod', false);
                     var videos = [];
                     if (data && data.list) {
                         for (var i = 0; i < data.list.length; i++) {
@@ -562,7 +875,7 @@ var spider = {
                         total: 999999
                     };
                 } catch (e) {
-                    print('searchContent error: ' + e);
+                    print('>>> guazi searchContent error: ' + e);
                     return { list: [] };
                 }
             },
@@ -590,20 +903,20 @@ var spider = {
 
                     if (resolutions.length > 0) {
                         params.resolution = resolutions[0];
-                        var data = apiRequest(params, '/App/Resource/VurlDetail/showOne');
+                        var data = getData(params, '/App/Resource/VurlDetail/showOne', false);
                         if (data && data.url) {
                             return {
                                 parse: 0,
                                 playUrl: '',
                                 url: data.url,
-                                header: JSON.stringify({ 'User-Agent': 'Lavf/57.83.100' })
+                                header: JSON.stringify({ 'User-Agent': 'Lavf/57.83.100', 'Referer': 'http://WJiZxLXA2.com/' })
                             };
                         }
                     }
 
                     return { parse: 0, playUrl: '', url: '' };
                 } catch (e) {
-                    print('playerContent error: ' + e);
+                    print('>>> guazi playerContent error: ' + e);
                     return { parse: 0, playUrl: '', url: '' };
                 }
             }
