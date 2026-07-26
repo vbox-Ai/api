@@ -29,11 +29,11 @@ var AES = (function() {
     function xtime(a){return((a<<1)^(a>>7)&0xFF)&0xFF;}
     function mul(a,b){var r=0;for(var i=0;i<8;i++){if(b&1)r^=a;var hi=a&0x80;a=(a<<1)&0xFF;if(hi)a^=0x1b;b>>=1;}return r;}
     function keyExpansion(key){var nk=key.length/4,nb=4,nr=nk+6,w=[];for(var i=0;i<nk;i++)w[i]=(key[i*4]<<24)|(key[i*4+1]<<16)|(key[i*4+2]<<8)|key[i*4+3];for(i=nk;i<nb*(nr+1);i++){var t=w[i-1];if(i%nk===0){t=((SBOX[(t>>16)&0xFF]<<24)|(SBOX[(t>>8)&0xFF]<<16)|(SBOX[t&0xFF]<<8)|SBOX[(t>>24)&0xFF])^(RCON[i/nk-1]<<24);}else if(nk>6&&i%nk===4){t=(SBOX[(t>>24)&0xFF]<<24)|(SBOX[(t>>16)&0xFF]<<16)|(SBOX[(t>>8)&0xFF]<<8)|SBOX[t&0xFF];}w[i]=w[i-nk]^t;}return w;}
-    function addRoundKey(s,w,r){for(var i=0;i<4;i++)for(var j=0;j<4;j++)s[i][j]^=w[r*4+j]>>(24-8*i)&0xFF;}
+    function addRoundKey(s,w,r){for(var i=0;i<4;i++)for(var j=0;j<4;j++)s[i][j]^=w[r*4+i]>>(24-8*j)&0xFF;}
     function invSubBytes(s){for(var i=0;i<4;i++)for(var j=0;j<4;j++)s[i][j]=INV_SBOX[s[i][j]];}
-    function invShiftRows(s){var t;t=s[1][3];s[1][3]=s[1][2];s[1][2]=s[1][1];s[1][1]=s[1][0];s[1][0]=t;t=s[2][0];s[2][0]=s[2][2];s[2][2]=t;t=s[2][1];s[2][1]=s[2][3];s[2][3]=t;t=s[3][0];s[3][0]=s[3][1];s[3][1]=s[3][2];s[3][2]=s[3][3];s[3][3]=t;}
+    function invShiftRows(s){var t;t=s[0][1];s[0][1]=s[3][1];s[3][1]=s[2][1];s[2][1]=s[1][1];s[1][1]=t;t=s[0][2];s[0][2]=s[2][2];s[2][2]=t;t=s[1][2];s[1][2]=s[3][2];s[3][2]=t;t=s[0][3];s[0][3]=s[1][3];s[1][3]=s[2][3];s[2][3]=s[3][3];s[3][3]=t;}
     function invMixColumns(s){for(var i=0;i<4;i++){var a=s[i][0],b=s[i][1],c=s[i][2],d=s[i][3];s[i][0]=mul(a,14)^mul(b,11)^mul(c,13)^mul(d,9);s[i][1]=mul(a,9)^mul(b,14)^mul(c,11)^mul(d,13);s[i][2]=mul(a,13)^mul(b,9)^mul(c,14)^mul(d,11);s[i][3]=mul(a,11)^mul(b,13)^mul(c,9)^mul(d,14);}}
-    function bytesToState(b){var s=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];for(var i=0;i<16;i++)s[i%4][Math.floor(i/4)]=b[i];return s;}
+    function bytesToState(b){var s=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];for(var i=0;i<16;i++)s[Math.floor(i/4)][i%4]=b[i];return s;}
     function stateToBytes(s){var b=[];for(var i=0;i<4;i++)for(var j=0;j<4;j++)b.push(s[i][j]);return b;}
     function decryptBlock(input,w){var s=bytesToState(input),nr=w.length/4-1;addRoundKey(s,w,nr);for(var r=nr-1;r>0;r--){invShiftRows(s);invSubBytes(s);addRoundKey(s,w,r);invMixColumns(s);}invShiftRows(s);invSubBytes(s);addRoundKey(s,w,0);return stateToBytes(s);}
     function xorBlocks(a,b){var r=[];for(var i=0;i<a.length;i++)r[i]=a[i]^b[i];return r;}
@@ -48,7 +48,7 @@ var AES = (function() {
             var ct=[];for(i=0;i<hexStr.length;i+=2)ct.push(parseInt(hexStr.substr(i,2),16));
             var pt=[];for(i=0;i<ct.length;i+=16){var dec=decryptBlock(ct.slice(i,i+16),w);var xored=xorBlocks(dec,i===0?iv:ct.slice(i-16,i));pt=pt.concat(xored);}
             var pad=pt[pt.length-1];if(pad<1||pad>16)pad=0;pt=pt.slice(0,pt.length-pad);
-            var str='';for(i=0;i<pt.length;i++)str+=String.fromCharCode(pt[i]);return str;
+            var str='',ui=0;while(ui<pt.length){var b=pt[ui++];if(b<0x80){str+=String.fromCharCode(b);}else if(b<0xE0){str+=String.fromCharCode(((b&0x1F)<<6)|(pt[ui++]&0x3F));}else if(b<0xF0){str+=String.fromCharCode(((b&0x0F)<<12)|((pt[ui++]&0x3F)<<6)|(pt[ui++]&0x3F));}else{var cp=((b&0x07)<<18)|((pt[ui++]&0x3F)<<12)|((pt[ui++]&0x3F)<<6)|(pt[ui++]&0x3F);cp-=0x10000;str+=String.fromCharCode(0xD800+(cp>>10),0xDC00+(cp&0x3FF));}}return str;
         }
     };
 })();
