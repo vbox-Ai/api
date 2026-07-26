@@ -284,9 +284,21 @@ var spider = {
 
             playerContent: function(flag, id, vipFlags) {
                 try {
+                    // 兼容 vbox-ios 3参数调用: flag=vodId, id=sourceName, vipFlags=episodeUrl
+                    // 和 TVBox 标准 2参数调用: flag=sourceName, id=episodeUrl
                     var url = id;
-                    if (id.indexOf('xk://') === 0) {
-                        var parts = id.substring(5).split('/');
+                    // 如果第3参数存在且第2参数不是地址(不含://)，则第3参数才是播放地址
+                    if (vipFlags && id && id.indexOf('://') < 0) {
+                        url = vipFlags;
+                    }
+                    // 如果 url 含 $ 分隔符，取最后一段
+                    if (url && url.indexOf('$') >= 0) {
+                        var p = url.split('$');
+                        url = p[p.length - 1];
+                    }
+                    print('>>> xk playerContent: url=' + url);
+                    if (url.indexOf('xk://') === 0) {
+                        var parts = url.substring(5).split('/');
                         var vodId = parts[0];
                         var sourceId = parts[1];
                         var episodeIndex = parts[2];
