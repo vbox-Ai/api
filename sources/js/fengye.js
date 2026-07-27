@@ -117,11 +117,33 @@ function stripHtml(html) {
 // 规范化播放 id，兼容历史缓存里可能存在的重复拼接 id：73809-73809-8-1 -> 73809-8-1
 function normalizePlayId(id) {
     id = String(id || '').trim();
+    var urlMatch = id.match(/\/play\/([^\/?#]+)\.html/i);
+    if (urlMatch) {
+        id = urlMatch[1];
+    }
     var duplicateMatch = id.match(/^(\d+)-\1-(.+)$/);
     if (duplicateMatch) {
         return duplicateMatch[1] + '-' + duplicateMatch[2];
     }
     return id;
+}
+
+// 只处理枫叶影院自己的播放 id，避免把其它源的参数串误拼成 /play/xxx.html
+function isFengyePlayId(id) {
+    id = String(id || '').trim();
+    return /^\d+-\d+-\d+$/.test(id);
+}
+
+function emptyPlayerResult() {
+    return JSON.stringify({ parse: 0, url: '' });
+}
+
+function errorPlayerResult() {
+    return JSON.stringify({
+        parse: 0,
+        url: 'https://php.doube.eu.org/error.m3u8',
+        header: { 'User-Agent': 'Mozilla/5.0' }
+    });
 }
 
 // ===================== HTML 解析辅助 =====================
@@ -539,14 +561,18 @@ spider.playerContent = function(vodId, flag, urlParam) {
             id = vodId;
         }
         id = normalizePlayId(id);
+        if (!isFengyePlayId(id)) {
+            print('[枫叶影院] skip non-fengye play id: ' + String(id).substring(0, 120));
+            return emptyPlayerResult();
+        }
 
         url = (id.indexOf('http') === 0) ? id : HOST + '/play/' + id + '.html';
         var html = fetchHtml(url);
-        if (!html) return JSON.stringify({ parse: 1, url: url });
+        if (!html) return errorPlayerResult();
 
         // 提取 player_aaaa JSON
         var m = html.match(/player_aaaa\s*=\s*({[\s\S]*?})<\/script>/i);
-        if (!m) return JSON.stringify({ parse: 1, url: url });
+        if (!m) return errorPlayerResult();
 
         var pd;
         try {
@@ -574,11 +600,7 @@ spider.playerContent = function(vodId, flag, urlParam) {
         };
 
         if (!playUrl) {
-            return JSON.stringify({
-                parse: 0,
-                url: 'https://php.doube.eu.org/error.m3u8',
-                header: { 'User-Agent': 'Mozilla/5.0' }
-            });
+            return errorPlayerResult();
         }
 
         // 已经是直链
@@ -604,11 +626,7 @@ spider.playerContent = function(vodId, flag, urlParam) {
 
         var parserBases = parserBaseMap[playId];
         if (!parserBases || !parserBases.length) {
-            return JSON.stringify({
-                parse: 0,
-                url: 'https://php.doube.eu.org/error.m3u8',
-                header: { 'User-Agent': 'Mozilla/5.0' }
-            });
+            return errorPlayerResult();
         }
 
         // 按播放线路尝试主解析和备用解析，只使用枫叶影院站点已有的两个解析域名
@@ -645,11 +663,7 @@ spider.playerContent = function(vodId, flag, urlParam) {
     } catch (e) {
         print('[枫叶影院] playerContent error: ' + e);
     }
-    return JSON.stringify({
-        parse: 0,
-        url: 'https://php.doube.eu.org/error.m3u8',
-        header: { 'User-Agent': 'Mozilla/5.0' }
-    });
+    return errorPlayerResult();
 };
 
 spider.localProxy = function(param) {
