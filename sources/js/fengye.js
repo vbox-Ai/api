@@ -139,11 +139,10 @@ function emptyPlayerResult() {
 }
 
 function errorPlayerResult() {
-    return JSON.stringify({
-        parse: 0,
-        url: 'https://php.doube.eu.org/error.m3u8',
-        header: { 'User-Agent': 'Mozilla/5.0' }
-    });
+    // 解析失败时不要返回伪 m3u8。vbox 会把 http(s)+.m3u8 当直链交给播放器，
+    // 如果这个占位地址不可达或内容异常，容易触发播放器错误态。返回空地址让客户端
+    // 直接走“无可用播放地址”的错误处理，不创建播放器实例。
+    return emptyPlayerResult();
 }
 
 // ===================== HTML 解析辅助 =====================
