@@ -114,6 +114,16 @@ function stripHtml(html) {
     return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+// 规范化播放 id，兼容历史缓存里可能存在的重复拼接 id：73809-73809-8-1 -> 73809-8-1
+function normalizePlayId(id) {
+    id = String(id || '').trim();
+    var duplicateMatch = id.match(/^(\d+)-\1-(.+)$/);
+    if (duplicateMatch) {
+        return duplicateMatch[1] + '-' + duplicateMatch[2];
+    }
+    return id;
+}
+
 // ===================== HTML 解析辅助 =====================
 
 // 匹配所有符合条件的标签块（非贪婪）
@@ -464,7 +474,7 @@ spider.detailContent = function(ids) {
                     var epName = stripHtml(epMatches[e][2]).trim();
                     var playMatch = href.match(/\/play\/(.*?)\.html/);
                     if (playMatch) {
-                        epList.push(epName + '$' + vid + '-' + playMatch[1]);
+                        epList.push(epName + '$' + normalizePlayId(playMatch[1]));
                     }
                 }
                 epList.reverse();
@@ -515,9 +525,21 @@ spider.searchContent = function(key, quick, pg) {
     });
 };
 
-spider.playerContent = function(flag, id, vipFlags) {
+spider.playerContent = function(vodId, flag, urlParam) {
     var url = '';
     try {
+        // vbox 调用顺序为 playerContent(vodId, flag, url)
+        // 兼容 TVBox 常见顺序 playerContent(flag, id, vipFlags)
+        var id = '';
+        if (urlParam && typeof urlParam === 'string' && urlParam !== 'undefined' && urlParam !== 'null') {
+            id = urlParam;
+        } else if (flag && typeof flag === 'string' && flag !== 'play') {
+            id = flag;
+        } else {
+            id = vodId;
+        }
+        id = normalizePlayId(id);
+
         url = (id.indexOf('http') === 0) ? id : HOST + '/play/' + id + '.html';
         var html = fetchHtml(url);
         if (!html) return JSON.stringify({ parse: 1, url: url });
@@ -537,9 +559,16 @@ spider.playerContent = function(flag, id, vipFlags) {
         var playUrl = pd.url || '';
         var playId = pd.from || '';
 
-        var apiMap = {
-            'YYNB': 'https://zzrs.mfdyvip.com/player/mplayer.php',
-            'JD4K': 'https://fgsrg.hzqingshan.com/player/mplayer.php'
+        var parserBaseMap = {
+            'YYNB': 'https://zzrs.mfdyvip.com/player/',
+            'BBA': 'https://zzrs.mfdyvip.com/player/',
+            'co': 'https://zzrs.mfdyvip.com/player/',
+            'youku': 'https://zzrs.mfdyvip.com/player/',
+            'qq': 'https://zzrs.mfdyvip.com/player/',
+            'bilibili': 'https://zzrs.mfdyvip.com/player/',
+            'qiyi': 'https://zzrs.mfdyvip.com/player/',
+            'JD2K': 'https://fgsrg.hzqingshan.com/player/',
+            'JD4K': 'https://fgsrg.hzqingshan.com/player/'
         };
 
         if (!playUrl) {
@@ -571,8 +600,13 @@ spider.playerContent = function(flag, id, vipFlags) {
             'Content-Type': 'application/x-www-form-urlencoded'
         };
 
-        // 获取 token
-        var tokenUrl = 'https://fgsrg.hzqingshan.com/player/?url=' + encodeURIComponent(playUrl);
+        var parserBase = parserBaseMap[playId];
+        if (!parserBase) {
+            return JSON.stringify({ parse: 1, url: url });
+        }
+
+        // 按播放线路获取对应解析器 token
+        var tokenUrl = parserBase + '?url=' + encodeURIComponent(playUrl);
         var tokenResp = httpRequest(tokenUrl, { headers: headers, timeout: 15 });
         var tokenText = getRespText(tokenResp);
 
@@ -583,10 +617,7 @@ spider.playerContent = function(flag, id, vipFlags) {
 
         var token = tokenMatch[1];
         var payload = { url: playUrl, token: token };
-        var apiUrl = apiMap[playId];
-        if (!apiUrl) {
-            return JSON.stringify({ parse: 1, url: url });
-        }
+        var apiUrl = parserBase + 'mplayer.php';
 
         var result = postJson(apiUrl, payload, headers);
         if (result && result.code === 200 && result.url) {
