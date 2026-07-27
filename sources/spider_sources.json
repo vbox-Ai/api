@@ -70,7 +70,18 @@
       "changeable": 1,
       "ext": "",
       "timeout": 30
+    },
+    {
+      "key": "js_枫叶影院",
+      "name": "影视 | 枫叶影院[js]",
+      "type": 3,
+      "api": "./js/fengye.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "ext": "",
+      "timeout": 30
     }
   ],
-  "siteCount": 6
+  "siteCount": 7
 }
