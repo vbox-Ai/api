@@ -559,16 +559,18 @@ spider.playerContent = function(vodId, flag, urlParam) {
         var playUrl = pd.url || '';
         var playId = pd.from || '';
 
+        var zzrsParser = 'https://zzrs.mfdyvip.com/player/';
+        var fgsrgParser = 'https://fgsrg.hzqingshan.com/player/';
         var parserBaseMap = {
-            'YYNB': 'https://zzrs.mfdyvip.com/player/',
-            'BBA': 'https://zzrs.mfdyvip.com/player/',
-            'co': 'https://zzrs.mfdyvip.com/player/',
-            'youku': 'https://zzrs.mfdyvip.com/player/',
-            'qq': 'https://zzrs.mfdyvip.com/player/',
-            'bilibili': 'https://zzrs.mfdyvip.com/player/',
-            'qiyi': 'https://zzrs.mfdyvip.com/player/',
-            'JD2K': 'https://fgsrg.hzqingshan.com/player/',
-            'JD4K': 'https://fgsrg.hzqingshan.com/player/'
+            'YYNB': [zzrsParser, fgsrgParser],
+            'BBA': [zzrsParser, fgsrgParser],
+            'co': [zzrsParser, fgsrgParser],
+            'youku': [zzrsParser, fgsrgParser],
+            'qq': [zzrsParser, fgsrgParser],
+            'bilibili': [zzrsParser, fgsrgParser],
+            'qiyi': [zzrsParser, fgsrgParser],
+            'JD2K': [fgsrgParser, zzrsParser],
+            'JD4K': [fgsrgParser, zzrsParser]
         };
 
         if (!playUrl) {
@@ -600,39 +602,54 @@ spider.playerContent = function(vodId, flag, urlParam) {
             'Content-Type': 'application/x-www-form-urlencoded'
         };
 
-        var parserBase = parserBaseMap[playId];
-        if (!parserBase) {
-            return JSON.stringify({ parse: 1, url: url });
-        }
-
-        // 按播放线路获取对应解析器 token
-        var tokenUrl = parserBase + '?url=' + encodeURIComponent(playUrl);
-        var tokenResp = httpRequest(tokenUrl, { headers: headers, timeout: 15 });
-        var tokenText = getRespText(tokenResp);
-
-        var tokenMatch = tokenText.match(/data-te=["']([^"']+)["']/i);
-        if (!tokenMatch) {
-            return JSON.stringify({ parse: 1, url: url });
-        }
-
-        var token = tokenMatch[1];
-        var payload = { url: playUrl, token: token };
-        var apiUrl = parserBase + 'mplayer.php';
-
-        var result = postJson(apiUrl, payload, headers);
-        if (result && result.code === 200 && result.url) {
+        var parserBases = parserBaseMap[playId];
+        if (!parserBases || !parserBases.length) {
             return JSON.stringify({
                 parse: 0,
-                url: result.url,
-                header: {
-                    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1'
-                }
+                url: 'https://php.doube.eu.org/error.m3u8',
+                header: { 'User-Agent': 'Mozilla/5.0' }
             });
+        }
+
+        // 按播放线路尝试主解析和备用解析，只使用枫叶影院站点已有的两个解析域名
+        for (var pi = 0; pi < parserBases.length; pi++) {
+            var parserBase = parserBases[pi];
+            try {
+                var tokenUrl = parserBase + '?url=' + encodeURIComponent(playUrl);
+                var tokenResp = httpRequest(tokenUrl, { headers: headers, timeout: 10 });
+                var tokenText = getRespText(tokenResp);
+                var tokenMatch = tokenText.match(/data-te=["']([^"']+)["']/i);
+                if (!tokenMatch) {
+                    print('[枫叶影院] parser token miss: ' + playId + ' -> ' + parserBase);
+                    continue;
+                }
+
+                var token = tokenMatch[1];
+                var payload = { url: playUrl, token: token };
+                var apiUrl = parserBase + 'mplayer.php';
+                var result = postJson(apiUrl, payload, headers);
+                if (result && result.code === 200 && result.url && String(result.url).indexOf('http') === 0) {
+                    return JSON.stringify({
+                        parse: 0,
+                        url: result.url,
+                        header: {
+                            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1'
+                        }
+                    });
+                }
+                print('[枫叶影院] parser failed: ' + playId + ' -> ' + parserBase + ' result=' + JSON.stringify(result || {}));
+            } catch (pe) {
+                print('[枫叶影院] parser error: ' + playId + ' -> ' + parserBase + ' error=' + pe);
+            }
         }
     } catch (e) {
         print('[枫叶影院] playerContent error: ' + e);
     }
-    return JSON.stringify({ parse: 1, url: url });
+    return JSON.stringify({
+        parse: 0,
+        url: 'https://php.doube.eu.org/error.m3u8',
+        header: { 'User-Agent': 'Mozilla/5.0' }
+    });
 };
 
 spider.localProxy = function(param) {
