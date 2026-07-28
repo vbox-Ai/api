@@ -395,6 +395,10 @@ var spider = {
                 if (!resp) { print('>>> renren doGet null: ' + urlPath); return null; }
                 var content = resp.content || resp.data || '';
                 if (typeof content === 'object') content = JSON.stringify(content);
+                if (!content || content.length < 10) {
+                    print('>>> renren doGet empty resp: ' + urlPath + ' status=' + (resp.status || resp.code || 0));
+                    return null;
+                }
                 return decryptResponse(content);
             } catch (e) {
                 print('>>> renren doGet ERROR (' + urlPath + '): ' + e);
@@ -412,6 +416,10 @@ var spider = {
                 if (!resp) { print('>>> renren doPost null: ' + urlPath); return null; }
                 var content = resp.content || resp.data || '';
                 if (typeof content === 'object') content = JSON.stringify(content);
+                if (!content || content.length < 10) {
+                    print('>>> renren doPost empty resp: ' + urlPath + ' status=' + (resp.status || resp.code || 0));
+                    return null;
+                }
                 return decryptResponse(content);
             } catch (e) {
                 print('>>> renren doPost ERROR (' + urlPath + '): ' + e);
@@ -431,28 +439,31 @@ var spider = {
 
         function getRedirectLocation(url) {
             try {
+                // JSHTTPBridge 默认跟随重定向，拿不到 302 Location header
+                // 对于 m3u8 地址，AVPlayer 会自动处理 302 跳转，无需手动获取
+                // 仅对非 m3u8/mp4 地址尝试请求获取最终 URL
+                if (url.indexOf('.m3u8') >= 0 || url.indexOf('.mp4') >= 0) {
+                    print('>>> renren getRedirectLocation: 直链格式，直接返回: ' + url.substring(0, 80));
+                    return url;
+                }
                 var resp = req(url, { method: 'GET', headers: HEADERX });
-                if (!resp) { print('>>> renren getRedirectLocation null: ' + url); return ''; }
+                if (!resp) { print('>>> renren getRedirectLocation null: ' + url); return url; }
                 // 优先从 headers 中取 Location
                 var headers = resp.headers || {};
                 var loc = headers['Location'] || headers['location'] || '';
                 if (loc) { print('>>> renren redirect Location: ' + loc); return loc; }
-                // 如果 headers 没有 Location, 但 content 是 URL, 可能是最终地址
-                var content = resp.content || '';
-                if (typeof content === 'string' && content.startsWith('http')) {
-                    return content;
-                }
                 // resp.url 可能是最终 URL (如果引擎自动跟随重定向)
                 var finalUrl = resp.url || '';
                 if (finalUrl && finalUrl !== url) {
                     print('>>> renren redirect finalUrl: ' + finalUrl);
                     return finalUrl;
                 }
-                print('>>> renren getRedirectLocation: no Location found');
-                return '';
+                // 无法获取重定向地址，返回原始 URL，让 AVPlayer 处理
+                print('>>> renren getRedirectLocation: no Location, return original url');
+                return url;
             } catch (e) {
                 print('>>> renren getRedirectLocation ERROR: ' + e);
-                return '';
+                return url;
             }
         }
 
@@ -462,7 +473,7 @@ var spider = {
             },
 
             homeContent: function(filter) {
-                var result = { class: [] };
+                var result = { class: [], list: [] };
                 var urlPath = '/m-station/drama/get_drama_filter';
                 var data = doGet(urlPath, null);
                 if (!data || !data.data) {
@@ -474,13 +485,38 @@ var spider = {
                     print('>>> renren homeContent: no dramaFilterItemList');
                     return result;
                 }
+                var firstTypeId = '';
                 for (var i = 0; i < filterList.length; i++) {
                     var name = filterList[i].displayName;
                     if (name === '全部') continue;
-                    result.class.push({
-                        type_id: filterList[i].value,
-                        type_name: name
-                    });
+                    var tid = filterList[i].value;
+                    result.class.push({ type_id: tid, type_name: name });
+                    if (!firstTypeId) firstTypeId = tid;
+                }
+                // 获取首页推荐视频列表：用第一个分类调分类接口取热门视频
+                if (firstTypeId) {
+                    try {
+                        var hotParams = {
+                            area: '', sort: 'hot', year: '',
+                            dramaType: firstTypeId, plotType: '',
+                            contentLabel: '', page: 1, rows: 30
+                        };
+                        var hotData = doPost('/m-station/drama/drama_filter_search', hotParams);
+                        if (hotData && hotData.data && Array.isArray(hotData.data)) {
+                            for (var j = 0; j < hotData.data.length && j < 24; j++) {
+                                var v = hotData.data[j];
+                                result.list.push({
+                                    vod_id: v.dramaId,
+                                    vod_name: v.title,
+                                    vod_pic: v.coverUrl || '',
+                                    vod_remarks: v.year || ''
+                                });
+                            }
+                            print('>>> renren homeContent: list=' + result.list.length);
+                        }
+                    } catch (e) {
+                        print('>>> renren homeContent list ERROR: ' + e);
+                    }
                 }
                 return result;
             },
@@ -644,7 +680,7 @@ var spider = {
                         parse: 0,
                         playUrl: '',
                         url: finalUrl,
-                        header: JSON.stringify(HEADERX)
+                        header: { 'User-Agent': HEADERX['User-Agent'] }
                     };
                 } catch (e) {
                     print('>>> renren playerContent ERROR: ' + e);
