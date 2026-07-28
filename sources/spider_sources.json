@@ -59,7 +59,18 @@
       "changeable": 1,
       "ext": "",
       "timeout": 30
+    },
+    {
+      "key": "js_人人视频",
+      "name": "影视 | 人人视频[js]",
+      "type": 3,
+      "api": "./js/renren_video.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "ext": "",
+      "timeout": 30
     }
   ],
-  "siteCount": 5
+  "siteCount": 6
 }
