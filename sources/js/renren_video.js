@@ -506,27 +506,10 @@ var spider = {
 
         function getRedirectLocation(url) {
             try {
-                // JSHTTPBridge 默认跟随重定向，拿不到 302 Location header
-                // 对于 m3u8 地址，AVPlayer 会自动处理 302 跳转，无需手动获取
-                // 仅对非 m3u8/mp4 地址尝试请求获取最终 URL
-                if (url.indexOf('.m3u8') >= 0 || url.indexOf('.mp4') >= 0) {
-                    print('>>> renren getRedirectLocation: 直链格式，直接返回: ' + url.substring(0, 80));
-                    return url;
-                }
-                var resp = req(url, { method: 'GET', headers: HEADERX });
-                if (!resp) { print('>>> renren getRedirectLocation null: ' + url); return url; }
-                // 优先从 headers 中取 Location
-                var headers = resp.headers || {};
-                var loc = headers['Location'] || headers['location'] || '';
-                if (loc) { print('>>> renren redirect Location: ' + loc); return loc; }
-                // resp.url 可能是最终 URL (如果引擎自动跟随重定向)
-                var finalUrl = resp.url || '';
-                if (finalUrl && finalUrl !== url) {
-                    print('>>> renren redirect finalUrl: ' + finalUrl);
-                    return finalUrl;
-                }
-                // 无法获取重定向地址，返回原始 URL，让 AVPlayer 处理
-                print('>>> renren getRedirectLocation: no Location, return original url');
+                // iOS JSHTTPBridge 默认跟随重定向，无法获取 302 Location header
+                // 人人视频的解密URL是302跳转地址，AVPlayer能自动处理302
+                // 直接返回原始解密URL，让AVPlayer自己处理重定向
+                print('>>> renren getRedirectLocation: return original url (AVPlayer handles 302)');
                 return url;
             } catch (e) {
                 print('>>> renren getRedirectLocation ERROR: ' + e);
@@ -595,11 +578,13 @@ var spider = {
             categoryContent: function(tid, pg, filter, extend) {
                 var videos = [];
                 var page = parseInt(pg) || 1;
+                // tid 为空时用空字符串表示"全部"，不能用 'all'（API不识别）
+                var dramaType = String(tid || '');
                 var params = {
                     area: '',
                     sort: 'hot',
                     year: '',
-                    dramaType: String(tid || 'all'),
+                    dramaType: dramaType,
                     plotType: '',
                     contentLabel: '',
                     page: page,
@@ -671,9 +656,18 @@ var spider = {
             },
 
             searchContent: function(key, quick, pg) {
+                // iOS 引擎调用 searchContent(keyword, pg) 只传2个参数
+                // 兼容两种调用方式：searchContent(key, pg) 或 searchContent(key, quick, pg)
+                var keyword = String(key || '');
+                var pageNum = 1;
+                if (pg !== undefined) {
+                    pageNum = parseInt(pg) || 1;
+                } else if (quick !== undefined) {
+                    pageNum = parseInt(quick) || 1;
+                }
                 var videos = [];
                 var params = {
-                    keywords: String(key || ''),
+                    keywords: keyword,
                     size: '20',
                     searchAfter: ''
                 };
@@ -693,7 +687,7 @@ var spider = {
                 }
                 return {
                     list: videos,
-                    page: 1,
+                    page: pageNum,
                     pagecount: 9999,
                     limit: 20,
                     total: 999999
@@ -703,10 +697,24 @@ var spider = {
             playerContent: function(vodId, flag, url) {
                 try {
                     print('>>> renren playerContent 入参: vodId=' + vodId + ' flag=' + flag + ' url=' + url);
+                    // 播放URL格式: episodeNo$dramaId@episodeId (如 "1$56986@387800")
+                    // 需要提取 dramaId@episodeId 部分
+                    var rawUrl = String(url || '');
                     var playId = '';
-                    if (url && String(url).indexOf('@') >= 0) playId = String(url);
-                    else if (flag && String(flag).indexOf('@') >= 0) playId = String(flag);
-                    else if (vodId && String(vodId).indexOf('@') >= 0) playId = String(vodId);
+                    // 优先从 url 中提取 dramaId@episodeId
+                    if (rawUrl.indexOf('@') >= 0) {
+                        // 如果 url 格式是 "epNo$dramaId@epId"，取 $ 后面的部分
+                        if (rawUrl.indexOf('$') >= 0 && rawUrl.indexOf('$') < rawUrl.indexOf('@')) {
+                            playId = rawUrl.substring(rawUrl.indexOf('$') + 1);
+                        } else {
+                            playId = rawUrl;
+                        }
+                    } else if (String(flag || '').indexOf('@') >= 0) {
+                        playId = String(flag);
+                    } else if (String(vodId || '').indexOf('@') >= 0) {
+                        playId = String(vodId);
+                    }
+                    print('>>> renren playerContent playId=' + playId);
                     var parts = playId.split('@');
                     if (parts.length < 2) {
                         print('>>> renren playerContent FAIL: parts < 2, playId=' + playId);
