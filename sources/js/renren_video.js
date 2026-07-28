@@ -349,18 +349,23 @@ var spider = {
             return HMAC_SHA256(APP_SECRET, stringToSign);
         }
 
-        function createHeaders(urlPath, params) {
+        // 通用签名：始终用 /m-station/top/home 签名（对应 Python create_headers）
+        // 用于 homeContent / categoryContent(POST) / searchContent
+        function createGenericHeaders() {
             var t = getTimestamp();
-            var stringToSign = buildStringToSign('GET', urlPath, KY_ID, 'web_pc', '1.0.0', t, params);
+            var stringToSign = buildStringToSign('GET', '/m-station/top/home', KY_ID, 'web_pc', '1.0.0', t, null);
             var sign = calculateSign(stringToSign);
             return {
                 'Accept': 'application/json, text/plain, */*',
-                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
                 'Cache-Control': 'no-cache',
                 'Connection': 'keep-alive',
                 'Origin': XURL1,
                 'Pragma': 'no-cache',
                 'Referer': XURL1,
+                'Sec-Fetch-Dest': 'empty',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Site': 'cross-site',
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0',
                 'aliId': KY_ID,
                 'clientType': 'web_pc',
@@ -368,6 +373,44 @@ var spider = {
                 'ct': 'web_pc',
                 'cv': '1.0.0',
                 'deviceId': KY_ID,
+                'sec-ch-ua': '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Windows"',
+                't': t,
+                'token': '',
+                'uet': '9',
+                'umid': KY_ID,
+                'x-ca-sign': sign
+            };
+        }
+
+        // 定向签名：用实际路径+参数签名（对应 Python generate_sign_and_timestamp）
+        // 用于 detailContent / playerContent
+        function createHeaders(urlPath, params) {
+            var t = getTimestamp();
+            var stringToSign = buildStringToSign('GET', urlPath, KY_ID, 'web_pc', '1.0.0', t, params);
+            var sign = calculateSign(stringToSign);
+            return {
+                'Accept': 'application/json, text/plain, */*',
+                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+                'Origin': XURL1,
+                'Pragma': 'no-cache',
+                'Referer': XURL1,
+                'Sec-Fetch-Dest': 'empty',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Site': 'cross-site',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0',
+                'aliId': KY_ID,
+                'clientType': 'web_pc',
+                'clientVersion': '1.0.0',
+                'ct': 'web_pc',
+                'cv': '1.0.0',
+                'deviceId': KY_ID,
+                'sec-ch-ua': '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Windows"',
                 't': t,
                 'token': '',
                 'uet': '9',
@@ -385,12 +428,13 @@ var spider = {
             }
         }
 
+        // 通用 GET：用固定路径签名（homeContent / searchContent）
         function doGet(urlPath, params) {
             try {
                 var url = XURL + urlPath;
                 var queryString = params ? buildQueryString(params) : '';
                 if (queryString) url += '?' + queryString;
-                var headers = createHeaders(urlPath, params);
+                var headers = createGenericHeaders();
                 var resp = req(url, { method: 'GET', headers: headers });
                 if (!resp) { print('>>> renren doGet null: ' + urlPath); return null; }
                 var content = resp.content || resp.data || '';
@@ -406,10 +450,11 @@ var spider = {
             }
         }
 
+        // 通用 POST：用固定路径签名（categoryContent 的 drama_filter_search）
         function doPost(urlPath, params) {
             try {
                 var url = XURL + urlPath;
-                var headers = createHeaders(urlPath, null);
+                var headers = createGenericHeaders();
                 headers['Content-Type'] = 'application/json';
                 var body = JSON.stringify(params);
                 var resp = req(url, { method: 'POST', headers: headers, data: body });
@@ -423,6 +468,28 @@ var spider = {
                 return decryptResponse(content);
             } catch (e) {
                 print('>>> renren doPost ERROR (' + urlPath + '): ' + e);
+                return null;
+            }
+        }
+
+        // 定向 GET：用实际路径+参数签名（detailContent / playerContent）
+        function doGetSigned(urlPath, params) {
+            try {
+                var url = XURL + urlPath;
+                var queryString = params ? buildQueryString(params) : '';
+                if (queryString) url += '?' + queryString;
+                var headers = createHeaders(urlPath, params);
+                var resp = req(url, { method: 'GET', headers: headers });
+                if (!resp) { print('>>> renren doGetSigned null: ' + urlPath); return null; }
+                var content = resp.content || resp.data || '';
+                if (typeof content === 'object') content = JSON.stringify(content);
+                if (!content || content.length < 10) {
+                    print('>>> renren doGetSigned empty resp: ' + urlPath + ' status=' + (resp.status || resp.code || 0));
+                    return null;
+                }
+                return decryptResponse(content);
+            } catch (e) {
+                print('>>> renren doGetSigned ERROR (' + urlPath + '): ' + e);
                 return null;
             }
         }
@@ -571,7 +638,7 @@ var spider = {
                     hevcOpen: '0',
                     tria4k: '1'
                 };
-                var data = doGet('/m-station/drama/page', params);
+                var data = doGetSigned('/m-station/drama/page', params);
                 if (!data || !data.data) {
                     return { list: [] };
                 }
@@ -653,7 +720,7 @@ var spider = {
                         quality: 'AI4K',
                         tria4k: '1'
                     };
-                    var data = doGet('/m-station/drama/play', params);
+                    var data = doGetSigned('/m-station/drama/play', params);
                     if (!data || !data.data || !data.data.m3u8) {
                         print('>>> renren playerContent FAIL: no m3u8 data');
                         return { parse: 0, playUrl: '', url: '' };
