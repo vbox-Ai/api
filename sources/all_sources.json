@@ -379,30 +379,8 @@
         "ext": "",
         "timeout": 30
       },
-      {
-        "key": "js_tetui",
-        "name": "特推 | 视频[js]",
-        "type": 3,
-        "api": "./js/tetui_spider.js",
-        "searchable": 1,
-        "quickSearch": 1,
-        "changeable": 1,
-        "ext": "",
-        "timeout": 30
-      },
-      {
-        "key": "js_枫叶影院",
-        "name": "影视 | 枫叶影院[js]",
-        "type": 3,
-        "api": "./js/fengye.js",
-        "searchable": 1,
-        "quickSearch": 1,
-        "changeable": 1,
-        "ext": "",
-        "timeout": 30
-      }
     ],
-    "siteCount": 7
+    "siteCount": 5
   },
   "domainOverrides": {
     "overrides": []
