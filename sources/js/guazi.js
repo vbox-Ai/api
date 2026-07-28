@@ -844,13 +844,20 @@ var spider = {
                 }
             },
 
-            searchContent: function(keyword, pg) {
-                pg = pg || 1;
+            searchContent: function(key, quick, pg) {
                 try {
+                    var keyword = String(key || '').trim();
+                    var page = parseInt(pg || 1) || 1;
+                    // 兼容部分引擎按 2 参数调用 searchContent(key, pg) 的情况。
+                    if ((!pg || String(pg) === 'undefined') && quick !== undefined && quick !== null) {
+                        var quickAsPage = parseInt(quick);
+                        if (!isNaN(quickAsPage) && quickAsPage > 0) page = quickAsPage;
+                    }
+
                     var body = {
                         keywords: keyword,
                         order_val: '1',
-                        page: String(pg)
+                        page: String(page)
                     };
 
                     var data = getData(body, '/App/Index/findMoreVod', false);
@@ -867,16 +874,39 @@ var spider = {
                             });
                         }
                     }
+
+                    // 瓜子接口会返回较宽泛的 100 条结果。优先保留标题包含关键词的结果，
+                    // 避免 vbox 搜索页出现大量弱相关内容；若过滤后为空，则保留原始结果兜底。
+                    var filtered = [];
+                    var kw = keyword.toLowerCase().replace(/\s+/g, '');
+                    if (kw) {
+                        for (var j = 0; j < videos.length; j++) {
+                            var name = String(videos[j].vod_name || '').toLowerCase().replace(/\s+/g, '');
+                            if (name.indexOf(kw) >= 0) {
+                                filtered.push(videos[j]);
+                            }
+                        }
+                    }
+                    if (filtered.length > 0) {
+                        videos = filtered;
+                    }
+
+                    // 限制单页展示数量，避免接口一次返回 100 条造成界面显示 99+。
+                    var limit = 30;
+                    if (videos.length > limit) {
+                        videos = videos.slice(0, limit);
+                    }
+
                     return {
                         list: videos,
-                        page: parseInt(pg) || 1,
-                        pagecount: 9999,
-                        limit: 30,
-                        total: 999999
+                        page: page,
+                        pagecount: 1,
+                        limit: limit,
+                        total: videos.length
                     };
                 } catch (e) {
                     print('>>> guazi searchContent error: ' + e);
-                    return { list: [] };
+                    return { list: [], page: 1, pagecount: 1, limit: 30, total: 0 };
                 }
             },
 
