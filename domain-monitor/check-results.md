@@ -1,6 +1,6 @@
 # vbox 远程源每周检测报告
 
-检测时间：2026-07-28 03:37:28 UTC
+检测时间：2026-07-28 03:41:20 UTC
 
 ## 总览
 
@@ -12,63 +12,63 @@
 
 | 域名 | 来源 | 字段 | 状态 | 耗时 | 错误 |
 |---|---|---|---:|---:|---|
-| http://xsayang.fun:12512 | 小斑资源 | searchurl | - | 985ms | Remote end closed connection without response |
-| http://xsayang.fun:12512 | 小斑资源 | detailBase | - | 996ms | Remote end closed connection without response |
-| https://666.666291.xyz | 木偶资源 | searchurl | - | 15280ms | timed out |
-| https://666.666291.xyz | 木偶资源 | detailBase | - | 15034ms | timed out |
+| http://xsayang.fun:12512 | 小斑资源 | searchurl | - | 796ms | Remote end closed connection without response |
+| http://xsayang.fun:12512 | 小斑资源 | detailBase | - | 767ms | Remote end closed connection without response |
+| https://666.666291.xyz | 木偶资源 | searchurl | - | 15610ms | timed out |
+| https://666.666291.xyz | 木偶资源 | detailBase | - | 15031ms | timed out |
 
 ## 全部记录
 
 | 域名 | 来源 | 文件 | 字段 | 状态 | 耗时 |
 |---|---|---|---|---:|---:|
-| http://caiji.dyttzyapi.com | 电影天堂 | sources/api_sources.json | api | 200 | 1735ms |
-| http://feimo.fun | 飞猫影视 | sources/api_sources.json | api | 200 | 178ms |
-| http://feimo.fun | 飞猫影视 | sources/cloud_sources.json | searchurl | 200 | 106ms |
-| http://feimo.fun | 飞猫影视 | sources/cloud_sources.json | detailBase | 200 | 192ms |
-| http://v12-1-hulucms.nmgzxrl.com | 奇迹影视 | sources/api_sources.json | api | 403 | 1466ms |
-| http://www.miqk.cc | 至臻影视 | sources/api_sources.json | api | 200 | 260ms |
-| http://www.miqk.cc | 至臻影视 | sources/cloud_sources.json | searchurl | 200 | 157ms |
-| http://www.miqk.cc | 至臻影视 | sources/cloud_sources.json | detailBase | 200 | 157ms |
-| http://xsayang.fun:12512 | 小斑资源 | sources/cloud_sources.json | searchurl | - | 985ms |
-| http://xsayang.fun:12512 | 小斑资源 | sources/cloud_sources.json | detailBase | - | 996ms |
-| http://zltaa.sbjson.com | SBJSON影视 | sources/api_sources.json | api | 200 | 728ms |
-| https://360zyzz.com | 360资源 | sources/api_sources.json | api | 200 | 813ms |
-| https://666.666291.xyz | 木偶资源 | sources/cloud_sources.json | searchurl | - | 15280ms |
-| https://666.666291.xyz | 木偶资源 | sources/cloud_sources.json | detailBase | - | 15034ms |
-| https://api.guangsuapi.com | 光速资源 | sources/api_sources.json | api | 403 | 107ms |
-| https://app7.555618.xyz | 555影视 | sources/api_sources.json | api | 200 | 442ms |
-| https://cj.lziapi.com | 量子资源 | sources/api_sources.json | api | 403 | 49ms |
-| https://hhzyapi.com | 黄河资源 | sources/api_sources.json | api | 403 | 68ms |
-| https://in.donw.work | DONW影视 | sources/api_sources.json | api | 200 | 1057ms |
-| https://jszyapi.com | 极速资源 | sources/api_sources.json | api | 403 | 83ms |
-| https://pan1.me | 123分享 | sources/cloud_sources.json | searchurl | 200 | 396ms |
-| https://pan1.me | 123分享 | sources/cloud_sources.json | detailBase | 200 | 356ms |
-| https://pan1.me | 123分享 | sources/cloud_sources.json | threadURL | 200 | 329ms |
-| https://raw.githubusercontent.com |  | sources/manifest.json | allSources | 200 | 44ms |
-| https://sdzyapi.com | 闪电资源 | sources/api_sources.json | api | 200 | 249ms |
-| https://so.252035.xyz | PanSou盘搜 | sources/cloud_sources.json | searchurl | 200 | 589ms |
-| https://so.252035.xyz | PanSou盘搜 | sources/cloud_sources.json | detailBase | 200 | 581ms |
-| https://so.252035.xyz | PanSou盘搜 | sources/cloud_sources.json | apiSearch | 200 | 600ms |
-| https://tv.yydsys.top | 多多资源 | sources/api_sources.json | api | 403 | 624ms |
-| https://tv.yydsys.top | 多多资源 | sources/cloud_sources.json | searchurl | 403 | 33ms |
-| https://tv.yydsys.top | 多多资源 | sources/cloud_sources.json | detailBase | 403 | 33ms |
-| https://tyyszyapi.com | TY影视 | sources/api_sources.json | api | 200 | 504ms |
-| https://vbox-ai.github.io |  | sources/manifest.json | apiSources | 404 | 67ms |
-| https://vbox-ai.github.io |  | sources/manifest.json | cloudSources | 404 | 32ms |
-| https://vbox-ai.github.io |  | sources/manifest.json | spiderSources | 404 | 30ms |
-| https://vbox-ai.github.io |  | sources/manifest.json | domainOverrides | 404 | 27ms |
-| https://vbox-ai.github.io |  | sources/manifest.json | parsers | 404 | 27ms |
-| https://vbox-ai.github.io |  | sources/manifest.json | disabledSources | 404 | 44ms |
-| https://wogg.xxooo.cf | 玩偶资源 | sources/cloud_sources.json | searchurl | 403 | 472ms |
-| https://wogg.xxooo.cf | 玩偶资源 | sources/cloud_sources.json | detailBase | 403 | 142ms |
-| https://woog.nxog.eu.org | 欧歌资源 | sources/cloud_sources.json | searchurl | 403 | 137ms |
-| https://woog.nxog.eu.org | 欧歌资源 | sources/cloud_sources.json | detailBase | 403 | 30ms |
-| https://www.2xiaopan.top | 2小盘 | sources/cloud_sources.json | searchurl | 200 | 731ms |
-| https://www.2xiaopan.top | 2小盘 | sources/cloud_sources.json | detailBase | 200 | 145ms |
-| https://www.319312.com | 319影社 | sources/cloud_sources.json | searchurl | 200 | 6058ms |
-| https://www.319312.com | 319影社 | sources/cloud_sources.json | detailBase | 200 | 5577ms |
-| https://www.rrdynb.com | 人人电影 | sources/cloud_sources.json | searchurl | 403 | 100ms |
-| https://www.rrdynb.com | 人人电影 | sources/cloud_sources.json | detailBase | 403 | 33ms |
-| https://ysso.cc | 奕搜资源 | sources/cloud_sources.json | searchurl | 403 | 280ms |
-| https://ysso.cc | 奕搜资源 | sources/cloud_sources.json | detailBase | 403 | 172ms |
-| https://ysso.cc | 奕搜资源 | sources/cloud_sources.json | apiSearch | 403 | 164ms |
+| http://caiji.dyttzyapi.com | 电影天堂 | sources/api_sources.json | api | 200 | 1509ms |
+| http://feimo.fun | 飞猫影视 | sources/api_sources.json | api | 200 | 132ms |
+| http://feimo.fun | 飞猫影视 | sources/cloud_sources.json | searchurl | 200 | 119ms |
+| http://feimo.fun | 飞猫影视 | sources/cloud_sources.json | detailBase | 200 | 123ms |
+| http://v12-1-hulucms.nmgzxrl.com | 奇迹影视 | sources/api_sources.json | api | 403 | 1257ms |
+| http://www.miqk.cc | 至臻影视 | sources/api_sources.json | api | 200 | 180ms |
+| http://www.miqk.cc | 至臻影视 | sources/cloud_sources.json | searchurl | 200 | 166ms |
+| http://www.miqk.cc | 至臻影视 | sources/cloud_sources.json | detailBase | 200 | 121ms |
+| http://xsayang.fun:12512 | 小斑资源 | sources/cloud_sources.json | searchurl | - | 796ms |
+| http://xsayang.fun:12512 | 小斑资源 | sources/cloud_sources.json | detailBase | - | 767ms |
+| http://zltaa.sbjson.com | SBJSON影视 | sources/api_sources.json | api | 200 | 684ms |
+| https://360zyzz.com | 360资源 | sources/api_sources.json | api | 200 | 384ms |
+| https://666.666291.xyz | 木偶资源 | sources/cloud_sources.json | searchurl | - | 15610ms |
+| https://666.666291.xyz | 木偶资源 | sources/cloud_sources.json | detailBase | - | 15031ms |
+| https://api.guangsuapi.com | 光速资源 | sources/api_sources.json | api | 403 | 105ms |
+| https://app7.555618.xyz | 555影视 | sources/api_sources.json | api | 200 | 324ms |
+| https://cj.lziapi.com | 量子资源 | sources/api_sources.json | api | 403 | 93ms |
+| https://hhzyapi.com | 黄河资源 | sources/api_sources.json | api | 403 | 133ms |
+| https://in.donw.work | DONW影视 | sources/api_sources.json | api | 200 | 682ms |
+| https://jszyapi.com | 极速资源 | sources/api_sources.json | api | 403 | 109ms |
+| https://pan1.me | 123分享 | sources/cloud_sources.json | searchurl | 200 | 790ms |
+| https://pan1.me | 123分享 | sources/cloud_sources.json | detailBase | 200 | 307ms |
+| https://pan1.me | 123分享 | sources/cloud_sources.json | threadURL | 200 | 453ms |
+| https://raw.githubusercontent.com |  | sources/manifest.json | allSources | 200 | 219ms |
+| https://sdzyapi.com | 闪电资源 | sources/api_sources.json | api | 200 | 224ms |
+| https://so.252035.xyz | PanSou盘搜 | sources/cloud_sources.json | searchurl | 200 | 1140ms |
+| https://so.252035.xyz | PanSou盘搜 | sources/cloud_sources.json | detailBase | 200 | 450ms |
+| https://so.252035.xyz | PanSou盘搜 | sources/cloud_sources.json | apiSearch | 200 | 3989ms |
+| https://tv.yydsys.top | 多多资源 | sources/api_sources.json | api | 403 | 559ms |
+| https://tv.yydsys.top | 多多资源 | sources/cloud_sources.json | searchurl | 403 | 48ms |
+| https://tv.yydsys.top | 多多资源 | sources/cloud_sources.json | detailBase | 403 | 56ms |
+| https://tyyszyapi.com | TY影视 | sources/api_sources.json | api | 200 | 524ms |
+| https://vbox-ai.github.io |  | sources/manifest.json | apiSources | 404 | 165ms |
+| https://vbox-ai.github.io |  | sources/manifest.json | cloudSources | 404 | 144ms |
+| https://vbox-ai.github.io |  | sources/manifest.json | spiderSources | 404 | 44ms |
+| https://vbox-ai.github.io |  | sources/manifest.json | domainOverrides | 404 | 41ms |
+| https://vbox-ai.github.io |  | sources/manifest.json | parsers | 404 | 44ms |
+| https://vbox-ai.github.io |  | sources/manifest.json | disabledSources | 404 | 42ms |
+| https://wogg.xxooo.cf | 玩偶资源 | sources/cloud_sources.json | searchurl | 403 | 414ms |
+| https://wogg.xxooo.cf | 玩偶资源 | sources/cloud_sources.json | detailBase | 403 | 228ms |
+| https://woog.nxog.eu.org | 欧歌资源 | sources/cloud_sources.json | searchurl | 403 | 211ms |
+| https://woog.nxog.eu.org | 欧歌资源 | sources/cloud_sources.json | detailBase | 403 | 53ms |
+| https://www.2xiaopan.top | 2小盘 | sources/cloud_sources.json | searchurl | 200 | 353ms |
+| https://www.2xiaopan.top | 2小盘 | sources/cloud_sources.json | detailBase | 200 | 179ms |
+| https://www.319312.com | 319影社 | sources/cloud_sources.json | searchurl | 200 | 1674ms |
+| https://www.319312.com | 319影社 | sources/cloud_sources.json | detailBase | 200 | 1447ms |
+| https://www.rrdynb.com | 人人电影 | sources/cloud_sources.json | searchurl | 403 | 106ms |
+| https://www.rrdynb.com | 人人电影 | sources/cloud_sources.json | detailBase | 403 | 51ms |
+| https://ysso.cc | 奕搜资源 | sources/cloud_sources.json | searchurl | 403 | 268ms |
+| https://ysso.cc | 奕搜资源 | sources/cloud_sources.json | detailBase | 403 | 134ms |
+| https://ysso.cc | 奕搜资源 | sources/cloud_sources.json | apiSearch | 403 | 134ms |
