@@ -912,11 +912,17 @@ var spider = {
 
             playerContent: function(vodId, flag, url) {
                 try {
+                    print('>>> guazi playerContent 入参: vodId=' + vodId + ' flag=' + flag + ' url=' + url);
+
                     var parts = String(url).split('||');
-                    if (parts.length < 2) return { parse: 0, playUrl: '', url: '' };
+                    if (parts.length < 2) {
+                        print('>>> guazi playerContent FAIL: parts < 2, url=' + url);
+                        return { parse: 0, playUrl: '', url: '' };
+                    }
 
                     var paramStr = parts[0];
                     var resolutions = parts[1].split('@');
+                    print('>>> guazi playerContent paramStr=' + paramStr + ' resolutions=' + JSON.stringify(resolutions));
 
                     // 解析参数
                     var params = {};
@@ -927,14 +933,33 @@ var spider = {
                             params[pairs[i].substring(0, eqIdx)] = pairs[i].substring(eqIdx + 1);
                         }
                     }
+                    print('>>> guazi playerContent params=' + JSON.stringify(params));
 
                     // 按分辨率排序（从大到小）
                     resolutions.sort(function(a, b) { return (parseInt(b) || 0) - (parseInt(a) || 0); });
 
                     if (resolutions.length > 0) {
                         params.resolution = resolutions[0];
+                        print('>>> guazi playerContent 调用 getData, resolution=' + resolutions[0]);
+
                         var data = getData(params, '/App/Resource/VurlDetail/showOne', false);
+
+                        // 调试日志：打印 getData 返回值结构
+                        print('>>> guazi playerContent getData 返回类型: ' + typeof data);
+                        if (data === null || data === undefined) {
+                            print('>>> guazi playerContent getData 返回 null/undefined');
+                        } else {
+                            print('>>> guazi playerContent getData 完整返回: ' + JSON.stringify(data));
+                            print('>>> guazi playerContent data.url = ' + data.url);
+                            print('>>> guazi playerContent data 所有key: ' + JSON.stringify(Object.keys(data)));
+                            if (data.data) {
+                                print('>>> guazi playerContent data.data.url = ' + data.data.url);
+                                print('>>> guazi playerContent data.data 所有key: ' + JSON.stringify(Object.keys(data.data)));
+                            }
+                        }
+
                         if (data && data.url) {
+                            print('>>> guazi playerContent SUCCESS: url=' + data.url);
                             return {
                                 parse: 0,
                                 playUrl: '',
@@ -942,6 +967,21 @@ var spider = {
                                 header: JSON.stringify({ 'User-Agent': 'Lavf/57.83.100', 'Referer': 'http://WJiZxLXA2.com/' })
                             };
                         }
+
+                        // 兼容嵌套格式 { code:0, data:{ url:"..." } }
+                        if (data && data.data && data.data.url) {
+                            print('>>> guazi playerContent SUCCESS(嵌套): url=' + data.data.url);
+                            return {
+                                parse: 0,
+                                playUrl: '',
+                                url: data.data.url,
+                                header: JSON.stringify({ 'User-Agent': 'Lavf/57.83.100', 'Referer': 'http://WJiZxLXA2.com/' })
+                            };
+                        }
+
+                        print('>>> guazi playerContent FAIL: data存在但无url字段');
+                    } else {
+                        print('>>> guazi playerContent FAIL: resolutions为空');
                     }
 
                     return { parse: 0, playUrl: '', url: '' };
