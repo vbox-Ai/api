@@ -343,7 +343,7 @@
   },
   {
     "host": "https://wogg.xxooo.cf",
-    "fullUrl": "https://wogg.xxooo.cf/vodsearch/",
+    "fullUrl": "https://wogg.xxooo.cf/vodsearch/-------------.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "玩偶资源",

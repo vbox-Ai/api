@@ -192,7 +192,7 @@
       {
         "name": "玩偶资源",
         "type": "cms",
-        "searchurl": "https://wogg.xxooo.cf/vodsearch/",
+        "searchurl": "https://wogg.xxooo.cf/vodsearch/-------------.html?wd=",
         "detailBase": "https://wogg.xxooo.cf",
         "ua": "pc",
         "enabled": true,
