@@ -10,10 +10,10 @@
     {
       "name": "玩偶资源",
       "type": "cms",
-      "searchurl": "https://wogg.xxooo.cf/vodsearch/-",
+      "searchurl": "https://wogg.xxooo.cf/vodsearch/",
       "detailBase": "https://wogg.xxooo.cf",
       "ua": "pc",
-      "enabled": false,
+      "enabled": true,
       "priority": 1002,
       "group": "cloud"
     },
@@ -136,16 +136,6 @@
       "detailBase": "https://www.2xiaopan.top",
       "enabled": true,
       "priority": 1021,
-      "group": "cloud"
-    },
-    {
-      "name": "虎斑资源",
-      "type": "cms",
-      "searchurl": "http://121.205.88.174:16969/index.php/vod/search.html?wd=",
-      "detailBase": "http://121.205.88.174:16969",
-      "ua": "pc",
-      "enabled": true,
-      "priority": 1022,
       "group": "cloud"
     }
   ]
