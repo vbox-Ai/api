@@ -1,9 +1,11 @@
 /*
- * 人人视频 JS 蜘蛛
+ * 人人视频 JS 蜘蛛 v2.1
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 目标站: https://api.rrmj.plus (Referer: https://m.yichengwlkj.com)
  * 特点: HMAC-SHA256 签名 + AES-128-ECB 接口解密 + AES-128-CBC 播放地址解密 + 302重定向
  * 无需登录，token 为空，使用固定 app_secret/aliId 签名
+ * v2.1: 修复 homeContent data.data[1] 硬编码 → 动态查找；detailContent ids 类型兼容
+ *       searchContent 优先 dramaId；doGet/doPost 签名路径改为实际路径
  */
 
 // ===================== Base64 工具 =====================
@@ -349,11 +351,11 @@ var spider = {
             return HMAC_SHA256(APP_SECRET, stringToSign);
         }
 
-        // 通用签名：始终用 /m-station/top/home 签名（对应 Python create_headers）
+        // 通用签名：用实际路径签名（doGet/doPost 都会传入实际 urlPath）
         // 用于 homeContent / categoryContent(POST) / searchContent
-        function createGenericHeaders() {
+        function createGenericHeaders(urlPath) {
             var t = getTimestamp();
-            var stringToSign = buildStringToSign('GET', '/m-station/top/home', KY_ID, 'web_pc', '1.0.0', t, null);
+            var stringToSign = buildStringToSign('GET', urlPath || '/m-station/top/home', KY_ID, 'web_pc', '1.0.0', t, null);
             var sign = calculateSign(stringToSign);
             return {
                 'Accept': 'application/json, text/plain, */*',
@@ -428,13 +430,13 @@ var spider = {
             }
         }
 
-        // 通用 GET：用固定路径签名（homeContent / searchContent）
+        // 通用 GET：用实际路径签名（homeContent / searchContent）
         function doGet(urlPath, params) {
             try {
                 var url = XURL + urlPath;
                 var queryString = params ? buildQueryString(params) : '';
                 if (queryString) url += '?' + queryString;
-                var headers = createGenericHeaders();
+                var headers = createGenericHeaders(urlPath);
                 var resp = req(url, { method: 'GET', headers: headers });
                 if (!resp) { print('>>> renren doGet null: ' + urlPath); return null; }
                 var content = resp.content || resp.data || '';
@@ -450,11 +452,16 @@ var spider = {
             }
         }
 
-        // 通用 POST：用固定路径签名（categoryContent 的 drama_filter_search）
+        // 通用 POST：用实际路径+POST方法签名（categoryContent 的 drama_filter_search）
         function doPost(urlPath, params) {
             try {
                 var url = XURL + urlPath;
-                var headers = createGenericHeaders();
+                var headers = createGenericHeaders(urlPath);
+                // POST 请求签名 method 应为 POST
+                var t = getTimestamp();
+                var stringToSign = buildStringToSign('POST', urlPath || '/m-station/drama/drama_filter_search', KY_ID, 'web_pc', '1.0.0', t, null);
+                headers['x-ca-sign'] = calculateSign(stringToSign);
+                headers['t'] = t;
                 headers['Content-Type'] = 'application/json';
                 var body = JSON.stringify(params);
                 var resp = req(url, { method: 'POST', headers: headers, data: body });
@@ -530,7 +537,18 @@ var spider = {
                     print('>>> renren homeContent: no data');
                     return result;
                 }
-                var filterList = data.data[1] && data.data[1].dramaFilterItemList;
+                // 遍历 data.data 数组，找到第一个包含 dramaFilterItemList 的元素
+                var filterList = null;
+                var dataArr = data.data;
+                if (Array.isArray(dataArr)) {
+                    for (var di = 0; di < dataArr.length; di++) {
+                        if (dataArr[di] && dataArr[di].dramaFilterItemList) {
+                            filterList = dataArr[di].dramaFilterItemList;
+                            print('>>> renren homeContent: found dramaFilterItemList at index=' + di);
+                            break;
+                        }
+                    }
+                }
                 if (!filterList) {
                     print('>>> renren homeContent: no dramaFilterItemList');
                     return result;
@@ -614,7 +632,17 @@ var spider = {
             },
 
             detailContent: function(ids) {
-                var did = String(ids).split(',')[0];
+                // 兼容 vbox-ios 传入字符串和数组两种情况
+                var did;
+                if (typeof ids === 'string') {
+                    did = ids.split(',')[0].split('/')[0].trim();
+                } else if (Array.isArray(ids) && ids.length > 0) {
+                    did = String(ids[0]).trim();
+                } else {
+                    print('>>> renren detailContent invalid ids: ' + JSON.stringify(ids));
+                    return { list: [] };
+                }
+                print('>>> renren detailContent did=' + did);
                 var params = {
                     hsdrOpen: '0',
                     isAgeLimit: '0',
@@ -678,8 +706,10 @@ var spider = {
                 }
                 var arr = data.data.fuzzySeasonList;
                 for (var i = 0; i < arr.length; i++) {
+                    // 优先使用 dramaId（详情API需要），id 可能是 seasonId 会导致详情页无数据
+                    var vid = arr[i].dramaId || arr[i].id;
                     videos.push({
-                        vod_id: arr[i].id,
+                        vod_id: vid,
                         vod_name: arr[i].title,
                         vod_pic: arr[i].cover || '',
                         vod_remarks: arr[i].year || ''
