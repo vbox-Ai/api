@@ -1,7 +1,8 @@
 /*
- * 星空4K JS 蜘蛛
+ * 星空4K JS 蜘蛛 v2.1
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * AES-128-CBC 解密 / 无需翻墙
+ * v2.1: 修复 detailContent ids 类型兼容 + playerContent vodId 空值兜底 + scene 类型修正
  */
 
 // ===================== Base64 解码 =====================
@@ -212,7 +213,19 @@ var spider = {
 
             detailContent: function(ids) {
                 try {
-                    var data = post('vodDetail', { vod_id: ids[0] });
+                    // 兼容 vbox-ios 传入字符串和数组两种情况
+                    var vodId;
+                    if (typeof ids === 'string') {
+                        vodId = ids.split(',')[0].split('/')[0].trim();
+                    } else if (Array.isArray(ids) && ids.length > 0) {
+                        vodId = String(ids[0]).trim();
+                    } else {
+                        print('>>> xk detailContent invalid ids: ' + JSON.stringify(ids));
+                        return { list: [] };
+                    }
+                    print('>>> xk detailContent vodId=' + vodId);
+
+                    var data = post('vodDetail', { vod_id: vodId });
                     var vodData = data.vod || {};
 
                     // 构建播放源信息映射
@@ -242,7 +255,7 @@ var spider = {
                             if (url && isVideoFormat(url)) {
                                 playId = url;
                             } else {
-                                playId = 'xk://' + ids[0] + '/' + sourceId + '/' + (ep.episode_index || 0);
+                                playId = 'xk://' + vodId + '/' + sourceId + '/' + (ep.episode_index || 0);
                             }
                             episodes.push((ep.name || '播放') + '$' + playId);
                         }
@@ -296,19 +309,23 @@ var spider = {
                         var p = url.split('$');
                         url = p[p.length - 1];
                     }
-                    print('>>> xk playerContent: url=' + url);
-                    if (url.indexOf('xk://') === 0) {
+                    print('>>> xk playerContent: url=' + url + ' flag=' + flag);
+                    if (url && url.indexOf('xk://') === 0) {
                         var parts = url.substring(5).split('/');
-                        var vodId = parts[0];
+                        // parts: [vodId, sourceId, episodeIndex, ...]
+                        // 如果 parts[0] 为空（detailContent 传了错误的 ids），用 flag 兜底
+                        var vodId = parts[0] || flag || '';
                         var sourceId = parts[1];
                         var episodeIndex = parts[2];
+                        print('>>> xk playerContent vodParse: vodId=' + vodId + ' sourceId=' + sourceId + ' ep=' + episodeIndex);
                         var data = post('vodParse', {
                             vod_id: vodId,
                             player_source_id: sourceId,
                             episode_index: episodeIndex,
-                            scene: '0'
+                            scene: 0
                         });
                         url = data.play_url || '';
+                        print('>>> xk playerContent vodParse result: ' + url);
                     }
                     var direct = isVideoFormat(url);
                     return {
