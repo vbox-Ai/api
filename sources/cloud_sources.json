@@ -49,8 +49,8 @@
     {
       "name": "至臻影视",
       "type": "cms",
-      "searchurl": "http://www.miqk.cc/index.php/vod/search.html?wd=",
-      "detailBase": "http://www.miqk.cc",
+      "searchurl": "https://www.mihdr.top/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.mihdr.top",
       "enabled": true,
       "priority": 1008,
       "group": "cloud"
