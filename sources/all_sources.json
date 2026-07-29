@@ -319,6 +319,16 @@
         "enabled": true,
         "priority": 1021,
         "group": "cloud"
+      },
+      {
+        "name": "虎斑资源",
+        "type": "cms",
+        "searchurl": "http://121.205.88.174:16969/index.php/vod/search.html?wd=",
+        "detailBase": "http://121.205.88.174:16969",
+        "ua": "pc",
+        "enabled": true,
+        "priority": 1022,
+        "group": "cloud"
       }
     ]
   },

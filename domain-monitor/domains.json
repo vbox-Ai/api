@@ -1,5 +1,23 @@
 [
   {
+    "host": "http://121.205.88.174:16969",
+    "fullUrl": "http://121.205.88.174:16969/index.php/vod/search.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "虎斑资源",
+    "field": "searchurl",
+    "jsonPath": "cloudSites[13].searchurl"
+  },
+  {
+    "host": "http://121.205.88.174:16969",
+    "fullUrl": "http://121.205.88.174:16969",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "虎斑资源",
+    "field": "detailBase",
+    "jsonPath": "cloudSites[13].detailBase"
+  },
+  {
     "host": "http://caiji.dyttzyapi.com",
     "fullUrl": "http://caiji.dyttzyapi.com/api.php/provide/vod",
     "sourceFile": "sources/api_sources.json",
