@@ -1,8 +1,9 @@
 /*
- * 韩小圈 JS 蜘蛛 v2.0
+ * 韩小圈 JS 蜘蛛 v2.1
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 目标站: https://www.jennyhow.com
  * 来源: 韩剧/韩影/韩综/韩漫
+ * v2.1: 用 split 替代索引边界提取 pane 内容，更可靠；tabPattern 精确匹配 + 兜底兼容
  * v2.0: 基于实际HTML验证修复 - 详情页信息提取、剧集列表、搜索URL
  */
 
@@ -270,57 +271,42 @@ var spider = {
                 var play_from = [];
                 var play_url = [];
 
-                // 匹配 nav-tabs 中的线路名（<li><a href="#playlist2" data-toggle="tab"><i class="icon-play"></i> 云播资源</a> <small>(83)</small></li>）
-                var tabPattern = /<li[^>]*>\s*<a[^>]*href="#(playlist\d+)"[^>]*>([\s\S]*?)<\/a>\s*(?:<small>[^<]*<\/small>)?\s*<\/li>/gi;
+                // 匹配 nav-tabs 中的线路名（<li><a href="#playlist2" data-toggle="tab"><i class="icon-play"></i>&nbsp;云播资源</a> <small>(12)</small></li>）
+                var tabPattern = /<li[^>]*>\s*<a[^>]*href="#(playlist\d+)"[^>]*><i[^>]*><\/i>&nbsp;([^<]+)<\/a>\s*<small>\(\d+\)<\/small>\s*<\/li>/gi;
                 var tabMap = {}; // playlistId -> name
                 var tm;
                 while ((tm = tabPattern.exec(html)) !== null) {
                     var playlistId = tm[1];
-                    var tabName = tm[2].replace(/<[^>]+>/g, '').replace(/&nbsp;/g, '').trim();
+                    var tabName = tm[2].trim();
                     if (tabName && playlistId) {
                         tabMap[playlistId] = tabName;
                     }
                 }
+                // 兜底：如果上面的精确匹配失败，尝试宽松匹配
+                if (Object.keys(tabMap).length === 0) {
+                    var looseTabPattern = /<li[^>]*>\s*<a[^>]*href="#(playlist\d+)"[^>]*>([\s\S]*?)<\/a>\s*(?:<small>[^<]*<\/small>)?\s*<\/li>/gi;
+                    while ((tm = looseTabPattern.exec(html)) !== null) {
+                        var pid2 = tm[1];
+                        var name2 = tm[2].replace(/<[^>]+>/g, '').replace(/&nbsp;/g, '').trim();
+                        if (name2 && pid2 && !tabMap[pid2]) {
+                            tabMap[pid2] = name2;
+                        }
+                    }
+                }
                 print('>>> hxq detailContent tabMap=' + JSON.stringify(tabMap));
 
-                // 匹配每个 tab-pane 中的剧集列表
-                // 使用字符串索引方式提取 pane 内容，避免大 HTML 中正则回溯问题
-                var tabPaneStartRe = /<div[^>]*id="(playlist\d+)"[^>]*class="[^"]*tab-pane[^"]*"[^>]*>/gi;
-                var panePositions = [];
-                var pm;
-                while ((pm = tabPaneStartRe.exec(html)) !== null) {
-                    panePositions.push({ id: pm[1], start: pm.index, end: pm.index + pm[0].length });
-                }
-
-                for (var pi = 0; pi < panePositions.length; pi++) {
-                    var pp = panePositions[pi];
-                    var pid = pp.id;
+                // 用 tab-pane div 的 id 分割 HTML，直接获取每个 pane 的内容
+                // 比索引边界计算更可靠，不会因嵌套 div 数量变化而截断错误
+                var paneParts = html.split(/<div[^>]*id="(playlist\d+)"[^>]*class="[^"]*tab-pane[^"]*"[^>]*>/i);
+                // paneParts[0] = tab-pane 之前的内容
+                // paneParts[1]=playlist2, paneParts[2]=playlist2的内容, paneParts[3]=playlist1, paneParts[4]=playlist1的内容...
+                for (var pi = 1; pi < paneParts.length; pi += 2) {
+                    var pid = paneParts[pi];
+                    var paneContent = paneParts[pi + 1] || '';
                     if (!tabMap[pid]) continue;
 
-                    // pane 内容从 div 结束到下一个 playlist div 开始，或到 </div></div><script
-                    var contentStart = pp.end;
-                    var contentEnd;
-                    if (pi + 1 < panePositions.length) {
-                        contentEnd = panePositions[pi + 1].start;
-                    } else {
-                        // 最后一个 pane: 找到 </div>\s*</div>\s*<script
-                        var endMarker = html.indexOf('</div>', contentStart);
-                        // 跳过嵌套的 </div>，找到双 </div> 后跟 <script
-                        var searchFrom = contentStart;
-                        for (var di = 0; di < 3; di++) {
-                            var divEnd = html.indexOf('</div>', searchFrom);
-                            if (divEnd < 0) break;
-                            searchFrom = divEnd + 6;
-                        }
-                        // 回退到倒数第二个 </div>
-                        var lastDivEnd = html.lastIndexOf('</div>', searchFrom);
-                        var prevDivEnd = html.lastIndexOf('</div>', lastDivEnd - 1);
-                        contentEnd = prevDivEnd > contentStart ? prevDivEnd : searchFrom;
-                    }
-                    var paneContent = html.substring(contentStart, contentEnd);
                     var episodes = [];
-
-                    // 提取每集：<li id="10"><a title="第01集" href="/play/4394-1-0.html" target="_self">第01集</a></li>
+                    // 提取每集：<li id="10"><a title="第01集" href="/play/4337-1-0.html" target="_self" class="btn btn-warm">第01集</a></li>
                     var epPattern = /<a[^>]*title="([^"]*)"[^>]*href="(\/play\/[^"]*)"[^>]*>/gi;
                     var em;
                     while ((em = epPattern.exec(paneContent)) !== null) {

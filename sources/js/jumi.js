@@ -133,6 +133,7 @@ var spider = {
         }
 
         // 从 /_watch/ 页面提取真实视频地址
+        // ★ 优先级：直链 m3u8/mp4 > video标签 > DPlayer配置 > iframe
         function extractVideoUrl(html) {
             if (!html) return null;
 
@@ -144,14 +145,16 @@ var spider = {
             var videoSrc = reMatch(/<video[^>]*src="([^"]+)"/, html);
             if (videoSrc) return videoSrc;
 
-            var iframeSrc = reMatch(/<iframe[^>]*src="([^"]+)"/, html);
-            if (iframeSrc) return iframeSrc;
-
+            // ★ 优先提取直链 m3u8/mp4（避免返回 iframe 导致二次解析延迟）
             var m3u8Match = html.match(/https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*/);
             if (m3u8Match) return m3u8Match[0];
 
             var mp4Match = html.match(/https?:\/\/[^\s"'<>]+\.mp4[^\s"'<>]*/);
             if (mp4Match) return mp4Match[0];
+
+            // ★ iframe 降级到最后（iframe 需要二次解析，耗时更长）
+            var iframeSrc = reMatch(/<iframe[^>]*src="([^"]+)"/, html);
+            if (iframeSrc) return iframeSrc;
 
             var dpUrl = reMatch(/url\s*:\s*['"]([^'"]+)['"]/, html);
             if (dpUrl && (dpUrl.indexOf('.m3u8') >= 0 || dpUrl.indexOf('.mp4') >= 0)) {

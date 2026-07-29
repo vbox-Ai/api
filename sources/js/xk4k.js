@@ -314,11 +314,11 @@ var spider = {
                     return {
                         parse: direct ? 0 : 1,
                         url: url,
-                        header: JSON.stringify({ 'User-Agent': 'okhttp/4.12.0' })
+                        header: { 'User-Agent': 'okhttp/4.12.0' }
                     };
                 } catch (e) {
                     print('>>> xk playerContent ERROR: ' + e);
-                    return { parse: 0, url: '', header: '' };
+                    return { parse: 0, url: '', header: {} };
                 }
             }
         };
