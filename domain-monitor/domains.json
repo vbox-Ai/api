@@ -54,24 +54,6 @@
     "jsonPath": "sites[14].api"
   },
   {
-    "host": "http://www.miqk.cc",
-    "fullUrl": "http://www.miqk.cc/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "至臻影视",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[4].searchurl"
-  },
-  {
-    "host": "http://www.miqk.cc",
-    "fullUrl": "http://www.miqk.cc",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "至臻影视",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[4].detailBase"
-  },
-  {
     "host": "http://xsayang.fun:12512",
     "fullUrl": "http://xsayang.fun:12512/index.php/vod/search.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
@@ -412,6 +394,24 @@
     "sourceName": "319影社",
     "field": "detailBase",
     "jsonPath": "cloudSites[9].detailBase"
+  },
+  {
+    "host": "https://www.mihdr.top",
+    "fullUrl": "https://www.mihdr.top/index.php/vod/search.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "至臻影视",
+    "field": "searchurl",
+    "jsonPath": "cloudSites[4].searchurl"
+  },
+  {
+    "host": "https://www.mihdr.top",
+    "fullUrl": "https://www.mihdr.top",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "至臻影视",
+    "field": "detailBase",
+    "jsonPath": "cloudSites[4].detailBase"
   },
   {
     "host": "https://www.rrdynb.com",
