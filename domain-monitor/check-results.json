@@ -1,33 +1,5 @@
 [
   {
-    "host": "http://121.205.88.174:16969",
-    "fullUrl": "http://121.205.88.174:16969/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "虎斑资源",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[13].searchurl",
-    "ok": false,
-    "statusCode": null,
-    "responseMs": 542,
-    "error": "Remote end closed connection without response",
-    "attempts": 3
-  },
-  {
-    "host": "http://121.205.88.174:16969",
-    "fullUrl": "http://121.205.88.174:16969",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "虎斑资源",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[13].detailBase",
-    "ok": false,
-    "statusCode": null,
-    "responseMs": 573,
-    "error": "Remote end closed connection without response",
-    "attempts": 3
-  },
-  {
     "host": "http://caiji.dyttzyapi.com",
     "fullUrl": "http://caiji.dyttzyapi.com/api.php/provide/vod",
     "sourceFile": "sources/api_sources.json",
@@ -37,7 +9,7 @@
     "jsonPath": "sites[3].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1658,
+    "responseMs": 1405,
     "error": "",
     "attempts": 1
   },
@@ -51,7 +23,7 @@
     "jsonPath": "sites[9].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 4015,
+    "responseMs": 101,
     "error": "",
     "attempts": 1
   },
@@ -65,7 +37,7 @@
     "jsonPath": "cloudSites[11].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 115,
+    "responseMs": 78,
     "error": "",
     "attempts": 1
   },
@@ -79,7 +51,7 @@
     "jsonPath": "cloudSites[11].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 177,
+    "responseMs": 80,
     "error": "",
     "attempts": 1
   },
@@ -93,7 +65,7 @@
     "jsonPath": "sites[8].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 2405,
+    "responseMs": 1050,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -107,7 +79,7 @@
     "jsonPath": "sites[14].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 302,
+    "responseMs": 210,
     "error": "",
     "attempts": 1
   },
@@ -121,7 +93,7 @@
     "jsonPath": "cloudSites[4].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 272,
+    "responseMs": 155,
     "error": "",
     "attempts": 1
   },
@@ -135,7 +107,7 @@
     "jsonPath": "cloudSites[4].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 244,
+    "responseMs": 153,
     "error": "",
     "attempts": 1
   },
@@ -149,7 +121,7 @@
     "jsonPath": "cloudSites[5].searchurl",
     "ok": false,
     "statusCode": null,
-    "responseMs": 1054,
+    "responseMs": 764,
     "error": "Remote end closed connection without response",
     "attempts": 3
   },
@@ -163,7 +135,7 @@
     "jsonPath": "cloudSites[5].detailBase",
     "ok": false,
     "statusCode": null,
-    "responseMs": 1967,
+    "responseMs": 820,
     "error": "Remote end closed connection without response",
     "attempts": 3
   },
@@ -177,7 +149,7 @@
     "jsonPath": "sites[6].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 708,
+    "responseMs": 543,
     "error": "",
     "attempts": 1
   },
@@ -191,7 +163,7 @@
     "jsonPath": "sites[5].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 595,
+    "responseMs": 365,
     "error": "",
     "attempts": 1
   },
@@ -205,7 +177,7 @@
     "jsonPath": "cloudSites[1].searchurl",
     "ok": false,
     "statusCode": null,
-    "responseMs": 15265,
+    "responseMs": 15234,
     "error": "timed out",
     "attempts": 3
   },
@@ -219,7 +191,7 @@
     "jsonPath": "cloudSites[1].detailBase",
     "ok": false,
     "statusCode": null,
-    "responseMs": 15288,
+    "responseMs": 15251,
     "error": "timed out",
     "attempts": 3
   },
@@ -233,7 +205,7 @@
     "jsonPath": "sites[11].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 140,
+    "responseMs": 104,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -247,7 +219,7 @@
     "jsonPath": "sites[2].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 436,
+    "responseMs": 639,
     "error": "",
     "attempts": 1
   },
@@ -261,7 +233,7 @@
     "jsonPath": "sites[12].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 87,
+    "responseMs": 61,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -275,7 +247,7 @@
     "jsonPath": "sites[1].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 67,
+    "responseMs": 75,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -289,7 +261,7 @@
     "jsonPath": "sites[7].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 980,
+    "responseMs": 637,
     "error": "",
     "attempts": 1
   },
@@ -303,7 +275,7 @@
     "jsonPath": "sites[0].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 44,
+    "responseMs": 78,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -315,11 +287,11 @@
     "sourceName": "123分享",
     "field": "searchurl",
     "jsonPath": "cloudSites[8].searchurl",
-    "ok": false,
-    "statusCode": 503,
-    "responseMs": 149,
-    "error": "HTTP 503",
-    "attempts": 3
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 607,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://pan1.me",
@@ -329,11 +301,11 @@
     "sourceName": "123分享",
     "field": "detailBase",
     "jsonPath": "cloudSites[8].detailBase",
-    "ok": false,
-    "statusCode": 503,
-    "responseMs": 74,
-    "error": "HTTP 503",
-    "attempts": 3
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 290,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://pan1.me",
@@ -343,11 +315,11 @@
     "sourceName": "123分享",
     "field": "threadURL",
     "jsonPath": "cloudSites[8].threadURL",
-    "ok": false,
-    "statusCode": null,
-    "responseMs": 15041,
-    "error": "The read operation timed out",
-    "attempts": 3
+    "ok": true,
+    "statusCode": 200,
+    "responseMs": 367,
+    "error": "",
+    "attempts": 1
   },
   {
     "host": "https://raw.githubusercontent.com",
@@ -359,7 +331,7 @@
     "jsonPath": "files.allSources",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 41,
+    "responseMs": 90,
     "error": "",
     "attempts": 1
   },
@@ -373,7 +345,7 @@
     "jsonPath": "sites[10].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 248,
+    "responseMs": 167,
     "error": "",
     "attempts": 1
   },
@@ -387,7 +359,7 @@
     "jsonPath": "cloudSites[6].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 598,
+    "responseMs": 1462,
     "error": "",
     "attempts": 1
   },
@@ -401,7 +373,7 @@
     "jsonPath": "cloudSites[6].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 592,
+    "responseMs": 417,
     "error": "",
     "attempts": 1
   },
@@ -415,7 +387,7 @@
     "jsonPath": "cloudSites[6].apiSearch",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 598,
+    "responseMs": 421,
     "error": "",
     "attempts": 1
   },
@@ -429,7 +401,7 @@
     "jsonPath": "sites[13].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 677,
+    "responseMs": 406,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -443,7 +415,7 @@
     "jsonPath": "cloudSites[2].searchurl",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 34,
+    "responseMs": 32,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -457,7 +429,7 @@
     "jsonPath": "cloudSites[2].detailBase",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 35,
+    "responseMs": 37,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -471,7 +443,7 @@
     "jsonPath": "sites[4].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 423,
+    "responseMs": 395,
     "error": "",
     "attempts": 1
   },
@@ -485,7 +457,7 @@
     "jsonPath": "files.apiSources",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 58,
+    "responseMs": 123,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -499,7 +471,7 @@
     "jsonPath": "files.cloudSources",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 27,
+    "responseMs": 134,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -513,7 +485,7 @@
     "jsonPath": "files.spiderSources",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 29,
+    "responseMs": 27,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -527,7 +499,7 @@
     "jsonPath": "files.domainOverrides",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 28,
+    "responseMs": 27,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -541,7 +513,7 @@
     "jsonPath": "files.parsers",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 31,
+    "responseMs": 27,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -561,7 +533,7 @@
   },
   {
     "host": "https://wogg.xxooo.cf",
-    "fullUrl": "https://wogg.xxooo.cf/vodsearch/-",
+    "fullUrl": "https://wogg.xxooo.cf/vodsearch/",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "玩偶资源",
@@ -569,7 +541,7 @@
     "jsonPath": "cloudSites[0].searchurl",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 927,
+    "responseMs": 360,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -583,7 +555,7 @@
     "jsonPath": "cloudSites[0].detailBase",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 125,
+    "responseMs": 159,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -597,7 +569,7 @@
     "jsonPath": "cloudSites[3].searchurl",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 128,
+    "responseMs": 154,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -625,7 +597,7 @@
     "jsonPath": "cloudSites[12].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 992,
+    "responseMs": 668,
     "error": "",
     "attempts": 1
   },
@@ -639,7 +611,7 @@
     "jsonPath": "cloudSites[12].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 213,
+    "responseMs": 80,
     "error": "",
     "attempts": 1
   },
@@ -653,7 +625,7 @@
     "jsonPath": "cloudSites[9].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1745,
+    "responseMs": 5282,
     "error": "",
     "attempts": 1
   },
@@ -667,7 +639,7 @@
     "jsonPath": "cloudSites[9].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1737,
+    "responseMs": 5301,
     "error": "",
     "attempts": 1
   },
@@ -681,7 +653,7 @@
     "jsonPath": "cloudSites[10].searchurl",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 70,
+    "responseMs": 72,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -695,7 +667,7 @@
     "jsonPath": "cloudSites[10].detailBase",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 48,
+    "responseMs": 43,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -709,7 +681,7 @@
     "jsonPath": "cloudSites[7].searchurl",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 292,
+    "responseMs": 152,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -723,7 +695,7 @@
     "jsonPath": "cloudSites[7].detailBase",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 165,
+    "responseMs": 66,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -737,7 +709,7 @@
     "jsonPath": "cloudSites[7].apiSearch",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 196,
+    "responseMs": 70,
     "error": "HTTP 403",
     "attempts": 1
   }
