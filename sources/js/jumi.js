@@ -133,49 +133,50 @@ var spider = {
         }
 
         // 从 /_watch/ 页面提取真实视频地址
+        // ★ 返回 {url, direct} 结构：direct=true 表示直链可播，direct=false 表示是 iframe 需要二次解析
         // ★ 优先级：直链 m3u8/mp4 > video标签 > DPlayer配置 > iframe
         function extractVideoUrl(html) {
             if (!html) return null;
 
             var varUrl = reMatch(/var\s+url\s*=\s*['"]([^'"]+)['"]/, html);
             if (varUrl && (varUrl.indexOf('.m3u8') >= 0 || varUrl.indexOf('.mp4') >= 0)) {
-                return varUrl;
+                return { url: varUrl, direct: true };
             }
 
             var videoSrc = reMatch(/<video[^>]*src="([^"]+)"/, html);
-            if (videoSrc) return videoSrc;
+            if (videoSrc) return { url: videoSrc, direct: true };
 
             // ★ 优先提取直链 m3u8/mp4（避免返回 iframe 导致二次解析延迟）
             var m3u8Match = html.match(/https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*/);
-            if (m3u8Match) return m3u8Match[0];
+            if (m3u8Match) return { url: m3u8Match[0], direct: true };
 
             var mp4Match = html.match(/https?:\/\/[^\s"'<>]+\.mp4[^\s"'<>]*/);
-            if (mp4Match) return mp4Match[0];
+            if (mp4Match) return { url: mp4Match[0], direct: true };
 
-            // ★ iframe 降级到最后（iframe 需要二次解析，耗时更长）
+            // ★ iframe 降级到最后（iframe 需要二次解析，耗时更长，标记 direct=false）
             var iframeSrc = reMatch(/<iframe[^>]*src="([^"]+)"/, html);
-            if (iframeSrc) return iframeSrc;
+            if (iframeSrc) return { url: iframeSrc, direct: false };
 
             var dpUrl = reMatch(/url\s*:\s*['"]([^'"]+)['"]/, html);
             if (dpUrl && (dpUrl.indexOf('.m3u8') >= 0 || dpUrl.indexOf('.mp4') >= 0)) {
-                return dpUrl;
+                return { url: dpUrl, direct: true };
             }
 
             var playerMatch = html.match(/player\s*=\s*(\{[^;]+\})/);
             if (playerMatch) {
                 try {
                     var config = JSON.parse(playerMatch[1]);
-                    if (config.url) return config.url;
-                    if (config.src) return config.src;
+                    if (config.url) return { url: config.url, direct: true };
+                    if (config.src) return { url: config.src, direct: true };
                 } catch(e) {}
             }
 
             var dataUrl = reMatch(/data-url="([^"]+)"/, html);
-            if (dataUrl) return dataUrl;
+            if (dataUrl) return { url: dataUrl, direct: true };
             var dataSrc = reMatch(/data-src="([^"]+)"/, html);
-            if (dataSrc) return dataSrc;
+            if (dataSrc) return { url: dataSrc, direct: true };
             var dataVideo = reMatch(/data-video="([^"]+)"/, html);
-            if (dataVideo) return dataVideo;
+            if (dataVideo) return { url: dataVideo, direct: true };
 
             return null;
         }
@@ -436,10 +437,10 @@ var spider = {
                     if (watchUrl.indexOf('http') !== 0) watchUrl = HOST + watchUrl;
                     var watchHtml = fetchURL(watchUrl);
                     if (watchHtml) {
-                        var realUrl = extractVideoUrl(watchHtml);
-                        if (realUrl) {
-                            print('>>> jumi playerContent watchUrl=' + watchUrl + ' realUrl=' + realUrl);
-                            return { parse: 0, url: realUrl, header: getPlayHeaders() };
+                        var result = extractVideoUrl(watchHtml);
+                        if (result) {
+                            print('>>> jumi playerContent watchUrl=' + watchUrl + ' realUrl=' + result.url);
+                            return { parse: result.direct ? 0 : 1, url: result.url, header: getPlayHeaders() };
                         }
                     }
                     print('>>> jumi playerContent fallback watchUrl=' + watchUrl);
@@ -480,8 +481,8 @@ var spider = {
                         if (sources[i].name === sourceName) {
                             var watchHtml = fetchURL(sources[i].href);
                             if (watchHtml) {
-                                var realUrl = extractVideoUrl(watchHtml);
-                                if (realUrl) return { parse: 0, url: realUrl, header: getPlayHeaders() };
+                                var result = extractVideoUrl(watchHtml);
+                                if (result) return { parse: result.direct ? 0 : 1, url: result.url, header: getPlayHeaders() };
                             }
                             return { parse: 1, url: sources[i].href, header: getPlayHeaders() };
                         }
@@ -494,10 +495,10 @@ var spider = {
                     print('>>> jumi playerContent select lineIdx=' + lineIdx + ' name=' + selected.name);
                     var watchHtml = fetchURL(selected.href);
                     if (watchHtml) {
-                        var realUrl = extractVideoUrl(watchHtml);
-                        if (realUrl) {
-                            print('>>> jumi playerContent lineIdx realUrl=' + realUrl);
-                            return { parse: 0, url: realUrl, header: getPlayHeaders() };
+                        var result = extractVideoUrl(watchHtml);
+                        if (result) {
+                            print('>>> jumi playerContent lineIdx realUrl=' + result.url);
+                            return { parse: result.direct ? 0 : 1, url: result.url, header: getPlayHeaders() };
                         }
                     }
                     print('>>> jumi playerContent lineIdx fallback=' + selected.href);
@@ -508,10 +509,10 @@ var spider = {
                 if (sources.length > 0) {
                     var watchHtml = fetchURL(sources[0].href);
                     if (watchHtml) {
-                        var realUrl = extractVideoUrl(watchHtml);
-                        if (realUrl) {
-                            print('>>> jumi playerContent first source realUrl=' + realUrl);
-                            return { parse: 0, url: realUrl, header: getPlayHeaders() };
+                        var result = extractVideoUrl(watchHtml);
+                        if (result) {
+                            print('>>> jumi playerContent first source realUrl=' + result.url);
+                            return { parse: result.direct ? 0 : 1, url: result.url, header: getPlayHeaders() };
                         }
                     }
                     print('>>> jumi playerContent first source fallback=' + sources[0].href);
