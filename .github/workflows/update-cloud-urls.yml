@@ -1,0 +1,37 @@
+name: Update Cloud Source URLs
+
+on:
+  schedule:
+    # 每3天 UTC 18:00 执行一次（北京时间次日凌晨2点）
+    - cron: "0 18 */3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run update script
+        run: python domain-monitor/update_cloud_urls.py
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add sources/cloud_sources.json domain-monitor/backups/
+          git commit -m "chore: auto update cloud URLs from monitor ($(date -u +%Y-%m-%d))" || echo "No changes to commit"
+          git pull --rebase origin main || true
+          git push
