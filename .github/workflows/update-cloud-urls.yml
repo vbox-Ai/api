@@ -2,8 +2,8 @@ name: Update Cloud Source URLs
 
 on:
   schedule:
-    # 每3天 UTC 18:00 执行一次（北京时间次日凌晨2点）
-    - cron: "0 18 */3 * *"
+    # 每3天 UTC 10:00 执行一次（北京时间 18:00）
+    - cron: "0 10 */3 * *"
   workflow_dispatch:
 
 permissions:
@@ -24,14 +24,21 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run update script
+      # 1) 从监控 API 更新通用云盘源域名
+      - name: Update cloud source URLs from monitor
+        continue-on-error: true
         run: python domain-monitor/update_cloud_urls.py
+
+      # 2) 从 LIBVIO 发布页解码并更新备用线路域名
+      - name: Update LIBVIO backup domains
+        continue-on-error: true
+        run: python domain-monitor/update_libvio_urls.py
 
       - name: Commit changes
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add sources/cloud_sources.json domain-monitor/backups/
-          git commit -m "chore: auto update cloud URLs from monitor ($(date -u +%Y-%m-%d))" || echo "No changes to commit"
+          git commit -m "chore: auto update cloud URLs & LIBVIO domains ($(date -u +%Y-%m-%d))" || echo "No changes to commit"
           git pull --rebase origin main || true
           git push
