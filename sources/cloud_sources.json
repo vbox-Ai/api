@@ -151,6 +151,22 @@
       "enabled": true,
       "priority": 1023,
       "group": "cloud"
+    },
+    {
+      "name": "4KTOP",
+      "type": "cms",
+      "searchurl": "https://4ktop.com/vodsearch/-------------.html?wd=",
+      "detailBase": "https://4ktop.com",
+      "detailPattern": "<a[^>]*href=\"(/voddetail/(\\d+)/)\"[^>]*>(.+?)</a>",
+      "extraPanHosts": [
+        "115.com/s/"
+      ],
+      "extraPanNames": {
+        "115.com": "115网盘"
+      },
+      "enabled": true,
+      "priority": 1030,
+      "group": "cloud"
     }
   ]
 }
