@@ -126,6 +126,24 @@
     "jsonPath": "sites[5].api"
   },
   {
+    "host": "https://4ktop.com",
+    "fullUrl": "https://4ktop.com/vodsearch/-------------.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "4KTOP",
+    "field": "searchurl",
+    "jsonPath": "cloudSites[15].searchurl"
+  },
+  {
+    "host": "https://4ktop.com",
+    "fullUrl": "https://4ktop.com",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "4KTOP",
+    "field": "detailBase",
+    "jsonPath": "cloudSites[15].detailBase"
+  },
+  {
     "host": "https://666.666291.xyz",
     "fullUrl": "https://666.666291.xyz/index.php/vod/search.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
