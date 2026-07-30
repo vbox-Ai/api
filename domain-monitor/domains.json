@@ -162,6 +162,24 @@
     "jsonPath": "sites[2].api"
   },
   {
+    "host": "https://binhd.com",
+    "fullUrl": "https://binhd.com/resources/?q=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "奕搜资源",
+    "field": "searchurl",
+    "jsonPath": "cloudSites[7].searchurl"
+  },
+  {
+    "host": "https://binhd.com",
+    "fullUrl": "https://binhd.com",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "奕搜资源",
+    "field": "detailBase",
+    "jsonPath": "cloudSites[7].detailBase"
+  },
+  {
     "host": "https://cj.lziapi.com",
     "fullUrl": "https://cj.lziapi.com/api.php/provide/vod",
     "sourceFile": "sources/api_sources.json",
@@ -466,32 +484,5 @@
     "sourceName": "人人电影",
     "field": "detailBase",
     "jsonPath": "cloudSites[10].detailBase"
-  },
-  {
-    "host": "https://ysso.cc",
-    "fullUrl": "https://ysso.cc",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "奕搜资源",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[7].searchurl"
-  },
-  {
-    "host": "https://ysso.cc",
-    "fullUrl": "https://ysso.cc",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "奕搜资源",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[7].detailBase"
-  },
-  {
-    "host": "https://ysso.cc",
-    "fullUrl": "https://ysso.cc/api/search?kw={kw",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "奕搜资源",
-    "field": "apiSearch",
-    "jsonPath": "cloudSites[7].apiSearch"
   }
 ]
