@@ -79,14 +79,10 @@
     },
     {
       "name": "奕搜资源",
-      "type": "spa",
-      "searchurl": "https://ysso.cc",
-      "detailBase": "https://ysso.cc",
-      "apiSearch": "https://ysso.cc/api/search?kw={kw}",
-      "resultField": "data.list",
-      "titleField": "title",
-      "urlField": "url",
-      "enabled": false,
+      "type": "binhd",
+      "searchurl": "https://binhd.com/resources/?q=",
+      "detailBase": "https://binhd.com",
+      "enabled": true,
       "priority": 1015,
       "group": "cloud"
     },
