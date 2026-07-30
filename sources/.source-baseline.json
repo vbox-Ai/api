@@ -1,7 +1,7 @@
 {
   "counts": {
     "api_sources": 15,
-    "cloud_sources": 15,
+    "cloud_sources": 16,
     "disabled_sources": {
       "hosts": 0,
       "keys": 0
@@ -32,6 +32,7 @@
       "123分享": "123分享",
       "2小盘": "2小盘",
       "319影社": "319影社",
+      "4KTOP": "4KTOP",
       "PanSou盘搜": "PanSou盘搜",
       "人人电影": "人人电影",
       "多多资源": "多多资源",
