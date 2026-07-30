@@ -234,6 +234,42 @@
     "jsonPath": "sites[0].api"
   },
   {
+    "host": "https://libvio.host",
+    "fullUrl": "https://libvio.host/search/-------------.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "LIBVIO",
+    "field": "searchurl",
+    "jsonPath": "cloudSites[16].searchurl"
+  },
+  {
+    "host": "https://libvio.host",
+    "fullUrl": "https://libvio.host",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "LIBVIO",
+    "field": "detailBase",
+    "jsonPath": "cloudSites[16].detailBase"
+  },
+  {
+    "host": "https://libvio.host",
+    "fullUrl": "https://libvio.host/search/-------------.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "LIBVIO",
+    "field": "searchurls[0]",
+    "jsonPath": "cloudSites[16].searchurls[0]"
+  },
+  {
+    "host": "https://libviobd.com",
+    "fullUrl": "https://libviobd.com/search/-------------.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "LIBVIO",
+    "field": "searchurls[3]",
+    "jsonPath": "cloudSites[16].searchurls[3]"
+  },
+  {
     "host": "https://pan1.me",
     "fullUrl": "https://pan1.me/?search.htm&keyword=",
     "sourceFile": "sources/cloud_sources.json",
@@ -466,6 +502,24 @@
     "sourceName": "319影社",
     "field": "detailBase",
     "jsonPath": "cloudSites[9].detailBase"
+  },
+  {
+    "host": "https://www.libhd.com",
+    "fullUrl": "https://www.libhd.com/search/-------------.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "LIBVIO",
+    "field": "searchurls[2]",
+    "jsonPath": "cloudSites[16].searchurls[2]"
+  },
+  {
+    "host": "https://www.libvios.com",
+    "fullUrl": "https://www.libvios.com/search/-------------.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "LIBVIO",
+    "field": "searchurls[1]",
+    "jsonPath": "cloudSites[16].searchurls[1]"
   },
   {
     "host": "https://www.mihdr.top",

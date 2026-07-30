@@ -349,6 +349,21 @@
         "enabled": true,
         "priority": 1030,
         "group": "cloud"
+      },
+      {
+        "name": "LIBVIO",
+        "type": "cms",
+        "searchurl": "https://libvio.host/search/-------------.html?wd=",
+        "detailBase": "https://libvio.host",
+        "searchurls": [
+          "https://libvio.host/search/-------------.html?wd=",
+          "https://www.libvios.com/search/-------------.html?wd=",
+          "https://www.libhd.com/search/-------------.html?wd=",
+          "https://libviobd.com/search/-------------.html?wd="
+        ],
+        "enabled": true,
+        "priority": 1035,
+        "group": "cloud"
       }
     ]
   },
