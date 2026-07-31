@@ -8,7 +8,7 @@
     },
     "domain_overrides": 0,
     "parsers": 0,
-    "spider_sources": 7
+    "spider_sources": 8
   },
   "detail": {
     "api_sources": {
@@ -54,6 +54,7 @@
       "js_哇哇影视": "影视 | 哇哇影视[js]",
       "js_星空4K": "影视 | 星空4K[js]",
       "js_腾讯视频": "官源 | 腾讯视频[js]",
+      "js_袋鼠影视": "影视 | 袋鼠影视[js]",
       "js_韩小圈": "影视 | 韩小圈[js]"
     }
   }
