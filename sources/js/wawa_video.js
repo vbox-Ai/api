@@ -3,6 +3,7 @@
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 目标站: MacCMS API (zjv6.vod)
  * 特点: AES-128-ECB 接口配置解密 + RSA-SHA256 请求签名 + Gitee 远程配置
+ * v1.4: 修复vod_id等字段类型转换(数字→字符串)，修复Swift JSONDecoder解码失败导致无数据
  * v1.3: 修复lang/letter筛选参数、playerContent直链/解析器判断、emoji编解码
  * v1.2: 完全自包含纯JS实现(AES-ECB/SHA-256/RSA-SHA256/UUID/hex-base64)
  *       无需更新vbox即可使用，原生桥接可用时自动加速
@@ -463,6 +464,17 @@ var spider = {
             return b64encodeStr(JSON.stringify(obj));
         }
 
+        // 标准视频条目映射（关键：确保所有字段为String类型，否则Swift JSONDecoder解码失败）
+        function vod(item) {
+            if (!item) return { vod_id: '', vod_name: '', vod_pic: '', vod_remarks: '' };
+            return {
+                vod_id: String(item.vod_id || ''),
+                vod_name: String(item.vod_name || ''),
+                vod_pic: String(item.vod_pic || ''),
+                vod_remarks: String(item.vod_remarks || '')
+            };
+        }
+
         // ====== 蜘蛛 API ======
         return {
             init: function(config) {
@@ -485,7 +497,7 @@ var spider = {
                 for (var i = 0; i < typeData.data.list.length; i++) {
                     var item = typeData.data.list[i];
                     var tid = String(item.type_id);
-                    result.class.push({ type_id: item.type_id, type_name: item.type_name });
+                    result.class.push({ type_id: String(item.type_id), type_name: String(item.type_name || '') });
 
                     result.filters[tid] = [];
                     var ext = item.type_extend || {};
@@ -512,7 +524,8 @@ var spider = {
                 var homeData = fetchApi('/api.php/zjv6.vod/vodPhbAll');
                 if (homeData && homeData.data && homeData.data.list &&
                     homeData.data.list[0] && homeData.data.list[0].vod_list) {
-                    result.list = homeData.data.list[0].vod_list;
+                    var rawList = homeData.data.list[0].vod_list;
+                    for (var k = 0; k < rawList.length; k++) result.list.push(vod(rawList[k]));
                     print('>>> wawa homeContent: list=' + result.list.length);
                 }
 
@@ -549,10 +562,13 @@ var spider = {
                 params += '&by=' + (ext.by || '');
 
                 var data = fetchApi('/api.php/zjv6.vod?' + params);
-                var list = (data && data.data && data.data.list) ? data.data.list : [];
+                var rawList = (data && data.data && data.data.list) ? data.data.list : [];
+
+                var vlist = [];
+                for (var j = 0; j < rawList.length; j++) vlist.push(vod(rawList[j]));
 
                 return {
-                    list: list,
+                    list: vlist,
                     page: page,
                     pagecount: 999,
                     limit: 12,
@@ -597,13 +613,13 @@ var spider = {
 
                 return {
                     list: [{
-                        vod_id: item.vod_id,
-                        vod_name: item.vod_name || '',
-                        vod_pic: item.vod_pic || '',
-                        vod_remarks: item.vod_remarks || '',
-                        vod_year: item.vod_year || '',
-                        vod_area: item.vod_area || '',
-                        vod_content: item.vod_content || '',
+                        vod_id: String(item.vod_id || ''),
+                        vod_name: String(item.vod_name || ''),
+                        vod_pic: String(item.vod_pic || ''),
+                        vod_remarks: String(item.vod_remarks || ''),
+                        vod_year: String(item.vod_year || ''),
+                        vod_area: String(item.vod_area || ''),
+                        vod_content: String(item.vod_content || ''),
                         vod_play_from: playFrom.join('$$$'),
                         vod_play_url: playUrls.join('$$$')
                     }]
@@ -615,10 +631,13 @@ var spider = {
                 var pageNum = parseInt(pg) || 1;
 
                 var data = fetchApi('/api.php/zjv6.vod?page=' + pageNum + '&limit=20&wd=' + encodeURIComponent(keyword));
-                var list = (data && data.data && data.data.list) ? data.data.list : [];
+                var rawList = (data && data.data && data.data.list) ? data.data.list : [];
+
+                var vlist = [];
+                for (var j = 0; j < rawList.length; j++) vlist.push(vod(rawList[j]));
 
                 return {
-                    list: list,
+                    list: vlist,
                     page: pageNum,
                     pagecount: 9999,
                     limit: 20,
