@@ -349,19 +349,21 @@ var spider = {
 
             searchContent: function(key, quick, pg) {
                 var keyword = String(key || '');
-                var pageNum = parseInt(pg) || 1;
-
                 // 兼容iOS引擎2参数调用: searchContent(keyword, pg)
-                if (pageNum === 1 && quick !== undefined && typeof quick !== 'undefined') {
-                    // 3参数模式: searchContent(key, quick, pg)
+                // iOS传2参时 quick=页码, pg=undefined
+                if (pg === undefined && quick !== undefined) {
+                    pg = quick;
                 }
+                var pageNum = parseInt(pg) || 1;
 
                 // 先 POST 搜索
                 var html = '';
                 try {
+                    var headers = getHeaders();
+                    headers['Content-Type'] = 'application/x-www-form-urlencoded';
                     var resp = req(HOST + '/search.php', {
                         method: 'POST',
-                        headers: getHeaders(),
+                        headers: headers,
                         data: 'searchword=' + encodeURIComponent(keyword)
                     });
                     if (resp && resp.content) {
@@ -379,7 +381,7 @@ var spider = {
                     data = parseList(html);
                 }
 
-                print('>>> daishu searchContent: keyword=' + keyword + ' results=' + data.length);
+                print('>>> daishu searchContent: keyword=' + keyword + ' page=' + pageNum + ' results=' + data.length);
                 return {
                     list: data,
                     page: pageNum
@@ -392,9 +394,15 @@ var spider = {
 
                     // 请求播放页
                     var html = fetch(url);
+                    // 播放 header: UA + Referer(防盗链)
+                    var playHeader = {
+                        'User-Agent': UA,
+                        'Referer': HOST + '/'
+                    };
+
                     if (!html) {
                         print('>>> daishu playerContent: empty html');
-                        return { parse: 0, playUrl: null, url: url, header: { 'User-Agent': UA } };
+                        return { parse: 0, playUrl: null, url: url, header: playHeader };
                     }
 
                     // 提取 var now = "xxx"
@@ -427,11 +435,11 @@ var spider = {
                         parse: isDirect ? 0 : 1,
                         playUrl: null,
                         url: playUrl,
-                        header: { 'User-Agent': UA }
+                        header: playHeader
                     };
                 } catch (e) {
                     print('>>> daishu playerContent ERROR: ' + e);
-                    return { parse: 0, playUrl: null, url: url, header: { 'User-Agent': UA } };
+                    return { parse: 0, playUrl: null, url: url, header: { 'User-Agent': UA, 'Referer': HOST + '/' } };
                 }
             }
         };
