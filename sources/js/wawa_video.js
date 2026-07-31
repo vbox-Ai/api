@@ -540,7 +540,7 @@ var spider = {
                 return { list: [] };
             },
 
-            categoryContent: function(tid, pg, filter, extend) {
+            categoryContent: function(tid, pg, extend) {
                 var page = parseInt(pg) || 1;
                 var ext = {};
                 if (extend) {
@@ -628,6 +628,10 @@ var spider = {
 
             searchContent: function(key, quick, pg) {
                 var keyword = String(key || '');
+                // 兼容iOS引擎2参数调用: searchContent(keyword, pg)
+                if (pg === undefined && quick !== undefined) {
+                    pg = quick;
+                }
                 var pageNum = parseInt(pg) || 1;
 
                 var data = fetchApi('/api.php/zjv6.vod?page=' + pageNum + '&limit=20&wd=' + encodeURIComponent(keyword));
