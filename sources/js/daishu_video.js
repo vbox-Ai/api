@@ -63,6 +63,26 @@ var spider = {
             return /\.(m3u8|mp4|flv|avi|mkv|mov|ts)(\?|$|#)/i.test(url || '');
         }
 
+        // 从首页导航栏动态提取分类列表
+        // 匹配 <a href="/frim/index{id}.html">{name}</a>
+        function parseCategories(html) {
+            var classes = [];
+            if (!html) return classes;
+            var re = /<a[^>]+href=["']\/frim\/index(\d+)\.html["'][^>]*>(.*?)<\/a>/gi;
+            var m;
+            var seen = {};
+            while ((m = re.exec(html)) !== null) {
+                var tid = m[1];
+                if (seen[tid]) continue;
+                seen[tid] = true;
+                var name = clean(m[2]);
+                if (name) {
+                    classes.push({ type_id: tid, type_name: name });
+                }
+            }
+            return classes;
+        }
+
         // 解析视频列表（首页/分类/搜索通用）
         function parseList(html) {
             var res = [];
@@ -148,15 +168,23 @@ var spider = {
             homeContent: function(filter) {
                 var result = { class: [], list: [], filters: {} };
 
-                result.class = [
-                    { type_id: '1', type_name: '电影' },
-                    { type_id: '2', type_name: '电视剧' },
-                    { type_id: '3', type_name: '综艺' },
-                    { type_id: '4', type_name: '动漫' },
-                    { type_id: '44', type_name: '短剧' }
-                ];
-
+                // 先抓取首页 HTML
                 var html = fetch(HOST + '/');
+
+                // 动态提取导航栏分类，失败时回退到默认分类
+                result.class = parseCategories(html);
+                if (result.class.length === 0) {
+                    print('>>> daishu homeContent: 动态提取分类失败，回退默认');
+                    result.class = [
+                        { type_id: '1', type_name: '电影' },
+                        { type_id: '2', type_name: '电视剧' },
+                        { type_id: '3', type_name: '综艺' },
+                        { type_id: '4', type_name: '动漫' },
+                        { type_id: '44', type_name: '短剧' }
+                    ];
+                }
+                print('>>> daishu homeContent: class=' + result.class.length + '个分类');
+
                 result.list = parseList(html);
                 print('>>> daishu homeContent: list=' + result.list.length);
 
