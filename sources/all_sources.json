@@ -445,9 +445,20 @@
         "changeable": 1,
         "ext": "",
         "timeout": 30
+      },
+      {
+        "key": "js_袋鼠影视",
+        "name": "影视 | 袋鼠影视[js]",
+        "type": 3,
+        "api": "./js/daishu_video.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
       }
     ],
-    "siteCount": 7
+    "siteCount": 8
   },
   "domainOverrides": {
     "overrides": []
