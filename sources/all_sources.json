@@ -434,9 +434,20 @@
         "changeable": 1,
         "ext": "",
         "timeout": 30
+      },
+      {
+        "key": "js_哇哇影视",
+        "name": "影视 | 哇哇影视[js]",
+        "type": 3,
+        "api": "./js/wawa_video.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
       }
     ],
-    "siteCount": 6
+    "siteCount": 7
   },
   "domainOverrides": {
     "overrides": []
