@@ -1,8 +1,9 @@
 /*
- * 哇哇影视 JS 蜘蛛 v1.3
+ * 哇哇影视 JS 蜘蛛 v1.5
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 目标站: MacCMS API (zjv6.vod)
  * 特点: AES-128-ECB 接口配置解密 + RSA-SHA256 请求签名 + Gitee 远程配置
+ * v1.5: 修复播放失败 - parse2数字类型导致非法URL、playUrl空字符串导致Swift侧取不到url、URL缺协议头
  * v1.4: 修复vod_id等字段类型转换(数字→字符串)，修复Swift JSONDecoder解码失败导致无数据
  * v1.3: 修复lang/letter筛选参数、playerContent直链/解析器判断、emoji编解码
  * v1.2: 完全自包含纯JS实现(AES-ECB/SHA-256/RSA-SHA256/UUID/hex-base64)
@@ -601,7 +602,9 @@ var spider = {
                             for (var j = 0; j < list.urls.length; j++) {
                                 var u = list.urls[j];
                                 if (list.player_info) {
-                                    if (list.player_info.parse2) u.parse = list.player_info.parse2;
+                                    // 修复: parse2 可能是数字(0/1)而非URL，只赋值有效的http URL
+                                    var p2 = String(list.player_info.parse2 || '');
+                                    if (p2 && /^https?:\/\//i.test(p2)) u.parse = p2;
                                     if (list.player_info.ag) u.ag = list.player_info.ag;
                                 }
                                 urls.push(u.name + '$' + b64encodeJson(u));
@@ -651,6 +654,7 @@ var spider = {
 
             playerContent: function(vodId, flag, url) {
                 try {
+                    getBaseInfo(); // 确保 HOST 已初始化（用于相对路径补全）
                     print('>>> wawa playerContent: url=' + (url || '').substring(0, 60));
                     var b64Data = String(url || '');
                     if (b64Data.indexOf('$') >= 0) {
@@ -659,11 +663,28 @@ var spider = {
 
                     var jsonStr = b64decodeStr(b64Data);
                     var playData = JSON.parse(jsonStr);
-                    var playUrl = playData.url || '';
-                    var parseUrl = playData.parse || '';
-                    var ua = playData.ag || 'dart:io';
+                    var playUrl = String(playData.url || '');
+                    var parseUrl = String(playData.parse || '');
+                    var ua = String(playData.ag || 'dart:io');
 
-                    print('>>> wawa playerContent: playUrl=' + (playUrl || '').substring(0, 80));
+                    print('>>> wawa playerContent: playUrl=' + playUrl.substring(0, 80) + ' parseUrl=' + parseUrl.substring(0, 60));
+
+                    // 修复1: 确保 playUrl 是完整的 http(s) URL
+                    // API可能返回协议相对URL(//xxx)、绝对路径(/xxx)或缺少协议头
+                    if (playUrl && !/^https?:\/\//i.test(playUrl)) {
+                        if (playUrl.indexOf('//') === 0) {
+                            playUrl = 'https:' + playUrl;
+                        } else if (playUrl.indexOf('/') === 0 && HOST) {
+                            playUrl = HOST + playUrl;
+                        } else if (playUrl.indexOf('http') !== 0) {
+                            playUrl = 'https://' + playUrl;
+                        }
+                        print('>>> wawa playerContent: 修正playUrl=' + playUrl.substring(0, 80));
+                    }
+
+                    // 修复2: 验证 parseUrl 是有效的 http URL
+                    // MacCMS 的 parse2 可能是数字(0/1)而非URL字符串，需要排除
+                    var isValidParseUrl = parseUrl && /^https?:\/\//i.test(parseUrl);
 
                     // 判断是否是直接可播放的媒体链接
                     var isDirect = /\.(m3u8|mp4|flv|mkv|avi|ts|mov)(\?|$|#)/i.test(playUrl);
@@ -673,12 +694,12 @@ var spider = {
                         print('>>> wawa playerContent: 直链播放');
                         return {
                             parse: 0,
-                            playUrl: '',
+                            playUrl: null,
                             url: playUrl,
                             header: { 'User-Agent': ua }
                         };
-                    } else if (parseUrl) {
-                        // 非直链但有解析器：构造解析URL，交给vbox二次解析
+                    } else if (isValidParseUrl) {
+                        // 非直链但有解析器URL：构造解析URL，交给vbox二次解析
                         var jxUrl = parseUrl + encodeURIComponent(playUrl);
                         print('>>> wawa playerContent: 解析器播放 jxUrl=' + jxUrl.substring(0, 80));
                         return {
@@ -688,18 +709,19 @@ var spider = {
                             header: { 'User-Agent': ua }
                         };
                     } else {
-                        // 非直链无解析器：交给vbox通用解析
-                        print('>>> wawa playerContent: 通用解析');
+                        // 非直链无解析器(或parse2是数字标志)：交给vbox通用解析
+                        print('>>> wawa playerContent: 通用解析 (parse2原始值=' + parseUrl + ')');
+                        // 修复3: playUrl 用 null 而非空字符串，确保 Swift 侧 pr.playUrl ?? pr.url 能取到 url
                         return {
                             parse: 1,
-                            playUrl: '',
+                            playUrl: null,
                             url: playUrl,
                             header: { 'User-Agent': ua }
                         };
                     }
                 } catch (e) {
                     print('>>> wawa playerContent ERROR: ' + e);
-                    return { parse: 0, playUrl: '', url: '' };
+                    return { parse: 0, playUrl: null, url: '' };
                 }
             }
         };
