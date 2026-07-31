@@ -1,8 +1,9 @@
 /*
- * 哇哇影视 JS 蜘蛛 v1.5
+ * 哇哇影视 JS 蜘蛛 v1.6
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 目标站: MacCMS API (zjv6.vod)
  * 特点: AES-128-ECB 接口配置解密 + RSA-SHA256 请求签名 + Gitee 远程配置
+ * v1.6: 修复UA默认值dart:io无效、playUrl为空时静默失败、vod()缺少year/area字段
  * v1.5: 修复播放失败 - parse2数字类型导致非法URL、playUrl空字符串导致Swift侧取不到url、URL缺协议头
  * v1.4: 修复vod_id等字段类型转换(数字→字符串)，修复Swift JSONDecoder解码失败导致无数据
  * v1.3: 修复lang/letter筛选参数、playerContent直链/解析器判断、emoji编解码
@@ -472,7 +473,9 @@ var spider = {
                 vod_id: String(item.vod_id || ''),
                 vod_name: String(item.vod_name || ''),
                 vod_pic: String(item.vod_pic || ''),
-                vod_remarks: String(item.vod_remarks || '')
+                vod_remarks: String(item.vod_remarks || ''),
+                vod_year: String(item.vod_year || ''),
+                vod_area: String(item.vod_area || '')
             };
         }
 
@@ -665,9 +668,15 @@ var spider = {
                     var playData = JSON.parse(jsonStr);
                     var playUrl = String(playData.url || '');
                     var parseUrl = String(playData.parse || '');
-                    var ua = String(playData.ag || 'dart:io');
+                    var ua = String(playData.ag || 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15');
 
                     print('>>> wawa playerContent: playUrl=' + playUrl.substring(0, 80) + ' parseUrl=' + parseUrl.substring(0, 60));
+
+                    // 修复: playUrl 为空时直接返回错误，避免静默失败
+                    if (!playUrl) {
+                        print('>>> wawa playerContent: playUrl为空，无法播放');
+                        return { parse: 0, playUrl: null, url: '' };
+                    }
 
                     // 修复1: 确保 playUrl 是完整的 http(s) URL
                     // API可能返回协议相对URL(//xxx)、绝对路径(/xxx)或缺少协议头
