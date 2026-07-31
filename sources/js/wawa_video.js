@@ -1,8 +1,9 @@
 /*
- * 哇哇影视 JS 蜘蛛 v1.2
+ * 哇哇影视 JS 蜘蛛 v1.3
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 目标站: MacCMS API (zjv6.vod)
  * 特点: AES-128-ECB 接口配置解密 + RSA-SHA256 请求签名 + Gitee 远程配置
+ * v1.3: 修复lang/letter筛选参数、playerContent直链/解析器判断、emoji编解码
  * v1.2: 完全自包含纯JS实现(AES-ECB/SHA-256/RSA-SHA256/UUID/hex-base64)
  *       无需更新vbox即可使用，原生桥接可用时自动加速
  * 流程: Gitee获取加密配置 → AES-ECB解密 → RSA签名请求API → 返回视频数据
@@ -31,8 +32,15 @@ function b64decodeStr(s) {
         if (r) return r;
     }
     var bytes = b64decodeToBytes(s);
-    var str = '';
-    for (var i = 0; i < bytes.length; i++) str += String.fromCharCode(bytes[i]);
+    // 正确解码 UTF-8（支持中文等多字节字符）
+    var str = '', i = 0;
+    while (i < bytes.length) {
+        var b = bytes[i++];
+        if (b < 0x80) { str += String.fromCharCode(b); }
+        else if (b < 0xE0) { str += String.fromCharCode(((b & 0x1F) << 6) | (bytes[i++] & 0x3F)); }
+        else if (b < 0xF0) { str += String.fromCharCode(((b & 0x0F) << 12) | ((bytes[i++] & 0x3F) << 6) | (bytes[i++] & 0x3F)); }
+        else { var cp = ((b & 0x07) << 18) | ((bytes[i++] & 0x3F) << 12) | ((bytes[i++] & 0x3F) << 6) | (bytes[i++] & 0x3F); cp -= 0x10000; str += String.fromCharCode(0xD800 + (cp >> 10), 0xDC00 + (cp & 0x3FF)); }
+    }
     return str;
 }
 
@@ -46,7 +54,8 @@ function b64encodeStr(str) {
         var c = str.charCodeAt(i);
         if (c < 0x80) bytes.push(c);
         else if (c < 0x800) bytes.push(0xC0 | (c >> 6), 0x80 | (c & 0x3F));
-        else bytes.push(0xE0 | (c >> 12), 0x80 | ((c >> 6) & 0x3F), 0x80 | (c & 0x3F));
+        else if (c < 0xD800 || c >= 0xE000) bytes.push(0xE0 | (c >> 12), 0x80 | ((c >> 6) & 0x3F), 0x80 | (c & 0x3F));
+        else { i++; var c2 = str.charCodeAt(i); var cp = 0x10000 + (((c & 0x3FF) << 10) | (c2 & 0x3FF)); bytes.push(0xF0 | (cp >> 18), 0x80 | ((cp >> 12) & 0x3F), 0x80 | ((cp >> 6) & 0x3F), 0x80 | (cp & 0x3F)); }
     }
     var result = '';
     for (i = 0; i < bytes.length; i += 3) {
@@ -534,7 +543,9 @@ var spider = {
                 var params = 'type=' + tid + '&page=' + page + '&limit=12';
                 params += '&class=' + (ext.class || '');
                 params += '&area=' + (ext.area || '');
+                params += '&lang=' + (ext.lang || '');
                 params += '&year=' + (ext.year || '');
+                params += '&letter=' + (ext.letter || '');
                 params += '&by=' + (ext.by || '');
 
                 var data = fetchApi('/api.php/zjv6.vod?' + params);
@@ -573,8 +584,9 @@ var spider = {
                         if (list.urls && list.urls.length > 0) {
                             for (var j = 0; j < list.urls.length; j++) {
                                 var u = list.urls[j];
-                                if (list.player_info && list.player_info.parse2) {
-                                    u.parse = list.player_info.parse2;
+                                if (list.player_info) {
+                                    if (list.player_info.parse2) u.parse = list.player_info.parse2;
+                                    if (list.player_info.ag) u.ag = list.player_info.ag;
                                 }
                                 urls.push(u.name + '$' + b64encodeJson(u));
                             }
@@ -600,12 +612,7 @@ var spider = {
 
             searchContent: function(key, quick, pg) {
                 var keyword = String(key || '');
-                var pageNum = 1;
-                if (pg !== undefined) {
-                    pageNum = parseInt(pg) || 1;
-                } else if (quick !== undefined) {
-                    pageNum = parseInt(quick) || 1;
-                }
+                var pageNum = parseInt(pg) || 1;
 
                 var data = fetchApi('/api.php/zjv6.vod?page=' + pageNum + '&limit=20&wd=' + encodeURIComponent(keyword));
                 var list = (data && data.data && data.data.list) ? data.data.list : [];
@@ -630,15 +637,43 @@ var spider = {
                     var jsonStr = b64decodeStr(b64Data);
                     var playData = JSON.parse(jsonStr);
                     var playUrl = playData.url || '';
+                    var parseUrl = playData.parse || '';
+                    var ua = playData.ag || 'dart:io';
 
                     print('>>> wawa playerContent: playUrl=' + (playUrl || '').substring(0, 80));
 
-                    return {
-                        parse: 0,
-                        playUrl: '',
-                        url: playUrl,
-                        header: { 'User-Agent': 'dart:io' }
-                    };
+                    // 判断是否是直接可播放的媒体链接
+                    var isDirect = /\.(m3u8|mp4|flv|mkv|avi|ts|mov)(\?|$|#)/i.test(playUrl);
+
+                    if (isDirect) {
+                        // 直链：直接播放
+                        print('>>> wawa playerContent: 直链播放');
+                        return {
+                            parse: 0,
+                            playUrl: '',
+                            url: playUrl,
+                            header: { 'User-Agent': ua }
+                        };
+                    } else if (parseUrl) {
+                        // 非直链但有解析器：构造解析URL，交给vbox二次解析
+                        var jxUrl = parseUrl + encodeURIComponent(playUrl);
+                        print('>>> wawa playerContent: 解析器播放 jxUrl=' + jxUrl.substring(0, 80));
+                        return {
+                            parse: 1,
+                            playUrl: jxUrl,
+                            url: playUrl,
+                            header: { 'User-Agent': ua }
+                        };
+                    } else {
+                        // 非直链无解析器：交给vbox通用解析
+                        print('>>> wawa playerContent: 通用解析');
+                        return {
+                            parse: 1,
+                            playUrl: '',
+                            url: playUrl,
+                            header: { 'User-Agent': ua }
+                        };
+                    }
                 } catch (e) {
                     print('>>> wawa playerContent ERROR: ' + e);
                     return { parse: 0, playUrl: '', url: '' };
