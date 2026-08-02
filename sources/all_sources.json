@@ -192,8 +192,8 @@
       {
         "name": "玩偶资源",
         "type": "cms",
-        "searchurl": "https://wogg.xxooo.cf/vodsearch/-------------.html?wd=",
-        "detailBase": "https://wogg.xxooo.cf",
+        "searchurl": "https://woggpan.xxooo.cf/vodsearch/-------------.html?wd=",
+        "detailBase": "https://woggpan.xxooo.cf",
         "ua": "pc",
         "enabled": true,
         "priority": 1002,
@@ -211,8 +211,8 @@
       {
         "name": "多多资源",
         "type": "cms",
-        "searchurl": "https://tv.yydsys.top/index.php/vod/search.html?wd=",
-        "detailBase": "https://tv.yydsys.top",
+        "searchurl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
+        "detailBase": "https://tv.yydsys.cc",
         "ua": "pc",
         "enabled": true,
         "priority": 1004,
@@ -221,8 +221,8 @@
       {
         "name": "欧歌资源",
         "type": "cms",
-        "searchurl": "https://woog.nxog.eu.org/index.php/vod/search.html?wd=",
-        "detailBase": "https://woog.nxog.eu.org",
+        "searchurl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
+        "detailBase": "https://woog.430520.xyz",
         "ua": "pc",
         "enabled": true,
         "priority": 1006,
@@ -231,8 +231,8 @@
       {
         "name": "至臻影视",
         "type": "cms",
-        "searchurl": "https://www.mihdr.top/index.php/vod/search.html?wd=",
-        "detailBase": "https://www.mihdr.top",
+        "searchurl": "https://mihdr.top/index.php/vod/search.html?wd=",
+        "detailBase": "https://mihdr.top",
         "enabled": true,
         "priority": 1008,
         "group": "cloud"
@@ -240,8 +240,8 @@
       {
         "name": "小斑资源",
         "type": "cms",
-        "searchurl": "http://xsayang.fun:12512/index.php/vod/search.html?wd=",
-        "detailBase": "http://xsayang.fun:12512",
+        "searchurl": "http://121.205.88.174:12512/index.php/vod/search.html?wd=",
+        "detailBase": "http://121.205.88.174:12512",
         "enabled": true,
         "priority": 1010,
         "group": "cloud"
@@ -301,8 +301,8 @@
       {
         "name": "飞猫影视",
         "type": "cms",
-        "searchurl": "http://feimo.fun/index.php/vod/search.html?wd=",
-        "detailBase": "http://feimo.fun",
+        "searchurl": "http://tvpanpan.site/index.php/vod/search.html?wd=",
+        "detailBase": "http://tvpanpan.site",
         "enabled": true,
         "priority": 1020,
         "group": "cloud"
@@ -353,13 +353,10 @@
       {
         "name": "LIBVIO",
         "type": "cms",
-        "searchurl": "https://libvio.host/search/-------------.html?wd=",
-        "detailBase": "https://libvio.host",
+        "searchurl": "https://www.libvio.in/search/-------------.html?wd=",
+        "detailBase": "https://www.libvio.in",
         "searchurls": [
-          "https://libvio.host/search/-------------.html?wd=",
-          "https://www.libvios.com/search/-------------.html?wd=",
-          "https://www.libhd.com/search/-------------.html?wd=",
-          "https://libviobd.com/search/-------------.html?wd="
+          "https://www.libvio.in/search/-------------.html?wd="
         ],
         "enabled": true,
         "priority": 1035,

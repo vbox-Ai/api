@@ -1,5 +1,23 @@
 [
   {
+    "host": "http://121.205.88.174:12512",
+    "fullUrl": "http://121.205.88.174:12512/index.php/vod/search.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "小斑资源",
+    "field": "searchurl",
+    "jsonPath": "cloudSites[5].searchurl"
+  },
+  {
+    "host": "http://121.205.88.174:12512",
+    "fullUrl": "http://121.205.88.174:12512",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "小斑资源",
+    "field": "detailBase",
+    "jsonPath": "cloudSites[5].detailBase"
+  },
+  {
     "host": "http://121.205.88.174:16969",
     "fullUrl": "http://121.205.88.174:16969/index.php/vod/search.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
@@ -36,24 +54,6 @@
     "jsonPath": "sites[9].api"
   },
   {
-    "host": "http://feimo.fun",
-    "fullUrl": "http://feimo.fun/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "飞猫影视",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[11].searchurl"
-  },
-  {
-    "host": "http://feimo.fun",
-    "fullUrl": "http://feimo.fun",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "飞猫影视",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[11].detailBase"
-  },
-  {
     "host": "http://shandian.blog",
     "fullUrl": "http://shandian.blog/index.php/vod/search.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
@@ -72,6 +72,24 @@
     "jsonPath": "cloudSites[13].detailBase"
   },
   {
+    "host": "http://tvpanpan.site",
+    "fullUrl": "http://tvpanpan.site/index.php/vod/search.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "飞猫影视",
+    "field": "searchurl",
+    "jsonPath": "cloudSites[11].searchurl"
+  },
+  {
+    "host": "http://tvpanpan.site",
+    "fullUrl": "http://tvpanpan.site",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "飞猫影视",
+    "field": "detailBase",
+    "jsonPath": "cloudSites[11].detailBase"
+  },
+  {
     "host": "http://v12-1-hulucms.nmgzxrl.com",
     "fullUrl": "http://v12-1-hulucms.nmgzxrl.com/api.php/provide/vod",
     "sourceFile": "sources/api_sources.json",
@@ -88,24 +106,6 @@
     "sourceName": "至臻影视",
     "field": "api",
     "jsonPath": "sites[14].api"
-  },
-  {
-    "host": "http://xsayang.fun:12512",
-    "fullUrl": "http://xsayang.fun:12512/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "小斑资源",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[5].searchurl"
-  },
-  {
-    "host": "http://xsayang.fun:12512",
-    "fullUrl": "http://xsayang.fun:12512",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "小斑资源",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[5].detailBase"
   },
   {
     "host": "http://zltaa.sbjson.com",
@@ -234,40 +234,22 @@
     "jsonPath": "sites[0].api"
   },
   {
-    "host": "https://libvio.host",
-    "fullUrl": "https://libvio.host/search/-------------.html?wd=",
+    "host": "https://mihdr.top",
+    "fullUrl": "https://mihdr.top/index.php/vod/search.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
-    "sourceName": "LIBVIO",
+    "sourceName": "至臻影视",
     "field": "searchurl",
-    "jsonPath": "cloudSites[16].searchurl"
+    "jsonPath": "cloudSites[4].searchurl"
   },
   {
-    "host": "https://libvio.host",
-    "fullUrl": "https://libvio.host",
+    "host": "https://mihdr.top",
+    "fullUrl": "https://mihdr.top",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
-    "sourceName": "LIBVIO",
+    "sourceName": "至臻影视",
     "field": "detailBase",
-    "jsonPath": "cloudSites[16].detailBase"
-  },
-  {
-    "host": "https://libvio.host",
-    "fullUrl": "https://libvio.host/search/-------------.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "LIBVIO",
-    "field": "searchurls[0]",
-    "jsonPath": "cloudSites[16].searchurls[0]"
-  },
-  {
-    "host": "https://libviobd.com",
-    "fullUrl": "https://libviobd.com/search/-------------.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "LIBVIO",
-    "field": "searchurls[3]",
-    "jsonPath": "cloudSites[16].searchurls[3]"
+    "jsonPath": "cloudSites[4].detailBase"
   },
   {
     "host": "https://pan1.me",
@@ -342,17 +324,8 @@
     "jsonPath": "cloudSites[6].apiSearch"
   },
   {
-    "host": "https://tv.yydsys.top",
-    "fullUrl": "https://tv.yydsys.top/api.php/provide/vod",
-    "sourceFile": "sources/api_sources.json",
-    "sourceKey": "builtin_多多资源",
-    "sourceName": "多多资源",
-    "field": "api",
-    "jsonPath": "sites[13].api"
-  },
-  {
-    "host": "https://tv.yydsys.top",
-    "fullUrl": "https://tv.yydsys.top/index.php/vod/search.html?wd=",
+    "host": "https://tv.yydsys.cc",
+    "fullUrl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "多多资源",
@@ -360,13 +333,22 @@
     "jsonPath": "cloudSites[2].searchurl"
   },
   {
-    "host": "https://tv.yydsys.top",
-    "fullUrl": "https://tv.yydsys.top",
+    "host": "https://tv.yydsys.cc",
+    "fullUrl": "https://tv.yydsys.cc",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "多多资源",
     "field": "detailBase",
     "jsonPath": "cloudSites[2].detailBase"
+  },
+  {
+    "host": "https://tv.yydsys.top",
+    "fullUrl": "https://tv.yydsys.top/api.php/provide/vod",
+    "sourceFile": "sources/api_sources.json",
+    "sourceKey": "builtin_多多资源",
+    "sourceName": "多多资源",
+    "field": "api",
+    "jsonPath": "sites[13].api"
   },
   {
     "host": "https://tyyszyapi.com",
@@ -432,8 +414,8 @@
     "jsonPath": "files.disabledSources"
   },
   {
-    "host": "https://wogg.xxooo.cf",
-    "fullUrl": "https://wogg.xxooo.cf/vodsearch/-------------.html?wd=",
+    "host": "https://woggpan.xxooo.cf",
+    "fullUrl": "https://woggpan.xxooo.cf/vodsearch/-------------.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "玩偶资源",
@@ -441,8 +423,8 @@
     "jsonPath": "cloudSites[0].searchurl"
   },
   {
-    "host": "https://wogg.xxooo.cf",
-    "fullUrl": "https://wogg.xxooo.cf",
+    "host": "https://woggpan.xxooo.cf",
+    "fullUrl": "https://woggpan.xxooo.cf",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "玩偶资源",
@@ -450,8 +432,8 @@
     "jsonPath": "cloudSites[0].detailBase"
   },
   {
-    "host": "https://woog.nxog.eu.org",
-    "fullUrl": "https://woog.nxog.eu.org/index.php/vod/search.html?wd=",
+    "host": "https://woog.430520.xyz",
+    "fullUrl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "欧歌资源",
@@ -459,8 +441,8 @@
     "jsonPath": "cloudSites[3].searchurl"
   },
   {
-    "host": "https://woog.nxog.eu.org",
-    "fullUrl": "https://woog.nxog.eu.org",
+    "host": "https://woog.430520.xyz",
+    "fullUrl": "https://woog.430520.xyz",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "欧歌资源",
@@ -504,40 +486,31 @@
     "jsonPath": "cloudSites[9].detailBase"
   },
   {
-    "host": "https://www.libhd.com",
-    "fullUrl": "https://www.libhd.com/search/-------------.html?wd=",
+    "host": "https://www.libvio.in",
+    "fullUrl": "https://www.libvio.in/search/-------------.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "LIBVIO",
-    "field": "searchurls[2]",
-    "jsonPath": "cloudSites[16].searchurls[2]"
-  },
-  {
-    "host": "https://www.libvios.com",
-    "fullUrl": "https://www.libvios.com/search/-------------.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "LIBVIO",
-    "field": "searchurls[1]",
-    "jsonPath": "cloudSites[16].searchurls[1]"
-  },
-  {
-    "host": "https://www.mihdr.top",
-    "fullUrl": "https://www.mihdr.top/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "至臻影视",
     "field": "searchurl",
-    "jsonPath": "cloudSites[4].searchurl"
+    "jsonPath": "cloudSites[16].searchurl"
   },
   {
-    "host": "https://www.mihdr.top",
-    "fullUrl": "https://www.mihdr.top",
+    "host": "https://www.libvio.in",
+    "fullUrl": "https://www.libvio.in",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
-    "sourceName": "至臻影视",
+    "sourceName": "LIBVIO",
     "field": "detailBase",
-    "jsonPath": "cloudSites[4].detailBase"
+    "jsonPath": "cloudSites[16].detailBase"
+  },
+  {
+    "host": "https://www.libvio.in",
+    "fullUrl": "https://www.libvio.in/search/-------------.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "LIBVIO",
+    "field": "searchurls[0]",
+    "jsonPath": "cloudSites[16].searchurls[0]"
   },
   {
     "host": "https://www.rrdynb.com",
