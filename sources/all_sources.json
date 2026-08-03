@@ -761,6 +761,26 @@
         "notes": "由 BananaVideoService（继承 FuliBaseService） / FuliPlatformMainView 提供"
       },
       {
+        "platformKey": "lusushequ",
+        "name": "六速社区",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "Python Spider 福利源",
+        "serviceType": "welfare_spider",
+        "defaultHosts": [
+          "https://215.x89cneo.com:51111"
+        ],
+        "sortOrder": 230,
+        "defaultProxy": false,
+        "notes": "脚本内部 getName 返回 Uu视频；仅通过福利专区加载，不进入普通 Spider 源池",
+        "api": "./sources/welfare-js/lusushequ.py",
+        "scriptType": "python",
+        "engine": "spider",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
         "platformKey": "sebo_juhe",
         "name": "色播聚合",
         "category": "live",

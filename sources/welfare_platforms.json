@@ -15,14 +15,26 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.03.1",
-    "updatedAt": "2026-08-03T12:00:00Z"
+    "version": "2026.08.03.3",
+    "updatedAt": "2026-08-03T16:30:00Z"
   },
   "schemaVersion": 1,
   "categories": [
-    { "key": "video", "name": "视频", "icon": "play.rectangle.fill" },
-    { "key": "live",  "name": "直播", "icon": "antenna.radiowaves.left.and.right" },
-    { "key": "comic", "name": "漫画", "icon": "books.vertical.fill" }
+    {
+      "key": "video",
+      "name": "视频",
+      "icon": "play.rectangle.fill"
+    },
+    {
+      "key": "live",
+      "name": "直播",
+      "icon": "antenna.radiowaves.left.and.right"
+    },
+    {
+      "key": "comic",
+      "name": "漫画",
+      "icon": "books.vertical.fill"
+    }
   ],
   "platforms": [
     {
@@ -32,7 +44,9 @@
       "icon": "leaf.fill",
       "desc": "短视频/长视频",
       "serviceType": "ybox_special",
-      "defaultHosts": ["https://zfvwi8.ipajx0.cc"],
+      "defaultHosts": [
+        "https://zfvwi8.ipajx0.cc"
+      ],
       "sortOrder": 10,
       "notes": "香蕉秀专用 API（zfvwi8 网关），由 YBoxService2.fetchBanana* 系列提供"
     },
@@ -43,7 +57,9 @@
       "icon": "sparkles",
       "desc": "二次元角色扮演",
       "serviceType": "ybox_xjsp",
-      "defaultHosts": ["https://zfvwi8.ipajx0.cc"],
+      "defaultHosts": [
+        "https://zfvwi8.ipajx0.cc"
+      ],
       "sortOrder": 20,
       "notes": "走通用香蕉秀分类接口（Xjsp 类型），由 YBoxXjspMainView 提供"
     },
@@ -54,7 +70,9 @@
       "icon": "moon.stars.fill",
       "desc": "夜间精彩",
       "serviceType": "ybox_xjsp",
-      "defaultHosts": ["https://zfvwi8.ipajx0.cc"],
+      "defaultHosts": [
+        "https://zfvwi8.ipajx0.cc"
+      ],
       "sortOrder": 30,
       "notes": "走通用香蕉秀分类接口（Xjsp 类型）"
     },
@@ -65,7 +83,9 @@
       "icon": "heart.slash.fill",
       "desc": "专题视频",
       "serviceType": "ybox_xjsp",
-      "defaultHosts": ["https://zfvwi8.ipajx0.cc"],
+      "defaultHosts": [
+        "https://zfvwi8.ipajx0.cc"
+      ],
       "sortOrder": 40,
       "notes": "走通用香蕉秀分类接口（Xjsp 类型）"
     },
@@ -76,7 +96,9 @@
       "icon": "play.rectangle.fill",
       "desc": "综合视频站",
       "serviceType": "ybox_xjsp",
-      "defaultHosts": ["https://1080.hlkjsm.com"],
+      "defaultHosts": [
+        "https://1080.hlkjsm.com"
+      ],
       "sortOrder": 50,
       "notes": "走通用香蕉秀分类接口（Xjsp 类型），YBoxXjspMainView 提供"
     },
@@ -87,7 +109,9 @@
       "icon": "flame.fill",
       "desc": "每日更新",
       "serviceType": "daily_battle",
-      "defaultHosts": ["https://border.bshzjjgq.cc"],
+      "defaultHosts": [
+        "https://border.bshzjjgq.cc"
+      ],
       "sortOrder": 60,
       "notes": "由 DailyBattleService / DailyBattleMainView 提供"
     },
@@ -98,7 +122,9 @@
       "icon": "trophy.fill",
       "desc": "每日精选",
       "serviceType": "daily_battle",
-      "defaultHosts": ["https://www.mrds66.com"],
+      "defaultHosts": [
+        "https://www.mrds66.com"
+      ],
       "sortOrder": 70,
       "notes": "由 DailyBattleService / DailyBattleMainView 提供"
     },
@@ -109,7 +135,9 @@
       "icon": "theatermasks.fill",
       "desc": "加密解密",
       "serviceType": "mystery_movie",
-      "defaultHosts": ["https://h4ivs.sm431.vip"],
+      "defaultHosts": [
+        "https://h4ivs.sm431.vip"
+      ],
       "sortOrder": 80,
       "notes": "由 MysteryMovieService / MysteryMovieMainView 提供"
     },
@@ -120,7 +148,9 @@
       "icon": "film.fill",
       "desc": "综合视频站",
       "serviceType": "sihu_video",
-      "defaultHosts": ["https://www.sihuhu.xyz"],
+      "defaultHosts": [
+        "https://www.sihuhu.xyz"
+      ],
       "sortOrder": 90,
       "notes": "由 SihuVideoService / SihuVideoHomeView 提供"
     },
@@ -131,7 +161,9 @@
       "icon": "party.popper.fill",
       "desc": "免费视频",
       "serviceType": "xcp",
-      "defaultHosts": ["https://xiang512.xiang.party/xcpd"],
+      "defaultHosts": [
+        "https://xiang512.xiang.party/xcpd"
+      ],
       "sortOrder": 100,
       "notes": "由 XCPService / XCPHomeView 提供"
     },
@@ -142,7 +174,9 @@
       "icon": "heart.circle.fill",
       "desc": "精选分类视频",
       "serviceType": "luoli_av",
-      "defaultHosts": ["https://212602.luoliav.cc"],
+      "defaultHosts": [
+        "https://212602.luoliav.cc"
+      ],
       "sortOrder": 110,
       "notes": "由 LuoliAVService / LuoliAVHomeView 提供"
     },
@@ -153,7 +187,9 @@
       "icon": "play.tv.fill",
       "desc": "在线免费播放",
       "serviceType": "madou_free",
-      "defaultHosts": ["https://c-you.hair"],
+      "defaultHosts": [
+        "https://c-you.hair"
+      ],
       "sortOrder": 120,
       "notes": "由 MadouFreeService / MadouFreeHomeView 提供"
     },
@@ -164,7 +200,9 @@
       "icon": "film.stack.fill",
       "desc": "23个分类视频站",
       "serviceType": "jiujiu",
-      "defaultHosts": ["https://ww.jiujiu.one"],
+      "defaultHosts": [
+        "https://ww.jiujiu.one"
+      ],
       "sortOrder": 130,
       "notes": "由 JiujiuService / JiujiuHomeView 提供"
     },
@@ -175,7 +213,9 @@
       "icon": "flag.fill",
       "desc": "4级回退播放地址",
       "serviceType": "korean_porn",
-      "defaultHosts": ["https://koreanpornmovie.com"],
+      "defaultHosts": [
+        "https://koreanpornmovie.com"
+      ],
       "sortOrder": 140,
       "notes": "由 KoreanPornService / KoreanPornHomeView 提供"
     },
@@ -186,7 +226,9 @@
       "icon": "eye.fill",
       "desc": "动态域名+自适应分类",
       "serviceType": "kanliao",
-      "defaultHosts": ["https://kanliao2.one"],
+      "defaultHosts": [
+        "https://kanliao2.one"
+      ],
       "sortOrder": 150,
       "notes": "由 KanliaoService / KanliaoHomeView 提供"
     },
@@ -197,7 +239,9 @@
       "icon": "flame.circle.fill",
       "desc": "AES图片解密+19分类",
       "serviceType": "heiliao",
-      "defaultHosts": ["https://heiliao.com"],
+      "defaultHosts": [
+        "https://heiliao.com"
+      ],
       "sortOrder": 160,
       "notes": "由 HeiliaoService / HeiliaoHomeView 提供"
     },
@@ -208,7 +252,9 @@
       "icon": "flame.fill",
       "desc": "动态域名+自适应分类",
       "serviceType": "xigua",
-      "defaultHosts": ["https://advise.nlwkmsv.cc"],
+      "defaultHosts": [
+        "https://advise.nlwkmsv.cc"
+      ],
       "sortOrder": 170,
       "notes": "由 XiguaService / XiguaMainView 提供"
     },
@@ -219,7 +265,9 @@
       "icon": "pawprint.fill",
       "desc": "API接口+子分类",
       "serviceType": "fuli_base",
-      "defaultHosts": ["https://spiderscloudcn2.51111666.com"],
+      "defaultHosts": [
+        "https://spiderscloudcn2.51111666.com"
+      ],
       "sortOrder": 180,
       "notes": "由 PandaVideoService（继承 FuliBaseService） / FuliPlatformMainView 提供"
     },
@@ -230,7 +278,9 @@
       "icon": "film.fill",
       "desc": "HTML自适应分类",
       "serviceType": "fuli_base",
-      "defaultHosts": ["https://4h05.cc"],
+      "defaultHosts": [
+        "https://4h05.cc"
+      ],
       "sortOrder": 190,
       "notes": "由 FourHVideoService（继承 FuliBaseService） / FuliPlatformMainView 提供"
     },
@@ -241,7 +291,9 @@
       "icon": "display",
       "desc": "HTML高清视频",
       "serviceType": "fuli_base",
-      "defaultHosts": ["https://fullhd.cc"],
+      "defaultHosts": [
+        "https://fullhd.cc"
+      ],
       "sortOrder": 200,
       "notes": "由 FullHDService（继承 FuliBaseService） / FuliPlatformMainView 提供"
     },
@@ -252,9 +304,31 @@
       "icon": "play.rectangle.fill",
       "desc": "HTML自适应分类",
       "serviceType": "fuli_base",
-      "defaultHosts": ["https://618013.xyz"],
+      "defaultHosts": [
+        "https://618013.xyz"
+      ],
       "sortOrder": 210,
       "notes": "由 BananaVideoService（继承 FuliBaseService） / FuliPlatformMainView 提供"
+    },
+    {
+      "platformKey": "lusushequ",
+      "name": "六速社区",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "Python Spider 福利源",
+      "serviceType": "welfare_spider",
+      "defaultHosts": [
+        "https://215.x89cneo.com:51111"
+      ],
+      "sortOrder": 230,
+      "defaultProxy": false,
+      "notes": "脚本内部 getName 返回 Uu视频；仅通过福利专区加载，不进入普通 Spider 源池",
+      "api": "./sources/welfare-js/lusushequ.py",
+      "scriptType": "python",
+      "engine": "spider",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     },
     {
       "platformKey": "sebo_juhe",
@@ -263,7 +337,9 @@
       "icon": "tv.fill",
       "desc": "直播聚合",
       "serviceType": "sb_aggregation",
-      "defaultHosts": ["http://api.hclyz.com:81/mf"],
+      "defaultHosts": [
+        "http://api.hclyz.com:81/mf"
+      ],
       "sortOrder": 300,
       "notes": "由 SBAggregationService / SBAggregationView 提供"
     }
