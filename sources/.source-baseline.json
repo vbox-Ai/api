@@ -9,7 +9,7 @@
     "domain_overrides": 0,
     "parsers": 0,
     "spider_sources": 8,
-    "welfare_platforms": 22
+    "welfare_platforms": 23
   },
   "detail": {
     "api_sources": {
@@ -70,6 +70,7 @@
       "kanliao": "今日看料",
       "korean_porn_movie": "韩国色情电影",
       "luoli_av": "萝莉AV",
+      "lusushequ": "六速社区",
       "madou_free": "麻豆免费",
       "mystery_movie": "神秘电影",
       "panda_video": "熊猫视频",
