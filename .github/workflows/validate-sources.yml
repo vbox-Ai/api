@@ -297,7 +297,7 @@ jobs:
                           changes.append(f"  {file_key}: disabledKeys {old_keys} → {new_keys}")
                       if old_hosts != new_hosts:
                           changes.append(f"  {file_key}: disabledHosts {old_hosts} → {new_hosts}")
-                  elif old != new:
+                  elif old is not None and old != new:
                       delta = new - old
                       sign = "+" if delta > 0 else ""
                       changes.append(f"  {file_key}: {old} → {new} ({sign}{delta})")
@@ -314,6 +314,12 @@ jobs:
                           if removed:
                               for k in sorted(removed):
                                   changes.append(f"    - {old_detail[file_key].get(k, k)}")
+                  elif old is None and new != 0:
+                      # 新增的计数项（baseline 中尚未记录），仅在非零时报告
+                      changes.append(f"  {file_key}: NEW → {new} (+{new})")
+                      if file_key in current_detail:
+                          for k in sorted(current_detail[file_key].keys()):
+                              changes.append(f"    + {current_detail[file_key][k]}")
 
               if changes:
                   print("CHANGES DETECTED:")
