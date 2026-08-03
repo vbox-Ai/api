@@ -8,7 +8,8 @@
     },
     "domain_overrides": 0,
     "parsers": 0,
-    "spider_sources": 8
+    "spider_sources": 8,
+    "welfare_platforms": 22
   },
   "detail": {
     "api_sources": {
@@ -56,6 +57,30 @@
       "js_腾讯视频": "官源 | 腾讯视频[js]",
       "js_袋鼠影视": "影视 | 袋鼠影视[js]",
       "js_韩小圈": "影视 | 韩小圈[js]"
+    },
+    "welfare_platforms": {
+      "1080_video": "1080视频",
+      "banana_video": "香蕉视频",
+      "daily_battle_daluandou": "每日大乱斗",
+      "daily_battle_dasai": "每日大赛",
+      "four_h_video": "4H视频",
+      "full_hd": "FullHD",
+      "heiliao": "黑料不打烊",
+      "jiujiu": "久久網",
+      "kanliao": "今日看料",
+      "korean_porn_movie": "韩国色情电影",
+      "luoli_av": "萝莉AV",
+      "madou_free": "麻豆免费",
+      "mystery_movie": "神秘电影",
+      "panda_video": "熊猫视频",
+      "sebo_juhe": "色播聚合",
+      "sihu_video": "四虎视频",
+      "xiangchangpaidui": "香肠派对",
+      "xigua": "通用吸瓜",
+      "ybox_huanxiangciyuan": "幻想次元",
+      "ybox_lvmao": "绿帽淫妻",
+      "ybox_wuye": "午夜寻欢",
+      "ybox_xiangjiao": "香蕉秀"
     }
   }
 }
