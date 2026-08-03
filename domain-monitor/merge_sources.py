@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""合并 6 个源文件为 all_sources.json，并更新 manifest 版本号。
+"""合并 7 个源文件为 all_sources.json，并更新 manifest 版本号。
 
 由 CI 在每次 push 到 sources/ 时自动执行。
-客户端通过 all_sources.json 一次请求拿到全部数据，替代 6 次独立请求。
+客户端通过 all_sources.json 一次请求拿到全部数据，替代 7 次独立请求。
+
+v2 变更（福利专区远程源迁移）：
+  新增 welfarePlatforms → welfare_platforms.json，对应 iOS 端 WelfarePlatformConfigStore
 """
 import json
 import os
@@ -15,7 +18,10 @@ MANIFEST_FILE = SOURCES_DIR / "manifest.json"
 OUTPUT_FILE = SOURCES_DIR / "all_sources.json"
 VERSION_FILE = SOURCES_DIR / "manifest.version"
 
-# 6 个源文件 → 合并后顶层 key 的映射
+# 7 个源文件 → 合并后顶层 key 的映射
+# 注意：welfarePlatforms 是福利专区远程配置（welfare_platforms.json），
+#       iOS 客户端通过 WelfarePlatformConfigStore 加载。修改此文件即可
+#       增删福利平台，无需发版。
 SOURCE_FILES = {
     "apiSources": "api_sources.json",
     "cloudSources": "cloud_sources.json",
@@ -23,6 +29,7 @@ SOURCE_FILES = {
     "domainOverrides": "domain_overrides.json",
     "parsers": "parsers.json",
     "disabledSources": "disabled_sources.json",
+    "welfarePlatforms": "welfare_platforms.json",
 }
 
 
@@ -35,7 +42,7 @@ def bump_version(version: str) -> str:
 
 
 def main():
-    # 1. 合并 6 个文件
+    # 1. 合并 7 个文件
     result = {}
     for key, filename in SOURCE_FILES.items():
         file_path = SOURCES_DIR / filename

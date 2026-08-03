@@ -92,6 +92,7 @@ jobs:
           print(f"SUCCESS: manifest.json structure valid (configVersion={manifest['configVersion']})")
           if has_all_sources:
               print(f"  All Sources: {files['allSources']}")
+              print(f"  Welfare Platforms: {files.get('welfarePlatforms', 'N/A')}")
           else:
               print(f"  API Sources: {files.get('apiSources', 'N/A')}")
               print(f"  Cloud Sources: {files.get('cloudSources', 'N/A')}")
@@ -99,6 +100,96 @@ jobs:
               print(f"  Domain Overrides: {files.get('domainOverrides', 'N/A')}")
               print(f"  Parsers: {files.get('parsers', 'N/A')}")
               print(f"  Disabled Sources: {files.get('disabledSources', 'N/A')}")
+        shell: python
+
+      - name: Validate welfare_platforms.json structure
+        run: |
+          import json, sys
+          from pathlib import Path
+
+          wp_path = Path("sources/welfare_platforms.json")
+          if not wp_path.exists():
+              print("INFO: welfare_platforms.json not found (skip validation)")
+              sys.exit(0)
+
+          with open(wp_path, "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          errors = []
+
+          # 1. 顶层必需字段
+          for field in ["schemaVersion", "categories", "platforms"]:
+              if field not in data:
+                  errors.append(f"  MISSING top-level field: {field}")
+
+          # 2. categories 必须为非空数组
+          categories = data.get("categories", [])
+          if not isinstance(categories, list) or len(categories) == 0:
+              errors.append("  categories must be a non-empty array")
+
+          cat_keys = {c.get("key") for c in categories if isinstance(c, dict)}
+          required_cat_keys = {"video", "live"}
+          missing_cat_keys = required_cat_keys - cat_keys
+          if missing_cat_keys:
+              errors.append(f"  categories missing required keys: {missing_cat_keys}")
+
+          # 3. platforms 必须为数组
+          platforms = data.get("platforms", [])
+          if not isinstance(platforms, list):
+              errors.append("  platforms must be an array")
+              platforms = []
+
+          # 4. 每个 platform 必须有必需字段
+          required_platform_fields = {
+              "platformKey", "name", "category", "icon",
+              "defaultHosts", "sortOrder"
+          }
+          seen_keys = set()
+          for i, p in enumerate(platforms):
+              if not isinstance(p, dict):
+                  errors.append(f"  platforms[{i}] is not an object")
+                  continue
+              missing = required_platform_fields - set(p.keys())
+              if missing:
+                  errors.append(f"  platforms[{i}] ({p.get('name', '?')}) missing fields: {missing}")
+              # 唯一性校验
+              pk = p.get("platformKey")
+              if not pk:
+                  errors.append(f"  platforms[{i}] ({p.get('name', '?')}) platformKey is empty")
+              elif pk in seen_keys:
+                  errors.append(f"  platforms[{i}] duplicate platformKey: {pk}")
+              else:
+                  seen_keys.add(pk)
+              # category 必须在已定义 categories 中
+              if p.get("category") not in cat_keys:
+                  errors.append(f"  platforms[{i}] ({pk}) category='{p.get('category')}' not in categories")
+              # defaultHosts 必须为非空字符串数组
+              hosts = p.get("defaultHosts", [])
+              if not isinstance(hosts, list) or len(hosts) == 0:
+                  errors.append(f"  platforms[{i}] ({pk}) defaultHosts must be a non-empty array")
+              else:
+                  for h in hosts:
+                      if not isinstance(h, str) or not (h.startswith("http://") or h.startswith("https://")):
+                          errors.append(f"  platforms[{i}] ({pk}) invalid host: {h}")
+                          break
+
+          # 5. 排除的平台不应出现在 platforms 中（避免误迁移）
+          excluded = {"MissAV", "One平台", "麻豆平台"}
+          for p in platforms:
+              if p.get("name") in excluded:
+                  errors.append(f"  EXCLUDED platform detected: {p.get('name')} (platformKey={p.get('platformKey')})")
+
+          if errors:
+              print("ERROR: welfare_platforms.json validation failed")
+              for e in errors:
+                  print(e)
+              sys.exit(1)
+          else:
+              print(f"SUCCESS: welfare_platforms.json structure valid ({len(platforms)} platforms across {len(categories)} categories)")
+              for c in categories:
+                  cat_name = c.get("name", c.get("key"))
+                  count = sum(1 for p in platforms if p.get("category") == c.get("key"))
+                  print(f"  {cat_name}: {count} platforms")
         shell: python
 
       - name: Detect source changes
@@ -161,6 +252,18 @@ jobs:
                   keys = data.get("disabledKeys", [])
                   hosts = data.get("disabledHosts", [])
                   counts["disabled_sources"] = {"keys": len(keys), "hosts": len(hosts)}
+              except: pass
+
+              # welfare_platforms.json（福利专区远程配置）
+              try:
+                  with open("sources/welfare_platforms.json", "r") as f:
+                      data = json.load(f)
+                  plats = data.get("platforms", [])
+                  counts["welfare_platforms"] = len(plats)
+                  detail["welfare_platforms"] = {
+                      p.get("platformKey", "?"): p.get("name", "?")
+                      for p in plats if isinstance(p, dict)
+                  }
               except: pass
 
               return counts, detail
