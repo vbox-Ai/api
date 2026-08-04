@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-3xlg40o Python Spider - 修复版 (封面+播放+线路)
+3xlg40o Python Spider - 修复版 (封面+播放+线路+SSL代理)
 适配 FongMi/TV (T3) 和 WebHomeTV/PeekPro (T4)
 
 修复内容：
@@ -8,8 +8,9 @@
 2. 播放：所有线路统一用 cdnId=3（从不返回 Brotli），彻底消除压缩问题
 3. 线路切换：用正则替换 cdnId，更健壮
 4. 列表页封面：走代理解密
-5. m3u8 key URI：根相对路径转绝对路径
-6. 代理请求加 Accept-Encoding: gzip, deflate（优先 gzip，排除 br）
+5. m3u8 代理：解压 gzip/brotli/deflate + cdnId 自动替代
+6. m3u8 key URI 和 TS 分片：通过 localProxy 代理（SSL 绕过 + header 注入）
+7. 通用 URL 代理：localProxy 支持任意 URL 代理（key、ts 等）
 """
 import sys
 import re
@@ -268,7 +269,7 @@ class Spider(Spider):
         # 因此所有线路统一替换为 cdnId=3，彻底消除 Brotli 问题
         stable_url = re.sub(r'cdnId=\d+', 'cdnId=3', id) if 'cdnId=' in id else id
 
-        # 走 localProxy 代理：解压 gzip + 修复 key URI（根相对→绝对）
+        # 走 localProxy 代理：解压 gzip + 代理 key/TS（SSL 绕过 + header 注入）
         proxy_url = self._get_proxy_url({"type": "m3u8", "hls_url": stable_url})
 
         if proxy_url:
@@ -295,13 +296,16 @@ class Spider(Spider):
         if ptype == "pic":
             return self._proxy_pic(param)
 
-        # m3u8 代理（解压 + 修复 key URI）
+        # m3u8 代理（解压 + 修复 key URI + 代理 TS/key）
         if ptype == "m3u8":
             return self._proxy_m3u8(param)
 
-        # ts 分片代理
+        # 通用 URL 代理（key 请求、ts 分片等）
+        # 通过 localProxy 统一处理 SSL 绕过和 header 注入
         raw_url = param.get("url") or param.get("u") or ""
-        if raw_url and (".ts" in raw_url or ".mp4" in raw_url):
+        if raw_url:
+            if '%' in raw_url:
+                raw_url = unquote(raw_url)
             return self._proxy_media(raw_url)
 
         return [200, "video/MP2T", b""]
@@ -494,12 +498,13 @@ class Spider(Spider):
         return None, None
 
     def _proxy_m3u8(self, param):
-        """代理 m3u8：解压（gzip/brotli/deflate）+ cdnId 替代 + 修复 key URI
+        """代理 m3u8：解压（gzip/brotli/deflate）+ cdnId 替代 + 代理 key/TS
 
         解决问题：
         1. 部分CDN返回 Brotli 压缩的 m3u8，播放器不支持 → 代理解压
         2. 没有 brotli 库时 → 自动用其他 cdnId 替代获取可解压版本
-        3. key URI 是根相对路径 /api/v2/... → 转成 https://host/api/v2/...
+        3. key URI 和 TS 分片路径通过 localProxy 代理 → SSL 绕过 + header 注入
+        4. 相对路径 → 绝对路径 → localProxy 代理 URL
         """
         hls_url = param.get("hls_url", "")
         # 兼容壳子传递 URL 编码参数的情况
@@ -513,7 +518,6 @@ class Spider(Spider):
         if not text:
             return [200, "application/vnd.apple.mpegurl", b"#EXTM3U\n#EXT-X-ENDLIST"]
 
-        # 修复 key URI：根相对路径 → 绝对路径
         # 用最终获取成功的 URL 来计算 base
         parsed = urlparse(final_url)
         scheme_host = f"{parsed.scheme}://{parsed.netloc}"
@@ -522,17 +526,39 @@ class Spider(Spider):
         out_lines = []
         for line in text.splitlines():
             s = line.strip()
+
+            # #EXT-X-KEY 行：key URI 改为 localProxy 代理 URL（SSL 绕过）
             if s.startswith("#EXT-X-KEY") and 'URI="' in s:
                 m = re.search(r'URI="([^"]+)"', s)
                 if m:
                     uri = m.group(1)
+                    # 相对路径 → 绝对路径
                     if not uri.startswith("http"):
                         if uri.startswith("/"):
                             uri = scheme_host + uri
                         else:
                             uri = base_path + uri
-                    s = s.replace(m.group(0), f'URI="{uri}"')
+                    # 绝对路径 → localProxy 代理 URL
+                    proxy = self._get_proxy_url({"url": uri})
+                    if proxy:
+                        s = s.replace(m.group(0), f'URI="{proxy}"')
+                    else:
+                        s = s.replace(m.group(0), f'URI="{uri}"')
                 out_lines.append(s)
+
+            # TS 分片行（非 # 开头）：改为 localProxy 代理 URL（SSL 绕过）
+            elif not s.startswith("#") and s:
+                if not s.startswith("http"):
+                    if s.startswith("/"):
+                        s = scheme_host + s
+                    else:
+                        s = base_path + s
+                proxy = self._get_proxy_url({"url": s})
+                if proxy:
+                    out_lines.append(proxy)
+                else:
+                    out_lines.append(s)
+
             else:
                 out_lines.append(line)
 
@@ -540,7 +566,13 @@ class Spider(Spider):
         return [200, "application/vnd.apple.mpegurl", m3u8_bytes]
 
     def _proxy_media(self, raw_url):
-        """代理媒体分片，补全 header"""
+        """代理媒体分片/key 请求，SSL 绕过 + header 注入
+
+        用于 localProxy 代理 TS 分片和加密 key 请求，
+        确保自签名 SSL 主机的资源可以正常访问。
+        """
+        if '%' in raw_url:
+            raw_url = unquote(raw_url)
         try:
             req = urllib.request.Request(raw_url, headers=self.header)
             resp = urllib.request.urlopen(req, context=self._ssl_ctx, timeout=30)
