@@ -9,7 +9,7 @@
     "domain_overrides": 0,
     "parsers": 0,
     "spider_sources": 8,
-    "welfare_platforms": 23
+    "welfare_platforms": 25
   },
   "detail": {
     "api_sources": {
@@ -60,6 +60,8 @@
     },
     "welfare_platforms": {
       "1080_video": "1080视频",
+      "aidan_comic": "艾旦福利套图",
+      "aidan_video": "艾旦福利视频",
       "banana_video": "香蕉视频",
       "daily_battle_daluandou": "每日大乱斗",
       "daily_battle_dasai": "每日大赛",
