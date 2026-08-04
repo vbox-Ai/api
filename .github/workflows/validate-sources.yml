@@ -348,4 +348,4 @@ jobs:
           git add sources/.source-baseline.json
           git diff --cached --quiet || git commit -m "chore: update source baseline"
           git pull --rebase origin main || true
-          git push
+          git push origin HEAD:main
