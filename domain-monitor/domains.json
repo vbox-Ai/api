@@ -42,7 +42,7 @@
     "sourceKey": null,
     "sourceName": "色播聚合",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[25].defaultHosts[0]"
+    "jsonPath": "platforms[21].defaultHosts[0]"
   },
   {
     "host": "http://caiji.dyttzyapi.com",
@@ -126,22 +126,13 @@
     "jsonPath": "sites[6].api"
   },
   {
-    "host": "https://1080.hlkjsm.com",
-    "fullUrl": "https://1080.hlkjsm.com",
-    "sourceFile": "sources/welfare_platforms.json",
-    "sourceKey": null,
-    "sourceName": "1080视频",
-    "field": "defaultHosts[0]",
-    "jsonPath": "platforms[4].defaultHosts[0]"
-  },
-  {
     "host": "https://212602.luoliav.cc",
     "fullUrl": "https://212602.luoliav.cc",
     "sourceFile": "sources/welfare_platforms.json",
     "sourceKey": null,
     "sourceName": "萝莉AV",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[10].defaultHosts[0]"
+    "jsonPath": "platforms[6].defaultHosts[0]"
   },
   {
     "host": "https://215.x89cneo.com:51111",
@@ -150,7 +141,7 @@
     "sourceKey": null,
     "sourceName": "六速社区",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[24].defaultHosts[0]"
+    "jsonPath": "platforms[20].defaultHosts[0]"
   },
   {
     "host": "https://360zyzz.com",
@@ -168,7 +159,7 @@
     "sourceKey": null,
     "sourceName": "4H视频",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[18].defaultHosts[0]"
+    "jsonPath": "platforms[14].defaultHosts[0]"
   },
   {
     "host": "https://4ktop.com",
@@ -195,7 +186,7 @@
     "sourceKey": null,
     "sourceName": "香蕉视频",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[20].defaultHosts[0]"
+    "jsonPath": "platforms[16].defaultHosts[0]"
   },
   {
     "host": "https://666.666291.xyz",
@@ -222,7 +213,7 @@
     "sourceKey": null,
     "sourceName": "花都影视",
     "field": "defaultHosts[2]",
-    "jsonPath": "platforms[22].defaultHosts[2]"
+    "jsonPath": "platforms[18].defaultHosts[2]"
   },
   {
     "host": "https://advise.nlwkmsv.cc",
@@ -231,7 +222,7 @@
     "sourceKey": null,
     "sourceName": "通用吸瓜",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[16].defaultHosts[0]"
+    "jsonPath": "platforms[12].defaultHosts[0]"
   },
   {
     "host": "https://api.guangsuapi.com",
@@ -258,7 +249,7 @@
     "sourceKey": null,
     "sourceName": "花都影视",
     "field": "defaultHosts[3]",
-    "jsonPath": "platforms[22].defaultHosts[3]"
+    "jsonPath": "platforms[18].defaultHosts[3]"
   },
   {
     "host": "https://b.hdfby.net",
@@ -267,7 +258,7 @@
     "sourceKey": null,
     "sourceName": "花都影视",
     "field": "defaultHosts[4]",
-    "jsonPath": "platforms[22].defaultHosts[4]"
+    "jsonPath": "platforms[18].defaultHosts[4]"
   },
   {
     "host": "https://b.hdfby.org",
@@ -276,7 +267,7 @@
     "sourceKey": null,
     "sourceName": "花都影视",
     "field": "defaultHosts[5]",
-    "jsonPath": "platforms[22].defaultHosts[5]"
+    "jsonPath": "platforms[18].defaultHosts[5]"
   },
   {
     "host": "https://binhd.com",
@@ -303,7 +294,7 @@
     "sourceKey": null,
     "sourceName": "每日大乱斗",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[5].defaultHosts[0]"
+    "jsonPath": "platforms[1].defaultHosts[0]"
   },
   {
     "host": "https://c-you.hair",
@@ -312,7 +303,7 @@
     "sourceKey": null,
     "sourceName": "麻豆免费",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[11].defaultHosts[0]"
+    "jsonPath": "platforms[7].defaultHosts[0]"
   },
   {
     "host": "https://cj.lziapi.com",
@@ -330,7 +321,7 @@
     "sourceKey": null,
     "sourceName": "奶糖视频",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[23].defaultHosts[0]"
+    "jsonPath": "platforms[19].defaultHosts[0]"
   },
   {
     "host": "https://fullhd.cc",
@@ -339,7 +330,7 @@
     "sourceKey": null,
     "sourceName": "FullHD",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[19].defaultHosts[0]"
+    "jsonPath": "platforms[15].defaultHosts[0]"
   },
   {
     "host": "https://h4ivs.sm431.vip",
@@ -348,7 +339,7 @@
     "sourceKey": null,
     "sourceName": "神秘电影",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[7].defaultHosts[0]"
+    "jsonPath": "platforms[3].defaultHosts[0]"
   },
   {
     "host": "https://hd28.huadutx.com",
@@ -357,7 +348,7 @@
     "sourceKey": null,
     "sourceName": "花都影视",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[22].defaultHosts[0]"
+    "jsonPath": "platforms[18].defaultHosts[0]"
   },
   {
     "host": "https://heiliao.com",
@@ -366,7 +357,7 @@
     "sourceKey": null,
     "sourceName": "黑料不打烊",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[15].defaultHosts[0]"
+    "jsonPath": "platforms[11].defaultHosts[0]"
   },
   {
     "host": "https://hhzyapi.com",
@@ -402,7 +393,7 @@
     "sourceKey": null,
     "sourceName": "今日看料",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[14].defaultHosts[0]"
+    "jsonPath": "platforms[10].defaultHosts[0]"
   },
   {
     "host": "https://koreanpornmovie.com",
@@ -411,7 +402,7 @@
     "sourceKey": null,
     "sourceName": "韩国色情电影",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[13].defaultHosts[0]"
+    "jsonPath": "platforms[9].defaultHosts[0]"
   },
   {
     "host": "https://pan1.me",
@@ -456,7 +447,7 @@
     "sourceKey": null,
     "sourceName": "花都影视",
     "field": "defaultHosts[1]",
-    "jsonPath": "platforms[22].defaultHosts[1]"
+    "jsonPath": "platforms[18].defaultHosts[1]"
   },
   {
     "host": "https://sdzyapi.com",
@@ -501,7 +492,7 @@
     "sourceKey": null,
     "sourceName": "熊猫视频",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[17].defaultHosts[0]"
+    "jsonPath": "platforms[13].defaultHosts[0]"
   },
   {
     "host": "https://tv.yydsys.top",
@@ -627,7 +618,7 @@
     "sourceKey": null,
     "sourceName": "久久網",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[12].defaultHosts[0]"
+    "jsonPath": "platforms[8].defaultHosts[0]"
   },
   {
     "host": "https://www.319312.com",
@@ -681,7 +672,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利套图",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[26].defaultHosts[0]"
+    "jsonPath": "platforms[22].defaultHosts[0]"
   },
   {
     "host": "https://www.lovedan.net",
@@ -690,7 +681,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利套图",
     "field": "imageReferer",
-    "jsonPath": "platforms[26].imageReferer"
+    "jsonPath": "platforms[22].imageReferer"
   },
   {
     "host": "https://www.lovedan.net",
@@ -699,7 +690,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利套图",
     "field": "Referer",
-    "jsonPath": "platforms[26].headers.Referer"
+    "jsonPath": "platforms[22].headers.Referer"
   },
   {
     "host": "https://www.lovedan.net",
@@ -708,7 +699,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利视频",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[21].defaultHosts[0]"
+    "jsonPath": "platforms[17].defaultHosts[0]"
   },
   {
     "host": "https://www.lovedan.net",
@@ -717,7 +708,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利视频",
     "field": "imageReferer",
-    "jsonPath": "platforms[21].imageReferer"
+    "jsonPath": "platforms[17].imageReferer"
   },
   {
     "host": "https://www.lovedan.net",
@@ -726,7 +717,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利视频",
     "field": "Referer",
-    "jsonPath": "platforms[21].headers.Referer"
+    "jsonPath": "platforms[17].headers.Referer"
   },
   {
     "host": "https://www.mihdr.top",
@@ -753,7 +744,7 @@
     "sourceKey": null,
     "sourceName": "每日大赛",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[6].defaultHosts[0]"
+    "jsonPath": "platforms[2].defaultHosts[0]"
   },
   {
     "host": "https://www.rrdynb.com",
@@ -780,7 +771,7 @@
     "sourceKey": null,
     "sourceName": "四虎视频",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[8].defaultHosts[0]"
+    "jsonPath": "platforms[4].defaultHosts[0]"
   },
   {
     "host": "https://www.wexwp.cc",
@@ -807,7 +798,7 @@
     "sourceKey": null,
     "sourceName": "香肠派对",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[9].defaultHosts[0]"
+    "jsonPath": "platforms[5].defaultHosts[0]"
   },
   {
     "host": "https://yydsys.de5.net",
@@ -826,33 +817,6 @@
     "sourceName": "多多资源",
     "field": "detailBase",
     "jsonPath": "cloudSites[2].detailBase"
-  },
-  {
-    "host": "https://zfvwi8.ipajx0.cc",
-    "fullUrl": "https://zfvwi8.ipajx0.cc",
-    "sourceFile": "sources/welfare_platforms.json",
-    "sourceKey": null,
-    "sourceName": "午夜寻欢",
-    "field": "defaultHosts[0]",
-    "jsonPath": "platforms[2].defaultHosts[0]"
-  },
-  {
-    "host": "https://zfvwi8.ipajx0.cc",
-    "fullUrl": "https://zfvwi8.ipajx0.cc",
-    "sourceFile": "sources/welfare_platforms.json",
-    "sourceKey": null,
-    "sourceName": "幻想次元",
-    "field": "defaultHosts[0]",
-    "jsonPath": "platforms[1].defaultHosts[0]"
-  },
-  {
-    "host": "https://zfvwi8.ipajx0.cc",
-    "fullUrl": "https://zfvwi8.ipajx0.cc",
-    "sourceFile": "sources/welfare_platforms.json",
-    "sourceKey": null,
-    "sourceName": "绿帽淫妻",
-    "field": "defaultHosts[0]",
-    "jsonPath": "platforms[3].defaultHosts[0]"
   },
   {
     "host": "https://zfvwi8.ipajx0.cc",

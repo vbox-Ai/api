@@ -46,7 +46,6 @@
 | http://v12-1-hulucms.nmgzxrl.com | 奇迹影视 | sources/api_sources.json | api | 403 | 2143ms |
 | http://www.miqk.cc | 至臻影视 | sources/api_sources.json | api | 200 | 148ms |
 | http://zltaa.sbjson.com | SBJSON影视 | sources/api_sources.json | api | 200 | 1750ms |
-| https://1080.hlkjsm.com | 1080视频 | sources/welfare_platforms.json | defaultHosts[0] | 200 | 967ms |
 | https://212602.luoliav.cc | 萝莉AV | sources/welfare_platforms.json | defaultHosts[0] | - | 751ms |
 | https://215.x89cneo.com:51111 | 六速社区 | sources/welfare_platforms.json | defaultHosts[0] | 503 | 1089ms |
 | https://360zyzz.com | 360资源 | sources/api_sources.json | api | 200 | 605ms |
@@ -124,7 +123,4 @@
 | https://xiang512.xiang.party | 香肠派对 | sources/welfare_platforms.json | defaultHosts[0] | 200 | 648ms |
 | https://yydsys.de5.net | 多多资源 | sources/cloud_sources.json | searchurl | 200 | 531ms |
 | https://yydsys.de5.net | 多多资源 | sources/cloud_sources.json | detailBase | 200 | 296ms |
-| https://zfvwi8.ipajx0.cc | 午夜寻欢 | sources/welfare_platforms.json | defaultHosts[0] | 200 | 2159ms |
-| https://zfvwi8.ipajx0.cc | 幻想次元 | sources/welfare_platforms.json | defaultHosts[0] | 200 | 1450ms |
-| https://zfvwi8.ipajx0.cc | 绿帽淫妻 | sources/welfare_platforms.json | defaultHosts[0] | 200 | 1379ms |
 | https://zfvwi8.ipajx0.cc | 香蕉秀 | sources/welfare_platforms.json | defaultHosts[0] | 200 | 1311ms |
