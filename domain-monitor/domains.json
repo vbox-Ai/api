@@ -42,7 +42,7 @@
     "sourceKey": null,
     "sourceName": "色播聚合",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[24].defaultHosts[0]"
+    "jsonPath": "platforms[25].defaultHosts[0]"
   },
   {
     "host": "http://caiji.dyttzyapi.com",
@@ -150,7 +150,7 @@
     "sourceKey": null,
     "sourceName": "六速社区",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[23].defaultHosts[0]"
+    "jsonPath": "platforms[24].defaultHosts[0]"
   },
   {
     "host": "https://360zyzz.com",
@@ -322,6 +322,15 @@
     "sourceName": "量子资源",
     "field": "api",
     "jsonPath": "sites[12].api"
+  },
+  {
+    "host": "https://ewrzka4.naitang8.top",
+    "fullUrl": "https://ewrzka4.naitang8.top",
+    "sourceFile": "sources/welfare_platforms.json",
+    "sourceKey": null,
+    "sourceName": "奶糖视频",
+    "field": "defaultHosts[0]",
+    "jsonPath": "platforms[23].defaultHosts[0]"
   },
   {
     "host": "https://fullhd.cc",
@@ -672,7 +681,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利套图",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[25].defaultHosts[0]"
+    "jsonPath": "platforms[26].defaultHosts[0]"
   },
   {
     "host": "https://www.lovedan.net",
@@ -681,7 +690,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利套图",
     "field": "imageReferer",
-    "jsonPath": "platforms[25].imageReferer"
+    "jsonPath": "platforms[26].imageReferer"
   },
   {
     "host": "https://www.lovedan.net",
@@ -690,7 +699,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利套图",
     "field": "Referer",
-    "jsonPath": "platforms[25].headers.Referer"
+    "jsonPath": "platforms[26].headers.Referer"
   },
   {
     "host": "https://www.lovedan.net",
