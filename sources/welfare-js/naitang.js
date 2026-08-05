@@ -458,7 +458,7 @@ var spider = (function () {
             if (url) url = fixUrl(url);
 
             return {
-                parse: isVideoFormat(url) ? 0 : 1,
+                parse: url ? 0 : 1,
                 playUrl: '',
                 url: url || id,
                 header: videoHeaders

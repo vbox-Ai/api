@@ -410,9 +410,9 @@ var spider = (function () {
             }
             var text = get(id);
             var u = extractPlayUrl(text);
-            var direct = isDirectVideoUrl(u);
+            // 匹配 Python 原始脚本逻辑：parse: 0 if u else 1
             return {
-                parse: direct ? 0 : 1,
+                parse: u ? 0 : 1,
                 playUrl: '',
                 url: u || id,
                 header: { 'User-Agent': mobileUA, 'Referer': host, 'Origin': host.replace(/\/+$/, '') }
