@@ -9,7 +9,7 @@
     "domain_overrides": 0,
     "parsers": 0,
     "spider_sources": 8,
-    "welfare_platforms": 25
+    "welfare_platforms": 26
   },
   "detail": {
     "api_sources": {
@@ -68,6 +68,7 @@
       "four_h_video": "4H视频",
       "full_hd": "FullHD",
       "heiliao": "黑料不打烊",
+      "huadu_video": "花都影视",
       "jiujiu": "久久網",
       "kanliao": "今日看料",
       "korean_porn_movie": "韩国色情电影",
