@@ -360,24 +360,6 @@
     "jsonPath": "platforms[13].defaultHosts[0]"
   },
   {
-    "host": "https://mihdr.top",
-    "fullUrl": "https://mihdr.top/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "至臻影视",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[4].searchurl"
-  },
-  {
-    "host": "https://mihdr.top",
-    "fullUrl": "https://mihdr.top",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "至臻影视",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[4].detailBase"
-  },
-  {
     "host": "https://pan1.me",
     "fullUrl": "https://pan1.me/?search.htm&keyword=",
     "sourceFile": "sources/cloud_sources.json",
@@ -457,24 +439,6 @@
     "sourceName": "熊猫视频",
     "field": "defaultHosts[0]",
     "jsonPath": "platforms[17].defaultHosts[0]"
-  },
-  {
-    "host": "https://tv.yydsys.cc",
-    "fullUrl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "多多资源",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[2].searchurl"
-  },
-  {
-    "host": "https://tv.yydsys.cc",
-    "fullUrl": "https://tv.yydsys.cc",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "多多资源",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[2].detailBase"
   },
   {
     "host": "https://tv.yydsys.top",
@@ -558,8 +522,8 @@
     "jsonPath": "files.welfarePlatforms"
   },
   {
-    "host": "https://woggpan.xxooo.cf",
-    "fullUrl": "https://woggpan.xxooo.cf/vodsearch/-------------.html?wd=",
+    "host": "https://woggpan.888484.xyz",
+    "fullUrl": "https://woggpan.888484.xyz/vodsearch/-------------.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "玩偶资源",
@@ -567,8 +531,8 @@
     "jsonPath": "cloudSites[0].searchurl"
   },
   {
-    "host": "https://woggpan.xxooo.cf",
-    "fullUrl": "https://woggpan.xxooo.cf",
+    "host": "https://woggpan.888484.xyz",
+    "fullUrl": "https://woggpan.888484.xyz",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "玩偶资源",
@@ -576,8 +540,8 @@
     "jsonPath": "cloudSites[0].detailBase"
   },
   {
-    "host": "https://woog.430520.xyz",
-    "fullUrl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
+    "host": "https://woog.nxog.fun",
+    "fullUrl": "https://woog.nxog.fun/index.php/vod/search.html?wd=",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "欧歌资源",
@@ -585,8 +549,8 @@
     "jsonPath": "cloudSites[3].searchurl"
   },
   {
-    "host": "https://woog.430520.xyz",
-    "fullUrl": "https://woog.430520.xyz",
+    "host": "https://woog.nxog.fun",
+    "fullUrl": "https://woog.nxog.fun",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "欧歌资源",
@@ -601,24 +565,6 @@
     "sourceName": "久久網",
     "field": "defaultHosts[0]",
     "jsonPath": "platforms[12].defaultHosts[0]"
-  },
-  {
-    "host": "https://www.2xiaopan.top",
-    "fullUrl": "https://www.2xiaopan.top/index.php/vod/search.html?wd=",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "2小盘",
-    "field": "searchurl",
-    "jsonPath": "cloudSites[12].searchurl"
-  },
-  {
-    "host": "https://www.2xiaopan.top",
-    "fullUrl": "https://www.2xiaopan.top",
-    "sourceFile": "sources/cloud_sources.json",
-    "sourceKey": null,
-    "sourceName": "2小盘",
-    "field": "detailBase",
-    "jsonPath": "cloudSites[12].detailBase"
   },
   {
     "host": "https://www.319312.com",
@@ -676,12 +622,66 @@
   },
   {
     "host": "https://www.lovedan.net",
+    "fullUrl": "https://www.lovedan.net/",
+    "sourceFile": "sources/welfare_platforms.json",
+    "sourceKey": null,
+    "sourceName": "艾旦福利套图",
+    "field": "imageReferer",
+    "jsonPath": "platforms[24].imageReferer"
+  },
+  {
+    "host": "https://www.lovedan.net",
+    "fullUrl": "https://www.lovedan.net/",
+    "sourceFile": "sources/welfare_platforms.json",
+    "sourceKey": null,
+    "sourceName": "艾旦福利套图",
+    "field": "Referer",
+    "jsonPath": "platforms[24].headers.Referer"
+  },
+  {
+    "host": "https://www.lovedan.net",
     "fullUrl": "https://www.lovedan.net",
     "sourceFile": "sources/welfare_platforms.json",
     "sourceKey": null,
     "sourceName": "艾旦福利视频",
     "field": "defaultHosts[0]",
     "jsonPath": "platforms[21].defaultHosts[0]"
+  },
+  {
+    "host": "https://www.lovedan.net",
+    "fullUrl": "https://www.lovedan.net/",
+    "sourceFile": "sources/welfare_platforms.json",
+    "sourceKey": null,
+    "sourceName": "艾旦福利视频",
+    "field": "imageReferer",
+    "jsonPath": "platforms[21].imageReferer"
+  },
+  {
+    "host": "https://www.lovedan.net",
+    "fullUrl": "https://www.lovedan.net/",
+    "sourceFile": "sources/welfare_platforms.json",
+    "sourceKey": null,
+    "sourceName": "艾旦福利视频",
+    "field": "Referer",
+    "jsonPath": "platforms[21].headers.Referer"
+  },
+  {
+    "host": "https://www.mihdr.top",
+    "fullUrl": "https://www.mihdr.top/index.php/vod/search.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "至臻影视",
+    "field": "searchurl",
+    "jsonPath": "cloudSites[4].searchurl"
+  },
+  {
+    "host": "https://www.mihdr.top",
+    "fullUrl": "https://www.mihdr.top",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "至臻影视",
+    "field": "detailBase",
+    "jsonPath": "cloudSites[4].detailBase"
   },
   {
     "host": "https://www.mrds66.com",
@@ -720,6 +720,24 @@
     "jsonPath": "platforms[8].defaultHosts[0]"
   },
   {
+    "host": "https://www.wexwp.cc",
+    "fullUrl": "https://www.wexwp.cc/index.php/vod/search.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "2小盘",
+    "field": "searchurl",
+    "jsonPath": "cloudSites[12].searchurl"
+  },
+  {
+    "host": "https://www.wexwp.cc",
+    "fullUrl": "https://www.wexwp.cc",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "2小盘",
+    "field": "detailBase",
+    "jsonPath": "cloudSites[12].detailBase"
+  },
+  {
     "host": "https://xiang512.xiang.party",
     "fullUrl": "https://xiang512.xiang.party/xcpd",
     "sourceFile": "sources/welfare_platforms.json",
@@ -727,6 +745,24 @@
     "sourceName": "香肠派对",
     "field": "defaultHosts[0]",
     "jsonPath": "platforms[9].defaultHosts[0]"
+  },
+  {
+    "host": "https://yydsys.de5.net",
+    "fullUrl": "https://yydsys.de5.net/index.php/vod/search.html?wd=",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "多多资源",
+    "field": "searchurl",
+    "jsonPath": "cloudSites[2].searchurl"
+  },
+  {
+    "host": "https://yydsys.de5.net",
+    "fullUrl": "https://yydsys.de5.net",
+    "sourceFile": "sources/cloud_sources.json",
+    "sourceKey": null,
+    "sourceName": "多多资源",
+    "field": "detailBase",
+    "jsonPath": "cloudSites[2].detailBase"
   },
   {
     "host": "https://zfvwi8.ipajx0.cc",

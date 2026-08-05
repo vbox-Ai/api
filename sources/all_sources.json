@@ -192,8 +192,8 @@
       {
         "name": "玩偶资源",
         "type": "cms",
-        "searchurl": "https://woggpan.xxooo.cf/vodsearch/-------------.html?wd=",
-        "detailBase": "https://woggpan.xxooo.cf",
+        "searchurl": "https://woggpan.888484.xyz/vodsearch/-------------.html?wd=",
+        "detailBase": "https://woggpan.888484.xyz",
         "ua": "pc",
         "enabled": true,
         "priority": 1002,
@@ -211,8 +211,8 @@
       {
         "name": "多多资源",
         "type": "cms",
-        "searchurl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
-        "detailBase": "https://tv.yydsys.cc",
+        "searchurl": "https://yydsys.de5.net/index.php/vod/search.html?wd=",
+        "detailBase": "https://yydsys.de5.net",
         "ua": "pc",
         "enabled": true,
         "priority": 1004,
@@ -221,8 +221,8 @@
       {
         "name": "欧歌资源",
         "type": "cms",
-        "searchurl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
-        "detailBase": "https://woog.430520.xyz",
+        "searchurl": "https://woog.nxog.fun/index.php/vod/search.html?wd=",
+        "detailBase": "https://woog.nxog.fun",
         "ua": "pc",
         "enabled": true,
         "priority": 1006,
@@ -231,8 +231,8 @@
       {
         "name": "至臻影视",
         "type": "cms",
-        "searchurl": "https://mihdr.top/index.php/vod/search.html?wd=",
-        "detailBase": "https://mihdr.top",
+        "searchurl": "https://www.mihdr.top/index.php/vod/search.html?wd=",
+        "detailBase": "https://www.mihdr.top",
         "enabled": true,
         "priority": 1008,
         "group": "cloud"
@@ -310,8 +310,8 @@
       {
         "name": "2小盘",
         "type": "cms",
-        "searchurl": "https://www.2xiaopan.top/index.php/vod/search.html?wd=",
-        "detailBase": "https://www.2xiaopan.top",
+        "searchurl": "https://www.wexwp.cc/index.php/vod/search.html?wd=",
+        "detailBase": "https://www.wexwp.cc",
         "enabled": true,
         "priority": 1021,
         "group": "cloud"
@@ -766,13 +766,28 @@
         "category": "video",
         "icon": "film.fill",
         "desc": "CMS福利视频源",
-        "serviceType": "aidan_video",
+        "serviceType": "remote_cms_v10",
         "defaultHosts": [
           "https://www.lovedan.net"
         ],
         "sortOrder": 220,
         "defaultProxy": false,
-        "notes": "CMS V10 API，自适应分类，只取视频类。iOS 端由 AidanVideoService / FuliPlatformMainView 提供",
+        "notes": "CMS V10 API，远程配置大分类 rootTypeId=5（福利视频），iOS 端由 RemoteCMSV10Service 动态发现 type_id_1=5 的子分类",
+        "apiKind": "cms_v10",
+        "apiPath": "/api.php/provide/vod/",
+        "rootTypeId": "5",
+        "rootTypeName": "福利视频",
+        "childDiscovery": "type_id_1",
+        "contentType": "video",
+        "itemRule": {
+          "vodPlayUrl": "required"
+        },
+        "detailMode": "video",
+        "imageReferer": "https://www.lovedan.net/",
+        "headers": {
+          "User-Agent": "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/104.0.5112.97 Mobile Safari/537.36",
+          "Referer": "https://www.lovedan.net/"
+        },
         "api": "./sources/welfare-js/aidan.py",
         "scriptType": "python",
         "engine": "spider",
@@ -819,14 +834,29 @@
         "name": "艾旦福利套图",
         "category": "comic",
         "icon": "books.vertical.fill",
-        "desc": "CMS福利套图源",
-        "serviceType": "aidan_comic",
+        "desc": "CMS福利图片源",
+        "serviceType": "remote_cms_v10",
         "defaultHosts": [
           "https://www.lovedan.net"
         ],
         "sortOrder": 400,
         "defaultProxy": false,
-        "notes": "CMS V10 API，自适应分类，只取图片/套图类。iOS 端由 AidanComicService / FuliPlatformMainView 提供",
+        "notes": "CMS V10 API，远程配置大分类 rootTypeId=33（福利图片），iOS 端由 RemoteCMSV10Service 动态发现 type_id_1=33 的子分类",
+        "apiKind": "cms_v10",
+        "apiPath": "/api.php/provide/vod/",
+        "rootTypeId": "33",
+        "rootTypeName": "福利图片",
+        "childDiscovery": "type_id_1",
+        "contentType": "comic",
+        "itemRule": {
+          "vodPlayUrl": "empty"
+        },
+        "detailMode": "comic_images",
+        "imageReferer": "https://www.lovedan.net/",
+        "headers": {
+          "User-Agent": "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/104.0.5112.97 Mobile Safari/537.36",
+          "Referer": "https://www.lovedan.net/"
+        },
         "api": "./sources/welfare-js/aidan.py",
         "scriptType": "python",
         "engine": "spider",
