@@ -9,7 +9,7 @@
     "domain_overrides": 0,
     "parsers": 0,
     "spider_sources": 8,
-    "welfare_platforms": 26
+    "welfare_platforms": 27
   },
   "detail": {
     "api_sources": {
@@ -76,6 +76,7 @@
       "lusushequ": "六速社区",
       "madou_free": "麻豆免费",
       "mystery_movie": "神秘电影",
+      "naitang_video": "奶糖视频",
       "panda_video": "熊猫视频",
       "sebo_juhe": "色播聚合",
       "sihu_video": "四虎视频",
