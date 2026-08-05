@@ -841,17 +841,14 @@
         ],
         "sortOrder": 400,
         "defaultProxy": false,
-        "notes": "CMS V10 API，远程配置大分类 rootTypeId=33（福利图片），iOS 端由 RemoteCMSV10Service 动态发现 type_id_1=33 的子分类",
-        "apiKind": "cms_v10",
+        "notes": "艾旦福利图片使用 HTML 图文页，远程配置 rootTypeId=33，并由 iOS 端 RemoteCMSV10Service 解析 arttype/artdetail 小分类、列表和套图详情",
+        "apiKind": "mac_art_html",
         "apiPath": "/api.php/provide/vod/",
         "rootTypeId": "33",
         "rootTypeName": "福利图片",
-        "childDiscovery": "type_id_1",
+        "childDiscovery": "html_arttype",
         "contentType": "comic",
-        "itemRule": {
-          "vodPlayUrl": "empty"
-        },
-        "detailMode": "comic_images",
+        "detailMode": "article_html",
         "imageReferer": "https://www.lovedan.net/",
         "headers": {
           "User-Agent": "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/104.0.5112.97 Mobile Safari/537.36",
@@ -862,7 +859,9 @@
         "engine": "spider",
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
-        "visibleInHome": false
+        "visibleInHome": false,
+        "articleListPath": "/arttype/{typeId}{pageSuffix}.html",
+        "articleDetailPath": "/artdetail-{id}.html"
       }
     ]
   }
