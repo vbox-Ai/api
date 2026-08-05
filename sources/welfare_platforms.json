@@ -373,6 +373,27 @@
       "visibleInHome": false
     },
     {
+      "platformKey": "naitang_video",
+      "name": "奶糖视频",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "HTML 视频源",
+      "serviceType": "welfare_spider",
+      "defaultHosts": [
+        "https://ewrzka4.naitang8.top"
+      ],
+      "sortOrder": 226,
+      "defaultProxy": false,
+      "notes": "HTML 页面解析源，远程 naitang.js 负责分类、列表、详情和播放页 player_aaaa 直链解析；iOS 端由 WelfareJSSpiderService 执行，m3u8 走现有本地代理",
+      "api": "./sources/welfare-js/naitang.js",
+      "scriptType": "javascript",
+      "engine": "spider",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
       "platformKey": "lusushequ",
       "name": "六速社区",
       "category": "video",
