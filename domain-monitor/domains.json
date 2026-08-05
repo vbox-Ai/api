@@ -42,7 +42,7 @@
     "sourceKey": null,
     "sourceName": "色播聚合",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[23].defaultHosts[0]"
+    "jsonPath": "platforms[24].defaultHosts[0]"
   },
   {
     "host": "http://caiji.dyttzyapi.com",
@@ -150,7 +150,7 @@
     "sourceKey": null,
     "sourceName": "六速社区",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[22].defaultHosts[0]"
+    "jsonPath": "platforms[23].defaultHosts[0]"
   },
   {
     "host": "https://360zyzz.com",
@@ -216,6 +216,15 @@
     "jsonPath": "cloudSites[1].detailBase"
   },
   {
+    "host": "https://abc.hdfby.com",
+    "fullUrl": "https://abc.hdfby.com",
+    "sourceFile": "sources/welfare_platforms.json",
+    "sourceKey": null,
+    "sourceName": "花都影视",
+    "field": "defaultHosts[2]",
+    "jsonPath": "platforms[22].defaultHosts[2]"
+  },
+  {
     "host": "https://advise.nlwkmsv.cc",
     "fullUrl": "https://advise.nlwkmsv.cc",
     "sourceFile": "sources/welfare_platforms.json",
@@ -241,6 +250,33 @@
     "sourceName": "555影视",
     "field": "api",
     "jsonPath": "sites[2].api"
+  },
+  {
+    "host": "https://b.hdfby.com",
+    "fullUrl": "https://b.hdfby.com",
+    "sourceFile": "sources/welfare_platforms.json",
+    "sourceKey": null,
+    "sourceName": "花都影视",
+    "field": "defaultHosts[3]",
+    "jsonPath": "platforms[22].defaultHosts[3]"
+  },
+  {
+    "host": "https://b.hdfby.net",
+    "fullUrl": "https://b.hdfby.net",
+    "sourceFile": "sources/welfare_platforms.json",
+    "sourceKey": null,
+    "sourceName": "花都影视",
+    "field": "defaultHosts[4]",
+    "jsonPath": "platforms[22].defaultHosts[4]"
+  },
+  {
+    "host": "https://b.hdfby.org",
+    "fullUrl": "https://b.hdfby.org",
+    "sourceFile": "sources/welfare_platforms.json",
+    "sourceKey": null,
+    "sourceName": "花都影视",
+    "field": "defaultHosts[5]",
+    "jsonPath": "platforms[22].defaultHosts[5]"
   },
   {
     "host": "https://binhd.com",
@@ -304,6 +340,15 @@
     "sourceName": "神秘电影",
     "field": "defaultHosts[0]",
     "jsonPath": "platforms[7].defaultHosts[0]"
+  },
+  {
+    "host": "https://hd28.huadutx.com",
+    "fullUrl": "https://hd28.huadutx.com/",
+    "sourceFile": "sources/welfare_platforms.json",
+    "sourceKey": null,
+    "sourceName": "花都影视",
+    "field": "defaultHosts[0]",
+    "jsonPath": "platforms[22].defaultHosts[0]"
   },
   {
     "host": "https://heiliao.com",
@@ -394,6 +439,15 @@
     "sourceName": null,
     "field": "allSources",
     "jsonPath": "files.allSources"
+  },
+  {
+    "host": "https://rb.huaduys.org",
+    "fullUrl": "https://rb.huaduys.org/",
+    "sourceFile": "sources/welfare_platforms.json",
+    "sourceKey": null,
+    "sourceName": "花都影视",
+    "field": "defaultHosts[1]",
+    "jsonPath": "platforms[22].defaultHosts[1]"
   },
   {
     "host": "https://sdzyapi.com",
@@ -618,7 +672,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利套图",
     "field": "defaultHosts[0]",
-    "jsonPath": "platforms[24].defaultHosts[0]"
+    "jsonPath": "platforms[25].defaultHosts[0]"
   },
   {
     "host": "https://www.lovedan.net",
@@ -627,7 +681,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利套图",
     "field": "imageReferer",
-    "jsonPath": "platforms[24].imageReferer"
+    "jsonPath": "platforms[25].imageReferer"
   },
   {
     "host": "https://www.lovedan.net",
@@ -636,7 +690,7 @@
     "sourceKey": null,
     "sourceName": "艾旦福利套图",
     "field": "Referer",
-    "jsonPath": "platforms[24].headers.Referer"
+    "jsonPath": "platforms[25].headers.Referer"
   },
   {
     "host": "https://www.lovedan.net",
