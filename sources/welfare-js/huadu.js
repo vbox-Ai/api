@@ -17,7 +17,7 @@ var spider = (function () {
     ];
 
     var ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0';
-    var mobileUA = 'Linux; Android 12; Pixel 3 XL) AppleWebKit/537.36 Chrome/98.0.4758.101 Mobile Safari/537.36';
+    var mobileUA = 'Mozilla/5.0 (Linux; Android 12; Pixel 3 XL) AppleWebKit/537.36 Chrome/98.0.4758.101 Mobile Safari/537.36';
     var host = '';
     var hostReady = false;
     var cache = {};
@@ -111,14 +111,34 @@ var spider = (function () {
         return text.substring(i + a.length, j).replace(/\\/g, '');
     }
 
+    function decodeEscapes(s) {
+        s = String(s || '');
+        try {
+            s = s.replace(/\\u([0-9a-fA-F]{4})/g, function (_, hex) {
+                return String.fromCharCode(parseInt(hex, 16));
+            });
+            s = s.replace(/\\x([0-9a-fA-F]{2})/g, function (_, hex) {
+                return String.fromCharCode(parseInt(hex, 16));
+            });
+        } catch (e) {}
+        return s;
+    }
+
     function unescapeHTML(s) {
-        return String(s || '')
-            .replace(/&nbsp;/g, ' ')
-            .replace(/&amp;/g, '&')
-            .replace(/&quot;/g, '"')
+        return decodeEscapes(String(s || ''))
+            .replace(/&nbsp;/gi, ' ')
+            .replace(/&amp;/gi, '&')
+            .replace(/&quot;/gi, '"')
             .replace(/&#39;/g, "'")
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>');
+            .replace(/&apos;/gi, "'")
+            .replace(/&lt;/gi, '<')
+            .replace(/&gt;/gi, '>')
+            .replace(/&#x([0-9a-fA-F]+);/g, function (_, hex) {
+                return String.fromCharCode(parseInt(hex, 16));
+            })
+            .replace(/&#(\d+);/g, function (_, dec) {
+                return String.fromCharCode(parseInt(dec, 10));
+            });
     }
 
     function txt(s) {
@@ -157,7 +177,7 @@ var spider = (function () {
             var name = hm ? txt(hm[2]) : '';
             if (!name) {
                 var tm = /title=["']([^"']+)["']/i.exec(b);
-                name = tm ? String(tm[1]).trim() : '';
+                name = tm ? txt(tm[1]) : '';
             }
             if (!href || !name || seen[href] || name.length < 2) continue;
 
@@ -186,6 +206,10 @@ var spider = (function () {
         return fixUrl(base + pg + '---.html');
     }
 
+    function isDirectVideoUrl(u) {
+        return /\.(m3u8|mp4|flv|ts)(?:\?|#|$)/i.test(String(u || ''));
+    }
+
     function b64Decode(s) {
         try {
             if (typeof crypto !== 'undefined' && crypto.base64 && crypto.base64.decode) {
@@ -209,10 +233,49 @@ var spider = (function () {
         if (!value) return '';
         try {
             var decoded = b64Decode(value);
-            if (/^https?:\/\//i.test(decoded)) return decodeURIComponent(decoded);
+            decoded = decodeEscapes(decoded).replace(/\\\//g, '/');
+            try { decoded = decodeURIComponent(decoded); } catch (e0) {}
+            if (/^https?:\/\//i.test(decoded)) return decoded;
         } catch (e1) {}
-        try { return decodeURIComponent(value); } catch (e2) {}
-        return value;
+        try { value = decodeURIComponent(value); } catch (e2) {}
+        return decodeEscapes(value).replace(/\\\//g, '/');
+    }
+
+    function extractJsonPlayer(text) {
+        text = String(text || '');
+        var m = /(player_[a-zA-Z0-9_]+|mac_player_data|player_data)\s*=\s*(\{[\s\S]*?\})\s*(?:;|<\/script>)/i.exec(text);
+        if (!m) return {};
+        try {
+            return JSON.parse(m[2].replace(/'/g, '"'));
+        } catch (e1) {
+            try {
+                var obj = {};
+                var body = m[2];
+                var kv;
+                var reg = /["']?([a-zA-Z0-9_]+)["']?\s*:\s*["']([\s\S]*?)["']\s*(?:,|})/g;
+                while ((kv = reg.exec(body)) !== null) obj[kv[1]] = kv[2];
+                return obj;
+            } catch (e2) {
+                return {};
+            }
+        }
+    }
+
+    function extractPlayUrl(text) {
+        var data = extractJsonPlayer(text);
+        var u = data.url || data.link || data.video || data.src || '';
+        if (!u) {
+            u = mid(text, '"url":"', '"')
+                || mid(text, "'url':'", "'")
+                || mid(text, 'url: "', '"')
+                || mid(text, "url: '", "'");
+        }
+        if (!u) {
+            var m = /https?:\\?\/\\?\/[^"'<>\s]+?\.(?:m3u8|mp4)(?:\?[^"'<>\s]*)?/i.exec(String(text || ''));
+            u = m ? m[0] : '';
+        }
+        u = decodePlayUrl(u);
+        return fixUrl(u);
     }
 
     function ensureHost() {
@@ -232,7 +295,15 @@ var spider = (function () {
     return {
         init: function (config) {
             if (config && config.hosts && config.hosts.length) {
-                domainList = config.hosts;
+                var sites = [];
+                var pubs = [];
+                for (var i = 0; i < config.hosts.length; i++) {
+                    var h = String(config.hosts[i] || '');
+                    if (/hdfby\.(com|net|org)/i.test(h)) pubs.push(h);
+                    else sites.push(h);
+                }
+                if (sites.length) domainList = sites;
+                if (pubs.length) pubUrls = pubs;
             }
             ensureHost();
             return true;
@@ -338,13 +409,13 @@ var spider = (function () {
                 return { parse: 1, playUrl: '', url: id, header: { 'User-Agent': mobileUA } };
             }
             var text = get(id);
-            var u = mid(text, '"","url":"', '"') || mid(text, '"url":"', '"');
-            u = decodePlayUrl(u);
+            var u = extractPlayUrl(text);
+            var direct = isDirectVideoUrl(u);
             return {
-                parse: u ? 0 : 1,
+                parse: direct ? 0 : 1,
                 playUrl: '',
                 url: u || id,
-                header: { 'User-Agent': mobileUA }
+                header: { 'User-Agent': mobileUA, 'Referer': host, 'Origin': host.replace(/\/+$/, '') }
             };
         }
     };

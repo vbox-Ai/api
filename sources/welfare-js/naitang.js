@@ -89,14 +89,65 @@ var spider = (function () {
         return host;
     }
 
+    function decodeEscapes(s) {
+        s = String(s || '');
+        try {
+            s = s.replace(/\\u([0-9a-fA-F]{4})/g, function (_, hex) {
+                return String.fromCharCode(parseInt(hex, 16));
+            });
+            s = s.replace(/\\x([0-9a-fA-F]{2})/g, function (_, hex) {
+                return String.fromCharCode(parseInt(hex, 16));
+            });
+        } catch (e) {}
+        return s;
+    }
+
     function unescapeHTML(s) {
-        return String(s || '')
-            .replace(/&nbsp;/g, ' ')
-            .replace(/&amp;/g, '&')
-            .replace(/&quot;/g, '"')
+        return decodeEscapes(String(s || ''))
+            .replace(/&nbsp;/gi, ' ')
+            .replace(/&amp;/gi, '&')
+            .replace(/&quot;/gi, '"')
             .replace(/&#39;/g, "'")
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>');
+            .replace(/&apos;/gi, "'")
+            .replace(/&lt;/gi, '<')
+            .replace(/&gt;/gi, '>')
+            .replace(/&#x([0-9a-fA-F]+);/g, function (_, hex) {
+                return String.fromCharCode(parseInt(hex, 16));
+            })
+            .replace(/&#(\d+);/g, function (_, dec) {
+                return String.fromCharCode(parseInt(dec, 10));
+            });
+    }
+
+    function b64Decode(s) {
+        try {
+            if (typeof crypto !== 'undefined' && crypto.base64 && crypto.base64.decode) {
+                return crypto.base64.decode(s);
+            }
+        } catch (e) {}
+        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+        var str = String(s || '').replace(/[^A-Za-z0-9+/=]/g, '');
+        var output = '';
+        for (var bc = 0, bs, buffer, idx = 0; (buffer = str.charAt(idx++)); ) {
+            buffer = chars.indexOf(buffer);
+            if (buffer < 0) continue;
+            bs = bc % 4 ? bs * 64 + buffer : buffer;
+            if (bc++ % 4) output += String.fromCharCode(255 & (bs >> ((-2 * bc) & 6)));
+        }
+        return output;
+    }
+
+    function decodePlayUrl(value) {
+        value = String(value || '').replace(/\\/g, '');
+        if (!value) return '';
+        try {
+            var decoded = b64Decode(value);
+            decoded = decodeEscapes(decoded);
+            try { decoded = decodeURIComponent(decoded); } catch (e0) {}
+            if (/^https?:\/\//i.test(decoded)) return decoded;
+        } catch (e1) {}
+        try { value = decodeURIComponent(value); } catch (e2) {}
+        return decodeEscapes(value).replace(/\\\//g, '/');
     }
 
     function txt(s) {
@@ -362,27 +413,55 @@ var spider = (function () {
 
         playerContent: function (flag, id) {
             ensureHost();
-            if (!hostReady) return { parse: 1, playUrl: '', url: id, header: headers };
+            var videoHeaders = {
+                'User-Agent': ua,
+                'Referer': host + '/',
+                'Origin': host
+            };
+            if (!hostReady) return { parse: 1, playUrl: '', url: id, header: videoHeaders };
             var html = get(id);
             var url = '';
-            var m = /player_aaaa\s*=\s*(\{[\s\S]*?\})\s*</i.exec(html);
-            if (m) {
+
+            // 1. 尝试 player_aaaa / MacPlayer / player_data 等播放器变量
+            var playerVars = ['player_aaaa', 'MacPlayer', 'player_data', 'mac_player_data', 'player_config'];
+            for (var vi = 0; vi < playerVars.length; vi++) {
+                var vname = playerVars[vi];
+                var vreg = new RegExp(vname + '\\s*=\\s*(\\{[\\s\\S]*?\\})\\s*[;<\\n]', 'i');
+                var vm = vreg.exec(html);
+                if (!vm) continue;
                 try {
-                    var data = JSON.parse(m[1].replace(/\\\//g, '/'));
-                    url = data.url || '';
+                    var raw = vm[1].replace(/\\\//g, '/').replace(/'/g, '"');
+                    var data = JSON.parse(raw);
+                    url = data.url || data.link || data.video || data.src || '';
+                    if (url) break;
                 } catch (e) {
-                    url = '';
+                    // 尝试手动提取 url 字段
+                    var um = /["']?url["']?\s*:\s*["']([^"']+)["']/i.exec(vm[1]);
+                    if (um) { url = um[1]; break; }
                 }
             }
+
+            // 2. 尝试直接匹配 JSON 中的 url 字段
             if (!url) {
-                url = match(html, /"url"\s*:\s*"([^"]+)"/i) || match(html, /'url'\s*:\s*'([^']+)'/i);
+                url = match(html, /"url"\s*:\s*"([^"]+)"/i)
+                   || match(html, /'url'\s*:\s*'([^']+)'/i)
+                   || match(html, /"link"\s*:\s*"([^"]+)"/i);
             }
-            url = decodeUrl(url) || id;
+
+            // 3. 尝试匹配 m3u8/mp4 直链
+            if (!url) {
+                var dm = /https?:\\?\/\\?\/[^"'<>\s]+?\.(?:m3u8|mp4)(?:\?[^"'<>\s]*)?/i.exec(String(html || ''));
+                url = dm ? dm[0] : '';
+            }
+
+            url = decodePlayUrl(url);
+            if (url) url = fixUrl(url);
+
             return {
                 parse: isVideoFormat(url) ? 0 : 1,
                 playUrl: '',
-                url: url,
-                header: headers
+                url: url || id,
+                header: videoHeaders
             };
         }
     };
