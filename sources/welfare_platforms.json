@@ -343,7 +343,8 @@
       "engine": "spider",
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
-      "visibleInHome": false
+      "visibleInHome": false,
+      "imageSSLBypass": true
     },
     {
       "platformKey": "lusushequ",
@@ -411,7 +412,8 @@
       "visibleInGlobalSearch": false,
       "visibleInHome": false,
       "articleListPath": "/arttype/{typeId}{pageSuffix}.html",
-      "articleDetailPath": "/artdetail-{id}.html"
+      "articleDetailPath": "/artdetail-{id}.html",
+      "imageSSLBypass": true
     }
   ]
 }
