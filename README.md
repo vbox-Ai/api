@@ -6,7 +6,8 @@ App 默认入口：
 
 ```text
 https://raw.githubusercontent.com/vbox-Ai/api/main/sources/manifest.json
-```
+```text
+https://vbox-ai.github.io/api/sources/manifest.json
 
 ## 目录说明
 
