@@ -8,7 +8,7 @@
     },
     "domain_overrides": 0,
     "parsers": 0,
-    "spider_sources": 8,
+    "spider_sources": 9,
     "welfare_platforms": 23
   },
   "detail": {
@@ -50,6 +50,7 @@
     },
     "spider_sources": {
       "drpy_js_瓜子": "影视 | 瓜子[js]",
+      "js_KK小站": "网盘 | KK小站[js]",
       "js_人人视频": "影视 | 人人视频[js]",
       "js_剧迷": "影视 | 剧迷[js]",
       "js_哇哇影视": "影视 | 哇哇影视[js]",
