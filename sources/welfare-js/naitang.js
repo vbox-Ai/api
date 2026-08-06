@@ -1,6 +1,17 @@
 /**
- * 奶糖视频 JavaScript Spider
+ * 奶糖视频 JavaScript Spider（修复版 v2.1）
+ *
  * 适配 vbox iOS 福利专区 WelfareJSSpiderService。
+ *
+ * v2.1 在远程基线上叠加的增强：
+ *  1) CF 5 秒盾检测 + 5s 等待 + 一次重试
+ *  2) Cookie 透传：cookieJar 自动注入 Cookie 头并提取 Set-Cookie
+ *  3) 探测超时：单 host 5s 超时，避免卡死
+ *  4) b64Decode 强化：URL-safe（-/_）+ 缺 = 补齐 + 套娃 base64
+ *  5) playerContent 多模式：player_aaaa/MacPlayer/字符串对/iframe src?url=/宽松 m3u8
+ *  6) playerContent 失败返回 url:'' 而非 url:id，避免客户端死循环
+ *  7) playerContent header.Referer 改为播放页 URL 自身 + Cookie 透传
+ *  8) categoryCache LRU + 动态 pagecount
  */
 
 var spider = (function () {
@@ -10,8 +21,24 @@ var spider = (function () {
 
     var host = '';
     var hostReady = false;
-    var cache = {};
+
     var ua = 'Mozilla/5.0 (Linux; Android 11; SAMSUNG SM-G973U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36';
+
+    // 单 host 探测超时（毫秒）
+    var PROBE_TIMEOUT_MS = 5000;
+    // CF 5秒盾等待时长（毫秒）
+    var CF_WAIT_MS = 5000;
+    // CF 5秒盾重试次数
+    var CF_RETRY = 1;
+
+    var cache = {};
+    // 分类结果 LRU 缓存
+    var categoryCache = {};
+    var categoryCacheOrder = [];
+    var CATEGORY_CACHE_MAX = 50;
+    // ★ v2.1：cookieJar
+    var cookieJar = {};
+
     var headers = {
         'User-Agent': ua,
         'Referer': 'https://ewrzka4.naitang8.top/',
@@ -37,19 +64,97 @@ var spider = (function () {
         return String(u || '').replace(/\/+$/, '');
     }
 
+    // ====== v2.1：CF / Cookie / sleep ======
+
+    function isCloudflareChallenge(text) {
+        if (!text || text.length < 100) return false;
+        return /Just a moment|Checking your browser|cf-chl-bypass|cdn-cgi\/challenge-platform|Attention Required|Enable JavaScript and cookies|cf_clearance|__cf_bm/i.test(text);
+    }
+
+    function sleepSync(ms) {
+        var t0 = Date.now();
+        while (Date.now() - t0 < ms) {}
+    }
+
+    function extractSetCookie(headersObj) {
+        if (!headersObj) return;
+        var sc = headersObj['Set-Cookie'] || headersObj['set-cookie'] || '';
+        if (!sc) return;
+        var pairs = String(sc).split(/,(?=\s*[A-Za-z0-9_]+=)/);
+        for (var i = 0; i < pairs.length; i++) {
+            var kv = pairs[i].split(';')[0];
+            var idx = kv.indexOf('=');
+            if (idx > 0) {
+                var name = kv.substring(0, idx).trim();
+                var val = kv.substring(idx + 1).trim();
+                if (name && val !== '' && val !== 'deleted') {
+                    cookieJar[name] = val;
+                }
+            }
+        }
+    }
+
+    function buildCookieHeader() {
+        var arr = [];
+        for (var k in cookieJar) {
+            if (Object.prototype.hasOwnProperty.call(cookieJar, k) && cookieJar[k]) {
+                arr.push(k + '=' + cookieJar[k]);
+            }
+        }
+        return arr.join('; ');
+    }
+
+    // ★ v2.1：get 支持 Cookie 注入 + CF 检测
     function get(url) {
         if (!url) return '';
         if (cache[url]) return cache[url];
+
+        var bizHeaders = {};
+        for (var k in headers) {
+            bizHeaders[k] = headers[k];
+        }
+        var ck = buildCookieHeader();
+        if (ck) bizHeaders['Cookie'] = ck;
+
+        var text = '';
+        var resp;
         try {
-            var resp = req(url, { headers: headers });
-            var text = resp && resp.content ? String(resp.content) : '';
-            cache[url] = text;
-            return text;
+            resp = req(url, { headers: bizHeaders });
+            text = resp && resp.content ? String(resp.content) : '';
+            if (resp && resp.headers) extractSetCookie(resp.headers);
         } catch (e) {
             log('请求失败: ' + url + ' ' + e);
             cache[url] = '';
             return '';
         }
+
+        // CF 5秒盾等待 + 重试
+        if (isCloudflareChallenge(text)) {
+            for (var attempt = 0; attempt < CF_RETRY; attempt++) {
+                log('CF 5秒盾触发，等待 ' + (CF_WAIT_MS / 1000) + 's 后重试: ' + url);
+                sleepSync(CF_WAIT_MS);
+                try {
+                    resp = req(url, { headers: bizHeaders });
+                    text = resp && resp.content ? String(resp.content) : '';
+                    if (resp && resp.headers) extractSetCookie(resp.headers);
+                } catch (e2) {
+                    log('CF 重试请求失败: ' + e2);
+                    continue;
+                }
+                if (!isCloudflareChallenge(text)) {
+                    log('CF 重试通过');
+                    break;
+                }
+            }
+            if (isCloudflareChallenge(text)) {
+                log('CF 重试仍失败: ' + url);
+                cache[url] = '';
+                return '';
+            }
+        }
+
+        cache[url] = text;
+        return text;
     }
 
     function fixUrl(u) {
@@ -63,8 +168,23 @@ var spider = (function () {
 
     function okDomain(u) {
         var base = trimSlash(u);
-        var text = get(base + '/');
-        return text.length > 200 && /(奶糖视频|naitang|vod\/detail|vod\/type|player_aaaa)/i.test(text);
+        try {
+            var probeHeaders = {};
+            for (var k in headers) {
+                probeHeaders[k] = headers[k];
+            }
+            probeHeaders['Range'] = 'bytes=0-4095';
+            var ck = buildCookieHeader();
+            if (ck) probeHeaders['Cookie'] = ck;
+            var resp = req(base + '/', { headers: probeHeaders, timeout: PROBE_TIMEOUT_MS });
+            var text = resp && resp.content ? String(resp.content) : '';
+            if (resp && resp.headers) extractSetCookie(resp.headers);
+            if (isCloudflareChallenge(text)) return false;
+            return text.length > 200 && /(奶糖视频|naitang|vod\/detail|vod\/type|player_aaaa)/i.test(text);
+        } catch (e) {
+            log('探测失败: ' + u + ' ' + e);
+        }
+        return false;
     }
 
     function pickDomain() {
@@ -88,6 +208,8 @@ var spider = (function () {
         }
         return host;
     }
+
+    // ====== 工具函数 ======
 
     function decodeEscapes(s) {
         s = String(s || '');
@@ -119,14 +241,19 @@ var spider = (function () {
             });
     }
 
+    // ★ v2.1：b64Decode 强化（URL-safe + 缺 = 补齐）
     function b64Decode(s) {
+        if (!s) return '';
+        var str = String(s).replace(/-/g, '+').replace(/_/g, '/');
+        while (str.length % 4 !== 0) str += '=';
         try {
             if (typeof crypto !== 'undefined' && crypto.base64 && crypto.base64.decode) {
-                return crypto.base64.decode(s);
+                var d = crypto.base64.decode(str);
+                if (d) return d;
             }
         } catch (e) {}
         var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-        var str = String(s || '').replace(/[^A-Za-z0-9+/=]/g, '');
+        str = str.replace(/[^A-Za-z0-9+/=]/g, '');
         var output = '';
         for (var bc = 0, bs, buffer, idx = 0; (buffer = str.charAt(idx++)); ) {
             buffer = chars.indexOf(buffer);
@@ -140,11 +267,19 @@ var spider = (function () {
     function decodePlayUrl(value) {
         value = String(value || '').replace(/\\/g, '');
         if (!value) return '';
+        if (/^https?:\/\//i.test(value)) return value;
         try {
             var decoded = b64Decode(value);
-            decoded = decodeEscapes(decoded);
+            decoded = decodeEscapes(decoded).replace(/\\\//g, '/');
             try { decoded = decodeURIComponent(decoded); } catch (e0) {}
             if (/^https?:\/\//i.test(decoded)) return decoded;
+            // ★ v2.1：套娃 base64
+            if (decoded && !/^https?:\/\//i.test(decoded) && /^[A-Za-z0-9+/_=\-]{20,}$/.test(decoded.trim())) {
+                var d2 = b64Decode(decoded.trim());
+                d2 = decodeEscapes(d2).replace(/\\\//g, '/');
+                try { d2 = decodeURIComponent(d2); } catch (e1) {}
+                if (/^https?:\/\//i.test(d2)) return d2;
+            }
         } catch (e1) {}
         try { value = decodeURIComponent(value); } catch (e2) {}
         return decodeEscapes(value).replace(/\\\//g, '/');
@@ -274,10 +409,20 @@ var spider = (function () {
         return fixUrl(path);
     }
 
-    function decodeUrl(u) {
-        u = String(u || '').replace(/\\\//g, '/');
-        if (!u) return '';
-        try { return decodeURIComponent(u); } catch (e) { return u; }
+    // ★ v2.1：分类 LRU 缓存
+    function categoryCacheGet(tid, pg) {
+        return categoryCache[tid + '_' + pg];
+    }
+    function categoryCachePut(tid, pg, result) {
+        var key = tid + '_' + pg;
+        if (!categoryCache[key]) {
+            categoryCacheOrder.push(key);
+            if (categoryCacheOrder.length > CATEGORY_CACHE_MAX) {
+                var oldKey = categoryCacheOrder.shift();
+                delete categoryCache[oldKey];
+            }
+        }
+        categoryCache[key] = result;
     }
 
     return {
@@ -301,12 +446,26 @@ var spider = (function () {
             return { list: parseList(get(host + '/')) };
         },
 
+        // ★ v2.1：categoryContent 加 LRU + 动态 pagecount
         categoryContent: function (tid, pg) {
             ensureHost();
             pg = parseInt(pg || '1', 10);
             if (!pg || pg < 1) pg = 1;
             if (!hostReady) return { page: pg, pagecount: 1, limit: 24, total: 0, list: [] };
-            return { page: pg, pagecount: 999, limit: 24, total: 999999, list: parseList(get(categoryUrl(tid, pg))) };
+            var cached = categoryCacheGet(tid, pg);
+            if (cached) return cached;
+
+            var items = parseList(get(categoryUrl(tid, pg)));
+            var pagecount = items.length === 0 ? (pg > 1 ? pg - 1 : 1) : 999;
+            var result = {
+                page: pg,
+                pagecount: pagecount,
+                limit: 24,
+                total: pagecount === 999 ? 999999 : (pagecount * 24),
+                list: items
+            };
+            categoryCachePut(tid, pg, result);
+            return result;
         },
 
         detailContent: function (ids) {
@@ -411,14 +570,21 @@ var spider = (function () {
             return { list: parseList(get(url)), page: pg, pagecount: 999, limit: 24, total: 999999 };
         },
 
+        // ★ v2.1：playerContent 强化 + 失败返回空 url + Referer 改为播放页自身 + Cookie 透传
         playerContent: function (flag, id) {
             ensureHost();
+            // ★ v2.1：Referer 改为播放页 URL 自身，贴合 m3u8 CDN 校验
+            var ck = buildCookieHeader();
             var videoHeaders = {
                 'User-Agent': ua,
-                'Referer': host + '/',
+                'Referer': id,
                 'Origin': host
             };
-            if (!hostReady) return { parse: 1, playUrl: '', url: id, header: videoHeaders };
+            if (ck) videoHeaders['Cookie'] = ck;
+
+            if (!hostReady) {
+                return { parse: 1, playUrl: '', url: '', header: videoHeaders };
+            }
             var html = get(id);
             var url = '';
 
@@ -435,7 +601,6 @@ var spider = (function () {
                     url = data.url || data.link || data.video || data.src || '';
                     if (url) break;
                 } catch (e) {
-                    // 尝试手动提取 url 字段
                     var um = /["']?url["']?\s*:\s*["']([^"']+)["']/i.exec(vm[1]);
                     if (um) { url = um[1]; break; }
                 }
@@ -448,19 +613,31 @@ var spider = (function () {
                    || match(html, /"link"\s*:\s*"([^"]+)"/i);
             }
 
-            // 3. 尝试匹配 m3u8/mp4 直链
+            // 3. ★ v2.1：iframe 第三方播放器 src 携带 ?url=
             if (!url) {
-                var dm = /https?:\\?\/\\?\/[^"'<>\s]+?\.(?:m3u8|mp4)(?:\?[^"'<>\s]*)?/i.exec(String(html || ''));
+                var ifm = /<iframe[^>]+src=["']([^"']+)["']/i.exec(html);
+                if (ifm) {
+                    var qm = /[?&]url=([^&"']+)/.exec(ifm[1]);
+                    if (qm) {
+                        try { url = decodeURIComponent(qm[1]); } catch (e0) { url = qm[1]; }
+                    }
+                }
+            }
+
+            // 4. ★ v2.1：宽松 m3u8 / mp4 匹配
+            if (!url) {
+                var dm = /https?:\/\/[^\s"'<>\\]+?\.(?:m3u8|mp4)(?:\?[^\s"'<>\\]*)?/i.exec(String(html || ''));
                 url = dm ? dm[0] : '';
             }
 
             url = decodePlayUrl(url);
             if (url) url = fixUrl(url);
 
+            // ★ v2.1：失败返回 url:'' 让客户端走错误态（而非回传 id 导致死循环）
             return {
                 parse: url ? 0 : 1,
                 playUrl: '',
-                url: url || id,
+                url: url || '',
                 header: videoHeaders
             };
         }
