@@ -748,7 +748,7 @@
   },
   {
     "host": "https://www.rrdynb.com",
-    "fullUrl": "https://www.rrdynb.com/plus/search.php?keyword=",
+    "fullUrl": "https://www.rrdynb.com/plus/search.php?q=",
     "sourceFile": "sources/cloud_sources.json",
     "sourceKey": null,
     "sourceName": "人人电影",
