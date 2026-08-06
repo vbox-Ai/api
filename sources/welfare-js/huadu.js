@@ -633,11 +633,12 @@ var spider = (function () {
             return { list: videos(get(url)), page: pg, pagecount: 9999, limit: 90, total: 999999 };
         },
 
-        // ★ v2.1：playerContent 强化解析 + 失败返回空 url + Referer 改为播放页自身
+        // ★ v2.2：playerContent 强化解析 + 失败返回空 url
         playerContent: function (flag, id) {
             ensureHost();
+            var baseHost = host ? host : 'https://hd28.huadutx.com/';
             if (!hostReady) {
-                return { parse: 1, playUrl: '', url: '', header: { 'User-Agent': mobileUA } };
+                return { parse: 1, playUrl: '', url: '', header: { 'User-Agent': mobileUA, 'Referer': baseHost } };
             }
             var text = get(id, { ua: 'mobile' });
             var u = extractPlayUrl(text);
@@ -645,9 +646,10 @@ var spider = (function () {
             var ck = buildCookieHeader();
             var header = {
                 'User-Agent': mobileUA,
-                // ★ v2.1：Referer 改为播放页 URL 自身，贴合 m3u8 CDN 校验
-                'Referer': id,
-                'Origin': host.replace(/\/+$/, '')
+                // ★ v2.2：Referer 用 host（花都域名），不是播放页 URL
+                //         m3u8 CDN 防盗链校验 Referer 必须是站点域名，用播放页 URL 会被 403
+                'Referer': baseHost,
+                'Origin': baseHost.replace(/\/+$/, '')
             };
             if (ck) header['Cookie'] = ck;
             return {

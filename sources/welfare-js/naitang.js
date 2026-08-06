@@ -570,15 +570,17 @@ var spider = (function () {
             return { list: parseList(get(url)), page: pg, pagecount: 999, limit: 24, total: 999999 };
         },
 
-        // ★ v2.1：playerContent 强化 + 失败返回空 url + Referer 改为播放页自身 + Cookie 透传
+        // ★ v2.2：playerContent 强化 + 失败返回空 url + Cookie 透传
         playerContent: function (flag, id) {
             ensureHost();
-            // ★ v2.1：Referer 改为播放页 URL 自身，贴合 m3u8 CDN 校验
+            var baseHost = host ? (host + '/') : 'https://ewrzka4.naitang8.top/';
+            // ★ v2.2：Referer 用 host（站点域名），不是播放页 URL
+            //         m3u8 CDN 防盗链校验 Referer 必须是站点域名，用播放页 URL 会被 403
             var ck = buildCookieHeader();
             var videoHeaders = {
                 'User-Agent': ua,
-                'Referer': id,
-                'Origin': host
+                'Referer': baseHost,
+                'Origin': baseHost.replace(/\/+$/, '')
             };
             if (ck) videoHeaders['Cookie'] = ck;
 
