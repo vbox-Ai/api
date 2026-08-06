@@ -109,9 +109,15 @@
     {
       "name": "人人电影",
       "type": "dedecms",
-      "searchurl": "https://www.rrdynb.com/plus/search.php?keyword=",
+      "searchurl": "https://www.rrdynb.com/plus/search.php?q=",
       "detailBase": "https://www.rrdynb.com",
       "ua": "pc",
+      "extraPanHosts": [
+        "pan.xunlei.com/s/"
+      ],
+      "extraPanNames": {
+        "pan.xunlei.com": "迅雷云盘"
+      },
       "enabled": true,
       "priority": 1019,
       "group": "cloud"

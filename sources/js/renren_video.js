@@ -647,9 +647,9 @@ var spider = {
                     hsdrOpen: '0',
                     isAgeLimit: '0',
                     dramaId: did,
-                    quality: 'AI4K',
+                    quality: 'SD',
                     hevcOpen: '0',
-                    tria4k: '1'
+                    tria4k: '0'
                 };
                 var data = doGetSigned('/m-station/drama/page', params);
                 if (!data || !data.data) {
@@ -748,20 +748,20 @@ var spider = {
                     var parts = playId.split('@');
                     if (parts.length < 2) {
                         print('>>> renren playerContent FAIL: parts < 2, playId=' + playId);
-                        return { parse: 0, playUrl: '', url: '' };
+                        return { parse: 0, url: '' };
                     }
                     var params = {
                         dramaId: parts[0],
                         episodeSid: parts[1],
                         hevcOpen: '0',
                         hsdrOpen: '0',
-                        quality: 'AI4K',
-                        tria4k: '1'
+                        quality: 'SD',
+                        tria4k: '0'
                     };
                     var data = doGetSigned('/m-station/drama/play', params);
                     if (!data || !data.data || !data.data.m3u8) {
-                        print('>>> renren playerContent FAIL: no m3u8 data');
-                        return { parse: 0, playUrl: '', url: '' };
+                        print('>>> renren playerContent FAIL: no m3u8 data, resp=' + (data ? JSON.stringify(data).substring(0, 300) : 'null'));
+                        return { parse: 0, url: '' };
                     }
                     var encUrl = data.data.m3u8.url;
                     var newSign = data.data.newSign;
@@ -773,7 +773,7 @@ var spider = {
                     print('>>> renren playerContent decryptedUrl=' + (decryptedUrl || '').substring(0, 80));
                     if (!decryptedUrl) {
                         print('>>> renren playerContent FAIL: decryptedUrl empty');
-                        return { parse: 0, playUrl: '', url: '' };
+                        return { parse: 0, url: '' };
                     }
                     // 获取重定向地址
                     var finalUrl = getRedirectLocation(decryptedUrl);
@@ -783,13 +783,12 @@ var spider = {
                     print('>>> renren playerContent SUCCESS: finalUrl=' + (finalUrl || '').substring(0, 80));
                     return {
                         parse: 0,
-                        playUrl: '',
                         url: finalUrl,
                         header: { 'User-Agent': HEADERX['User-Agent'] }
                     };
                 } catch (e) {
                     print('>>> renren playerContent ERROR: ' + e);
-                    return { parse: 0, playUrl: '', url: '' };
+                    return { parse: 0, url: '' };
                 }
             }
         };
