@@ -1,10 +1,16 @@
 /*
- * KK小站 JS 蜘蛛 v1.0
+ * KK小站 JS 蜘蛛 v2.0
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 目标站: https://www.pioz.cn
  * 特点: SSR 分类页 + deep-search API + transfer API 获取网盘链接
  * 仅展示"影视短剧"分类（其余分类为音乐/学习/设计/文学，非视频资源）
  * 无需登录，无需加密签名
+ *
+ * v2.0: 网盘蜘蛛源约定适配
+ *   - vod_remarks 以 "☁️" 开头 → 标识为网盘资源，激活网盘UI
+ *   - detailContent 的 vod_play_url 返回 JSON 数组 [{"url":"网盘链接","name":"网盘名"}]
+ *     → Swift 端 resolveCloudPlayFromSpider 解析后填充网盘UI
+ *   - playerContent 保留作为播放降级路径
  */
 
 var spider = {
@@ -126,7 +132,6 @@ var spider = {
             if (!html) return items;
 
             // 匹配每个 file-item 块
-            // 结构: <div class="file-item ..."> ... <a href="/detail/584941" ...> ... <span title="标题">标题</span> ... </a> ... 夸克网盘 ... </div>
             var blockRegex = /<div class="file-item[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/g;
             var blocks = html.match(blockRegex);
 
@@ -141,7 +146,7 @@ var spider = {
                             vod_id: match[1],
                             vod_name: title,
                             vod_pic: '',
-                            vod_remarks: ''
+                            vod_remarks: '☁️网盘'
                         });
                     }
                 }
@@ -163,16 +168,16 @@ var spider = {
 
                 // 提取网盘来源
                 var cloudMatch = block.match(/text-center text-sm text-gray-400">([^<]+)<\/div>/);
-                var remarks = '';
+                var cloudName = '网盘';
                 if (cloudMatch) {
-                    remarks = cloudMatch[1].trim();
+                    cloudName = cloudMatch[1].trim();
                 }
 
                 items.push({
                     vod_id: idMatch[1],
                     vod_name: title,
                     vod_pic: '',
-                    vod_remarks: remarks
+                    vod_remarks: '☁️' + cloudName
                 });
             }
 
@@ -211,7 +216,7 @@ var spider = {
                         vod_id: r.id,
                         vod_name: stripTags(r.title),
                         vod_pic: '',
-                        vod_remarks: cloudName
+                        vod_remarks: '☁️' + cloudName
                     });
                 }
 
@@ -225,6 +230,10 @@ var spider = {
         }
 
         // ===================== 详情内容 =====================
+        // 网盘蜘蛛源约定：
+        //   vod_remarks 以 "☁️" 开头 → 标识为网盘资源
+        //   vod_play_url 返回 JSON 数组 [{"url":"网盘链接","name":"网盘名"}]
+        //   → Swift resolveCloudPlayFromSpider 解析后填充网盘UI
 
         function detailContent(ids) {
             var result = { list: [] };
@@ -237,86 +246,108 @@ var spider = {
             var id = String(ids);
             print('>>> pioz detailContent: id=' + id);
 
-            // 复合 ID（来自搜索，含 "_"）：无详情页可访问，返回最小信息
+            // 复合 ID（来自搜索，含 "_"）：无详情页可访问，直接调 transfer API
             if (id.indexOf('_') !== -1) {
-                result.list.push({
-                    vod_id: id,
-                    vod_name: '搜索资源',
-                    vod_pic: '',
-                    vod_play_from: 'KK小站',
-                    vod_play_url: '获取链接$' + id
-                });
+                var panLinks1 = getPanLinks(id);
+                if (panLinks1.length > 0) {
+                    result.list.push({
+                        vod_id: id,
+                        vod_name: '搜索资源',
+                        vod_pic: '',
+                        vod_remarks: '☁️' + (panLinks1[0].name || '网盘'),
+                        vod_play_from: 'KK小站',
+                        vod_play_url: JSON.stringify(panLinks1)
+                    });
+                } else {
+                    result.list.push({
+                        vod_id: id,
+                        vod_name: '搜索资源',
+                        vod_pic: '',
+                        vod_remarks: '☁️网盘',
+                        vod_play_from: 'KK小站',
+                        vod_play_url: JSON.stringify([{ url: '', name: '网盘资源' }])
+                    });
+                }
                 return result;
             }
 
-            // 数字 ID（来自分类页）：请求详情页 HTML
+            // 数字 ID（来自分类页）：请求详情页 HTML 获取标题等信息
             try {
                 var html = fetch(BASE_URL + '/detail/' + id);
-                if (!html) {
-                    print('>>> pioz detailContent: empty html for id=' + id);
-                    result.list.push({
-                        vod_id: id,
-                        vod_name: '资源详情',
-                        vod_pic: '',
-                        vod_play_from: 'KK小站',
-                        vod_play_url: '获取链接$' + id
-                    });
-                    return result;
+                var title = '资源详情';
+                var cloud = '网盘';
+
+                if (html) {
+                    // 提取标题
+                    var titleMatch = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
+                    title = titleMatch ? stripTags(titleMatch[1]) : '资源详情';
+
+                    // 提取网盘来源
+                    var cloudMatch = html.match(/<span>(夸克网盘|百度网盘|迅雷云盘|115网盘|阿里云盘|UC网盘)<\/span>/);
+                    cloud = cloudMatch ? cloudMatch[1] : '网盘';
                 }
 
-                // 提取标题
-                var titleMatch = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
-                var title = titleMatch ? stripTags(titleMatch[1]) : '资源详情';
-
-                // 提取网盘来源
-                var cloudMatch = html.match(/<span>(夸克网盘|百度网盘|迅雷云盘|115网盘|阿里云盘|UC网盘)<\/span>/);
-                var cloud = cloudMatch ? cloudMatch[1] : '网盘';
-
                 // 提取分类标签
-                var catMatch = html.match(/<span class="px-2 py-0\.5 bg-gray-700 rounded-full text-xs[^"]*">([^<]+)<\/span>/);
-                var category = catMatch ? stripTags(catMatch[1]) : '';
+                var category = '';
+                if (html) {
+                    var catMatch = html.match(/<span class="px-2 py-0\.5 bg-gray-700 rounded-full text-xs[^"]*">([^<]+)<\/span>/);
+                    category = catMatch ? stripTags(catMatch[1]) : '';
+                }
 
                 // 提取日期
-                var dateMatch = html.match(/<span>(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2})<\/span>/);
-                var date = dateMatch ? dateMatch[1] : '';
+                var date = '';
+                if (html) {
+                    var dateMatch = html.match(/<span>(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2})<\/span>/);
+                    date = dateMatch ? dateMatch[1] : '';
+                }
 
-                var remarks = cloud;
-                if (date) remarks += ' · ' + date;
+                // 调用 transfer API 获取真实网盘链接
+                var panLinks = getPanLinks(id);
 
-                result.list.push({
-                    vod_id: id,
-                    vod_name: title,
-                    vod_pic: '',
-                    vod_remarks: remarks,
-                    vod_area: category,
-                    vod_play_from: 'KK小站',
-                    vod_play_url: '获取链接$' + id
-                });
-
-                print('>>> pioz detailContent SUCCESS: title=' + title.substring(0, 40));
+                if (panLinks.length > 0) {
+                    result.list.push({
+                        vod_id: id,
+                        vod_name: title,
+                        vod_pic: '',
+                        vod_remarks: '☁️' + cloud,
+                        vod_area: category,
+                        vod_play_from: 'KK小站',
+                        vod_play_url: JSON.stringify(panLinks)
+                    });
+                    print('>>> pioz detailContent SUCCESS: title=' + title.substring(0, 40) + ' links=' + panLinks.length);
+                } else {
+                    // transfer API 失败，返回占位数据（仍保持网盘标识）
+                    print('>>> pioz detailContent: transfer API returned no links for id=' + id);
+                    result.list.push({
+                        vod_id: id,
+                        vod_name: title,
+                        vod_pic: '',
+                        vod_remarks: '☁️' + cloud,
+                        vod_area: category,
+                        vod_play_from: 'KK小站',
+                        vod_play_url: JSON.stringify([{ url: '', name: cloud }])
+                    });
+                }
             } catch (e) {
                 print('>>> pioz detailContent ERROR: ' + e);
-                // 降级：返回最小信息，确保播放流程可用
+                // 降级：返回带网盘标识的占位数据
                 result.list.push({
                     vod_id: id,
                     vod_name: '资源详情',
                     vod_pic: '',
+                    vod_remarks: '☁️网盘',
                     vod_play_from: 'KK小站',
-                    vod_play_url: '获取链接$' + id
+                    vod_play_url: JSON.stringify([{ url: '', name: '网盘资源' }])
                 });
             }
 
             return result;
         }
 
-        // ===================== 播放内容 =====================
-
-        function playerContent(vodId, flag, url) {
-            print('>>> pioz playerContent: vodId=' + vodId + ' flag=' + flag + ' url=' + url);
-
-            // url 参数是 vod_play_url 中 "$" 后面的部分，即资源 ID
-            var resourceId = url || vodId;
-
+        // 调用 transfer API 获取网盘链接
+        // 返回 [{"url":"网盘链接","name":"网盘名"}] 格式的数组
+        function getPanLinks(resourceId) {
+            var links = [];
             try {
                 var apiurl = BASE_URL + '/api/transfer?id=' + encode(resourceId);
                 var data = fetchJSON(apiurl, {
@@ -325,23 +356,58 @@ var spider = {
                 });
 
                 if (!data) {
-                    print('>>> pioz playerContent: no response data');
-                    return { parse: 0, url: '' };
+                    print('>>> pioz getPanLinks: no response data for id=' + resourceId);
+                    return links;
                 }
 
                 if (data.success && data.data && data.data.url) {
                     var panUrl = data.data.url;
-                    print('>>> pioz playerContent SUCCESS: ' + panUrl.substring(0, 60));
+                    // 从详情页或 API 推断网盘名称
+                    var panName = '网盘';
+                    if (data.data.cloud_type) {
+                        panName = CLOUD_MAP[data.data.cloud_type] || data.data.cloud_type;
+                    } else {
+                        // 从 URL 推断网盘类型
+                        if (panUrl.indexOf('pan.quark.cn') !== -1) panName = '夸克网盘';
+                        else if (panUrl.indexOf('pan.baidu.com') !== -1) panName = '百度网盘';
+                        else if (panUrl.indexOf('pan.xunlei.com') !== -1) panName = '迅雷云盘';
+                        else if (panUrl.indexOf('115.com') !== -1) panName = '115网盘';
+                        else if (panUrl.indexOf('aliyundrive.com') !== -1 || panUrl.indexOf('alipan.com') !== -1) panName = '阿里云盘';
+                        else if (panUrl.indexOf('uc.cn') !== -1 || panUrl.indexOf('ucloud.cn') !== -1) panName = 'UC网盘';
+                    }
+                    links.push({ url: panUrl, name: panName });
+                    print('>>> pioz getPanLinks SUCCESS: ' + panUrl.substring(0, 60));
+                } else {
+                    print('>>> pioz getPanLinks FAIL: ' + (data.error || 'no url'));
+                }
+            } catch (e) {
+                print('>>> pioz getPanLinks ERROR: ' + e);
+            }
+            return links;
+        }
+
+        // ===================== 播放内容 =====================
+        // 保留作为播放降级路径（网盘UI不直接调用 playerContent，
+        // 但如果走普通播放流程时仍可使用）
+
+        function playerContent(vodId, flag, url) {
+            print('>>> pioz playerContent: vodId=' + vodId + ' flag=' + flag + ' url=' + url);
+
+            var resourceId = vodId;
+            // 如果 url 是数字ID，用作 resourceId
+            if (url && /^\d+$/.test(url)) {
+                resourceId = url;
+            }
+
+            try {
+                var links = getPanLinks(resourceId);
+                if (links.length > 0 && links[0].url) {
                     return {
                         parse: 0,
-                        url: panUrl,
+                        url: links[0].url,
                         header: { 'User-Agent': UA }
                     };
                 }
-
-                // 资源已过期或其他错误
-                var errMsg = data.error || '获取链接失败';
-                print('>>> pioz playerContent FAIL: ' + errMsg);
                 return { parse: 0, url: '' };
             } catch (e) {
                 print('>>> pioz playerContent ERROR: ' + e);
@@ -352,7 +418,7 @@ var spider = {
         // ===================== 初始化 =====================
 
         function init(config) {
-            print('>>> pioz init: KK小站 JS蜘蛛 v1.0');
+            print('>>> pioz init: KK小站 JS蜘蛛 v2.0');
             return true;
         }
 
