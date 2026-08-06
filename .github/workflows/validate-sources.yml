@@ -16,6 +16,11 @@ on:
 permissions:
   contents: write
 
+# 排队执行，避免与 check-domains 同时 push 导致冲突
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -347,5 +352,14 @@ jobs:
           git config user.email "github-actions@github.com"
           git add sources/.source-baseline.json
           git diff --cached --quiet || git commit -m "chore: update source baseline"
-          git pull --rebase origin main || true
-          git push origin HEAD:main
+
+          # 带重试的 push，避免与 check-domains 竞争导致失败
+          for i in 1 2 3; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              echo "Push succeeded on attempt $i"
+              break
+            fi
+            echo "Push failed on attempt $i, retrying in 10s..."
+            sleep 10
+          done

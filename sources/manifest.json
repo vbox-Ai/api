@@ -10,7 +10,7 @@
   "updatedAt": "2026-08-06T17:45:00Z",
   "ttlSeconds": 21600,
   "files": {
-    "allSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/all_sources.json",
+    "allSources": "https://vbox-ai.github.io/api/sources/all_sources.json",
     "apiSources": "https://vbox-ai.github.io/api/sources/api_sources.json",
     "cloudSources": "https://vbox-ai.github.io/api/sources/cloud_sources.json",
     "spiderSources": "https://vbox-ai.github.io/api/sources/spider_sources.json",
