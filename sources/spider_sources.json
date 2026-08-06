@@ -105,15 +105,15 @@
       "timeout": 30
     },
     {
-      "key": "js_Showpaw",
-      "name": "网盘 | Showpaw[js]",
+      "key": "js_奇点搜索",
+      "name": "网盘 | 奇点搜索[js]",
       "type": 3,
-      "api": "./js/showpaw.js",
+      "api": "./js/duanjutv.js",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1,
       "ext": "",
-      "timeout": 45
+      "timeout": 30
     }
   ],
   "siteCount": 10
