@@ -1,0 +1,111 @@
+name: Bump Config Version
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "sources/**"
+      - "domain-monitor/**"
+      - ".github/workflows/**"
+      - "README.md"
+      - "docs/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# 排队执行，避免与其他工作流同时 push 冲突
+concurrency:
+  group: bump-version
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    # 跳过本工作流自身触发的推送，避免循环
+    if: github.actor != 'github-actions[bot]' || !contains(github.event.head_commit.message, 'chore: bump config version')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Bump configVersion and updatedAt
+        run: |
+          import json, os, sys
+          from datetime import datetime, timezone
+
+          manifest_path = "sources/manifest.json"
+          version_path = "sources/manifest.version"
+
+          # 读取当前 manifest
+          with open(manifest_path, "r", encoding="utf-8") as f:
+              manifest = json.load(f)
+
+          old_version = manifest.get("configVersion", "")
+          print(f"旧版本号: {old_version}")
+
+          # 生成新版本号: YYYY.MM.DD.序号
+          now = datetime.now(timezone.utc)
+          date_prefix = f"{now.year}.{now.month:02d}.{now.day:02d}"
+
+          # 解析旧序号，同一天则递增，跨天则从 1 开始
+          old_seq = 0
+          if old_version.startswith(date_prefix):
+              parts = old_version.split(".")
+              if len(parts) >= 4:
+                  try:
+                      old_seq = int(parts[3])
+                  except ValueError:
+                      pass
+          new_seq = old_seq + 1
+          new_version = f"{date_prefix}.{new_seq}"
+
+          # 更新 manifest.json
+          manifest["configVersion"] = new_version
+          manifest["updatedAt"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+          with open(manifest_path, "w", encoding="utf-8") as f:
+              json.dump(manifest, f, indent=2, ensure_ascii=False)
+              f.write("\n")
+
+          print(f"新版本号: {new_version}")
+          print(f"更新时间: {manifest['updatedAt']}")
+
+          # 同步更新 manifest.version
+          version_data = {"configVersion": new_version}
+          with open(version_path, "w", encoding="utf-8") as f:
+              json.dump(version_data, f, indent=2, ensure_ascii=False)
+              f.write("\n")
+
+          print(f"manifest.version 已同步: {version_data}")
+
+          # 输出供后续步骤使用
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              f.write(f"NEW_VERSION={new_version}\n")
+        shell: python
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add sources/manifest.json sources/manifest.version
+          git diff --cached --quiet && echo "No version changes" && exit 0
+
+          # 带重试的 push
+          for i in 1 2 3; do
+            git pull --rebase origin main
+            if git push; then
+              echo "Push succeeded on attempt $i"
+              break
+            fi
+            echo "Push failed on attempt $i, retrying in 10s..."
+            sleep 10
+          done
