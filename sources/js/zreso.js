@@ -3,7 +3,7 @@
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 目标站: https://zreso.cn
  * 特点: SSR 分类页 + JSON 搜索 API + wash API 获取网盘链接
- * 仅展示视频分类（短剧、电影、电视剧、综艺、动漫）
+ * 仅展示视频分类（短剧、影视专区）
  * 网盘类型：夸克网盘、百度网盘、UC网盘、迅雷云盘
  * 无需登录，无需加密签名
  *
@@ -39,10 +39,7 @@ var spider = {
         // 视频分类
         var VIDEO_CATEGORIES = [
             { type_id: '短剧', type_name: '短剧' },
-            { type_id: '电影', type_name: '电影' },
-            { type_id: '电视剧', type_name: '电视剧' },
-            { type_id: '综艺', type_name: '综艺' },
-            { type_id: '动漫', type_name: '动漫' }
+            { type_id: '影视专区', type_name: '影视专区' }
         ];
 
         // ===================== 工具函数 =====================
