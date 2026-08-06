@@ -8,7 +8,7 @@
     },
     "domain_overrides": 0,
     "parsers": 0,
-    "spider_sources": 9,
+    "spider_sources": 10,
     "welfare_platforms": 23
   },
   "detail": {
@@ -57,7 +57,8 @@
       "js_珈珈搜索": "网盘 | 珈珈搜索[js]",
       "js_腾讯视频": "官源 | 腾讯视频[js]",
       "js_袋鼠影视": "影视 | 袋鼠影视[js]",
-      "js_韩小圈": "影视 | 韩小圈[js]"
+      "js_韩小圈": "影视 | 韩小圈[js]",
+      "js_Showpaw": "网盘 | Showpaw[js]"
     },
     "welfare_platforms": {
       "aidan_comic": "艾旦福利套图",
