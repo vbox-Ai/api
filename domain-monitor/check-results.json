@@ -9,7 +9,7 @@
     "jsonPath": "cloudSites[5].searchurl",
     "ok": false,
     "statusCode": null,
-    "responseMs": 530,
+    "responseMs": 1049,
     "error": "Remote end closed connection without response",
     "attempts": 3
   },
@@ -23,7 +23,7 @@
     "jsonPath": "cloudSites[5].detailBase",
     "ok": false,
     "statusCode": null,
-    "responseMs": 572,
+    "responseMs": 434,
     "error": "Remote end closed connection without response",
     "attempts": 3
   },
@@ -37,7 +37,7 @@
     "jsonPath": "cloudSites[14].searchurl",
     "ok": false,
     "statusCode": null,
-    "responseMs": 568,
+    "responseMs": 402,
     "error": "Remote end closed connection without response",
     "attempts": 3
   },
@@ -51,7 +51,7 @@
     "jsonPath": "cloudSites[14].detailBase",
     "ok": false,
     "statusCode": null,
-    "responseMs": 586,
+    "responseMs": 468,
     "error": "Remote end closed connection without response",
     "attempts": 3
   },
@@ -65,7 +65,7 @@
     "jsonPath": "platforms[21].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 529,
+    "responseMs": 768,
     "error": "",
     "attempts": 1
   },
@@ -79,7 +79,7 @@
     "jsonPath": "sites[3].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1982,
+    "responseMs": 1666,
     "error": "",
     "attempts": 1
   },
@@ -93,7 +93,7 @@
     "jsonPath": "sites[9].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 277,
+    "responseMs": 240,
     "error": "",
     "attempts": 1
   },
@@ -107,7 +107,7 @@
     "jsonPath": "cloudSites[13].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 713,
+    "responseMs": 904,
     "error": "",
     "attempts": 1
   },
@@ -121,7 +121,7 @@
     "jsonPath": "cloudSites[13].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 700,
+    "responseMs": 905,
     "error": "",
     "attempts": 1
   },
@@ -135,7 +135,7 @@
     "jsonPath": "cloudSites[11].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 275,
+    "responseMs": 252,
     "error": "",
     "attempts": 1
   },
@@ -149,7 +149,7 @@
     "jsonPath": "cloudSites[11].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 199,
+    "responseMs": 239,
     "error": "",
     "attempts": 1
   },
@@ -163,7 +163,7 @@
     "jsonPath": "sites[8].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 1877,
+    "responseMs": 6748,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -177,7 +177,7 @@
     "jsonPath": "sites[14].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 295,
+    "responseMs": 251,
     "error": "",
     "attempts": 1
   },
@@ -191,7 +191,7 @@
     "jsonPath": "sites[6].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 748,
+    "responseMs": 840,
     "error": "",
     "attempts": 1
   },
@@ -205,7 +205,7 @@
     "jsonPath": "platforms[6].defaultHosts[0]",
     "ok": false,
     "statusCode": null,
-    "responseMs": 808,
+    "responseMs": 809,
     "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for '212602.luoliav.cc'. (_ssl.c:1016)",
     "attempts": 3
   },
@@ -219,7 +219,7 @@
     "jsonPath": "platforms[20].defaultHosts[0]",
     "ok": false,
     "statusCode": 503,
-    "responseMs": 1128,
+    "responseMs": 848,
     "error": "HTTP 503",
     "attempts": 3
   },
@@ -233,7 +233,7 @@
     "jsonPath": "sites[5].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 818,
+    "responseMs": 551,
     "error": "",
     "attempts": 1
   },
@@ -247,7 +247,7 @@
     "jsonPath": "platforms[14].defaultHosts[0]",
     "ok": false,
     "statusCode": null,
-    "responseMs": 29,
+    "responseMs": 36,
     "error": "[Errno -2] Name or service not known",
     "attempts": 3
   },
@@ -261,7 +261,7 @@
     "jsonPath": "cloudSites[15].searchurl",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 140,
+    "responseMs": 110,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -275,7 +275,7 @@
     "jsonPath": "cloudSites[15].detailBase",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 42,
+    "responseMs": 49,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -289,7 +289,7 @@
     "jsonPath": "platforms[16].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 937,
+    "responseMs": 933,
     "error": "",
     "attempts": 1
   },
@@ -303,7 +303,7 @@
     "jsonPath": "cloudSites[1].searchurl",
     "ok": false,
     "statusCode": null,
-    "responseMs": 15511,
+    "responseMs": 15205,
     "error": "timed out",
     "attempts": 3
   },
@@ -317,7 +317,7 @@
     "jsonPath": "cloudSites[1].detailBase",
     "ok": false,
     "statusCode": null,
-    "responseMs": 15034,
+    "responseMs": 15016,
     "error": "timed out",
     "attempts": 3
   },
@@ -329,11 +329,11 @@
     "sourceName": "花都影视",
     "field": "defaultHosts[2]",
     "jsonPath": "platforms[18].defaultHosts[2]",
-    "ok": true,
-    "statusCode": 403,
-    "responseMs": 711,
-    "error": "HTTP 403",
-    "attempts": 1
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 15117,
+    "error": "timed out",
+    "attempts": 3
   },
   {
     "host": "https://advise.nlwkmsv.cc",
@@ -345,7 +345,7 @@
     "jsonPath": "platforms[12].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 674,
+    "responseMs": 1127,
     "error": "",
     "attempts": 1
   },
@@ -359,7 +359,7 @@
     "jsonPath": "sites[11].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 133,
+    "responseMs": 106,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -373,7 +373,7 @@
     "jsonPath": "sites[2].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 435,
+    "responseMs": 615,
     "error": "",
     "attempts": 1
   },
@@ -385,11 +385,11 @@
     "sourceName": "花都影视",
     "field": "defaultHosts[3]",
     "jsonPath": "platforms[18].defaultHosts[3]",
-    "ok": true,
-    "statusCode": 403,
-    "responseMs": 696,
-    "error": "HTTP 403",
-    "attempts": 1
+    "ok": false,
+    "statusCode": null,
+    "responseMs": 15158,
+    "error": "timed out",
+    "attempts": 3
   },
   {
     "host": "https://b.hdfby.net",
@@ -399,11 +399,11 @@
     "sourceName": "花都影视",
     "field": "defaultHosts[4]",
     "jsonPath": "platforms[18].defaultHosts[4]",
-    "ok": true,
-    "statusCode": 403,
-    "responseMs": 981,
-    "error": "HTTP 403",
-    "attempts": 1
+    "ok": false,
+    "statusCode": 520,
+    "responseMs": 346,
+    "error": "HTTP 520",
+    "attempts": 3
   },
   {
     "host": "https://b.hdfby.org",
@@ -413,11 +413,11 @@
     "sourceName": "花都影视",
     "field": "defaultHosts[5]",
     "jsonPath": "platforms[18].defaultHosts[5]",
-    "ok": true,
-    "statusCode": 403,
-    "responseMs": 1036,
-    "error": "HTTP 403",
-    "attempts": 1
+    "ok": false,
+    "statusCode": 520,
+    "responseMs": 355,
+    "error": "HTTP 520",
+    "attempts": 3
   },
   {
     "host": "https://binhd.com",
@@ -429,7 +429,7 @@
     "jsonPath": "cloudSites[7].searchurl",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 80,
+    "responseMs": 113,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -457,7 +457,7 @@
     "jsonPath": "platforms[1].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1149,
+    "responseMs": 1134,
     "error": "",
     "attempts": 1
   },
@@ -471,7 +471,7 @@
     "jsonPath": "platforms[7].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 557,
+    "responseMs": 422,
     "error": "",
     "attempts": 1
   },
@@ -485,7 +485,7 @@
     "jsonPath": "sites[12].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 124,
+    "responseMs": 114,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -499,7 +499,7 @@
     "jsonPath": "platforms[19].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 442,
+    "responseMs": 432,
     "error": "",
     "attempts": 1
   },
@@ -513,7 +513,7 @@
     "jsonPath": "platforms[15].defaultHosts[0]",
     "ok": false,
     "statusCode": null,
-    "responseMs": 107,
+    "responseMs": 127,
     "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1016)",
     "attempts": 3
   },
@@ -527,7 +527,7 @@
     "jsonPath": "platforms[3].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 16369,
+    "responseMs": 3352,
     "error": "",
     "attempts": 1
   },
@@ -541,7 +541,7 @@
     "jsonPath": "platforms[18].defaultHosts[0]",
     "ok": false,
     "statusCode": null,
-    "responseMs": 75108,
+    "responseMs": 75151,
     "error": "timed out",
     "attempts": 3
   },
@@ -555,7 +555,7 @@
     "jsonPath": "platforms[11].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 415,
+    "responseMs": 681,
     "error": "",
     "attempts": 1
   },
@@ -569,7 +569,7 @@
     "jsonPath": "sites[1].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 150,
+    "responseMs": 172,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -583,7 +583,7 @@
     "jsonPath": "sites[7].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 985,
+    "responseMs": 840,
     "error": "",
     "attempts": 1
   },
@@ -597,7 +597,7 @@
     "jsonPath": "sites[0].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 137,
+    "responseMs": 82,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -611,7 +611,7 @@
     "jsonPath": "platforms[10].defaultHosts[0]",
     "ok": false,
     "statusCode": null,
-    "responseMs": 31,
+    "responseMs": 44,
     "error": "[Errno -2] Name or service not known",
     "attempts": 3
   },
@@ -625,7 +625,7 @@
     "jsonPath": "platforms[9].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 80,
+    "responseMs": 170,
     "error": "",
     "attempts": 1
   },
@@ -639,7 +639,7 @@
     "jsonPath": "cloudSites[8].searchurl",
     "ok": false,
     "statusCode": 523,
-    "responseMs": 4242,
+    "responseMs": 1517,
     "error": "HTTP 523",
     "attempts": 3
   },
@@ -653,7 +653,7 @@
     "jsonPath": "cloudSites[8].detailBase",
     "ok": false,
     "statusCode": 523,
-    "responseMs": 1122,
+    "responseMs": 1119,
     "error": "HTTP 523",
     "attempts": 3
   },
@@ -667,7 +667,7 @@
     "jsonPath": "cloudSites[8].threadURL",
     "ok": false,
     "statusCode": 523,
-    "responseMs": 1120,
+    "responseMs": 1119,
     "error": "HTTP 523",
     "attempts": 3
   },
@@ -681,7 +681,7 @@
     "jsonPath": "files.allSources",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 72,
+    "responseMs": 148,
     "error": "",
     "attempts": 1
   },
@@ -695,7 +695,7 @@
     "jsonPath": "platforms[18].defaultHosts[1]",
     "ok": false,
     "statusCode": null,
-    "responseMs": 15037,
+    "responseMs": 15220,
     "error": "timed out",
     "attempts": 3
   },
@@ -709,7 +709,7 @@
     "jsonPath": "sites[10].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 264,
+    "responseMs": 337,
     "error": "",
     "attempts": 1
   },
@@ -723,7 +723,7 @@
     "jsonPath": "cloudSites[6].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 669,
+    "responseMs": 531,
     "error": "",
     "attempts": 1
   },
@@ -737,7 +737,7 @@
     "jsonPath": "cloudSites[6].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 619,
+    "responseMs": 526,
     "error": "",
     "attempts": 1
   },
@@ -751,7 +751,7 @@
     "jsonPath": "cloudSites[6].apiSearch",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 609,
+    "responseMs": 524,
     "error": "",
     "attempts": 1
   },
@@ -765,7 +765,7 @@
     "jsonPath": "platforms[13].defaultHosts[0]",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 1291,
+    "responseMs": 957,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -779,7 +779,7 @@
     "jsonPath": "sites[13].api",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 417,
+    "responseMs": 600,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -793,7 +793,7 @@
     "jsonPath": "sites[4].api",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 494,
+    "responseMs": 523,
     "error": "",
     "attempts": 1
   },
@@ -807,7 +807,7 @@
     "jsonPath": "files.apiSources",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 58,
+    "responseMs": 133,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -821,7 +821,7 @@
     "jsonPath": "files.cloudSources",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 38,
+    "responseMs": 68,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -835,7 +835,7 @@
     "jsonPath": "files.spiderSources",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 40,
+    "responseMs": 71,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -849,7 +849,7 @@
     "jsonPath": "files.domainOverrides",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 38,
+    "responseMs": 49,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -863,7 +863,7 @@
     "jsonPath": "files.parsers",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 41,
+    "responseMs": 49,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -877,7 +877,7 @@
     "jsonPath": "files.disabledSources",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 39,
+    "responseMs": 44,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -891,7 +891,7 @@
     "jsonPath": "files.welfarePlatforms",
     "ok": true,
     "statusCode": 404,
-    "responseMs": 39,
+    "responseMs": 67,
     "error": "HTTP 404",
     "attempts": 1
   },
@@ -905,7 +905,7 @@
     "jsonPath": "cloudSites[0].searchurl",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 716,
+    "responseMs": 1476,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -919,7 +919,7 @@
     "jsonPath": "cloudSites[0].detailBase",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 404,
+    "responseMs": 170,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -933,7 +933,7 @@
     "jsonPath": "cloudSites[3].searchurl",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 381,
+    "responseMs": 884,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -947,7 +947,7 @@
     "jsonPath": "cloudSites[3].detailBase",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 43,
+    "responseMs": 52,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -961,7 +961,7 @@
     "jsonPath": "platforms[8].defaultHosts[0]",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 68,
+    "responseMs": 91,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -975,7 +975,7 @@
     "jsonPath": "cloudSites[9].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 5653,
+    "responseMs": 1693,
     "error": "",
     "attempts": 1
   },
@@ -989,7 +989,7 @@
     "jsonPath": "cloudSites[9].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1716,
+    "responseMs": 1709,
     "error": "",
     "attempts": 1
   },
@@ -1003,7 +1003,7 @@
     "jsonPath": "cloudSites[16].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1823,
+    "responseMs": 1549,
     "error": "",
     "attempts": 1
   },
@@ -1017,7 +1017,7 @@
     "jsonPath": "cloudSites[16].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1012,
+    "responseMs": 1462,
     "error": "",
     "attempts": 1
   },
@@ -1031,7 +1031,7 @@
     "jsonPath": "cloudSites[16].searchurls[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1563,
+    "responseMs": 1461,
     "error": "",
     "attempts": 1
   },
@@ -1045,7 +1045,7 @@
     "jsonPath": "platforms[22].defaultHosts[0]",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 134,
+    "responseMs": 103,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -1059,7 +1059,7 @@
     "jsonPath": "platforms[22].imageReferer",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 43,
+    "responseMs": 80,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -1073,7 +1073,7 @@
     "jsonPath": "platforms[22].headers.Referer",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 41,
+    "responseMs": 52,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -1101,7 +1101,7 @@
     "jsonPath": "platforms[17].imageReferer",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 53,
+    "responseMs": 52,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -1115,7 +1115,7 @@
     "jsonPath": "platforms[17].headers.Referer",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 43,
+    "responseMs": 59,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -1129,7 +1129,7 @@
     "jsonPath": "cloudSites[4].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1324,
+    "responseMs": 1137,
     "error": "",
     "attempts": 1
   },
@@ -1143,7 +1143,7 @@
     "jsonPath": "cloudSites[4].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 63,
+    "responseMs": 60,
     "error": "",
     "attempts": 1
   },
@@ -1157,7 +1157,7 @@
     "jsonPath": "platforms[2].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 537,
+    "responseMs": 445,
     "error": "",
     "attempts": 1
   },
@@ -1171,7 +1171,7 @@
     "jsonPath": "cloudSites[10].searchurl",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 146,
+    "responseMs": 122,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -1185,7 +1185,7 @@
     "jsonPath": "cloudSites[10].detailBase",
     "ok": true,
     "statusCode": 403,
-    "responseMs": 44,
+    "responseMs": 64,
     "error": "HTTP 403",
     "attempts": 1
   },
@@ -1199,7 +1199,7 @@
     "jsonPath": "platforms[4].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1401,
+    "responseMs": 410,
     "error": "",
     "attempts": 1
   },
@@ -1213,7 +1213,7 @@
     "jsonPath": "cloudSites[12].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 110,
+    "responseMs": 273,
     "error": "",
     "attempts": 1
   },
@@ -1227,7 +1227,7 @@
     "jsonPath": "cloudSites[12].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 56,
+    "responseMs": 45,
     "error": "",
     "attempts": 1
   },
@@ -1240,9 +1240,9 @@
     "field": "defaultHosts[0]",
     "jsonPath": "platforms[5].defaultHosts[0]",
     "ok": true,
-    "statusCode": 403,
-    "responseMs": 1000,
-    "error": "HTTP 403",
+    "statusCode": 200,
+    "responseMs": 649,
+    "error": "",
     "attempts": 1
   },
   {
@@ -1255,7 +1255,7 @@
     "jsonPath": "cloudSites[2].searchurl",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 659,
+    "responseMs": 372,
     "error": "",
     "attempts": 1
   },
@@ -1269,7 +1269,7 @@
     "jsonPath": "cloudSites[2].detailBase",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 148,
+    "responseMs": 130,
     "error": "",
     "attempts": 1
   },
@@ -1283,7 +1283,7 @@
     "jsonPath": "platforms[0].defaultHosts[0]",
     "ok": true,
     "statusCode": 200,
-    "responseMs": 1869,
+    "responseMs": 1728,
     "error": "",
     "attempts": 1
   }
