@@ -481,9 +481,20 @@
         "changeable": 1,
         "ext": "",
         "timeout": 30
+      },
+      {
+        "key": "js_库库光影",
+        "name": "网盘 | 库库光影[js]",
+        "type": 3,
+        "api": "./js/kzzy.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 15
       }
     ],
-    "siteCount": 10
+    "siteCount": 11
   },
   "domainOverrides": {
     "overrides": []

@@ -8,7 +8,7 @@
     },
     "domain_overrides": 0,
     "parsers": 0,
-    "spider_sources": 10,
+    "spider_sources": 11,
     "welfare_platforms": 23
   },
   "detail": {
@@ -51,6 +51,7 @@
     "spider_sources": {
       "drpy_js_瓜子": "影视 | 瓜子[js]",
       "js_奇点搜索": "网盘 | 奇点搜索[js]",
+      "js_库库光影": "网盘 | 库库光影[js]",
       "js_人人视频": "影视 | 人人视频[js]",
       "js_剧迷": "影视 | 剧迷[js]",
       "js_哇哇影视": "影视 | 哇哇影视[js]",
