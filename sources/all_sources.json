@@ -461,21 +461,10 @@
         "timeout": 30
       },
       {
-        "key": "js_KK小站",
-        "name": "网盘 | KK小站[js]",
+        "key": "js_珈珈搜索",
+        "name": "网盘 | 珈珈搜索[js]",
         "type": 3,
-        "api": "./js/pioz.js",
-        "searchable": 1,
-        "quickSearch": 1,
-        "changeable": 1,
-        "ext": "",
-        "timeout": 30
-      },
-      {
-        "key": "js_泽索搜",
-        "name": "网盘 | 泽索搜[js]",
-        "type": 3,
-        "api": "./js/zreso.js",
+        "api": "./js/jiasou.js",
         "searchable": 1,
         "quickSearch": 1,
         "changeable": 1,
@@ -483,7 +472,7 @@
         "timeout": 30
       }
     ],
-    "siteCount": 10
+    "siteCount": 9
   },
   "domainOverrides": {
     "overrides": []

@@ -8,7 +8,7 @@
     },
     "domain_overrides": 0,
     "parsers": 0,
-    "spider_sources": 10,
+    "spider_sources": 9,
     "welfare_platforms": 23
   },
   "detail": {
@@ -50,12 +50,11 @@
     },
     "spider_sources": {
       "drpy_js_瓜子": "影视 | 瓜子[js]",
-      "js_KK小站": "网盘 | KK小站[js]",
+      "js_珈珈搜索": "网盘 | 珈珈搜索[js]",
       "js_人人视频": "影视 | 人人视频[js]",
       "js_剧迷": "影视 | 剧迷[js]",
       "js_哇哇影视": "影视 | 哇哇影视[js]",
       "js_星空4K": "影视 | 星空4K[js]",
-      "js_泽索搜": "网盘 | 泽索搜[js]",
       "js_腾讯视频": "官源 | 腾讯视频[js]",
       "js_袋鼠影视": "影视 | 袋鼠影视[js]",
       "js_韩小圈": "影视 | 韩小圈[js]"
