@@ -103,7 +103,18 @@
       "changeable": 1,
       "ext": "",
       "timeout": 30
+    },
+    {
+      "key": "js_泽索搜",
+      "name": "网盘 | 泽索搜[js]",
+      "type": 3,
+      "api": "./js/zreso.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "ext": "",
+      "timeout": 30
     }
   ],
-  "siteCount": 9
+  "siteCount": 10
 }
