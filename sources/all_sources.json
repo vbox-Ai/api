@@ -569,9 +569,20 @@
         "changeable": 1,
         "ext": "",
         "timeout": 20
+      },
+      {
+        "key": "js_爱盼",
+        "name": "网盘 | 爱盼[js]",
+        "type": 3,
+        "api": "./js/aipan.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 20
       }
     ],
-    "siteCount": 18
+    "siteCount": 19
   },
   "domainOverrides": {
     "overrides": []
