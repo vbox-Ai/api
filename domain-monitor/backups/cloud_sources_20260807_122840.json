@@ -10,8 +10,8 @@
     {
       "name": "玩偶资源",
       "type": "cms",
-      "searchurl": "https://wogg.xxooo.cf/vodsearch/-------------.html?wd=",
-      "detailBase": "https://wogg.xxooo.cf",
+      "searchurl": "https://woggpan.888484.xyz/vodsearch/-------------.html?wd=",
+      "detailBase": "https://woggpan.888484.xyz",
       "ua": "pc",
       "enabled": true,
       "priority": 1002,
@@ -20,8 +20,8 @@
     {
       "name": "木偶资源",
       "type": "cms",
-      "searchurl": "https://123.666291.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://123.666291.xyz",
+      "searchurl": "https://666.666291.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://666.666291.xyz",
       "enabled": true,
       "priority": 1003,
       "group": "cloud"
@@ -29,8 +29,8 @@
     {
       "name": "多多资源",
       "type": "cms",
-      "searchurl": "https://tv.yydsys.top/index.php/vod/search.html?wd=",
-      "detailBase": "https://tv.yydsys.top",
+      "searchurl": "https://yydsys.de5.net/index.php/vod/search.html?wd=",
+      "detailBase": "https://yydsys.de5.net",
       "ua": "pc",
       "enabled": true,
       "priority": 1004,
@@ -39,8 +39,8 @@
     {
       "name": "欧歌资源",
       "type": "cms",
-      "searchurl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://woog.430520.xyz",
+      "searchurl": "https://woog.nxog.fun/index.php/vod/search.html?wd=",
+      "detailBase": "https://woog.nxog.fun",
       "ua": "pc",
       "enabled": true,
       "priority": 1006,
@@ -125,8 +125,8 @@
     {
       "name": "飞猫影视",
       "type": "cms",
-      "searchurl": "http://feimo.fun/index.php/vod/search.html?wd=",
-      "detailBase": "http://feimo.fun",
+      "searchurl": "http://tvpanpan.site/index.php/vod/search.html?wd=",
+      "detailBase": "http://tvpanpan.site",
       "enabled": true,
       "priority": 1020,
       "group": "cloud"
@@ -134,8 +134,8 @@
     {
       "name": "2小盘",
       "type": "cms",
-      "searchurl": "https://wexwp.cc/index.php/vod/search.html?wd=",
-      "detailBase": "https://wexwp.cc",
+      "searchurl": "https://www.wexwp.cc/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.wexwp.cc",
       "enabled": true,
       "priority": 1021,
       "group": "cloud"
