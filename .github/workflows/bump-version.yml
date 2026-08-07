@@ -99,6 +99,9 @@ jobs:
           git add sources/manifest.json sources/manifest.version
           git diff --cached --quiet && echo "No version changes" && exit 0
 
+          # 先提交，避免 pull --rebase 时 index 存在未提交变更
+          git commit -m "chore: bump config version to $NEW_VERSION"
+
           # 带重试的 push
           for i in 1 2 3; do
             git pull --rebase origin main
