@@ -492,9 +492,86 @@
         "changeable": 1,
         "ext": "",
         "timeout": 15
+      },
+      {
+        "key": "js_GG盘",
+        "name": "网盘 | GG盘[js]",
+        "type": 3,
+        "api": "./js/ggpan.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 15
+      },
+      {
+        "key": "js_清欢短剧",
+        "name": "网盘 | 清欢短剧[js]",
+        "type": 3,
+        "api": "./js/earxo.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 15
+      },
+      {
+        "key": "js_追新番",
+        "name": "网盘 | 追新番[js]",
+        "type": 3,
+        "api": "./js/fanxinzhui.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 20
+      },
+      {
+        "key": "js_PanSou盘搜",
+        "name": "网盘 | PanSou盘搜[js]",
+        "type": 3,
+        "api": "./js/pansou.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 15
+      },
+      {
+        "key": "js_无名小站",
+        "name": "网盘 | 无名小站[js]",
+        "type": 3,
+        "api": "./js/wmxz.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 20
+      },
+      {
+        "key": "js_TRex",
+        "name": "网盘 | T-Rex[js]",
+        "type": 3,
+        "api": "./js/trex.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 25
+      },
+      {
+        "key": "js_TVSO",
+        "name": "网盘 | TVSO[js]",
+        "type": 3,
+        "api": "./js/tvso.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 20
       }
     ],
-    "siteCount": 11
+    "siteCount": 18
   },
   "domainOverrides": {
     "overrides": []
