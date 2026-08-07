@@ -69,7 +69,8 @@ var spider = {
         function postForm(url, formData, headers) {
             try {
                 var h = {};
-                for (var k in (headers || HEADER)) { h[k] = HEADER[k]; }
+                var src = headers || HEADER;
+                for (var k in src) { h[k] = src[k]; }
                 h['Content-Type'] = 'application/x-www-form-urlencoded';
                 var resp = req(url, { method: 'POST', headers: h, body: formData, data: formData, timeout: 10000 });
                 if (resp && resp.ok) {
@@ -191,16 +192,29 @@ var spider = {
                 return token;
             }
 
-            // 加密 token 需调 save_url 解码
-            var formData = 'url=' + encode(token) + '&title=' + encode(title || 'resource');
+            var safeTitle = title || 'resource';
+
+            // 策略1: POST 方式调用 save_url
+            var formData = 'url=' + encode(token) + '&title=' + encode(safeTitle);
             var data = postForm(BASE_URL + '/api/other/save_url', formData);
 
             if (data && data.code === 200 && data.data && data.data.url) {
-                print('>>> kzzy decodeUrl SUCCESS: ' + data.data.url.substring(0, 60));
+                print('>>> kzzy decodeUrl SUCCESS (POST): ' + data.data.url.substring(0, 60));
                 return data.data.url;
             }
 
-            print('>>> kzzy decodeUrl FAIL: ' + (data ? data.message : 'null response'));
+            print('>>> kzzy decodeUrl POST result: ' + (data ? data.message : 'null response'));
+
+            // 策略2: GET 方式调用 save_url（兼容性更好，部分 bridge 不支持 POST body）
+            var getUrl = BASE_URL + '/api/other/save_url?url=' + encode(token) + '&title=' + encode(safeTitle);
+            data = fetchJSON(getUrl);
+
+            if (data && data.code === 200 && data.data && data.data.url) {
+                print('>>> kzzy decodeUrl SUCCESS (GET): ' + data.data.url.substring(0, 60));
+                return data.data.url;
+            }
+
+            print('>>> kzzy decodeUrl GET result: ' + (data ? data.message : 'null response'));
             return '';
         }
 

@@ -212,14 +212,70 @@ var spider = {
                     print('>>> ggpan detailContent: URL from vod_id');
                 }
 
-                // 策略2：请求资源详情 API（可能返回 JSON 含 URL）
+                // 策略2：请求 transfer 端点（POST）获取分享链接
+                // 此端点返回 JSON: {"share_url": "https://pan.quark.cn/s/xxx"}
+                if (!realUrl) {
+                    var transferUrl = BASE_URL + '/api/public/resources/' + decoded.id + '/transfer?visitor_id=vbox';
+                    var transferResp = req(transferUrl, { method: 'POST', headers: HEADER, timeout: 15000 });
+                    if (transferResp && transferResp.ok && transferResp.content) {
+                        try {
+                            var transferJson = JSON.parse(transferResp.content);
+                            realUrl = transferJson.share_url || transferJson.url || transferJson.link || '';
+                            if (realUrl && realUrl.indexOf('http') === 0) {
+                                print('>>> ggpan detailContent: URL from transfer API');
+                            } else {
+                                realUrl = '';
+                            }
+                        } catch (e) {
+                            print('>>> ggpan detailContent: transfer response not JSON');
+                        }
+                    } else {
+                        print('>>> ggpan detailContent: transfer API failed status=' + (transferResp ? transferResp.status : 'null'));
+                    }
+                }
+
+                // 策略3：请求 redirect 端点获取跳转
+                // 此端点返回 302 Location 或 HTML body 含 <a href="url">Found</a>
+                if (!realUrl) {
+                    var redirectUrl = BASE_URL + '/api/public/resources/' + decoded.id + '/redirect?visitor_id=vbox';
+                    var resp = req(redirectUrl, { headers: HEADER, timeout: 15000 });
+
+                    // 3a：从响应内容中提取网盘链接（302 body 或跳转后页面）
+                    if (resp && resp.content) {
+                        var content = resp.content;
+                        // 匹配夸克网盘链接
+                        var quarkMatch = content.match(/https?:\/\/pan\.quark\.cn\/s\/[^\s"'<>()\\]+/);
+                        if (quarkMatch && quarkMatch[0]) {
+                            realUrl = quarkMatch[0].replace(/\\\//g, '/').replace(/["'<]/g, '');
+                            print('>>> ggpan detailContent: URL from redirect content');
+                        }
+                        // 匹配其他网盘链接
+                        if (!realUrl) {
+                            var panMatch = content.match(/https?:\/\/(pan\.baidu\.com\/s\/[^\s"'<>()\\]+|pan\.xunlei\.com\/s\/[^\s"'<>()\\]+|share\.weiyun\.com\/[^\s"'<>()\\]+)/);
+                            if (panMatch && panMatch[0]) {
+                                realUrl = panMatch[0].replace(/\\\//g, '/').replace(/["'<]/g, '');
+                                print('>>> ggpan detailContent: URL from redirect content (other pan)');
+                            }
+                        }
+                    }
+
+                    // 3b：检查响应头中的 Location（302 跳转地址）
+                    if (!realUrl && resp && resp.headers) {
+                        var loc = resp.headers.location || resp.headers.Location || '';
+                        if (loc && loc.indexOf('http') === 0) {
+                            realUrl = loc;
+                            print('>>> ggpan detailContent: URL from Location header');
+                        }
+                    }
+                }
+
+                // 策略4：请求资源详情 API（备用，可能返回 JSON 含 URL）
                 if (!realUrl) {
                     var detailUrl = BASE_URL + '/api/public/resources/' + decoded.id;
                     var detailResp = req(detailUrl, { headers: HEADER, timeout: 15000 });
                     if (detailResp && detailResp.ok && detailResp.content) {
                         try {
                             var detailJson = JSON.parse(detailResp.content);
-                            // 尝试多个可能的 URL 字段
                             realUrl = detailJson.url || detailJson.link || detailJson.pan_url ||
                                       detailJson.share_url || detailJson.resource_url || '';
                             if (detailJson.data) {
@@ -233,63 +289,6 @@ var spider = {
                             }
                         } catch (e) {
                             // 不是 JSON，继续其他策略
-                        }
-                    }
-                }
-
-                // 策略3：请求 redirect 端点，尝试 Accept: application/json
-                // 部分 API 在 Accept: application/json 时不跳转，直接返回 JSON
-                if (!realUrl) {
-                    var redirectUrl = BASE_URL + '/api/public/resources/' + decoded.id + '/redirect?visitor_id=vbox';
-                    var jsonHeaders = {};
-                    for (var k in HEADER) { jsonHeaders[k] = HEADER[k]; }
-                    jsonHeaders['Accept'] = 'application/json';
-
-                    var resp = req(redirectUrl, { headers: jsonHeaders, timeout: 15000 });
-
-                    if (resp && resp.ok && resp.content) {
-                        // 尝试解析为 JSON
-                        try {
-                            var json = JSON.parse(resp.content);
-                            realUrl = json.url || json.link || json.pan_url || json.data || '';
-                            if (realUrl && typeof realUrl === 'object' && realUrl.url) {
-                                realUrl = realUrl.url;
-                            }
-                            if (realUrl && realUrl.indexOf('http') === 0) {
-                                print('>>> ggpan detailContent: URL from redirect JSON');
-                            } else {
-                                realUrl = '';
-                            }
-                        } catch (e) {
-                            // 不是 JSON，说明 bridge 已跟随跳转到网盘页面
-                        }
-                    }
-
-                    // 策略4：从跳转后的页面内容中提取网盘链接
-                    if (!realUrl && resp && resp.content) {
-                        var content = resp.content;
-                        // 匹配夸克网盘链接
-                        var quarkMatch = content.match(/https?:\/\/pan\.quark\.cn\/s\/[^\s"'<>()\\]+/);
-                        if (quarkMatch && quarkMatch[0]) {
-                            realUrl = quarkMatch[0].replace(/\\\//g, '/').replace(/["'<]/g, '');
-                            print('>>> ggpan detailContent: URL from response content');
-                        }
-                        // 匹配其他网盘链接
-                        if (!realUrl) {
-                            var panMatch = content.match(/https?:\/\/(pan\.baidu\.com\/s\/[^\s"'<>()\\]+|pan\.xunlei\.com\/s\/[^\s"'<>()\\]+|share\.weiyun\.com\/[^\s"'<>()\\]+)/);
-                            if (panMatch && panMatch[0]) {
-                                realUrl = panMatch[0].replace(/\\\//g, '/').replace(/["'<]/g, '');
-                                print('>>> ggpan detailContent: URL from response content (other pan)');
-                            }
-                        }
-                    }
-
-                    // 策略5：检查响应头中的 Location（以防 bridge 暴露了跳转头）
-                    if (!realUrl && resp && resp.headers) {
-                        var loc = resp.headers.location || resp.headers.Location || '';
-                        if (loc && loc.indexOf('http') === 0) {
-                            realUrl = loc;
-                            print('>>> ggpan detailContent: URL from Location header');
                         }
                     }
                 }
