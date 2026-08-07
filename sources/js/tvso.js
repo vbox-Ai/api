@@ -1,9 +1,10 @@
 /*
- * TVSO JS 蜘蛛 v1.0
+ * TVSO JS 蜘蛛 v1.1
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 目标站: https://www.tvso.uk
+ * API站: https://api.tvso.uk
  * 特点: Vue/Vite SPA，API 响应 AES-256-CBC 加密，需客户端解密
- * 支持网盘：夸克网盘
+ * 支持网盘：夸克网盘、百度网盘
  * 无需登录，无需加密签名
  *
  * 网盘蜘蛛源约定：
@@ -16,11 +17,12 @@ var spider = {
     __jsEvalReturn: function() {
 
         var BASE_URL = 'https://www.tvso.uk';
+        var API_BASE_URL = 'https://api.tvso.uk';
         var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36';
         var HEADER = {
             'User-Agent': UA,
             'Referer': BASE_URL + '/',
-            'Content-Type': 'application/json'
+            'Accept': 'application/json'
         };
 
         // AES-256-CBC 密钥（如站点更新密钥，需同步修改）
@@ -265,24 +267,35 @@ var spider = {
 
         // ===================== 工具函数 =====================
 
-        function fetchJSON(url, body, headers) {
+        // GET 请求 API（TVSO API 使用 GET + query params）
+        function fetchAPI(path, params) {
             try {
-                var h = {};
-                for (var k in (headers || HEADER)) { h[k] = (headers || HEADER)[k]; }
-                var options = { method: body ? 'POST' : 'GET', headers: h, timeout: 15000 };
-                if (body) {
-                    options.data = JSON.stringify(body);
+                var url = API_BASE_URL + path;
+                if (params) {
+                    var qs = [];
+                    for (var k in params) {
+                        if (params[k] !== null && params[k] !== undefined) {
+                            qs.push(encodeURIComponent(k) + '=' + encodeURIComponent(params[k]));
+                        }
+                    }
+                    if (qs.length > 0) {
+                        url += '?' + qs.join('&');
+                    }
                 }
-                var resp = req(url, options);
+
+                var resp = req(url, { method: 'GET', headers: HEADER, timeout: 15000 });
                 if (resp && resp.ok) {
                     var content = resp.content || '';
                     if (typeof content === 'object') return content;
-                    try { return JSON.parse(content); } catch (e) { return null; }
+                    try { return JSON.parse(content); } catch (e) {
+                        print('>>> tvso fetchAPI JSON parse ERROR: ' + e);
+                        return null;
+                    }
                 }
-                print('>>> tvso fetch FAIL: status=' + (resp ? resp.status : 'null') + ' url=' + url.substring(0, 80));
+                print('>>> tvso fetchAPI FAIL: status=' + (resp ? resp.status : 'null') + ' url=' + url.substring(0, 80));
                 return null;
             } catch (e) {
-                print('>>> tvso fetch ERROR: ' + e);
+                print('>>> tvso fetchAPI ERROR: ' + e);
                 return null;
             }
         }
@@ -311,10 +324,22 @@ var spider = {
             };
         }
 
+        // 获取当前时间戳（毫秒）
+        function timestamp() {
+            return String(Date.now());
+        }
+
         // 解密 API 响应
-        function decryptResponse(encrypted) {
-            if (!encrypted || !encrypted.data || !encrypted.iv) {
-                print('>>> tvso decryptResponse: invalid encrypted data');
+        // API 响应结构: {"code":200,"message":"...","data":{"data":"<base64密文>","iv":"<base64 IV>"}}
+        function decryptResponse(apiResp) {
+            if (!apiResp || apiResp.code !== 200 || !apiResp.data) {
+                print('>>> tvso decryptResponse: invalid API response, code=' + (apiResp ? apiResp.code : 'null'));
+                return null;
+            }
+
+            var encrypted = apiResp.data;
+            if (!encrypted.data || !encrypted.iv) {
+                print('>>> tvso decryptResponse: missing data/iv fields');
                 return null;
             }
 
@@ -328,6 +353,16 @@ var spider = {
             }
         }
 
+        // 从网盘链接推断网盘名称
+        function inferPanName(url) {
+            if (!url) return '网盘';
+            if (url.indexOf('pan.quark.cn') !== -1) return '夸克网盘';
+            if (url.indexOf('pan.baidu.com') !== -1) return '百度网盘';
+            if (url.indexOf('pan.xunlei.com') !== -1) return '迅雷云盘';
+            if (url.indexOf('share.weiyun.com') !== -1) return '腾讯微云';
+            return '网盘';
+        }
+
         // ===================== 首页内容 =====================
 
         function homeContent(filter) {
@@ -335,12 +370,14 @@ var spider = {
             var hotKeywords = ['庆余年', '凡人修仙传', '九门', '斩神', '完美世界'];
 
             try {
-                var data = fetchJSON(
-                    BASE_URL + '/api/v2/resource/paginate',
-                    { page: 1, limit: 24, keyword: hotKeywords[0] }
-                );
+                var apiResp = fetchAPI('/api/v2/resource/paginate', {
+                    key: hotKeywords[0],
+                    page: 1,
+                    limit: 24,
+                    t: timestamp()
+                });
 
-                var decrypted = decryptResponse(data);
+                var decrypted = decryptResponse(apiResp);
                 if (decrypted && decrypted.list) {
                     result.list = parseSearchResults(decrypted.list);
                 }
@@ -361,7 +398,7 @@ var spider = {
                 var item = items[i];
                 var title = stripTags(item.title || '未知资源');
                 var id = item.id || ('idx_' + i);
-                var url = item.url || '';
+                var url = item.quarkLink || item.url || '';
 
                 if (!title) continue;
 
@@ -369,11 +406,13 @@ var spider = {
                 if (seen[dedupKey]) continue;
                 seen[dedupKey] = true;
 
+                var panName = inferPanName(url);
+
                 list.push({
                     vod_id: encodeVodId(id, title, url),
                     vod_name: title,
                     vod_pic: item.cover || '',
-                    vod_remarks: '☁️夸克网盘'
+                    vod_remarks: '☁️' + panName
                 });
             }
 
@@ -398,12 +437,14 @@ var spider = {
             }
 
             try {
-                var data = fetchJSON(
-                    BASE_URL + '/api/v2/resource/paginate',
-                    { page: page, limit: 20, keyword: key }
-                );
+                var apiResp = fetchAPI('/api/v2/resource/paginate', {
+                    key: key,
+                    page: page,
+                    limit: 20,
+                    t: timestamp()
+                });
 
-                var decrypted = decryptResponse(data);
+                var decrypted = decryptResponse(apiResp);
                 if (!decrypted || !decrypted.list || decrypted.list.length === 0) {
                     print('>>> tvso searchContent: no data for key=' + key);
                     return result;
@@ -441,15 +482,18 @@ var spider = {
             // 如果 vod_id 中没有 URL，尝试重新搜索获取
             if (!realUrl && decoded.title) {
                 try {
-                    var data = fetchJSON(
-                        BASE_URL + '/api/v2/resource/paginate',
-                        { page: 1, limit: 10, keyword: decoded.title }
-                    );
-                    var decrypted = decryptResponse(data);
+                    var apiResp = fetchAPI('/api/v2/resource/paginate', {
+                        key: decoded.title,
+                        page: 1,
+                        limit: 10,
+                        t: timestamp()
+                    });
+                    var decrypted = decryptResponse(apiResp);
                     if (decrypted && decrypted.list) {
                         for (var i = 0; i < decrypted.list.length; i++) {
-                            if (String(decrypted.list[i].id) === String(decoded.id) || decrypted.list[i].title === decoded.title) {
-                                realUrl = decrypted.list[i].url || '';
+                            if (String(decrypted.list[i].id) === String(decoded.id) ||
+                                decrypted.list[i].title === decoded.title) {
+                                realUrl = decrypted.list[i].quarkLink || decrypted.list[i].url || '';
                                 break;
                             }
                         }
@@ -459,14 +503,16 @@ var spider = {
                 }
             }
 
+            var panName = inferPanName(realUrl);
+
             if (realUrl) {
                 result.list.push({
                     vod_id: id,
                     vod_name: decoded.title || '网盘资源',
                     vod_pic: '',
-                    vod_remarks: '☁️夸克网盘',
+                    vod_remarks: '☁️' + panName,
                     vod_play_from: 'TVSO',
-                    vod_play_url: JSON.stringify([{ url: realUrl, name: '夸克网盘' }])
+                    vod_play_url: JSON.stringify([{ url: realUrl, name: panName }])
                 });
                 print('>>> tvso detailContent SUCCESS: ' + realUrl.substring(0, 60));
             } else {
@@ -478,6 +524,7 @@ var spider = {
                     vod_play_from: 'TVSO',
                     vod_play_url: JSON.stringify([{ url: '', name: '未获取到链接' }])
                 });
+                print('>>> tvso detailContent: no URL found for id=' + decoded.id);
             }
 
             return result;
@@ -511,7 +558,7 @@ var spider = {
         // ===================== 初始化 =====================
 
         function init(config) {
-            print('>>> tvso init: TVSO JS蜘蛛 v1.0');
+            print('>>> tvso init: TVSO JS蜘蛛 v1.1');
             return true;
         }
 
