@@ -104,35 +104,39 @@ var spider = {
             return '';
         }
 
-        // 从搜索结果 HTML 提取 post id
-        function extractPostIds(html) {
-            var ids = [];
-            if (!html) return ids;
+        // 从搜索结果 HTML 提取 post id 和标题
+        function extractSearchResults(html) {
+            var results = [];
+            if (!html) return results;
 
             var seen = {};
-            var regex = /href=["']https?:\/\/www\.earxo\.com\/post\/(\d+)\.html["']/g;
+            // 匹配包含 post 链接的 <a> 标签，同时捕获链接文本作为标题
+            var regex = /<a[^>]*href=["'](?:https?:\/\/www\.earxo\.com)?\/post\/(\d+)\.html["'][^>]*>([\s\S]*?)<\/a>/g;
             var match;
             while ((match = regex.exec(html)) !== null) {
-                var id = match[1];
-                if (!seen[id]) {
-                    seen[id] = true;
-                    ids.push(id);
+                var postId = match[1];
+                var titleHtml = match[2] || '';
+                var title = stripTags(titleHtml).trim();
+
+                if (postId && !seen[postId]) {
+                    seen[postId] = true;
+                    results.push({ id: postId, title: title });
                 }
             }
 
-            // 兼容相对路径
-            if (ids.length === 0) {
-                regex = /href=["']\/post\/(\d+)\.html["']/g;
+            // 如果上面没匹配到，回退到仅提取 ID
+            if (results.length === 0) {
+                regex = /href=["'](?:https?:\/\/www\.earxo\.com)?\/post\/(\d+)\.html["']/g;
                 while ((match = regex.exec(html)) !== null) {
-                    var id2 = match[1];
-                    if (!seen[id2]) {
-                        seen[id2] = true;
-                        ids.push(id2);
+                    var id = match[1];
+                    if (!seen[id]) {
+                        seen[id] = true;
+                        results.push({ id: id, title: '' });
                     }
                 }
             }
 
-            return ids;
+            return results;
         }
 
         function extractTitleFromHtml(html, postId) {
@@ -242,29 +246,28 @@ var spider = {
             try {
                 var url = BASE_URL + '/search/' + encode(key);
                 var html = fetch(url);
-                var ids = extractPostIds(html);
+                var searchResults = extractSearchResults(html);
 
-                if (ids.length === 0) {
+                if (searchResults.length === 0) {
                     print('>>> earxo searchContent: no data for key=' + key);
                     return result;
                 }
 
                 var pageSize = 20;
                 var startIdx = (page - 1) * pageSize;
-                var pageIds = ids.slice(startIdx, startIdx + pageSize);
+                var pageResults = searchResults.slice(startIdx, startIdx + pageSize);
 
-                for (var i = 0; i < pageIds.length; i++) {
-                    var postId = pageIds[i];
+                for (var i = 0; i < pageResults.length; i++) {
+                    var item = pageResults[i];
                     result.list.push({
-                        vod_id: encodeVodId(postId, ''),
-                        vod_name: 'earxo-' + postId,
+                        vod_id: encodeVodId(item.id, item.title),
+                        vod_name: item.title || ('earxo-' + item.id),
                         vod_pic: '',
                         vod_remarks: '☁️夸克网盘'
                     });
                 }
 
-                // 搜索页标题异步获取，详情页再补全
-                result.pagecount = (startIdx + pageSize) < ids.length ? page + 1 : page;
+                result.pagecount = (startIdx + pageSize) < searchResults.length ? page + 1 : page;
                 print('>>> earxo searchContent: key=' + key + ' pg=' + page + ' count=' + result.list.length);
             } catch (e) {
                 print('>>> earxo searchContent ERROR: ' + e);

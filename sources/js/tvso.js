@@ -94,12 +94,133 @@ var spider = {
             return bytes;
         }
 
-        // 简单的 AES-256-CBC 解密（纯 JS 实现，无外部依赖）
+        // ===================== 纯 JS AES-256-CBC 实现 =====================
+        // 由于 vbox 引擎的 crypto.AES.decrypt 使用 IV=key，而 TVSO API 返回独立 IV，
+        // 此处实现完整的 AES-256-CBC 解密以支持自定义 IV
+
+        // AES S-box 及逆 S-box（程序化生成，避免硬编码 512 字节表）
+        var _SBOX = new Array(256);
+        var _INVSBOX = new Array(256);
+        (function() {
+            var p = 1, q = 1;
+            do {
+                // p *= 3 (GF(2^8) 原根)
+                p = p ^ (p << 1) ^ (p & 0x80 ? 0x1b : 0);
+                p &= 0xff;
+                // q /= 3
+                q ^= q << 1; q ^= q << 2; q ^= q << 4;
+                q ^= q & 0x80 ? 0x09 : 0;
+                q &= 0xff;
+                // 仿射变换
+                var x = q ^ ((q << 1) | (q >> 7)) ^ ((q << 2) | (q >> 6)) ^
+                        ((q << 3) | (q >> 5)) ^ ((q << 4) | (q >> 4));
+                _SBOX[p] = (x ^ 0x63) & 0xff;
+            } while (p !== 1);
+            _SBOX[0] = 0x63;
+            for (var i = 0; i < 256; i++) _INVSBOX[_SBOX[i]] = i;
+        })();
+
+        // GF(2^8) 乘法
+        function _gmul(a, b) {
+            var r = 0;
+            for (var i = 0; i < 8; i++) {
+                if (b & 1) r ^= a;
+                var hi = a & 0x80;
+                a = (a << 1) & 0xff;
+                if (hi) a ^= 0x1b;
+                b >>= 1;
+            }
+            return r;
+        }
+
+        // AES-256 密钥扩展（32 字节密钥 → 240 字节扩展密钥 = 60 个 4 字节字）
+        function _keyExpansion(key) {
+            var Nk = 8, Nr = 14;
+            var w = [];
+            for (var i = 0; i < Nk; i++) {
+                w[i] = [key[4 * i], key[4 * i + 1], key[4 * i + 2], key[4 * i + 3]];
+            }
+            var rcon = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40];
+            for (var i = Nk; i < 4 * (Nr + 1); i++) {
+                var t = w[i - 1].slice();
+                if (i % Nk === 0) {
+                    t = [t[1], t[2], t[3], t[0]]; // RotWord
+                    for (var j = 0; j < 4; j++) t[j] = _SBOX[t[j]]; // SubWord
+                    t[0] ^= rcon[i / Nk - 1];
+                } else if (i % Nk === 4) {
+                    for (var j = 0; j < 4; j++) t[j] = _SBOX[t[j]]; // SubWord (AES-256 only)
+                }
+                w[i] = [w[i - Nk][0] ^ t[0], w[i - Nk][1] ^ t[1],
+                        w[i - Nk][2] ^ t[2], w[i - Nk][3] ^ t[3]];
+            }
+            return w;
+        }
+
+        // AES-256 逆密码（解密单个 16 字节块）
+        function _decryptBlock(input, w) {
+            var s = input.slice();
+            var Nr = 14;
+            var t, i, c;
+
+            // AddRoundKey（最后一轮）
+            for (i = 0; i < 16; i++) s[i] ^= w[Nr * 4 + (i >> 2)][i % 4];
+
+            for (var round = Nr - 1; round >= 1; round--) {
+                // InvShiftRows
+                t = s[13]; s[13] = s[9]; s[9] = s[5]; s[5] = s[1]; s[1] = t;
+                t = s[2]; s[2] = s[10]; s[10] = t; t = s[6]; s[6] = s[14]; s[14] = t;
+                t = s[3]; s[3] = s[7]; s[7] = s[11]; s[11] = s[15]; s[15] = t;
+                // InvSubBytes
+                for (i = 0; i < 16; i++) s[i] = _INVSBOX[s[i]];
+                // AddRoundKey
+                for (i = 0; i < 16; i++) s[i] ^= w[round * 4 + (i >> 2)][i % 4];
+                // InvMixColumns
+                for (c = 0; c < 4; c++) {
+                    var a0 = s[c * 4], a1 = s[c * 4 + 1], a2 = s[c * 4 + 2], a3 = s[c * 4 + 3];
+                    s[c * 4]     = _gmul(a0, 0x0e) ^ _gmul(a1, 0x0b) ^ _gmul(a2, 0x0d) ^ _gmul(a3, 0x09);
+                    s[c * 4 + 1] = _gmul(a0, 0x09) ^ _gmul(a1, 0x0e) ^ _gmul(a2, 0x0b) ^ _gmul(a3, 0x0d);
+                    s[c * 4 + 2] = _gmul(a0, 0x0d) ^ _gmul(a1, 0x09) ^ _gmul(a2, 0x0e) ^ _gmul(a3, 0x0b);
+                    s[c * 4 + 3] = _gmul(a0, 0x0b) ^ _gmul(a1, 0x0d) ^ _gmul(a2, 0x09) ^ _gmul(a3, 0x0e);
+                }
+            }
+
+            // 最后一轮（无 InvMixColumns）
+            t = s[13]; s[13] = s[9]; s[9] = s[5]; s[5] = s[1]; s[1] = t;
+            t = s[2]; s[2] = s[10]; s[10] = t; t = s[6]; s[6] = s[14]; s[14] = t;
+            t = s[3]; s[3] = s[7]; s[7] = s[11]; s[11] = s[15]; s[15] = t;
+            for (i = 0; i < 16; i++) s[i] = _INVSBOX[s[i]];
+            for (i = 0; i < 16; i++) s[i] ^= w[i >> 2][i % 4];
+
+            return s;
+        }
+
+        // AES-256-CBC 解密 + PKCS7 去填充
+        function _aesCbcDecrypt(ciphertext, key, iv) {
+            var w = _keyExpansion(key);
+            var plaintext = [];
+
+            for (var i = 0; i < ciphertext.length; i += 16) {
+                var block = ciphertext.slice(i, i + 16);
+                var dec = _decryptBlock(block, w);
+                for (var j = 0; j < 16; j++) dec[j] ^= iv[j];
+                plaintext = plaintext.concat(dec);
+                iv = block;
+            }
+
+            // PKCS7 去填充
+            var padLen = plaintext[plaintext.length - 1];
+            if (padLen > 0 && padLen <= 16) {
+                plaintext = plaintext.slice(0, plaintext.length - padLen);
+            }
+            return plaintext;
+        }
+
+        // AES-256-CBC 解密入口
+        // ciphertext: Base64 编码的密文
+        // key: UTF-8 字符串密钥（32 字节 = AES-256）
+        // iv: Base64 编码的初始化向量
         function aesDecrypt(ciphertext, key, iv) {
-            // 扩展密钥（简化版，仅用于基础 AES-256）
-            // 注意：这是简化实现，完整 AES 需要完整的密钥扩展
-            // vbox 引擎如无 CryptoJS，此实现可能不够完整
-            // 这里尝试优先使用全局 CryptoJS
+            // 策略1：优先使用全局 CryptoJS（如果引擎注入了的话）
             if (typeof CryptoJS !== 'undefined' && CryptoJS.AES && CryptoJS.enc && CryptoJS.mode && CryptoJS.pad) {
                 try {
                     var keyWA = CryptoJS.enc.Utf8.parse(key);
@@ -110,14 +231,36 @@ var spider = {
                         keyWA,
                         { iv: ivWA, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
                     );
-                    return decrypted.toString(CryptoJS.enc.Utf8);
+                    var result = decrypted.toString(CryptoJS.enc.Utf8);
+                    if (result) return result;
                 } catch (e) {
                     print('>>> tvso CryptoJS decrypt ERROR: ' + e);
                 }
             }
 
-            print('>>> tvso WARNING: CryptoJS not available, AES decryption may fail');
-            return '';
+            // 策略2：纯 JS AES-256-CBC 实现（支持自定义 IV）
+            try {
+                var keyBytes = stringToUtf8Bytes(key);
+                var ivBytes = base64ToBytes(iv);
+                var cipherBytes = base64ToBytes(ciphertext);
+
+                if (keyBytes.length !== 32) {
+                    print('>>> tvso aesDecrypt: key length=' + keyBytes.length + ' (expected 32)');
+                    return '';
+                }
+                if (ivBytes.length !== 16) {
+                    print('>>> tvso aesDecrypt: iv length=' + ivBytes.length + ' (expected 16)');
+                    return '';
+                }
+
+                var plainBytes = _aesCbcDecrypt(cipherBytes, keyBytes, ivBytes);
+                var plaintext = utf8BytesToString(plainBytes);
+                print('>>> tvso aesDecrypt (pure JS): success, length=' + plaintext.length);
+                return plaintext;
+            } catch (e) {
+                print('>>> tvso aesDecrypt (pure JS) ERROR: ' + e);
+                return '';
+            }
         }
 
         // ===================== 工具函数 =====================
@@ -128,7 +271,7 @@ var spider = {
                 for (var k in (headers || HEADER)) { h[k] = (headers || HEADER)[k]; }
                 var options = { method: body ? 'POST' : 'GET', headers: h, timeout: 15000 };
                 if (body) {
-                    options.body = JSON.stringify(body);
+                    options.data = JSON.stringify(body);
                 }
                 var resp = req(url, options);
                 if (resp && resp.ok) {

@@ -59,8 +59,8 @@ var spider = {
             return encodeURIComponent(String(str));
         }
 
-        function encodeVodId(id, title, panTypeName) {
-            return String(id) + '|||' + encodeURIComponent(title || '') + '|||' + encodeURIComponent(panTypeName || '网盘');
+        function encodeVodId(id, title, panTypeName, url) {
+            return String(id) + '|||' + encodeURIComponent(title || '') + '|||' + encodeURIComponent(panTypeName || '网盘') + '|||' + encodeURIComponent(url || '');
         }
 
         function decodeVodId(vodId) {
@@ -68,7 +68,8 @@ var spider = {
             return {
                 id: parts[0] || '',
                 title: parts[1] ? decodeURIComponent(parts[1]) : '',
-                panTypeName: parts[2] ? decodeURIComponent(parts[2]) : '网盘'
+                panTypeName: parts[2] ? decodeURIComponent(parts[2]) : '网盘',
+                url: parts[3] ? decodeURIComponent(parts[3]) : ''
             };
         }
 
@@ -144,6 +145,18 @@ var spider = {
 
                 if (!id || !title) continue;
 
+                // 尝试从多个可能的字段提取网盘 URL
+                var panUrl = item.url || item.link || item.pan_url || item.resource_url ||
+                             item.share_url || item.redirect_url || item.pan_link || '';
+                // 也检查嵌套字段
+                if (!panUrl && item.metadata) {
+                    panUrl = item.metadata.url || item.metadata.link || item.metadata.pan_url || '';
+                }
+                // 如果 URL 不是 http 开头，忽略
+                if (panUrl && panUrl.indexOf('http') !== 0) {
+                    panUrl = '';
+                }
+
                 var qualities = [];
                 if (item.metadata && item.metadata.qualities) {
                     qualities = item.metadata.qualities;
@@ -154,7 +167,7 @@ var spider = {
                 }
 
                 list.push({
-                    vod_id: encodeVodId(id, title, '夸克网盘'),
+                    vod_id: encodeVodId(id, title, '夸克网盘', panUrl),
                     vod_name: title,
                     vod_pic: item.cover_url || '',
                     vod_remarks: remark
@@ -190,21 +203,95 @@ var spider = {
                 return result;
             }
 
-            try {
-                // 302 跳转获取真实网盘链接
-                var redirectUrl = BASE_URL + '/api/public/resources/' + decoded.id + '/redirect?visitor_id=vbox';
-                var resp = req(redirectUrl, { headers: HEADER, redirect: 'manual', timeout: 15000 });
-                var realUrl = '';
+            var realUrl = '';
 
-                if (resp && resp.headers && resp.headers.location) {
-                    realUrl = resp.headers.location;
-                } else if (resp && resp.headers && resp.headers.Location) {
-                    realUrl = resp.headers.Location;
-                } else if (resp && resp.ok && resp.content) {
-                    try {
-                        var json = JSON.parse(resp.content);
-                        realUrl = json.url || json.data || '';
-                    } catch (e) {}
+            try {
+                // 策略1：vod_id 中已携带 URL（来自搜索结果）
+                if (decoded.url && decoded.url.indexOf('http') === 0) {
+                    realUrl = decoded.url;
+                    print('>>> ggpan detailContent: URL from vod_id');
+                }
+
+                // 策略2：请求资源详情 API（可能返回 JSON 含 URL）
+                if (!realUrl) {
+                    var detailUrl = BASE_URL + '/api/public/resources/' + decoded.id;
+                    var detailResp = req(detailUrl, { headers: HEADER, timeout: 15000 });
+                    if (detailResp && detailResp.ok && detailResp.content) {
+                        try {
+                            var detailJson = JSON.parse(detailResp.content);
+                            // 尝试多个可能的 URL 字段
+                            realUrl = detailJson.url || detailJson.link || detailJson.pan_url ||
+                                      detailJson.share_url || detailJson.resource_url || '';
+                            if (detailJson.data) {
+                                realUrl = realUrl || detailJson.data.url || detailJson.data.link ||
+                                          detailJson.data.pan_url || detailJson.data.share_url || '';
+                            }
+                            if (realUrl && realUrl.indexOf('http') === 0) {
+                                print('>>> ggpan detailContent: URL from detail API');
+                            } else {
+                                realUrl = '';
+                            }
+                        } catch (e) {
+                            // 不是 JSON，继续其他策略
+                        }
+                    }
+                }
+
+                // 策略3：请求 redirect 端点，尝试 Accept: application/json
+                // 部分 API 在 Accept: application/json 时不跳转，直接返回 JSON
+                if (!realUrl) {
+                    var redirectUrl = BASE_URL + '/api/public/resources/' + decoded.id + '/redirect?visitor_id=vbox';
+                    var jsonHeaders = {};
+                    for (var k in HEADER) { jsonHeaders[k] = HEADER[k]; }
+                    jsonHeaders['Accept'] = 'application/json';
+
+                    var resp = req(redirectUrl, { headers: jsonHeaders, timeout: 15000 });
+
+                    if (resp && resp.ok && resp.content) {
+                        // 尝试解析为 JSON
+                        try {
+                            var json = JSON.parse(resp.content);
+                            realUrl = json.url || json.link || json.pan_url || json.data || '';
+                            if (realUrl && typeof realUrl === 'object' && realUrl.url) {
+                                realUrl = realUrl.url;
+                            }
+                            if (realUrl && realUrl.indexOf('http') === 0) {
+                                print('>>> ggpan detailContent: URL from redirect JSON');
+                            } else {
+                                realUrl = '';
+                            }
+                        } catch (e) {
+                            // 不是 JSON，说明 bridge 已跟随跳转到网盘页面
+                        }
+                    }
+
+                    // 策略4：从跳转后的页面内容中提取网盘链接
+                    if (!realUrl && resp && resp.content) {
+                        var content = resp.content;
+                        // 匹配夸克网盘链接
+                        var quarkMatch = content.match(/https?:\/\/pan\.quark\.cn\/s\/[^\s"'<>()\\]+/);
+                        if (quarkMatch && quarkMatch[0]) {
+                            realUrl = quarkMatch[0].replace(/\\\//g, '/').replace(/["'<]/g, '');
+                            print('>>> ggpan detailContent: URL from response content');
+                        }
+                        // 匹配其他网盘链接
+                        if (!realUrl) {
+                            var panMatch = content.match(/https?:\/\/(pan\.baidu\.com\/s\/[^\s"'<>()\\]+|pan\.xunlei\.com\/s\/[^\s"'<>()\\]+|share\.weiyun\.com\/[^\s"'<>()\\]+)/);
+                            if (panMatch && panMatch[0]) {
+                                realUrl = panMatch[0].replace(/\\\//g, '/').replace(/["'<]/g, '');
+                                print('>>> ggpan detailContent: URL from response content (other pan)');
+                            }
+                        }
+                    }
+
+                    // 策略5：检查响应头中的 Location（以防 bridge 暴露了跳转头）
+                    if (!realUrl && resp && resp.headers) {
+                        var loc = resp.headers.location || resp.headers.Location || '';
+                        if (loc && loc.indexOf('http') === 0) {
+                            realUrl = loc;
+                            print('>>> ggpan detailContent: URL from Location header');
+                        }
+                    }
                 }
 
                 if (realUrl) {
@@ -218,6 +305,7 @@ var spider = {
                     });
                     print('>>> ggpan detailContent SUCCESS: ' + realUrl.substring(0, 60));
                 } else {
+                    print('>>> ggpan detailContent: all strategies failed for id=' + decoded.id);
                     result.list.push({
                         vod_id: id,
                         vod_name: decoded.title || '网盘资源',

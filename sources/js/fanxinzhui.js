@@ -74,22 +74,38 @@ var spider = {
             return '网盘';
         }
 
-        // 从列表页 HTML 提取资源 ID
-        function extractResourceIds(html) {
-            var ids = [];
-            if (!html) return ids;
+        // 从列表页 HTML 提取资源 ID 和标题
+        function extractResourceList(html) {
+            var results = [];
+            if (!html) return results;
 
             var seen = {};
-            var regex = /href=["']\/rr\/(\d+)["']/g;
+            // 匹配包含 /rr/{id} 链接的 <a> 标签，同时捕获链接文本作为标题
+            var regex = /<a[^>]*href=["']\/rr\/(\d+)["'][^>]*>([\s\S]*?)<\/a>/g;
             var match;
             while ((match = regex.exec(html)) !== null) {
                 var id = match[1];
-                if (!seen[id]) {
+                var titleHtml = match[2] || '';
+                var title = stripTags(titleHtml).trim();
+
+                if (id && !seen[id]) {
                     seen[id] = true;
-                    ids.push(id);
+                    results.push({ id: id, title: title });
                 }
             }
-            return ids;
+
+            // 回退：仅提取 ID
+            if (results.length === 0) {
+                regex = /href=["']\/rr\/(\d+)["']/g;
+                while ((match = regex.exec(html)) !== null) {
+                    var rid = match[1];
+                    if (!seen[rid]) {
+                        seen[rid] = true;
+                        results.push({ id: rid, title: '' });
+                    }
+                }
+            }
+            return results;
         }
 
         // 从详情页提取标题
@@ -127,10 +143,6 @@ var spider = {
                 // 提取集数标识
                 var seasonMatch = liHtml.match(/<span class="season">(.*?)<\/span>/);
                 var episodeName = seasonMatch ? stripTags(seasonMatch[1]) : ('第' + episodeIndex + '集');
-
-                // 提取文件名
-                var itemMatch = liHtml.match(/<span class="item">(.*?)<\/span>/);
-                var fileName = itemMatch ? stripTags(itemMatch[1]) : '';
 
                 // 提取所有 <span> 内的网盘链接
                 var spanRegex = /<span>([\s\S]*?)<\/span>/g;
@@ -181,6 +193,52 @@ var spider = {
                 }
             }
 
+            // 回退方案：如果结构化解析没有找到链接，扫描整个 HTML 中的网盘链接
+            if (links.length === 0) {
+                var panPatterns = [
+                    /https?:\/\/pan\.xunlei\.com\/s\/[^\s"'<>()\\]+/g,
+                    /https?:\/\/pan\.baidu\.com\/s\/[^\s"'<>()\\]+/g,
+                    /https?:\/\/share\.weiyun\.com\/[^\s"'<>()\\]+/g
+                ];
+
+                var seenUrls = {};
+                for (var p = 0; p < panPatterns.length; p++) {
+                    var pMatch;
+                    while ((pMatch = panPatterns[p].exec(html)) !== null) {
+                        var panUrl = pMatch[0].replace(/\\\//g, '/').replace(/#+$/, '');
+                        if (seenUrls[panUrl]) continue;
+                        seenUrls[panUrl] = true;
+
+                        var panPlatform = inferCloudFromUrl(panUrl);
+                        var panPwd = '';
+
+                        if (panPlatform === '迅雷云盘') {
+                            var xPwdMatch = panUrl.match(/\?pwd=(\w+)/);
+                            if (xPwdMatch && xPwdMatch[1]) {
+                                panPwd = xPwdMatch[1];
+                                panUrl = panUrl.replace(/\?pwd=\w+/, '');
+                            }
+                        }
+
+                        // 尝试从 URL 附近提取密码
+                        if (!panPwd) {
+                            var nearbyPwd = html.substring(pMatch.index, pMatch.index + 500);
+                            var pwdNearbyMatch = nearbyPwd.match(/(?:密码|提取码)[：:\s]*([a-zA-Z0-9]{4})/);
+                            if (pwdNearbyMatch && pwdNearbyMatch[1]) {
+                                panPwd = pwdNearbyMatch[1];
+                            }
+                        }
+
+                        links.push({
+                            name: panPlatform,
+                            url: panUrl,
+                            platform: panPlatform,
+                            password: panPwd
+                        });
+                    }
+                }
+            }
+
             return links;
         }
 
@@ -191,12 +249,12 @@ var spider = {
 
             try {
                 var html = fetch(BASE_URL + '/list');
-                var ids = extractResourceIds(html);
+                var resources = extractResourceList(html);
 
-                for (var i = 0; i < ids.length && i < 18; i++) {
+                for (var i = 0; i < resources.length && i < 18; i++) {
                     result.list.push({
-                        vod_id: encodeVodId(ids[i], ''),
-                        vod_name: '追新番-' + ids[i],
+                        vod_id: encodeVodId(resources[i].id, resources[i].title),
+                        vod_name: resources[i].title || ('追新番-' + resources[i].id),
                         vod_pic: '',
                         vod_remarks: '☁️多网盘'
                     });
@@ -224,18 +282,18 @@ var spider = {
                 }
 
                 var html = fetch(url);
-                var ids = extractResourceIds(html);
+                var resources = extractResourceList(html);
 
-                for (var i = 0; i < ids.length; i++) {
+                for (var i = 0; i < resources.length; i++) {
                     result.list.push({
-                        vod_id: encodeVodId(ids[i], ''),
-                        vod_name: '追新番-' + ids[i],
+                        vod_id: encodeVodId(resources[i].id, resources[i].title),
+                        vod_name: resources[i].title || ('追新番-' + resources[i].id),
                         vod_pic: '',
                         vod_remarks: '☁️多网盘'
                     });
                 }
 
-                result.pagecount = ids.length >= 20 ? page + 1 : page;
+                result.pagecount = resources.length >= 20 ? page + 1 : page;
             } catch (e) {
                 print('>>> fanxinzhui categoryContent ERROR: ' + e);
             }
@@ -256,23 +314,23 @@ var spider = {
             try {
                 var url = BASE_URL + '/list?k=' + encode(key) + '&p=' + page;
                 var html = fetch(url);
-                var ids = extractResourceIds(html);
+                var resources = extractResourceList(html);
 
-                if (ids.length === 0) {
+                if (resources.length === 0) {
                     print('>>> fanxinzhui searchContent: no data for key=' + key);
                     return result;
                 }
 
-                for (var i = 0; i < ids.length; i++) {
+                for (var i = 0; i < resources.length; i++) {
                     result.list.push({
-                        vod_id: encodeVodId(ids[i], ''),
-                        vod_name: '追新番-' + ids[i],
+                        vod_id: encodeVodId(resources[i].id, resources[i].title),
+                        vod_name: resources[i].title || ('追新番-' + resources[i].id),
                         vod_pic: '',
                         vod_remarks: '☁️多网盘'
                     });
                 }
 
-                result.pagecount = ids.length >= 20 ? page + 1 : page;
+                result.pagecount = resources.length >= 20 ? page + 1 : page;
                 print('>>> fanxinzhui searchContent: key=' + key + ' pg=' + page + ' count=' + result.list.length);
             } catch (e) {
                 print('>>> fanxinzhui searchContent ERROR: ' + e);
