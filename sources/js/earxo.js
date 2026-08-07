@@ -109,7 +109,7 @@ var spider = {
             var results = [];
             if (!html) return results;
 
-            var seen = {};
+            var seen = {}; // postId → results 数组索引
             // 匹配包含 post 链接的 <a> 标签，同时捕获链接文本作为标题
             var regex = /<a[^>]*href=["'](?:https?:\/\/www\.earxo\.com)?\/post\/(\d+)\.html["'][^>]*>([\s\S]*?)<\/a>/g;
             var match;
@@ -118,10 +118,24 @@ var spider = {
                 var titleHtml = match[2] || '';
                 var title = stripTags(titleHtml).trim();
 
-                if (postId && !seen[postId]) {
-                    seen[postId] = true;
-                    results.push({ id: postId, title: title });
+                // 清理 img alt 属性中嵌套 HTML 标签导致的尾部残留 ">
+                if (title && title.indexOf('">') !== -1) {
+                    title = title.replace(/">/g, '').trim();
                 }
+
+                if (!postId) continue;
+
+                // 同一个 postId 可能出现多次（缩略图链接 + 标题链接）
+                // 优先保留更长、更完整的标题（标题链接在 <h2> 中，通常比缩略图 alt 更准确）
+                if (seen[postId] !== undefined) {
+                    if (title && title.length > results[seen[postId]].title.length) {
+                        results[seen[postId]].title = title;
+                    }
+                    continue;
+                }
+
+                seen[postId] = results.length;
+                results.push({ id: postId, title: title });
             }
 
             // 如果上面没匹配到，回退到仅提取 ID
@@ -129,8 +143,8 @@ var spider = {
                 regex = /href=["'](?:https?:\/\/www\.earxo\.com)?\/post\/(\d+)\.html["']/g;
                 while ((match = regex.exec(html)) !== null) {
                     var id = match[1];
-                    if (!seen[id]) {
-                        seen[id] = true;
+                    if (seen[id] === undefined) {
+                        seen[id] = results.length;
                         results.push({ id: id, title: '' });
                     }
                 }
@@ -261,7 +275,7 @@ var spider = {
                     var item = pageResults[i];
                     result.list.push({
                         vod_id: encodeVodId(item.id, item.title),
-                        vod_name: item.title || ('earxo-' + item.id),
+                        vod_name: item.title || ('清欢短剧 #' + item.id),
                         vod_pic: '',
                         vod_remarks: '☁️夸克网盘'
                     });
