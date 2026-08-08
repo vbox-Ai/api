@@ -13,11 +13,9 @@
  *
  * 网盘蜘蛛源约定：
  *   - vod_remarks 以 "☁️" 开头 → 标识为网盘资源，激活网盘UI
- *   - detailContent 按网盘类型分线路，使用 $$$ 格式:
- *       vod_play_from: 阿里云盘$$$百度网盘$$$夸克网盘
- *       vod_play_url:  阿里云盘$https://...$$$百度网盘$https://...$$$夸克网盘$https://...
+ *   - detailContent 的 vod_play_url 返回 JSON 数组 [{"url":"网盘链接","name":"网盘名"}]
  *   - vod_id 编码格式:
- *     搜索/浏览结果: {title}|||tg|||{channel}_{messageId}|||{encodeURIComponent(JSON.stringify(links))}
+ *     搜索/浏览结果: {title}|||tg|||{channel}_{messageId}|||{encodeURIComponent(JSON.stringify(links))}|||{encodeURIComponent(photoUrl)}
  *     links 格式: [{"url":"网盘链接","name":"网盘名","pwd":"提取码"}, ...]
  */
 
@@ -173,7 +171,7 @@ var spider = {
         // ===================== HTML 解析 =====================
 
         // 从 HTML 中提取所有消息块
-        // 返回数组: [{ messageId, channel, textHtml }]
+        // 返回数组: [{ messageId, channel, textHtml, photoUrl }]
         function parseMessageBlocks(html) {
             var messages = [];
             if (!html) return messages;
@@ -199,11 +197,27 @@ var spider = {
                 var textMatch = block.match(/tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>/);
                 var textHtml = textMatch ? textMatch[1] : '';
 
+                // 提取消息封面图
+                // Telegram Web 预览页中图片以 background-image:url('...') 形式嵌入
+                // <a class="tgme_widget_message_photo_wrap" ... style="background-image:url('https://...')">
+                // 或 <img class="tgme_widget_message_photo" src="https://...">
+                var photoUrl = '';
+                var bgMatch = block.match(/tgme_widget_message_photo_wrap[^>]*style="[^"]*background-image:url\('([^']+)'\)/i);
+                if (bgMatch) {
+                    photoUrl = bgMatch[1];
+                } else {
+                    var imgMatch = block.match(/tgme_widget_message_photo[^>]*src="([^"]+)"/i);
+                    if (imgMatch) {
+                        photoUrl = imgMatch[1];
+                    }
+                }
+
                 if (textHtml && textHtml.indexOf('Channel created') === -1) {
                     messages.push({
                         messageId: messageId,
                         channel: channelId,
-                        textHtml: textHtml
+                        textHtml: textHtml,
+                        photoUrl: photoUrl
                     });
                 }
             }
@@ -351,6 +365,7 @@ var spider = {
                     title: title,
                     channel: msg.channel || channelId,
                     messageId: msg.messageId,
+                    photoUrl: msg.photoUrl || '',
                     links: links
                 });
             }
@@ -389,6 +404,7 @@ var spider = {
                     title: title,
                     channel: msg.channel || channelId,
                     messageId: msg.messageId,
+                    photoUrl: msg.photoUrl || '',
                     links: links
                 });
             }
@@ -424,11 +440,12 @@ var spider = {
 
         // ===================== vod_id 编解码 =====================
 
-        // 编码 vod_id: {title}|||tg|||{channel}_{messageId}|||{encodeURIComponent(JSON.stringify(links))}
+        // 编码 vod_id: {title}|||tg|||{channel}_{messageId}|||{encodeURIComponent(JSON.stringify(links))}|||{encodeURIComponent(photoUrl)}
         function encodeVodId(item) {
             var channelMsgId = (item.channel || '') + '_' + (item.messageId || '');
             var linksJson = JSON.stringify(item.links || []);
-            return item.title + '|||tg|||' + channelMsgId + '|||' + encodeURIComponent(linksJson);
+            var photo = encodeURIComponent(item.photoUrl || '');
+            return item.title + '|||tg|||' + channelMsgId + '|||' + encodeURIComponent(linksJson) + '|||' + photo;
         }
 
         // 解码 vod_id
@@ -438,6 +455,7 @@ var spider = {
             var type = parts[1] || '';
             var channelMsgId = parts[2] || '';
             var linksJson = parts[3] ? decodeURIComponent(parts[3]) : '[]';
+            var photoUrl = parts[4] ? decodeURIComponent(parts[4]) : '';
             var links = [];
             try {
                 links = JSON.parse(linksJson);
@@ -451,7 +469,8 @@ var spider = {
                 type: type,
                 channel: cmParts[0] || '',
                 messageId: cmParts.slice(1).join('_') || '',
-                links: links
+                links: links,
+                photoUrl: photoUrl
             };
         }
 
@@ -484,7 +503,7 @@ var spider = {
                     result.list.push({
                         vod_id: encodeVodId(item),
                         vod_name: item.title,
-                        vod_pic: '',
+                        vod_pic: item.photoUrl || '',
                         vod_remarks: remarks
                     });
                 }
@@ -531,7 +550,7 @@ var spider = {
                     result.list.push({
                         vod_id: encodeVodId(item),
                         vod_name: item.title,
-                        vod_pic: '',
+                        vod_pic: item.photoUrl || '',
                         vod_remarks: remarks
                     });
                 }
@@ -585,7 +604,7 @@ var spider = {
                     result.list.push({
                         vod_id: encodeVodId(item),
                         vod_name: item.title,
-                        vod_pic: '',
+                        vod_pic: item.photoUrl || '',
                         vod_remarks: remarks
                     });
                 }
@@ -616,7 +635,7 @@ var spider = {
                 result.list.push({
                     vod_id: ids,
                     vod_name: decoded.title || '网盘资源',
-                    vod_pic: '',
+                    vod_pic: decoded.photoUrl || '',
                     vod_remarks: '☁️网盘',
                     vod_play_from: 'TG搜索',
                     vod_play_url: JSON.stringify([{ url: '', name: '未找到资源' }])
@@ -624,12 +643,10 @@ var spider = {
                 return result;
             }
 
-            // 按网盘类型分组，每种网盘作为独立线路
-            // App 的 parseAllSources 对 vod_play_url 的处理:
-            //   - 以 [ 开头 → JSON 数组解析（单线路，所有链接作为集数）
-            //   - 否则 → 按 $$$ 分隔为多线路，每线路内按 # 分集，每集 name$url
-            // 使用 $$$ 格式让每种网盘成为独立线路，用户可直观选择
-            var panGroups = {};  // { panName: [url1, url2, ...] }
+            // 所有网盘链接合并到一个 JSON 数组
+            // App 的 resolveCloudPlayFromSpider 要求 vod_play_url 以 [ 开头的 JSON 数组格式
+            // Swift 端会通过 CloudDriveManager.detectDrive 自动按网盘类型分组展示
+            var allLinks = [];
             var panNames = [];
             for (var i = 0; i < decoded.links.length; i++) {
                 var link = decoded.links[i];
@@ -637,39 +654,19 @@ var spider = {
                 if (link.pwd) {
                     url = url + (url.indexOf('?') !== -1 ? '&' : '?') + 'pwd=' + link.pwd;
                 }
-                var panName = link.name || '网盘';
-                if (!panGroups[panName]) {
-                    panGroups[panName] = [];
-                    panNames.push(panName);
+                allLinks.push({ url: url, name: link.name || '网盘' });
+                if (panNames.indexOf(link.name) === -1) {
+                    panNames.push(link.name);
                 }
-                panGroups[panName].push(url);
-            }
-
-            // 构建 vod_play_from 和 vod_play_url
-            // vod_play_from: 阿里云盘$$$百度网盘$$$夸克网盘
-            // vod_play_url:  阿里云盘$https://...$$$百度网盘$https://...$$$夸克网盘$https://...
-            // 同一网盘多个链接时: 阿里云盘$https://...#阿里云盘2$https://...
-            var playFromParts = [];
-            var playUrlParts = [];
-            for (var i = 0; i < panNames.length; i++) {
-                var panName = panNames[i];
-                var urls = panGroups[panName];
-                var eps = [];
-                for (var j = 0; j < urls.length; j++) {
-                    var epName = urls.length > 1 ? (panName + (j + 1)) : panName;
-                    eps.push(epName + '$' + urls[j]);
-                }
-                playFromParts.push(panName);
-                playUrlParts.push(eps.join('#'));
             }
 
             result.list.push({
                 vod_id: ids,
                 vod_name: decoded.title,
-                vod_pic: '',
+                vod_pic: decoded.photoUrl || '',
                 vod_remarks: '☁️' + panNames.join('/'),
-                vod_play_from: playFromParts.join('$$$'),
-                vod_play_url: playUrlParts.join('$$$')
+                vod_play_from: 'TG搜索',
+                vod_play_url: JSON.stringify(allLinks)
             });
 
             print('>>> tgs detailContent SUCCESS: ' + decoded.links.length + ' links');
