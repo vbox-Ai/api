@@ -236,7 +236,7 @@ var spider = {
 
             var seen = {};
 
-            // 匹配所有 <a href="..." ...> 标签
+            // 1. 匹配所有 <a href="..." ...> 标签中的网盘链接
             var linkRegex = /<a\s+[^>]*href="([^"]+)"[^>]*>/gi;
             var match;
             while ((match = linkRegex.exec(textHtml)) !== null) {
@@ -260,7 +260,57 @@ var spider = {
                 });
             }
 
+            // 2. 回退: 从纯文本中提取未被 <a> 标签包裹的网盘链接
+            // 某些频道以纯文本形式发布链接（无 <a> 标签）
+            if (links.length === 0) {
+                var plainText = stripTags(textHtml);
+                // 匹配 http/https 开头的 URL（到空格/中文/行尾为止）
+                var plainUrlRegex = /https?:\/\/[^\s<>"'\u4e00-\u9fff]+/g;
+                var plainMatch;
+                while ((plainMatch = plainUrlRegex.exec(plainText)) !== null) {
+                    var plainUrl = plainMatch[0];
+                    // 去掉末尾可能粘连的标点
+                    plainUrl = plainUrl.replace(/[.,;:!?)）】》"']+$/, '');
+
+                    if (!isCloudDriveUrl(plainUrl)) continue;
+
+                    var pName = inferPanName(plainUrl);
+                    var pPwd = extractPwd(plainUrl);
+                    var pCleanUrl = cleanUrl(plainUrl);
+
+                    if (seen[pCleanUrl]) continue;
+                    seen[pCleanUrl] = true;
+
+                    links.push({
+                        url: pCleanUrl,
+                        name: pName,
+                        pwd: pPwd
+                    });
+                }
+            }
+
             return links;
+        }
+
+        // 检查关键词是否出现在文本中（标题或全文）
+        // 用于过滤 Telegram 搜索返回的不相关结果
+        function isKeywordMatch(keyword, title, textHtml) {
+            if (!keyword) return true;
+            var kw = keyword.toLowerCase().trim();
+            if (!kw) return true;
+
+            // 检查标题
+            if (title && title.toLowerCase().indexOf(kw) !== -1) {
+                return true;
+            }
+
+            // 检查全文纯文本
+            var fullText = stripTags(textHtml || '').toLowerCase();
+            if (fullText.indexOf(kw) !== -1) {
+                return true;
+            }
+
+            return false;
         }
 
         // 解析单个频道搜索结果
@@ -276,22 +326,35 @@ var spider = {
             }
 
             var messages = parseMessageBlocks(html);
-            print('>>> tgs searchChannel: ' + channelId + ' keyword=' + keyword + ' messages=' + messages.length);
+            var matchedCount = 0;
+            var skippedCount = 0;
+            print('>>> tgs searchChannel: ' + channelId + ' keyword=' + keyword + ' rawMessages=' + messages.length);
 
             for (var i = 0; i < messages.length; i++) {
                 var msg = messages[i];
                 var title = extractTitle(msg.textHtml);
                 if (!title) continue;
 
+                // 关键词相关性过滤：标题或全文中必须包含关键词
+                if (!isKeywordMatch(keyword, title, msg.textHtml)) {
+                    skippedCount++;
+                    continue;
+                }
+
                 var links = extractCloudLinks(msg.textHtml);
                 if (links.length === 0) continue;
 
+                matchedCount++;
                 results.push({
                     title: title,
                     channel: msg.channel || channelId,
                     messageId: msg.messageId,
                     links: links
                 });
+            }
+
+            if (skippedCount > 0) {
+                print('>>> tgs searchChannel: ' + channelId + ' filtered ' + skippedCount + ' irrelevant, kept ' + matchedCount);
             }
 
             return results;
