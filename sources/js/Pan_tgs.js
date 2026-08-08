@@ -622,39 +622,31 @@ var spider = {
                 return result;
             }
 
-            // 按网盘类型分组
-            var groups = {};
-            var order = [];
+            // 所有网盘链接合并到一个 JSON 数组
+            // 不按网盘类型分组用 $$$ 分隔，因为 App 的 parseAllSources
+            // 检测到 vod_play_url 以 [ 开头时会尝试整体 JSON 解析，
+            // $$$ 分隔的多个 JSON 数组会导致解析失败
+            var allLinks = [];
+            var panNames = [];
             for (var i = 0; i < decoded.links.length; i++) {
                 var link = decoded.links[i];
-                var panName = link.name || '网盘';
                 var url = link.url;
                 if (link.pwd) {
                     url = url + (url.indexOf('?') !== -1 ? '&' : '?') + 'pwd=' + link.pwd;
                 }
-
-                if (!groups[panName]) {
-                    groups[panName] = [];
-                    order.push(panName);
+                allLinks.push({ url: url, name: link.name || '网盘' });
+                if (panNames.indexOf(link.name) === -1) {
+                    panNames.push(link.name);
                 }
-                groups[panName].push({ url: url, name: panName });
-            }
-
-            // 构建 play_from 和 play_url
-            var playFromParts = [];
-            var playUrlParts = [];
-            for (var j = 0; j < order.length; j++) {
-                playFromParts.push(order[j]);
-                playUrlParts.push(JSON.stringify(groups[order[j]]));
             }
 
             result.list.push({
                 vod_id: ids,
                 vod_name: decoded.title,
                 vod_pic: '',
-                vod_remarks: '☁️' + order.join('/'),
-                vod_play_from: playFromParts.join('$$$'),
-                vod_play_url: playUrlParts.join('$$$')
+                vod_remarks: '☁️' + panNames.join('/'),
+                vod_play_from: 'TG搜索',
+                vod_play_url: JSON.stringify(allLinks)
             });
 
             print('>>> tgs detailContent SUCCESS: ' + decoded.links.length + ' links');
