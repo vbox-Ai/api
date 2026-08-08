@@ -385,8 +385,15 @@ var spider = {
                 }
             },
 
-            searchContent: function(key, pg) {
+            searchContent: function(key, quick, pg) {
                 try {
+                    // 兼容两种调用方式：
+                    // TVBox 标准：searchContent(key, quick, pg)
+                    // 部分 iOS 引擎：searchContent(key, pg)
+                    if (pg === undefined && quick !== undefined) {
+                        pg = quick;
+                    }
+                    var pageNum = Math.max(parseInt(pg) || 1, 1);
                     var searchHeader = mergeHeaders({ 'Content-Type': 'application/json' });
                     var body = {
                         version: '25021101',
@@ -395,7 +402,7 @@ var spider = {
                         uuid: uuid(),
                         retry: 0,
                         query: key,
-                        pagenum: parseInt(pg) - 1,
+                        pagenum: pageNum - 1,
                         pagesize: 30,
                         queryFrom: 0,
                         searchDatakey: '',
@@ -407,7 +414,7 @@ var spider = {
                     };
                     var url = API_HOST + '/trpc.videosearch.mobile_search.MultiTerminalSearch/MbSearch?vplatform=2';
                     var data = postJson(url, body, searchHeader);
-                    if (!data || !data.data) return { list: [], page: pg };
+                    if (!data || !data.data) return { list: [], page: pageNum };
 
                     var vlist = [];
                     var seen = {};
@@ -432,7 +439,7 @@ var spider = {
                     }
 
                     // 来源1: normalList（实际搜索结果），只取正片 viewType=25
-                    var nl = data.data.normalList.itemList || [];
+                    var nl = (data.data.normalList && data.data.normalList.itemList) || [];
                     for (var i = 0; i < nl.length; i++) {
                         var nk = nl[i];
                         if (!nk.doc || !nk.videoInfo) continue;
@@ -463,10 +470,10 @@ var spider = {
                         }
                     }
 
-                    return { list: vlist, page: pg };
+                    return { list: vlist, page: pageNum };
                 } catch(e) {
                     print('>>> tx searchContent ERROR: ' + e);
-                    return { list: [], page: pg };
+                    return { list: [], page: 1 };
                 }
             },
 
