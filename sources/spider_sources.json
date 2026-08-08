@@ -213,7 +213,18 @@
       "changeable": 1,
       "ext": "",
       "timeout": 20
+    },
+    {
+      "key": "js_TG搜索",
+      "name": "网盘 | TG搜索[js]",
+      "type": 3,
+      "api": "./js/Pan_tgs.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "ext": "",
+      "timeout": 25
     }
   ],
-  "siteCount": 19
+  "siteCount": 20
 }
