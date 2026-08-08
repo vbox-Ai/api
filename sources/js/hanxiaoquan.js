@@ -19,6 +19,17 @@ function urlEncode(str) {
     return encodeURIComponent(str);
 }
 
+function htmlDecode(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&nbsp;/g, ' ');
+}
+
 // ===================== 蜘蛛主体 =====================
 
 var spider = {
@@ -46,7 +57,7 @@ var spider = {
                 var resp = req(url, { method: 'GET', headers: HEADERS });
                 if (!resp) { print('>>> hxq fetch null: ' + url); return ''; }
                 var status = resp.status || resp.code || 0;
-                var content = resp.content || resp.data || '';
+                var content = (typeof resp === 'string') ? resp : (resp.content || resp.data || '');
                 if (typeof content === 'object') content = JSON.stringify(content);
                 print('>>> hxq fetch done: ' + url + ' status=' + status + ' len=' + content.length);
                 return content;
@@ -123,8 +134,44 @@ var spider = {
         function getPlayHeaders() {
             return {
                 'Referer': HOST + '/',
+                'Origin': HOST,
                 'User-Agent': UA
             };
+        }
+
+        function normalizeDetailId(ids) {
+            var raw = '';
+            if (typeof ids === 'string') {
+                raw = ids.split(',')[0].trim();
+            } else if (Array.isArray(ids) && ids.length > 0) {
+                raw = String(ids[0]).trim();
+            }
+            raw = htmlDecode(raw);
+            if (!raw) return '';
+            if (raw.indexOf('$') >= 0) {
+                var parts = raw.split('$');
+                raw = parts[parts.length - 1].trim();
+            }
+            if (raw.indexOf('http') === 0) return raw;
+            if (raw.indexOf('/hanxiaoquan/') >= 0) return raw;
+            var m = raw.match(/(\d+)/);
+            if (m && m[1]) return '/hanxiaoquan/' + m[1] + '.html';
+            return raw;
+        }
+
+        function normalizePlayInput(flag, id, vipFlags) {
+            var candidates = [vipFlags, id, flag];
+            for (var i = 0; i < candidates.length; i++) {
+                var v = candidates[i];
+                if (v === undefined || v === null || v === '') continue;
+                v = htmlDecode(String(v).trim());
+                if (v.indexOf('$') >= 0) {
+                    var parts = v.split('$');
+                    v = parts[parts.length - 1].trim();
+                }
+                if (v.indexOf('/play/') >= 0 || v.indexOf('http') === 0) return v;
+            }
+            return '';
         }
 
         return {
@@ -183,13 +230,9 @@ var spider = {
             detailContent: function(ids) {
                 var result = { list: [] };
 
-                // vbox 传入的是字符串 vod_id
-                var vid;
-                if (typeof ids === 'string') {
-                    vid = ids.split(',')[0].split('/')[0].trim();
-                } else if (Array.isArray(ids) && ids.length > 0) {
-                    vid = String(ids[0]).trim();
-                } else {
+                // vbox 可能传字符串、数组、完整 URL 或相对 URL，统一归一化
+                var vid = normalizeDetailId(ids);
+                if (!vid) {
                     print('>>> hxq detailContent invalid ids: ' + JSON.stringify(ids));
                     return result;
                 }
@@ -272,7 +315,7 @@ var spider = {
                 var play_url = [];
 
                 // 匹配 nav-tabs 中的线路名（<li><a href="#playlist2" data-toggle="tab"><i class="icon-play"></i>&nbsp;云播资源</a> <small>(12)</small></li>）
-                var tabPattern = /<li[^>]*>\s*<a[^>]*href="#(playlist\d+)"[^>]*><i[^>]*><\/i>&nbsp;([^<]+)<\/a>\s*<small>\(\d+\)<\/small>\s*<\/li>/gi;
+                var tabPattern = /<li[^>]*>\s*<a[^>]*href="#(playlist\d+)"[^>]*><i[^>]*><\/i>(?:&nbsp;|\s)*([^<]+)<\/a>\s*<small>\(\d+\)<\/small>\s*<\/li>/gi;
                 var tabMap = {}; // playlistId -> name
                 var tm;
                 while ((tm = tabPattern.exec(html)) !== null) {
@@ -307,13 +350,13 @@ var spider = {
 
                     var episodes = [];
                     // 提取每集：<li id="10"><a title="第01集" href="/play/4337-1-0.html" target="_self" class="btn btn-warm">第01集</a></li>
-                    var epPattern = /<a[^>]*title="([^"]*)"[^>]*href="(\/play\/[^"]*)"[^>]*>/gi;
+                    var epPattern = /<a[^>]*(?:title="([^"]*)"[^>]*href="([^"]*\/play\/[^"]*)"|href="([^"]*\/play\/[^"]*)"[^>]*title="([^"]*)")[^>]*>([\s\S]*?)<\/a>/gi;
                     var em;
                     while ((em = epPattern.exec(paneContent)) !== null) {
-                        var epName = em[1].trim();
-                        var epHref = em[2];
+                        var epName = (em[1] || em[4] || em[5] || '').replace(/<[^>]+>/g, '').trim();
+                        var epHref = em[2] || em[3] || '';
                         if (epHref && epName) {
-                            episodes.push(epName + '$' + epHref);
+                            episodes.push(htmlDecode(epName) + '$' + htmlDecode(epHref));
                         }
                     }
 
@@ -354,17 +397,7 @@ var spider = {
                 print('>>> hxq playerContent raw args: flag=' + flag + ' id=' + id + ' vipFlags=' + vipFlags);
 
                 // 实际播放页 URL：优先取 vipFlags，其次 id，最后 flag
-                var playUrl = vipFlags;
-                if ((playUrl === undefined || playUrl === null || playUrl === '') && id) {
-                    playUrl = id;
-                }
-                if (!playUrl || playUrl.indexOf('/play/') < 0) {
-                    if (flag && flag.indexOf('/play/') >= 0) {
-                        playUrl = flag;
-                    } else if (id && id.indexOf('/play/') >= 0) {
-                        playUrl = id;
-                    }
-                }
+                var playUrl = normalizePlayInput(flag, id, vipFlags);
 
                 print('>>> hxq playerContent playUrl=' + playUrl);
 
@@ -386,9 +419,17 @@ var spider = {
                 // 提取 m3u8: var now="https://cdn.xxx/index.m3u8";
                 var m3u8Match = html.match(/var\s+now\s*=\s*["']([^"']+)["']/);
                 if (m3u8Match) {
-                    var m3u8Url = m3u8Match[1];
+                    var m3u8Url = htmlDecode(m3u8Match[1]);
                     print('>>> hxq playerContent m3u8=' + m3u8Url);
                     return { parse: 0, url: m3u8Url, header: getPlayHeaders() };
+                }
+
+                // 备用：脚本变量里可能改名为 url/now/newurl 等，只要是 m3u8 即可
+                var scriptM3u8 = html.match(/var\s+[a-zA-Z0-9_]+\s*=\s*["'](https?:\/\/[^"']+?\.m3u8[^"']*)["']/);
+                if (scriptM3u8) {
+                    var scriptUrl = htmlDecode(scriptM3u8[1]);
+                    print('>>> hxq playerContent script m3u8=' + scriptUrl);
+                    return { parse: 0, url: scriptUrl, header: getPlayHeaders() };
                 }
 
                 // 备用：player_aaaa 配置
@@ -397,8 +438,9 @@ var spider = {
                     try {
                         var config = JSON.parse(playerMatch[1]);
                         if (config.url) {
-                            print('>>> hxq playerContent player_aaaa.url=' + config.url);
-                            return { parse: 0, url: config.url, header: getPlayHeaders() };
+                            var cfgUrl = htmlDecode(config.url);
+                            print('>>> hxq playerContent player_aaaa.url=' + cfgUrl);
+                            return { parse: cfgUrl.indexOf('.m3u8') >= 0 ? 0 : 1, url: cfgUrl, header: getPlayHeaders() };
                         }
                     } catch(e) {
                         print('>>> hxq playerContent player_aaaa parse error: ' + e);
@@ -408,8 +450,9 @@ var spider = {
                 // 兜底：直接搜索 m3u8 链接
                 var fallbackM3u8 = html.match(/https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*/);
                 if (fallbackM3u8) {
-                    print('>>> hxq playerContent fallback m3u8=' + fallbackM3u8[0]);
-                    return { parse: 0, url: fallbackM3u8[0], header: getPlayHeaders() };
+                    var fallbackUrl = htmlDecode(fallbackM3u8[0]);
+                    print('>>> hxq playerContent fallback m3u8=' + fallbackUrl);
+                    return { parse: 0, url: fallbackUrl, header: getPlayHeaders() };
                 }
 
                 print('>>> hxq playerContent no m3u8 found');

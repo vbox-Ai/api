@@ -373,17 +373,6 @@
   "spiderSources": {
     "sites": [
       {
-        "key": "drpy_js_瓜子",
-        "name": "影视 | 瓜子[js]",
-        "type": 3,
-        "api": "./js/guazi.js",
-        "searchable": 1,
-        "quickSearch": 1,
-        "changeable": 1,
-        "ext": "",
-        "timeout": 30
-      },
-      {
         "key": "js_腾讯视频",
         "name": "官源 | 腾讯视频[js]",
         "type": 3,
@@ -410,28 +399,6 @@
         "name": "影视 | 韩小圈[js]",
         "type": 3,
         "api": "./js/hanxiaoquan.js",
-        "searchable": 1,
-        "quickSearch": 1,
-        "changeable": 1,
-        "ext": "",
-        "timeout": 30
-      },
-      {
-        "key": "js_星空4K",
-        "name": "影视 | 星空4K[js]",
-        "type": 3,
-        "api": "./js/xk4k.js",
-        "searchable": 1,
-        "quickSearch": 1,
-        "changeable": 1,
-        "ext": "",
-        "timeout": 30
-      },
-      {
-        "key": "js_人人视频",
-        "name": "影视 | 人人视频[js]",
-        "type": 3,
-        "api": "./js/renren_video.js",
         "searchable": 1,
         "quickSearch": 1,
         "changeable": 1,
@@ -591,6 +558,39 @@
         "changeable": 1,
         "ext": "",
         "timeout": 25
+      },
+      {
+        "key": "js_爱奇艺",
+        "name": "官源 | 爱奇艺[js]",
+        "type": 3,
+        "api": "./js/iqiyi.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "js_优酷",
+        "name": "官源 | 优酷[js]",
+        "type": 3,
+        "api": "./js/youku.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "js_芒果TV",
+        "name": "官源 | 芒果TV[js]",
+        "type": 3,
+        "api": "./js/mgtv.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
       }
     ],
     "siteCount": 20
