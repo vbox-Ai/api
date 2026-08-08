@@ -162,10 +162,10 @@ var spider = {
         // 清理 URL（去掉密码参数，因为密码单独存储）
         function cleanUrl(url) {
             if (!url) return url;
+            // 保留前缀 ? 或 &，避免删除 pwd 后 URL 结构破坏
             return url.replace(/([?&])(?:pwd|password)=[^&]*/g, function(match, prefix) {
-                // 如果是 ?pwd=xxx 且后面有其他参数，需要把 & 改为 ?
-                return '';
-            }).replace(/[?&]$/, '').replace(/\?&/, '?').replace(/&&/g, '&');
+                return prefix; // 保留 ? 或 &，后续清理会处理多余的
+            }).replace(/[?&]$/, '').replace(/\?&/g, '?').replace(/&&/g, '&');
         }
 
         // ===================== HTML 解析 =====================
@@ -216,11 +216,11 @@ var spider = {
             // 取第一个 <br/> 之前的内容作为标题行
             var firstLine = textHtml.split(/<br\s*\/?>/i)[0] || textHtml;
 
-            // 去掉 "名称：" 前缀
-            firstLine = firstLine.replace(/^[\s]*名称[：:]\s*/i, '');
-
-            // 去掉 HTML 标签（包括 <mark> 高亮标签）
+            // 先去掉 HTML 标签（包括 <b>、<mark> 高亮标签等）
             var title = stripTags(firstLine);
+
+            // 去掉 "名称：" 前缀（stripTags 后才能正确匹配）
+            title = title.replace(/^[\s]*名称[：:]\s*/i, '');
 
             // 清理多余空格
             title = title.replace(/\s+/g, ' ').trim();
