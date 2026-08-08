@@ -23,6 +23,12 @@ concurrency:
 jobs:
   bump:
     runs-on: ubuntu-latest
+    env:
+      SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+      SMTP_PORT: ${{ secrets.SMTP_PORT }}
+      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      MAIL_TO: ${{ secrets.MAIL_TO }}
     # 跳过本工作流自身触发的推送，避免循环
     if: "${{ github.actor != 'github-actions[bot]' || !contains(github.event.head_commit.message, 'chore: bump config version') }}"
     steps:
@@ -112,3 +118,23 @@ jobs:
             echo "Push failed on attempt $i, retrying in 10s..."
             sleep 10
           done
+
+      - name: Send email notification
+        if: always() && !cancelled()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ env.SMTP_SERVER }}
+          server_port: ${{ env.SMTP_PORT }}
+          username: ${{ env.SMTP_USERNAME }}
+          password: ${{ env.SMTP_PASSWORD }}
+          subject: ${{ job.status == 'success' && '✅' || '❌' }} vbox 远程源版本更新 - ${{ env.NEW_VERSION }}
+          to: ${{ env.MAIL_TO }}
+          from: ${{ env.SMTP_USERNAME }}
+          body: |
+            远程源配置版本更新${{ job.status == 'success' && '成功' || '失败' }}
+
+            版本号: ${{ env.NEW_VERSION }}
+            触发分支: ${{ github.ref_name }}
+            提交信息: ${{ github.event.head_commit.message }}
+            构建状态: ${{ job.status }}
+            工作流: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

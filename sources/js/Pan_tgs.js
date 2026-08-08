@@ -13,7 +13,9 @@
  *
  * 网盘蜘蛛源约定：
  *   - vod_remarks 以 "☁️" 开头 → 标识为网盘资源，激活网盘UI
- *   - detailContent 的 vod_play_url 返回 JSON 数组 [{"url":"网盘链接","name":"网盘名"}]
+ *   - detailContent 按网盘类型分线路，使用 $$$ 格式:
+ *       vod_play_from: 阿里云盘$$$百度网盘$$$夸克网盘
+ *       vod_play_url:  阿里云盘$https://...$$$百度网盘$https://...$$$夸克网盘$https://...
  *   - vod_id 编码格式:
  *     搜索/浏览结果: {title}|||tg|||{channel}_{messageId}|||{encodeURIComponent(JSON.stringify(links))}
  *     links 格式: [{"url":"网盘链接","name":"网盘名","pwd":"提取码"}, ...]
@@ -622,11 +624,12 @@ var spider = {
                 return result;
             }
 
-            // 所有网盘链接合并到一个 JSON 数组
-            // 不按网盘类型分组用 $$$ 分隔，因为 App 的 parseAllSources
-            // 检测到 vod_play_url 以 [ 开头时会尝试整体 JSON 解析，
-            // $$$ 分隔的多个 JSON 数组会导致解析失败
-            var allLinks = [];
+            // 按网盘类型分组，每种网盘作为独立线路
+            // App 的 parseAllSources 对 vod_play_url 的处理:
+            //   - 以 [ 开头 → JSON 数组解析（单线路，所有链接作为集数）
+            //   - 否则 → 按 $$$ 分隔为多线路，每线路内按 # 分集，每集 name$url
+            // 使用 $$$ 格式让每种网盘成为独立线路，用户可直观选择
+            var panGroups = {};  // { panName: [url1, url2, ...] }
             var panNames = [];
             for (var i = 0; i < decoded.links.length; i++) {
                 var link = decoded.links[i];
@@ -634,10 +637,30 @@ var spider = {
                 if (link.pwd) {
                     url = url + (url.indexOf('?') !== -1 ? '&' : '?') + 'pwd=' + link.pwd;
                 }
-                allLinks.push({ url: url, name: link.name || '网盘' });
-                if (panNames.indexOf(link.name) === -1) {
-                    panNames.push(link.name);
+                var panName = link.name || '网盘';
+                if (!panGroups[panName]) {
+                    panGroups[panName] = [];
+                    panNames.push(panName);
                 }
+                panGroups[panName].push(url);
+            }
+
+            // 构建 vod_play_from 和 vod_play_url
+            // vod_play_from: 阿里云盘$$$百度网盘$$$夸克网盘
+            // vod_play_url:  阿里云盘$https://...$$$百度网盘$https://...$$$夸克网盘$https://...
+            // 同一网盘多个链接时: 阿里云盘$https://...#阿里云盘2$https://...
+            var playFromParts = [];
+            var playUrlParts = [];
+            for (var i = 0; i < panNames.length; i++) {
+                var panName = panNames[i];
+                var urls = panGroups[panName];
+                var eps = [];
+                for (var j = 0; j < urls.length; j++) {
+                    var epName = urls.length > 1 ? (panName + (j + 1)) : panName;
+                    eps.push(epName + '$' + urls[j]);
+                }
+                playFromParts.push(panName);
+                playUrlParts.push(eps.join('#'));
             }
 
             result.list.push({
@@ -645,8 +668,8 @@ var spider = {
                 vod_name: decoded.title,
                 vod_pic: '',
                 vod_remarks: '☁️' + panNames.join('/'),
-                vod_play_from: 'TG搜索',
-                vod_play_url: JSON.stringify(allLinks)
+                vod_play_from: playFromParts.join('$$$'),
+                vod_play_url: playUrlParts.join('$$$')
             });
 
             print('>>> tgs detailContent SUCCESS: ' + decoded.links.length + ' links');

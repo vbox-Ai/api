@@ -12,6 +12,12 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    env:
+      SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+      SMTP_PORT: ${{ secrets.SMTP_PORT }}
+      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      MAIL_TO: ${{ secrets.MAIL_TO }}
 
     steps:
       - name: Checkout
@@ -42,3 +48,20 @@ jobs:
           git commit -m "chore: auto update cloud URLs & LIBVIO domains ($(date -u +%Y-%m-%d))" || echo "No changes to commit"
           git pull --rebase origin main || true
           git push
+
+      - name: Send email notification
+        if: always() && !cancelled()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ env.SMTP_SERVER }}
+          server_port: ${{ env.SMTP_PORT }}
+          username: ${{ env.SMTP_USERNAME }}
+          password: ${{ env.SMTP_PASSWORD }}
+          subject: ${{ job.status == 'success' && '✅' || '❌' }} vbox 云盘域名自动更新
+          to: ${{ env.MAIL_TO }}
+          from: ${{ env.SMTP_USERNAME }}
+          body: |
+            云盘域名自动更新${{ job.status == 'success' && '成功' || '失败' }}
+
+            构建状态: ${{ job.status }}
+            工作流: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
