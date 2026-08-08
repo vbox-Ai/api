@@ -138,6 +138,7 @@ var spider = {
             if (!url) return '';
             url = String(url);
             if (url.indexOf('//') === 0) return 'https:' + url;
+            if (url.indexOf('http://') === 0) return 'https://' + url.substring(7);
             return url;
         }
 
@@ -150,7 +151,29 @@ var spider = {
             }
             if (url.indexOf('//') === 0) return 'https:' + url;
             if (url.indexOf('http') === 0) return url;
-            return IHOST + '/video?vid=' + encode(url);
+            return IHOST + '/v_show/id_' + String(url).trim() + '.html';
+        }
+
+        function normalizeIds(ids) {
+            if (!ids) return '';
+            var raw = '';
+            if (typeof ids === 'string') raw = ids.split(',')[0];
+            else if (ids.length) raw = String(ids[0]);
+            raw = String(raw || '').trim();
+            if (raw.indexOf('$') >= 0) {
+                var parts = raw.split('$');
+                raw = parts[parts.length - 1];
+            }
+            var m = raw.match(/[?&]s=([^&]+)/);
+            if (m && m[1]) return m[1];
+            m = raw.match(/\/id_([^./?]+)\.html/);
+            if (m && m[1]) return m[1];
+            return raw.trim();
+        }
+
+        function cleanTitle(title, fallback) {
+            title = String(title || fallback || '播放').replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim();
+            return title.replace(/\$/g, ' ');
         }
 
         function isVideoFormat(url) {
@@ -208,7 +231,7 @@ var spider = {
             });
             var filterData = data && data.data ? data.data.filterData : null;
             if (!filterData) return withFilter ? { session: '', filters: [] } : '';
-            var session = encode(JSON.stringify(filterData.session || {}));
+            var session = JSON.stringify(filterData.session || {});
             if (withFilter) {
                 var filters = filterData.filter && filterData.filter.filterData ? filterData.filter.filterData.slice(1) : [];
                 return { session: session, filters: getFilterData(filters) };
@@ -371,11 +394,16 @@ var spider = {
             var vlist = [];
             var pagecount = page;
             try {
-                var data = fetchJson(HOST + '/category/data', {
-                    session: session,
+                var query = {
                     params: JSON.stringify(params),
                     pageNo: String(page)
-                });
+                };
+                if (page === 1) {
+                    query.optionRefresh = '1';
+                } else if (session) {
+                    query.session = session;
+                }
+                var data = fetchJson(HOST + '/category/data', query);
                 var fdata = data && data.data ? data.data.filterData : null;
                 var listData = fdata ? (fdata.listData || []) : [];
                 for (var i = 0; i < listData.length; i++) {
@@ -394,7 +422,7 @@ var spider = {
                         vod_remarks: item.summary || ''
                     });
                 }
-                if (fdata && fdata.session) typeSession[tid] = encode(JSON.stringify(fdata.session));
+                if (fdata && fdata.session) typeSession[tid] = JSON.stringify(fdata.session);
                 pagecount = vlist.length ? page + 1 : page;
             } catch (e) {
                 print('>>> youku categoryContent ERROR: ' + e);
@@ -405,7 +433,7 @@ var spider = {
         function detailContent(ids) {
             var result = { list: [] };
             try {
-                var showId = ids && ids.length ? String(ids[0]) : '';
+                var showId = normalizeIds(ids);
                 if (!showId) return result;
                 var data = fetchJson(IHOST + '/v_getvideo_info/', { showId: showId });
                 var v = data && data.data ? data.data : {};
@@ -470,9 +498,9 @@ var spider = {
                     for (var i = 0; i < pdata.length; i++) {
                         var ep = pdata[i] || {};
                         var epData = ep.data || {};
-                        var title = epData.title || ('第' + (i + 1) + '集');
+                        var title = cleanTitle(epData.title, '第' + (i + 1) + '集');
                         var value = epData.action ? epData.action.value : '';
-                        if (value) playUrls.push(title + '$' + value);
+                        if (value) playUrls.push(title + '$' + normalizePlayUrl(value));
                     }
                 }
 

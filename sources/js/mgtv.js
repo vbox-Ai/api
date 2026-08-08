@@ -94,6 +94,26 @@ var spider = {
             return RHOST + '/' + url;
         }
 
+        function normalizeIds(ids) {
+            if (!ids) return '';
+            var raw = '';
+            if (typeof ids === 'string') raw = ids.split(',')[0];
+            else if (ids.length) raw = String(ids[0]);
+            raw = String(raw || '').trim();
+            if (raw.indexOf('$') >= 0) {
+                var parts = raw.split('$');
+                raw = parts[parts.length - 1];
+            }
+            var m = raw.match(/\/(\d+)\.html/);
+            if (m && m[1]) return m[1];
+            return raw.trim();
+        }
+
+        function cleanTitle(title, fallback) {
+            title = String(title || fallback || '播放').replace(/\\[rnt]/g, ' ').replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim();
+            return title.replace(/\$/g, ' ');
+        }
+
         function isVideoFormat(url) {
             if (!url || String(url).indexOf('http') !== 0) return false;
             var lower = String(url).toLowerCase();
@@ -253,7 +273,7 @@ var spider = {
         function detailContent(ids) {
             var result = { list: [] };
             try {
-                var id = ids && ids.length ? String(ids[0]) : '';
+                var id = normalizeIds(ids);
                 if (!id) return result;
                 var vdata = fetchJson(VHOST + '/video/info', {
                     allowedRC: '1',
@@ -288,7 +308,7 @@ var spider = {
                 }
                 for (var i = 0; i < all.length; i++) {
                     var ep = all[i] || {};
-                    var title = ep.t3 || ep.title || ('第' + (i + 1) + '集');
+                    var title = cleanTitle(ep.t3 || ep.title, '第' + (i + 1) + '集');
                     var url = normalizePlayUrl(ep.url || '');
                     if (url) playUrls.push(title + '$' + url);
                 }

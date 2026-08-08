@@ -174,6 +174,15 @@ var spider = {
             return '';
         }
 
+        function normalizeEpisodeUrl(url) {
+            url = htmlDecode(String(url || '').trim());
+            if (!url) return '';
+            if (url.indexOf('http') === 0) return url;
+            if (url.indexOf('//') === 0) return 'https:' + url;
+            if (url.charAt(0) === '/') return HOST + url;
+            return HOST + '/' + url;
+        }
+
         return {
             init: function(config) { return true; },
 
@@ -356,7 +365,7 @@ var spider = {
                         var epName = (em[1] || em[4] || em[5] || '').replace(/<[^>]+>/g, '').trim();
                         var epHref = em[2] || em[3] || '';
                         if (epHref && epName) {
-                            episodes.push(htmlDecode(epName) + '$' + htmlDecode(epHref));
+                            episodes.push(htmlDecode(epName).replace(/\$/g, ' ') + '$' + normalizeEpisodeUrl(epHref));
                         }
                     }
 

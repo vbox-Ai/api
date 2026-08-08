@@ -110,8 +110,30 @@ var spider = {
         function normalizePlayUrl(url) {
             if (!url) return '';
             return String(url)
-                .replace('http://www.iqiyi.com/', 'https://m.iqiyi.com/')
-                .replace('https://www.iqiyi.com/', 'https://m.iqiyi.com/');
+                .replace('http://m.iqiyi.com/', 'https://www.iqiyi.com/')
+                .replace('https://m.iqiyi.com/', 'https://www.iqiyi.com/')
+                .replace('http://www.iqiyi.com/', 'https://www.iqiyi.com/');
+        }
+
+        function normalizePic(url) {
+            if (!url) return '';
+            url = String(url);
+            if (url.indexOf('//') === 0) return 'https:' + url;
+            if (url.indexOf('http://') === 0) return 'https://' + url.substring(7);
+            return url;
+        }
+
+        function normalizeIds(ids) {
+            if (!ids) return '';
+            var raw = '';
+            if (typeof ids === 'string') raw = ids.split(',')[0];
+            else if (ids.length) raw = String(ids[0]);
+            raw = String(raw || '').trim();
+            if (raw.indexOf('$') >= 0) {
+                var parts = raw.split('$');
+                raw = parts[parts.length - 1];
+            }
+            return raw.trim();
         }
 
         function isVideoFormat(url) {
@@ -129,7 +151,7 @@ var spider = {
             return {
                 vod_id: String(item.albumId || item.qipuId || ''),
                 vod_name: item.name || item.title || '',
-                vod_pic: item.imageUrl || item.albumImageUrl || '',
+                vod_pic: normalizePic(item.imageUrl || item.albumImageUrl || ''),
                 vod_remarks: item.focus || (item.latestOrder ? ('更新至' + item.latestOrder + '集') : ''),
                 vod_year: item.period ? String(item.period).substring(0, 4) : '',
                 vod_area: item.categories && item.categories.join ? item.categories.join(',') : ''
@@ -226,7 +248,7 @@ var spider = {
         function detailContent(ids) {
             var result = { list: [] };
             try {
-                var videoId = ids && ids.length ? String(ids[0]) : '';
+                var videoId = normalizeIds(ids);
                 if (!videoId) return result;
                 var albumId = videoId.indexOf('_') >= 0 ? videoId.split('_')[0] : videoId;
                 var episodes = [];
@@ -335,7 +357,7 @@ var spider = {
                     videos.push({
                         vod_id: albumId,
                         vod_name: title,
-                        vod_pic: album.albumVImage || album.albumImg || '',
+                    vod_pic: normalizePic(album.albumVImage || album.albumImg || ''),
                         vod_remarks: album.tvFocus || (album.itemTotalNumber ? (album.itemTotalNumber + '集') : '')
                     });
                 }
