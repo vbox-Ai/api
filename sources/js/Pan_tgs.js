@@ -1,10 +1,15 @@
 /*
- * TG搜索 JS 蜘蛛 v1.0
+ * TG搜索 JS 蜘蛛 v1.1
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * 目标站: Telegram 频道 Web 预览页 (t.me/s/{channel})
- * 特点: 多频道并行搜索，通过 vbox.ltd 代理访问，自动提取网盘直链
+ * 特点: 多频道并行搜索，通过代理访问，自动提取网盘直链
  * 支持网盘：夸克网盘、百度网盘、阿里云盘、UC网盘、115网盘、123云盘、天翼云盘、迅雷云盘、BT磁力
  * 无需登录，无需 Telegram 客户端
+ *
+ * 配置注入: vbox App 在加载本脚本前注入全局变量 __TG_CONFIG__
+ *   - __TG_CONFIG__.proxyUrl: 代理地址 (如 "https://xxx.com/?token=xxx&url=")
+ *   - __TG_CONFIG__.channelMode: 频道来源 ("default" | "custom" | "all")
+ *   - __TG_CONFIG__.channels: 自定义频道列表 [{name, id}]
  *
  * 网盘蜘蛛源约定：
  *   - vod_remarks 以 "☁️" 开头 → 标识为网盘资源，激活网盘UI
@@ -12,20 +17,12 @@
  *   - vod_id 编码格式:
  *     搜索/浏览结果: {title}|||tg|||{channel}_{messageId}|||{encodeURIComponent(JSON.stringify(links))}
  *     links 格式: [{"url":"网盘链接","name":"网盘名","pwd":"提取码"}, ...]
- *
- * 频道配置（通过 ext 字段）:
- *   - 留空: 使用默认频道
- *   - "ch1,ch2,ch3": 逗号分隔的频道名
- *   - "名称1@ch1&名称2@ch2": 名称@频道 格式（&分隔）
  */
 
 var spider = {
     __jsEvalReturn: function() {
 
-        // 代理地址（vbox.ltd URL 转发代理）
-        var PROXY_URL = 'https://vbox.ltd/?token=199114&url=';
-
-        // 默认频道列表
+        // 默认频道列表（远程仓库内置）
         var DEFAULT_CHANNELS = [
             { name: 'UC夸克资源', id: 'ucquark' },
             { name: '夸克分享', id: 'quarkshare' },
@@ -33,8 +30,40 @@ var spider = {
             { name: '豆儿盘', id: 'douerpan' }
         ];
 
-        // 运行时频道列表（可被 init 覆盖）
-        var CHANNELS = DEFAULT_CHANNELS.slice();
+        // 读取 App 注入的配置
+        var PROXY_URL = '';
+        var CHANNELS = [];
+        var configInjected = typeof __TG_CONFIG__ !== 'undefined';
+
+        if (configInjected) {
+            PROXY_URL = __TG_CONFIG__.proxyUrl || '';
+            var mode = __TG_CONFIG__.channelMode || 'default';
+            var customChannels = (__TG_CONFIG__.channels || []).map(function(c) {
+                return { name: c.name || c.id, id: c.id };
+            });
+
+            if (mode === 'custom') {
+                // 仅自定义频道
+                CHANNELS = customChannels;
+            } else if (mode === 'all') {
+                // 全部合并（默认 + 自定义），去重
+                CHANNELS = DEFAULT_CHANNELS.slice();
+                var seenIds = {};
+                DEFAULT_CHANNELS.forEach(function(c) { seenIds[c.id] = true; });
+                customChannels.forEach(function(c) {
+                    if (!seenIds[c.id]) {
+                        CHANNELS.push(c);
+                        seenIds[c.id] = true;
+                    }
+                });
+            } else {
+                // default: 仅远程默认频道
+                CHANNELS = DEFAULT_CHANNELS.slice();
+            }
+        } else {
+            // App 未注入配置（兼容模式：其他客户端加载时）
+            CHANNELS = DEFAULT_CHANNELS.slice();
+        }
 
         var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36';
         var HEADER = {
@@ -44,6 +73,11 @@ var spider = {
         // ===================== 工具函数 =====================
 
         function fetch(url, headers) {
+            // 无代理地址时直接返回空
+            if (!PROXY_URL) {
+                print('>>> tgs fetch: 未配置代理地址，跳过请求');
+                return '';
+            }
             try {
                 var resp = req(url, { headers: headers || HEADER, timeout: 15000 });
                 if (resp && resp.ok) {
@@ -72,7 +106,17 @@ var spider = {
 
         // 构建代理 URL
         function buildProxyUrl(targetUrl) {
-            return PROXY_URL + encodeURIComponent(targetUrl);
+            if (!PROXY_URL) return '';
+            // 代理地址末尾已有 = 号，直接拼接编码后的 URL
+            if (PROXY_URL.endsWith('=') || PROXY_URL.endsWith('&') || PROXY_URL.endsWith('?')) {
+                return PROXY_URL + encodeURIComponent(targetUrl);
+            }
+            // 代理地址已有 ? 参数，追加 &url=
+            if (PROXY_URL.indexOf('?') !== -1) {
+                return PROXY_URL + '&url=' + encodeURIComponent(targetUrl);
+            }
+            // 代理地址无参数，追加 ?url=
+            return PROXY_URL + '?url=' + encodeURIComponent(targetUrl);
         }
 
         // 构建 Telegram 频道搜索 URL
@@ -589,9 +633,16 @@ var spider = {
         // ===================== 初始化 =====================
 
         function init(config) {
-            print('>>> tgs init: TG搜索 JS蜘蛛 v1.0');
+            print('>>> tgs init: TG搜索 JS蜘蛛 v1.1');
 
-            // 尝试从 config.ext 解析自定义频道列表
+            // 如果 __TG_CONFIG__ 已注入，配置已在 __jsEvalReturn 时完成，不再覆盖
+            if (configInjected) {
+                print('>>> tgs init: __TG_CONFIG__ 已注入，频道数=' + CHANNELS.length + ' 代理=' + (PROXY_URL ? '已配置' : '未配置'));
+                print('>>> tgs init: 频道列表: ' + CHANNELS.map(function(c) { return c.id; }).join(', '));
+                return true;
+            }
+
+            // 兼容模式: App 未注入 __TG_CONFIG__，尝试从 config.ext 解析自定义频道列表
             try {
                 var ext = '';
                 if (config && typeof config === 'object') {
@@ -637,7 +688,7 @@ var spider = {
 
                     if (customChannels.length > 0) {
                         CHANNELS = customChannels;
-                        print('>>> tgs init: 自定义频道 ' + CHANNELS.length + ' 个');
+                        print('>>> tgs init: 兼容模式自定义频道 ' + CHANNELS.length + ' 个');
                     }
                 }
             } catch (e) {
