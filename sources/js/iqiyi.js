@@ -148,13 +148,34 @@ var spider = {
 
         function parseVideoItem(item) {
             item = item || {};
+            var picUrl = firstValid(item, [
+                'imageUrl', 'albumImageUrl', 'img', 'vImg', 'cover', 'poster',
+                'verticalPicUrl', 'vPic', 'picUrl', 'image', 'coverUrl',
+                'albumImg', 'albumVImage', 'horizontalPicUrl', 'hPic',
+                'screenShot', 'screenShotUrl', 'posterUrl', 'thumb',
+                'thumbnail', 'coverVertical', 'posterVertical', 'bigPic',
+                'spic', 'bpic', 'lpic', 'vpic', 'cover_path', 'imgUrl'
+            ]);
+            // 如果有spic/bpic/lpic等爱奇艺专用字段
+            if (!picUrl) {
+                picUrl = item.spic || item.bpic || item.lpic || item.vpic || '';
+            }
+            var id = firstValid(item, ['albumId', 'qipuId', 'videoId', 'id', 'aid']);
+            var vodName = item.name || item.title || item.albumTitle || item.tvName || item.shortTitle || '';
+            var vodRemarks = item.focus || item.tvFocus || '';
+            if (!vodRemarks && item.latestOrder) {
+                vodRemarks = '更新至' + item.latestOrder + '集';
+            }
+            if (!vodRemarks && item.episodeTotal) {
+                vodRemarks = '共' + item.episodeTotal + '集';
+            }
             return {
-                vod_id: String(item.albumId || item.qipuId || ''),
-                vod_name: item.name || item.title || '',
-                vod_pic: normalizePic(item.imageUrl || item.albumImageUrl || ''),
-                vod_remarks: item.focus || (item.latestOrder ? ('更新至' + item.latestOrder + '集') : ''),
-                vod_year: item.period ? String(item.period).substring(0, 4) : '',
-                vod_area: item.categories && item.categories.join ? item.categories.join(',') : ''
+                vod_id: String(id || ''),
+                vod_name: vodName,
+                vod_pic: normalizePic(picUrl),
+                vod_remarks: vodRemarks,
+                vod_year: item.period ? String(item.period).substring(0, 4) : (item.year ? String(item.year).substring(0, 4) : (item.releaseDate ? String(item.releaseDate).substring(0, 4) : '')),
+                vod_area: item.categories && item.categories.join ? item.categories.join(',') : (item.area || '')
             };
         }
 

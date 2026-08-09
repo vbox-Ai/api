@@ -309,11 +309,20 @@ var spider = {
                 for (var i = 0; i < all.length; i++) {
                     var ep = all[i] || {};
                     var title = cleanTitle(ep.t3 || ep.title, '第' + (i + 1) + '集');
-                    var url = normalizePlayUrl(ep.url || '');
-                    if (url) playUrls.push(title + '$' + url);
+                    var epUrl = ep.url || ep.shareUrl || ep.webUrl || ep.link || ep.playUrl || ep.episodeUrl || '';
+                    if (epUrl) {
+                        // 确保URL是完整的
+                        if (epUrl.indexOf('http') !== 0) {
+                            if (epUrl.charAt(0) === '/') epUrl = RHOST + epUrl;
+                            else epUrl = RHOST + '/b/' + id + '/' + epUrl + '.html';
+                        }
+                        playUrls.push(title + '$' + epUrl);
+                    }
                 }
+                // 兜底播放地址
                 if (!playUrls.length) {
-                    playUrls.push((vod.vod_name || '正片') + '$' + RHOST);
+                    var fallbackUrl = RHOST + '/b/0/' + id + '.html';
+                    playUrls.push((vod.vod_name || '正片') + '$' + fallbackUrl);
                 }
                 vod.vod_play_url = playUrls.join('#');
                 result.list.push(vod);
@@ -359,13 +368,26 @@ var spider = {
 
         function playerContent(flag, id, vipFlags) {
             var playUrl = vipFlags || id || flag || '';
-            playUrl = normalizePlayUrl(playUrl);
+            if (playUrl.indexOf('$') >= 0) {
+                var parts = playUrl.split('$');
+                playUrl = parts[parts.length - 1];
+            }
+            playUrl = String(playUrl).trim();
+            if (!playUrl) {
+                playUrl = RHOST;
+            } else if (playUrl.indexOf('http') !== 0) {
+                // 相对路径，补全域名
+                if (playUrl.charAt(0) === '/') playUrl = RHOST + playUrl;
+                else playUrl = RHOST + '/' + playUrl;
+            }
+            if (playUrl.indexOf('http://') === 0) playUrl = 'https://' + playUrl.substring(7);
             var direct = isVideoFormat(playUrl);
             return {
                 parse: direct ? 0 : 1,
                 jx: direct ? 0 : 1,
+                playUrl: playUrl,
                 url: playUrl,
-                header: direct ? HEADERS : ''
+                header: JSON.stringify(HEADERS)
             };
         }
 
