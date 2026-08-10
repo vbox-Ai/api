@@ -591,9 +591,20 @@
         "changeable": 1,
         "ext": "",
         "timeout": 30
+      },
+      {
+        "key": "y_sysm1x4k",
+        "name": "影视 | 山有木兮4K[py]",
+        "type": 3,
+        "api": "./js/sysm1x4k.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
       }
     ],
-    "siteCount": 20
+    "siteCount": 21
   },
   "domainOverrides": {
     "overrides": []
