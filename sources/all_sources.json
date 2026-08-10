@@ -591,20 +591,9 @@
         "changeable": 1,
         "ext": "",
         "timeout": 30
-      },
-      {
-        "key": "y_pianku",
-        "name": "影视 | 片库TV[py]",
-        "type": 3,
-        "api": "./js/pianku.py",
-        "searchable": 1,
-        "quickSearch": 1,
-        "changeable": 1,
-        "ext": "",
-        "timeout": 30
       }
     ],
-    "siteCount": 21
+    "siteCount": 20
   },
   "domainOverrides": {
     "overrides": []
