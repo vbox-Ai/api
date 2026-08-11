@@ -615,10 +615,10 @@
         "timeout": 30
       },
       {
-        "key": "y_kanke",
-        "name": "影视 | 看客TV[py]",
+        "key": "y_daishu",
+        "name": "影视 | 袋鼠影视[py]",
         "type": 3,
-        "api": "./js/kanke.py",
+        "api": "./js/daishu.py",
         "searchable": 1,
         "quickSearch": 1,
         "changeable": 1,
