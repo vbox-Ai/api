@@ -226,10 +226,10 @@
       "timeout": 30
     },
     {
-      "key": "y_sysm1x4k",
-      "name": "影视 | 山有木兮4K[py]",
+      "key": "y_pianku",
+      "name": "影视 | 片库TV[py]",
       "type": 3,
-      "api": "./js/sysm1x4k.py",
+      "api": "./js/pianku.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1,
@@ -237,5 +237,5 @@
       "timeout": 30
     }
   ],
-  "siteCount": 20
+  "siteCount": 21
 }

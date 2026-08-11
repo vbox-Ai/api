@@ -118,7 +118,7 @@ class Spider(Spider):
         self._last_host_check = now
         for h in [self.host] + self._backup_hosts:
             try:
-                r = self.fetch(h, headers=self.headers, timeout=10)
+                r = self.fetch(h, headers=self.headers, timeout=5)
                 text = r.text if hasattr(r, 'text') else ''
                 if r.status_code == 200 and ('片库' in text or 'pianku' in text or 'voddetail' in text):
                     self.host = h
@@ -175,8 +175,8 @@ class Spider(Spider):
 
     def homeContent(self, filter):
         result = {'class': self.classes}
-        if filter:
-            result['filters'] = self.filters
+        # 始终返回 filters，保证子分类筛选可用
+        result['filters'] = self.filters
         return result
 
     def homeVideoContent(self):
@@ -360,6 +360,10 @@ class Spider(Spider):
         except Exception as e:
             print('[片库TV] 搜索异常: %s' % e)
             return {'page': 1, 'pagecount': 1, 'limit': 20, 'total': 20, 'list': []}
+
+    # 搜索兼容方法 — PythonSpiderEngine 固定调用 searchContent
+    def searchContent(self, key, quick, pg):
+        return self.searchContentPage(key, quick, pg)
 
     # ==================== 播放 ====================
 
