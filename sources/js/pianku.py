@@ -6,29 +6,37 @@
 # TVBox / OK影视 / 影视仓 / WebHome 标准 Python 爬虫
 # 站点: https://4k01.pianku.online (苹果CMS v10)
 # ============================================================
+# vbox iOS CPython 适配:
+#   - 覆写 fetch 方法，使用 ssl._create_unverified_context()
+#     解决 iOS CPython 无系统 CA 证书导致 HTTPS 请求失败
+#   - 新增 searchContent 兼容方法 (PythonSpiderEngine 固定调用)
+#   - homeContent 始终返回 filters
+#   - 域名探测超时降至 5 秒
+#   - 关键路径加 print 日志，便于悬浮窗诊断
+# ============================================================
 
 import sys
 import json
 import re
 import time
+import ssl
+import urllib.request
+import urllib.error
 from urllib.parse import quote, unquote, urljoin
 
 sys.path.append('..')
 
+# iOS CPython 没有 CA 证书 → HTTPS 验证失败
+# 创建不验证证书的 SSL 上下文 (与 requests verify=False 等效)
+_ssl_ctx = ssl._create_unverified_context()
+
 try:
-    from base.spider import Spider
+    from base.spider import Spider as _BaseSpider
 except ImportError:
-    import requests as rq
-
-    class Spider:
-        def fetch(self, url, headers=None, **kw):
-            kw.pop('timeout', None)
-            r = rq.get(url, headers=headers, timeout=15, **kw)
-            r.encoding = 'utf-8'
-            return r
+    _BaseSpider = object
 
 
-class Spider(Spider):
+class Spider(_BaseSpider):
     host = 'https://4k01.pianku.online'
 
     _backup_hosts = [
@@ -109,6 +117,42 @@ class Spider(Spider):
         '37': [{'key': 'class', 'name': '子分类', 'value': _drama_sub}],
     }
 
+    # ==================== HTTP 请求 (覆写 base.spider) ====================
+
+    def fetch(self, url, headers=None, **kw):
+        """发起 HTTP GET 请求 — 覆写 base.spider.fetch
+        使用 ssl._create_unverified_context() 绕过 iOS CA 证书缺失问题
+        返回兼容 requests 风格的 Response 对象
+        """
+        timeout = kw.get('timeout', 15)
+        req = urllib.request.Request(url, headers=headers or {})
+        try:
+            r = urllib.request.urlopen(req, timeout=timeout, context=_ssl_ctx)
+            data = r.read()
+            resp_headers = r.headers if hasattr(r, 'headers') else None
+            encoding = 'utf-8'
+            if resp_headers and hasattr(resp_headers, 'get_content_charset'):
+                ct_encoding = resp_headers.get_content_charset()
+                if ct_encoding:
+                    encoding = ct_encoding
+            return _Response(data, status_code=r.status, encoding=encoding, headers=resp_headers)
+        except urllib.error.HTTPError as e:
+            data = b''
+            try:
+                data = e.read()
+            except Exception:
+                pass
+            resp_headers = e.headers if hasattr(e, 'headers') else None
+            encoding = 'utf-8'
+            if resp_headers and hasattr(resp_headers, 'get_content_charset'):
+                ct_encoding = resp_headers.get_content_charset()
+                if ct_encoding:
+                    encoding = ct_encoding
+            return _Response(data, status_code=e.code, encoding=encoding, headers=resp_headers)
+        except Exception as e:
+            print('[片库TV] fetch 异常: %s, url=%s' % (e, url[:100]))
+            raise
+
     # ==================== 动态域名 ====================
 
     def _ensure_host(self):
@@ -123,9 +167,11 @@ class Spider(Spider):
                 if r.status_code == 200 and ('片库' in text or 'pianku' in text or 'voddetail' in text):
                     self.host = h
                     self.headers['Referer'] = h + '/'
+                    print('[片库TV] 域名探测成功: %s' % h)
                     return self.host
-            except Exception:
-                pass
+            except Exception as e:
+                print('[片库TV] 域名探测失败: %s, err=%s' % (h, e))
+        print('[片库TV] 所有域名探测失败，使用默认: %s' % self.host)
         return self.host
 
     def _html(self, url, require_ok=False):
@@ -135,13 +181,15 @@ class Spider(Spider):
             r = self.fetch(full, headers=self.headers, timeout=15)
             text = r.text if hasattr(r, 'text') else ''
             if require_ok and r.status_code >= 400:
+                print('[片库TV] HTTP %d, 重试: %s' % (r.status_code, full[:100]))
                 self._last_host_check = 0
                 self._ensure_host()
                 full = url if url.startswith('http') else self.host + url
                 r = self.fetch(full, headers=self.headers, timeout=15)
                 text = r.text if hasattr(r, 'text') else ''
             return text
-        except Exception:
+        except Exception as e:
+            print('[片库TV] _html 异常: %s, url=%s' % (e, full[:100]))
             if require_ok:
                 self._last_host_check = 0
                 self._ensure_host()
@@ -149,8 +197,8 @@ class Spider(Spider):
                     full = url if url.startswith('http') else self.host + url
                     r = self.fetch(full, headers=self.headers, timeout=15)
                     return r.text if hasattr(r, 'text') else ''
-                except Exception:
-                    pass
+                except Exception as e2:
+                    print('[片库TV] _html 重试也失败: %s' % e2)
             return ''
 
     # ==================== 基础方法 ====================
@@ -160,7 +208,9 @@ class Spider(Spider):
 
     def init(self, extend=''):
         self.extend = extend or ''
+        print('[片库TV] init 开始, extend=%s' % extend)
         self._ensure_host()
+        print('[片库TV] init 完成, host=%s' % self.host)
 
     def isVideoFormat(self, url):
         return any(x in url for x in ['.m3u8', '.mp4', '.flv', '.avi', '.mkv', '.ts'])
@@ -175,7 +225,6 @@ class Spider(Spider):
 
     def homeContent(self, filter):
         result = {'class': self.classes}
-        # 始终返回 filters，保证子分类筛选可用
         result['filters'] = self.filters
         return result
 
@@ -202,14 +251,15 @@ class Spider(Spider):
                     ext = json.loads(extend) if isinstance(extend, str) else dict(extend)
                 except Exception:
                     pass
-            # 子分类筛选：如果选择了子分类，用子分类ID替换当前分类ID
             sub_tid = ext.get('class', '')
             if sub_tid and sub_tid != tid:
                 tid = sub_tid
             url = '/vodtype/%s-%d.html' % (tid, pg) if pg > 1 else '/vodtype/%s.html' % tid
+            print('[片库TV] 分类请求: tid=%s, pg=%d, url=%s' % (tid, pg, url))
             html = self._html(url, require_ok=True)
             vods = self._parse_list(html)
             has_next = '下一页' in html or ('page_link' in html and '尾页' in html)
+            print('[片库TV] 分类结果: %d条, html长度=%d' % (len(vods), len(html)))
             return {
                 'page': pg,
                 'pagecount': pg + 1 if has_next else pg,
@@ -235,7 +285,6 @@ class Spider(Spider):
             if not html:
                 return {'list': []}
 
-            # 名称
             vod_name = ''
             m = re.search(r'<h1 class="detail-title">(.*?)<', html, re.S)
             if m:
@@ -245,13 +294,11 @@ class Spider(Spider):
                 if m:
                     vod_name = m.group(1).strip()
 
-            # 备注
             vod_remarks = ''
             m = re.search(r'<span class="detail-remarks">(.*?)</span>', html, re.S)
             if m:
                 vod_remarks = re.sub(r'<[^>]+>', '', m.group(1)).strip()
 
-            # 图片
             pic = ''
             m = re.search(r'<div class="detail-poster">.*?<img[^>]*src=["\']([^"\']+)["\']', html, re.S)
             if m:
@@ -259,7 +306,6 @@ class Spider(Spider):
                 if not pic.startswith('http'):
                     pic = urljoin(self.host, pic)
 
-            # 信息
             info_map = {'分类': '', '年份': '', '导演': '', '主演': ''}
             for key in info_map:
                 if key == '分类':
@@ -269,17 +315,14 @@ class Spider(Spider):
                 if m:
                     info_map[key] = re.sub(r'<[^>]+>', '', m.group(1)).strip()
 
-            # 剧情
             vod_content = ''
             m = re.search(r'<div class="detail-desc">.*?<p>(.*?)</p>', html, re.S)
             if m:
                 vod_content = re.sub(r'<[^>]+>', '', m.group(1)).strip()
 
-            # 播放线路
             source_tabs = re.findall(r'class="source-tab-item"[^>]*data-target="playlist-(\d+)">(.*?)</span>', html, re.S)
             play_links = re.findall(r'href=["\'](/vodplay/\d+-\d+-\d+\.html)["\'][^>]*class=["\']play-btn-item["\'][^>]*title=["\']([^"\']*)["\']', html, re.S)
 
-            # 按 source_id 分组
             player_map = {}
             for pl_url, pl_name in play_links:
                 parts = pl_url.replace('/vodplay/', '').replace('.html', '').split('-')
@@ -288,7 +331,6 @@ class Spider(Spider):
                     player_map.setdefault(sid, {'name': '', 'eps': []})
                     player_map[sid]['eps'].append({'name': pl_name, 'ep': ep})
 
-            # 补充线路名称
             for target_id, name in source_tabs:
                 sid = str(target_id)
                 if sid in player_map:
@@ -296,7 +338,6 @@ class Spider(Spider):
                 else:
                     player_map[sid] = {'name': name, 'eps': []}
 
-            # 如果没有解析到播放数据，尝试从播放按钮获取
             if not player_map:
                 btn = re.search(r'href=["\'](/vodplay/\d+-\d+-\d+\.html)["\'][^>]*class=["\']btn-play["\']', html, re.S)
                 if btn:
@@ -347,9 +388,11 @@ class Spider(Spider):
             pg = int(pg or 1)
             kw = quote(key)
             url = '/vodsearch/%s----------%d---.html' % (kw, pg) if pg > 1 else '/vodsearch/%s-------------.html' % kw
+            print('[片库TV] 搜索请求: key=%s, pg=%d, url=%s' % (key, pg, url))
             html = self._html(url, require_ok=True)
             vods = self._parse_list(html)
             has_next = '下一页' in html or 'page_link' in html and '尾页' in html
+            print('[片库TV] 搜索结果: %d条, html长度=%d' % (len(vods), len(html)))
             return {
                 'page': pg,
                 'pagecount': pg + 1 if has_next else pg,
@@ -361,7 +404,6 @@ class Spider(Spider):
             print('[片库TV] 搜索异常: %s' % e)
             return {'page': 1, 'pagecount': 1, 'limit': 20, 'total': 20, 'list': []}
 
-    # 搜索兼容方法 — PythonSpiderEngine 固定调用 searchContent
     def searchContent(self, key, quick, pg):
         return self.searchContentPage(key, quick, pg)
 
@@ -423,7 +465,6 @@ class Spider(Spider):
         vods = []
         if not html:
             return vods
-        # 先移除所有 onerror 属性，避免正则匹配到 load.gif
         html_clean = re.sub(r'onerror=["\'][^"\']*["\']', '', html)
         for item in re.findall(
             r'<div class="vod-item">.*?<a href=["\'](/voddetail/(\d+)\.html)["\'][^>]*title=["\']([^"\']*)["\'][^>]*>.*?<img[^>]*src=["\']([^"\']+)["\'][^>]*>.*?<span class="remarks">(.*?)</span>.*?<h4 class="title">(.*?)</h4>.*?<p class="subtitle">(.*?)</p>.*?</a>.*?</div>',
@@ -459,3 +500,16 @@ class Spider(Spider):
             return json.loads(html[brace:end + 1])
         except Exception:
             return None
+
+
+class _Response:
+    """HTTP 响应对象 — 兼容 requests 库的常用属性"""
+    def __init__(self, content_bytes, status_code=200, encoding='utf-8', headers=None):
+        self.content = content_bytes
+        self.status_code = status_code
+        self.encoding = encoding
+        self.headers = headers
+        try:
+            self.text = content_bytes.decode(encoding, errors='replace')
+        except Exception:
+            self.text = ''
