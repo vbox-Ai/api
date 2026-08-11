@@ -602,9 +602,20 @@
         "changeable": 1,
         "ext": "",
         "timeout": 30
+      },
+      {
+        "key": "y_damahou",
+        "name": "影视 | 大马猴影视[py]",
+        "type": 3,
+        "api": "./js/damahou.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
       }
     ],
-    "siteCount": 21
+    "siteCount": 22
   },
   "domainOverrides": {
     "overrides": []
