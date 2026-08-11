@@ -406,6 +406,47 @@ class Spider(_BaseSpider):
 
     # ==================== 搜索 ====================
 
+    def _keyword_match(self, item, keyword):
+        """检查视频项是否匹配搜索关键词
+        匹配字段: vod_name, vod_remarks, type_name, vod_area, vod_actor, vod_director
+        支持中文和英文关键词，不区分大小写
+        """
+        if not keyword:
+            return True
+        kw = keyword.lower().strip()
+        if not kw:
+            return True
+        fields = [
+            str(item.get('vod_name') or ''),
+            str(item.get('name') or ''),
+            str(item.get('title') or ''),
+            str(item.get('vod_remarks') or ''),
+            str(item.get('remarks') or ''),
+            str(item.get('type_name') or ''),
+            str(item.get('vod_area') or ''),
+            str(item.get('vod_actor') or ''),
+            str(item.get('vod_director') or ''),
+            str(item.get('vod_content') or ''),
+            str(item.get('vod_class') or ''),
+        ]
+        # vod_class 可能是列表
+        cls = item.get('vod_class')
+        if isinstance(cls, list):
+            fields.append(','.join([str(x) for x in cls if x]))
+        text = ' '.join(fields).lower()
+        return kw in text
+
+    def _filter_by_keyword(self, data, keyword):
+        """从 API 返回数据中提取视频列表，并按关键词本地过滤"""
+        arr = self._as_list(data)
+        matched = []
+        for item in arr:
+            if not isinstance(item, dict):
+                continue
+            if self._keyword_match(item, keyword):
+                matched.append(item)
+        return matched
+
     def searchContent(self, key, quick, pg='1'):
         self._ensure_ready()
         wd = str(key or '').strip()
@@ -415,7 +456,7 @@ class Spider(_BaseSpider):
 
         print('[大马猴] 搜索: key=%s, pg=%s' % (wd, page))
 
-        # 先尝试网页搜索常见接口
+        # 按优先级尝试搜索接口，所有结果都经本地关键词过滤
         paths = [
             ('/api.php/web/search/vod', {'wd': wd, 'page': page}),
             ('/api.php/web/vod/search', {'wd': wd, 'page': page}),
@@ -424,12 +465,82 @@ class Spider(_BaseSpider):
         ]
         for path, params in paths:
             j = self._api_get(path, params, self.host + '/search?keyword=' + quote(wd))
-            videos = self._vod_list(j)
-            if videos:
-                print('[大马猴] 搜索结果: %d条, path=%s' % (len(videos), path))
-                return {'list': videos, 'page': int(page)}
+            # 本地关键词过滤 — 确保 API 返回的结果确实包含搜索词
+            matched_items = self._filter_by_keyword(j, wd)
+            if matched_items:
+                videos = self._vod_list(matched_items)
+                if videos:
+                    print('[大马猴] 搜索结果: %d条 (过滤前%d), path=%s' % (len(videos), len(self._as_list(j)), path))
+                    return {'list': videos, 'page': int(page)}
+
+        # API 搜索全部无结果，尝试网页搜索解析
+        print('[大马猴] API搜索无结果，尝试网页搜索...')
+        try:
+            search_url = self.host + '/search?keyword=' + quote(wd)
+            if int(pg) > 1:
+                search_url += '&page=' + str(pg)
+            r = self.fetch(search_url, headers=self._headers(), timeout=12)
+            html = r.text if hasattr(r, 'text') else ''
+            if html:
+                videos = self._parse_search_html(html, wd)
+                if videos:
+                    print('[大马猴] 网页搜索结果: %d条' % len(videos))
+                    return {'list': videos, 'page': int(page)}
+        except Exception as e:
+            print('[大马猴] 网页搜索异常: %s' % e)
+
         print('[大马猴] 搜索无结果')
         return {'list': [], 'page': int(page)}
+
+    def _parse_search_html(self, html, keyword):
+        """从搜索结果网页 HTML 中解析视频列表"""
+        vods = []
+        if not html:
+            return vods
+        # 匹配常见的视频卡片结构
+        # 大马猴网页搜索结果通常是 /voddetail/xxx.html 或 /play/xxx 链接
+        pattern = r'<a[^>]*href="(?:/voddetail/(\d+)|/play/(\d+))[^"]*"[^>]*>.*?<img[^>]*src="([^"]*)"[^>]*>.*?(?:title|alt)="([^"]*)"[^>]*>'
+        for m in re.finditer(pattern, html, re.S):
+            vid = m.group(1) or m.group(2)
+            pic = m.group(3)
+            name = self._clean_text(m.group(4))
+            if not vid or not name:
+                continue
+            # 本地关键词过滤
+            if keyword and keyword.lower() not in name.lower():
+                continue
+            if not pic.startswith('http'):
+                pic = self.host + pic if pic.startswith('/') else self.host + '/' + pic
+            vods.append({
+                'vod_id': str(vid),
+                'vod_name': name,
+                'vod_pic': pic,
+                'vod_remarks': '',
+            })
+            if len(vods) >= 30:
+                break
+        # 备用: 更宽松的匹配
+        if not vods:
+            pattern2 = r'<a[^>]*href="/(?:voddetail|play)/(\d+)[^"]*"[^>]*title="([^"]*)"[^>]*>'
+            for m in re.finditer(pattern2, html, re.S):
+                vid = m.group(1)
+                name = self._clean_text(m.group(2))
+                if not vid or not name:
+                    continue
+                if keyword and keyword.lower() not in name.lower():
+                    continue
+                # 去重
+                if any(v['vod_id'] == str(vid) for v in vods):
+                    continue
+                vods.append({
+                    'vod_id': str(vid),
+                    'vod_name': name,
+                    'vod_pic': '',
+                    'vod_remarks': '',
+                })
+                if len(vods) >= 30:
+                    break
+        return vods
 
     # ==================== 详情 ====================
 
