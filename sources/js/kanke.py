@@ -339,8 +339,8 @@ class Spider(Spider):
         return {"list": [vod]}
 
     # ========== 搜索 ==========
-    def searchContent(self, key, quick):
-        return self.searchContentPage(key, quick, "1")
+    def searchContent(self, key, quick, pg='1'):
+        return self.searchContentPage(key, quick, pg)
 
     def searchContentPage(self, key, quick, pg):
         try:
