@@ -4,7 +4,6 @@ import json
 import random
 import sys
 from base64 import b64encode, b64decode
-from concurrent.futures import ThreadPoolExecutor
 
 # 引入 RSA 加解密所需模块
 from Crypto.PublicKey import RSA
@@ -63,22 +62,30 @@ class Spider(Spider):
     # RSA 私钥解密实现
     def rsa_decrypt(self, text):
         try:
+            if not text:
+                return ""
             key = RSA.import_key(self.privateKey_str)
             cipher = PKCS1_v1_5.new(key)
             raw_bytes = b64decode(text.encode('utf-8'))
-            
+
+            # 不能固定写 256，按私钥长度自适应，避免平台密钥位数变化后直接失败
+            block_size = key.size_in_bytes()
             decrypted = b""
             offset = 0
             while offset < len(raw_bytes):
-                chunk = raw_bytes[offset:offset + 256]
-                decrypted += cipher.decrypt(chunk, None)
-                offset += 256
+                chunk = raw_bytes[offset:offset + block_size]
+                part = cipher.decrypt(chunk, None)
+                if not part:
+                    print(f"RSA解密块失败: chunk={len(chunk)}, block={block_size}")
+                    return ""
+                decrypted += part
+                offset += block_size
             return decrypted.decode('utf-8')
         except Exception as e:
             print(f"RSA解密失败: {e}")
             return ""
 
-    def homeContent(self, filter):
+    def homeContent(self, filter=None):
         data = self.post(f"{self.host}/api/v1/app/screen/screenType", headers=self.headers).json()
         result = {}
         cate = {
@@ -157,11 +164,18 @@ class Spider(Spider):
             return {'list': [], 'page': pg}
 
     def detailContent(self, ids):
-        ids = ids[0].split('@@')
+        if not ids:
+            return {'list': []}
+        ids = str(ids[0]).split('@@')
+        if not ids or not ids[0]:
+            return {'list': []}
         jdata = {"id": int(ids[0]), "typeId": ids[-1]}
         v = self.post(f"{self.host}/api/v1/app/play/movieDesc", headers=self.headers, json=jdata).json()
         v = v.get('data', {})
         vod = {
+            'vod_id': '@@'.join(ids),
+            'vod_name': v.get('name', ''),
+            'vod_pic': v.get('cover', ''),
             'type_name': v.get('typeId', ''),
             'vod_year': v.get('year', ''),
             'vod_area': v.get('area', ''),
@@ -179,17 +193,24 @@ class Spider(Spider):
         }
         encrypt_payload = {"key": self.rsa_encrypt(json.dumps(play_params))}
         
+        if not encrypt_payload.get('key'):
+            return {'list': [vod]}
+
         c_res = self.post(f"{self.host}/api/v1/app/play/movieDetails", headers=self.headers, json=encrypt_payload).json()
         decrypted_play_str = self.rsa_decrypt(c_res.get('data', ''))
         if not decrypted_play_str:
             return {'list': [vod]}
-            
-        decrypted_play_data = json.loads(decrypted_play_str)
+
+        try:
+            decrypted_play_data = json.loads(decrypted_play_str)
+        except Exception as e:
+            print(f"播放线路JSON解析失败: {e}")
+            return {'list': [vod]}
         l = decrypted_play_data.get('moviePlayerList', [])
         if not l:
             return {'list': [vod]}
-            
-        n = {str(i['id']): i['moviePlayerName'] for i in l}
+
+        n = {str(i.get('id')): i.get('moviePlayerName', '未知线路') for i in l if i.get('id') is not None}
         
         m = play_params.copy()
         m.update({'playerId': l[0]['id']})
@@ -199,21 +220,24 @@ class Spider(Spider):
         
         decrypted_first_str = self.rsa_decrypt(first_res.get('data', ''))
         if decrypted_first_str:
-            decrypted_first_episode = json.loads(decrypted_first_str)
-            pd = self.getv(m, decrypted_first_episode.get('episodeList', []))
+            try:
+                decrypted_first_episode = json.loads(decrypted_first_str)
+                pd = self.getv(m, decrypted_first_episode.get('episodeList', []))
+            except Exception as e:
+                print(f"首线路剧集解析失败: {e}")
+                pd = {}
         else:
             pd = {}
         
+        # iOS 嵌入式 Python 环境中多线程网络请求更容易被超时/锁影响，改为顺序取线路更稳
         if len(l) > 1:
-            with ThreadPoolExecutor(max_workers=len(l)-1) as executor:
-                future_to_player = {executor.submit(self.getd, play_params, player): player for player in l[1:]}
-                for future in future_to_player:
-                    try:
-                        o, p = future.result()
-                        if p:
-                            pd.update(self.getv(o, p))
-                    except Exception as e:
-                        print(f"多线路请求失败: {e}")
+            for player in l[1:]:
+                try:
+                    o, p = self.getd(play_params, player)
+                    if p:
+                        pd.update(self.getv(o, p))
+                except Exception as e:
+                    print(f"线路请求失败: {e}")
         w, e = [], []
         for i, x in pd.items():
             if x:
@@ -238,16 +262,25 @@ class Spider(Spider):
             print(f"搜索请求失败: {e}")
             return {'list': [], 'page': pg}
 
-    def playerContent(self, flag, id, vipFlags):
+    def playerContent(self, flag, id, vipFlags=None):
         raw_id_str = self.d64(id)
         if not raw_id_str:
             return {'parse': 0, 'url': ''}
-        jdata = json.loads(raw_id_str)
+        try:
+            jdata = json.loads(raw_id_str)
+        except Exception as e:
+            print(f"播放参数解析失败: {e}")
+            return {'parse': 0, 'url': ''}
         encrypt_payload = {"key": self.rsa_encrypt(json.dumps(jdata))}
+        if not encrypt_payload.get('key'):
+            return {'parse': 0, 'url': ''}
         data = self.post(f"{self.host}/api/v1/app/play/movieDetails", headers=self.headers, json=encrypt_payload).json()
         
         try:
-            decrypted_url_data = json.loads(self.rsa_decrypt(data.get('data', '')))
+            decrypted_url_str = self.rsa_decrypt(data.get('data', ''))
+            if not decrypted_url_str:
+                return {'parse': 0, 'url': ''}
+            decrypted_url_data = json.loads(decrypted_url_str)
             playerUrl = decrypted_url_data.get('url', '')
             if not playerUrl:
                 return {'parse': 0, 'url': ''}
@@ -255,6 +288,8 @@ class Spider(Spider):
             params = {'playerUrl': playerUrl, 'playerId': jdata['playerId']}
             pd = self.fetch(f"{self.host}/api/v1/app/play/analysisMovieUrl", headers=self.headers, params=params).json()
             url, p = pd.get('data', ''), 0
+            if isinstance(url, dict):
+                url = url.get('url') or url.get('playUrl') or ''
         except Exception as e:
             print(f"解析流媒体直链失败: {e}")
             url, p = "", 0
