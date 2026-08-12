@@ -624,9 +624,119 @@
         "changeable": 1,
         "ext": "",
         "timeout": 30
+      },
+      {
+        "key": "y_hongguoguo",
+        "name": "影视 | 红果果[py]",
+        "type": 3,
+        "api": "./js/hongguoguo.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "y_hongguoduanju",
+        "name": "短剧 | 红果短剧新[py]",
+        "type": 3,
+        "api": "./js/hongguoduanju.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "y_yunduo",
+        "name": "影视 | 云朵影视[py]",
+        "type": 3,
+        "api": "./js/yunduo.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "y_siyecao",
+        "name": "影视 | 四叶草[py]",
+        "type": 3,
+        "api": "./js/siyecao.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "y_qingxiao",
+        "name": "影视 | 青霄视频[py]",
+        "type": 3,
+        "api": "./js/qingxiao.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "y_zhencai4k",
+        "name": "影视 | 臻彩4K[py]",
+        "type": 3,
+        "api": "./js/zhencai4k.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "y_dingji",
+        "name": "影视 | 顶级影院[py]",
+        "type": 3,
+        "api": "./js/dingji.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "y_xinhanju",
+        "name": "影视 | 新韩剧网[py]",
+        "type": 3,
+        "api": "./js/xinhanju.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "y_xingkong4k",
+        "name": "影视 | 星空4K[py]",
+        "type": 3,
+        "api": "./js/xingkong4k.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "y_bubu4k",
+        "name": "影视 | 布布4K[py]",
+        "type": 3,
+        "api": "./js/bubu4k.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
       }
     ],
-    "siteCount": 23
+    "siteCount": 33
   },
   "domainOverrides": {
     "overrides": []
