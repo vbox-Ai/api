@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.13.1",
-    "updatedAt": "2026-08-13T00:00:00Z"
+    "version": "2026.08.13.2",
+    "updatedAt": "2026-08-13T12:00:00Z"
   },
   "schemaVersion": 1,
   "categories": [
@@ -376,6 +376,69 @@
       "defaultProxy": false,
       "notes": "Python 蜘蛛脚本驱动的福利平台，用于验证福利专区 Python 资源集成方案；SSL 自签名证书；自动适配自定义域名和代理设置",
       "api": "./sources/welfare-js/lusushequ.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "zangjige_py",
+      "name": "藏姬阁",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "MacCMS v10 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://xn--e2o-gocjgcom-nw8u993cql8elmwejgrb.cjggo.com"
+      ],
+      "sortOrder": 232,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，MacCMS v10 模板，7 个分类；播放 mac_url unescape 解码；封面图走 localProxy 代理防盗链",
+      "api": "./sources/welfare-js/zangjige.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "jpsn_py",
+      "name": "极品少女",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "AES 加密 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://xn--0809-kb2g560h.jpsn47.top/jpsn"
+      ],
+      "sortOrder": 233,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，MacCMS v10 (mxtwoa14) 模板，42 个分类；全站 jsjiami v7 + AES-128-CBC 加密（内置纯 Python AES 解密，零依赖）；播放 player_aaaa JSON 提取；封面图走 localProxy 代理防盗链",
+      "api": "./sources/welfare-js/jpsn.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "chimei_py",
+      "name": "魑魅魍魉",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "MacCMS v10 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "http://xn--pg3-chimei100-com-7483af92d.chimei69.com"
+      ],
+      "sortOrder": 234,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，MacCMS v10 模板，5 个分类；播放 mac_url unescape 解码；封面图走 localProxy 代理防盗链",
+      "api": "./sources/welfare-js/chimei.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
