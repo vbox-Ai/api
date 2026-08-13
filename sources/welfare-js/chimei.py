@@ -93,7 +93,7 @@ class Spider(BaseSpider):
         v = str(url or '').lower()
         return any(x in v for x in ('.m3u8', '.mp4', '.m4v', '.mpd', '.flv', '.webm', '.ts'))
 
-    def _request(self, url, params=None, referer=None, post=False, data=None, retry=2):
+    def _fetch_page(self, url, params=None, referer=None, post=False, data=None, retry=2):
         """统一请求方法 — 使用 base.spider.fetch/post 自动处理 SSL/代理/域名注入"""
         headers = dict(self.headers)
         if referer:
@@ -185,7 +185,7 @@ class Spider(BaseSpider):
                 'filters': {}}
 
     def homeVideoContent(self):
-        r = self._request(self.host + '/')
+        r = self._fetch_page(self.host + '/')
         base = getattr(r, 'url', '') or self.host + '/'
         return {'list': self._cards(r.text, base) if r and r.text else []}
 
@@ -200,7 +200,7 @@ class Spider(BaseSpider):
             url = '%s/list/%s.html' % (self.host, tid)
         else:
             url = '%s/list/%s-%s.html' % (self.host, tid, page)
-        r = self._request(url)
+        r = self._fetch_page(url)
         if not r or not r.text:
             return {'list': [], 'page': page, 'pagecount': 1, 'limit': 20, 'total': 0}
         vods = self._cards(r.text, r.url)
@@ -221,7 +221,7 @@ class Spider(BaseSpider):
         vid = str(ids[0] if isinstance(ids, (list, tuple)) and ids else ids or '').strip()
         if not vid:
             return {'list': []}
-        r = self._request('%s/content/%s.html' % (self.host, vid))
+        r = self._fetch_page('%s/content/%s.html' % (self.host, vid))
         if not r or not r.text:
             return {'list': []}
         return {'list': [self._detail(r.text, vid, getattr(r, 'url', self.host))]}
@@ -283,7 +283,7 @@ class Spider(BaseSpider):
         for path in ['/search.php?searchtype=5&wd=%s' % quote(keyword),
                      '/index.php/vod/search.html?wd=%s' % quote(keyword),
                      '/?wd=%s' % quote(keyword)]:
-            r = self._request(self.host + path)
+            r = self._fetch_page(self.host + path)
             if r and r.text:
                 cand = self._cards(r.text, r.url)
                 if cand:
@@ -291,7 +291,7 @@ class Spider(BaseSpider):
                     found = True
                     break
         if not found:
-            r = self._request(self.host + '/')
+            r = self._fetch_page(self.host + '/')
             if r and r.text:
                 allv = self._cards(r.text, r.url)
                 vods = [v for v in allv if keyword in v['vod_name']]
@@ -307,7 +307,7 @@ class Spider(BaseSpider):
                                'Referer': self.host + '/'}}
         if re.search(r'/content/\d+\.html', url):
             vid = re.search(r'/content/(\d+)\.html', url).group(1)
-            r = self._request('%s/content/%s.html' % (self.host, vid))
+            r = self._fetch_page('%s/content/%s.html' % (self.host, vid))
             if r and r.text:
                 mu = re.search(r"var\s+mac_url\s*=\s*unescape\('([^']+)'\)", r.text)
                 if mu:

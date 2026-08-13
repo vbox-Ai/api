@@ -159,7 +159,7 @@ class Spider(BaseSpider):
         return None
 
     # ── 统一请求 — 使用 base.spider.fetch/post ──
-    def _request(self, url, method="GET", data=None, headers=None,
+    def _fetch_page(self, url, method="GET", data=None, headers=None,
                  referer="", retry=1):
         merged = dict(self.headers)
         if headers:
@@ -185,7 +185,7 @@ class Spider(BaseSpider):
         return None
 
     def _fetch_text(self, url):
-        r = self._request(url)
+        r = self._fetch_page(url)
         if r is None:
             return ""
         if not getattr(r, 'encoding', None):
@@ -427,7 +427,7 @@ class Spider(BaseSpider):
         except (ValueError, TypeError):
             pg = 1
         try:
-            resp = self._request(self.host + "/index.php/vod/search.html", method="POST",
+            resp = self._fetch_page(self.host + "/index.php/vod/search.html", method="POST",
                                  data={"wd": key}, referer=self.host + "/")
             html_text = self._decrypt_page(resp.text if resp else "")
             vods = self._fetch_cards(html_text)
