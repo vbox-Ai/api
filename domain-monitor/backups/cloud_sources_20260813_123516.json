@@ -10,8 +10,8 @@
     {
       "name": "玩偶资源",
       "type": "cms",
-      "searchurl": "https://www.wogg.net/vodsearch/-------------.html?wd=",
-      "detailBase": "https://www.wogg.net",
+      "searchurl": "https://woggpan.xxooo.cf/vodsearch/-------------.html?wd=",
+      "detailBase": "https://woggpan.xxooo.cf",
       "ua": "pc",
       "enabled": true,
       "priority": 1002,
@@ -20,8 +20,8 @@
     {
       "name": "木偶资源",
       "type": "cms",
-      "searchurl": "https://666.666291.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://666.666291.xyz",
+      "searchurl": "https://www.muou.asia/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.muou.asia",
       "enabled": true,
       "priority": 1003,
       "group": "cloud"
@@ -125,8 +125,8 @@
     {
       "name": "飞猫影视",
       "type": "cms",
-      "searchurl": "http://feimo.fun/index.php/vod/search.html?wd=",
-      "detailBase": "http://feimo.fun",
+      "searchurl": "http://tvpanpan.site/index.php/vod/search.html?wd=",
+      "detailBase": "http://tvpanpan.site",
       "enabled": true,
       "priority": 1020,
       "group": "cloud"
