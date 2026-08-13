@@ -14,6 +14,7 @@
 import sys
 import re
 import json
+import gzip
 import html as ihtml
 from urllib.parse import quote, urljoin, unquote
 
@@ -110,10 +111,18 @@ class Spider(BaseSpider):
                     continue
                 if hasattr(r, 'status_code') and r.status_code in (403, 503, 429):
                     continue
-                try:
-                    r.encoding = r.apparent_encoding or 'utf-8'
-                except Exception:
-                    pass
+                # gzip 解压：base.spider 的 urllib 不自动解压 gzip
+                content = r.content if hasattr(r, 'content') else b''
+                if content and len(content) >= 2 and content[0:2] == b'\x1f\x8b':
+                    try:
+                        decompressed = gzip.decompress(content)
+                        r.content = decompressed
+                        r.text = decompressed.decode(r.encoding or 'utf-8', errors='replace')
+                    except Exception:
+                        pass
+                self._log('fetch %s → status=%s, %d bytes, has_videoImg=%s' % (
+                    url.split('/')[-1], getattr(r, 'status_code', '?'),
+                    len(r.text or ''), 'videoImg' in (r.text or '')))
                 return r
             except Exception as e:
                 self._log('request fail %s: %s' % (url, e))
@@ -132,35 +141,37 @@ class Spider(BaseSpider):
     def _cards(self, html_text, base_url):
         """解析 list 页 videoImg 结构卡片。"""
         vods = []
+        # 主正则：匹配 videoImg 卡片（href 可能在 class 之前或之后）
         for m in re.finditer(
-                r'<a[^>]+class="videoImg[^"]*"[^>]*>.*?</a>\s*<a[^>]*href="([^"]*/content/(\d+)\.html)"[^>]*>(.*?)</a>',
-                html_text or '', re.S):
-            href, vid = m.group(1), m.group(2)
-            tail = m.group(3)
-            head = m.group(0)
-            title_m = re.search(r'title="([^"]*)"', head) or re.search(r'title="([^"]*)"', tail)
+                r'<a[^>]*class="[^"]*videoImg[^"]*"[^>]*>.*?</a>', html_text or '', re.S | re.I):
+            block = m.group(0)
+            # 从整个 <a> 标签中提取 href 和 vid
+            link_m = re.search(r'href="([^"]*/content/(\d+)\.html)"', block, re.I)
+            if not link_m:
+                continue
+            vid = link_m.group(2)
+            title_m = re.search(r'title="([^"]*)"', block)
             title = title_m.group(1) if title_m else ''
-            if not title:
-                tm = re.search(r'<b[^>]*>([^<]+)</b>', tail)
-                title = tm.group(1) if tm else ''
-            img = re.search(r"background-image:\s*url\('([^']+)'\)", head)
+            img = re.search(r"background-image:\s*url\('([^']+)'\)", block)
             pic = img.group(1) if img else ''
             if not pic:
-                img2 = re.search(r'imgtag="([^"]*)"', head)
+                img2 = re.search(r'imgtag="([^"]*)"', block)
                 if img2:
                     pic = img2.group(1)
-            dur = re.search(r'<span class="vodtime">([^<]*)</span>', head)
+            dur = re.search(r'<span class="vodtime">([^<]*)</span>', block)
             vods.append({
                 'vod_id': vid,
                 'vod_name': self.clean(title),
                 'vod_pic': urljoin(base_url, pic) if pic else '',
                 'vod_remarks': self.clean(dur.group(1)) if dur else '',
             })
+        # 兼容：若上面没匹配到，尝试匹配 href 在 class 之前的变体
         if not vods:
             for m2 in re.finditer(
-                    r'<a[^>]+class="videoImg[^"]*"[^>]*href="([^"]*/content/(\d+)\.html)"[^>]*', html_text or '', re.I):
+                    r'<a[^>]*href="([^"]*/content/(\d+)\.html)"[^>]*class="[^"]*videoImg[^"]*"[^>]*>',
+                    html_text or '', re.I):
                 block = m2.group(0)
-                href, vid = m2.group(1), m2.group(2)
+                vid = m2.group(2)
                 tm = re.search(r'title="([^"]*)"', block)
                 title = tm.group(1) if tm else ''
                 img = re.search(r"background-image:\s*url\('([^']+)'\)", block)

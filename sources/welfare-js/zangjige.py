@@ -14,6 +14,7 @@
 import sys
 import re
 import json
+import gzip
 import html as ihtml
 from urllib.parse import quote, urljoin, unquote
 
@@ -107,10 +108,18 @@ class Spider(BaseSpider):
                 r = self.fetch(url, headers=headers,
                                timeout=self.timeout, verify=False)
             if r is not None:
-                try:
-                    r.encoding = r.apparent_encoding or 'utf-8'
-                except Exception:
-                    pass
+                # gzip 解压：base.spider 的 urllib 不自动解压 gzip
+                content = r.content if hasattr(r, 'content') else b''
+                if content and len(content) >= 2 and content[0:2] == b'\x1f\x8b':
+                    try:
+                        decompressed = gzip.decompress(content)
+                        r.content = decompressed
+                        r.text = decompressed.decode(r.encoding or 'utf-8', errors='replace')
+                    except Exception:
+                        pass
+                self._log('fetch %s → status=%s, %d bytes, has_wrap=%s' % (
+                    url.split('/')[-1], getattr(r, 'status_code', '?'),
+                    len(r.text or ''), 'wrap-vid' in (r.text or '')))
                 return r
         except Exception as e:
             self._log('request fail %s: %s' % (url, e))
