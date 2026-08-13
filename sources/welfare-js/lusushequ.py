@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 """
-3xlg40o Python Spider - 修复版 (封面+播放+线路)
-适配 FongMi/TV (T3) 和 WebHomeTV/PeekPro (T4)
+3xlg40o Python Spider - 福利专区版 (继承 base.spider.Spider)
 
-修复内容：
+适配 vbox 福利专区，自动享用：
+- 自定义域名（_vbox_effective_hosts 注入 → self.host）
+- 代理设置（_vbox_proxy_enabled / _vbox_proxy_url 注入 → fetch 自动走代理）
+
+功能：
 1. 封面：AES-256-CBC 解密（32字节key，IV=文件前16字节）
-2. 播放：所有线路统一用 cdnId=3（从不返回 Brotli），彻底消除压缩问题
-3. 线路切换：用正则替换 cdnId，更健壮
-4. 列表页封面：走代理解密
+2. 播放：所有线路统一用 cdnId=3（从不返回 Brotli）
+3. 线路切换：用正则替换 cdnId
+4. 列表页封面：走 localProxy 代理解密
 5. m3u8 key URI：根相对路径转绝对路径
-6. 代理请求加 Accept-Encoding: gzip, deflate（优先 gzip，排除 br）
 """
 import sys
 import re
 import json
 import base64
-import ssl
 import gzip
-import urllib.request
 from urllib.parse import urljoin, quote, unquote, urlparse
 
 sys.path.append('..')
@@ -25,19 +25,21 @@ sys.path.append('..')
 try:
     from base.spider import Spider
 except ImportError:
+    # 兜底：非 vbox 环境下用 requests 模拟
     import requests as rq
     class Spider:
         def fetch(self, url, headers=None, **kw):
             kw.pop('timeout', None)
+            kw.pop('verify', None)
             r = rq.get(url, headers=headers, timeout=15, **kw)
             r.encoding = 'utf-8'
             return r
+        def init(self, extend=""):
+            pass
 
 
 class Spider(Spider):
-    API_HOST = "https://215.x89cneo.com:51111"
-
-    # 封面图片 AES-256-CBC 解密密钥 (来自 encryptedImageCore-BYbwSfDp.js)
+    # 封面图片 AES-256-CBC 解密密钥
     _IMG_KEY = b"H0Z%7n#k$H8*M7xSE^N@8xXZPG*RZ&wY"
 
     CATEGORIES = [
@@ -66,33 +68,44 @@ class Spider(Spider):
     _TRANSPARENT_GIF = b"GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;"
 
     def getName(self):
-        return "Uu视频"
+        return "六速社区"
 
     def init(self, extend=""):
+        # 调用父类 init（如果有）
+        try:
+            super().init(extend)
+        except Exception:
+            pass
+
         if isinstance(extend, list):
             self.extend = ''
         else:
             self.extend = extend or ''
+
+        # 自定义 headers（覆盖 base.spider 默认值）
         self.header = {
             'User-Agent': 'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36',
             'Referer': 'https://3.3xlg40o.com/',
             'Accept': '*/*',
             'Accept-Language': 'zh-CN,zh;q=0.9',
         }
-        self._ssl_ctx = ssl.create_default_context()
-        self._ssl_ctx.check_hostname = False
-        self._ssl_ctx.verify_mode = ssl.CERT_NONE
 
     # ========== 工具方法 ==========
 
     def _get_proxy_url(self, params):
-        """构造 localProxy URL，返回空字符串表示不支持代理"""
+        """构造 localProxy URL，返回空字符串表示不支持代理
+
+        注意：这是 iOS 本地代理（localProxy），和福利专区的代理设置（_vbox_proxy_url）是两回事。
+        localProxy 用于图片解密、m3u8 解压等本地处理；
+        福利代理设置由 base.spider 的 _apply_proxy 在 fetch 时自动应用。
+        """
         if not hasattr(self, "getProxyUrl"):
             return ""
         try:
             base = self.getProxyUrl()
+            if not base:
+                return ""
             qs = "&".join([f"{k}={quote(str(v), safe='')}" for k, v in params.items()])
-            # 自动处理 base 是否已含 query string
             sep = "&" if "?" in base else "?"
             return base + sep + qs
         except Exception:
@@ -109,14 +122,38 @@ class Spider(Spider):
 
     # ========== API 核心 ==========
     def _api(self, path, params=None):
+        """调用 API，使用 self.host（由 base.spider 从注入域名读取）
+
+        域名优先级：
+        1. Swift 注入的 _vbox_effective_hosts[0]（用户自定义域名优先）
+        2. 脚本自身 host（兜底，一般用不到）
+        """
         try:
-            url = self.API_HOST + path
+            host = getattr(self, 'host', '')
+            if not host:
+                return None
+            url = host.rstrip('/') + path
             if params:
                 qs = "&".join([f"{k}={v}" for k, v in params.items() if v is not None])
                 url += "?" + qs
-            req = urllib.request.Request(url, headers=self.header)
-            resp = urllib.request.urlopen(req, context=self._ssl_ctx, timeout=15)
-            resp_data = json.loads(resp.read().decode('utf-8'))
+
+            # base.spider.fetch 自动处理：
+            # - SSL 绕过（verify=False，iOS CPython 无系统 CA）
+            # - 福利代理（_vbox_proxy_enabled 时自动包装 URL）
+            resp = self.fetch(url, headers=self.header, verify=False, timeout=15)
+            if resp is None or (hasattr(resp, 'status_code') and resp.status_code != 200):
+                return None
+
+            # 兼容 requests.Response 和 base.spider.Response
+            if hasattr(resp, 'json'):
+                try:
+                    resp_data = resp.json()
+                except Exception:
+                    return None
+            else:
+                text = resp.text if hasattr(resp, 'text') else str(resp)
+                resp_data = json.loads(text)
+
             if resp_data.get("code") != 200:
                 return None
             return self._decrypt(resp_data["data"], resp_data["key"])
@@ -262,10 +299,7 @@ class Spider(Spider):
     # ========== 播放 ==========
     def playerContent(self, flag, id, vipFlags):
         # id 是 m3u8 URL
-        # 服务器对不同 cdnId 间歇性返回 Brotli 压缩，播放器不支持
-        # cdnId=1 和 cdnId=3 返回完全相同的 m3u8 内容（相同 ts URL、相同 key）
-        # 但 cdnId=3 从不返回 Brotli（始终明文或 gzip），cdnId=1/2 会间歇性返回 Brotli
-        # 因此所有线路统一替换为 cdnId=3，彻底消除 Brotli 问题
+        # 所有线路统一替换为 cdnId=3，彻底消除 Brotli 问题
         stable_url = re.sub(r'cdnId=\d+', 'cdnId=3', id) if 'cdnId=' in id else id
 
         # 走 localProxy 代理：解压 gzip + 修复 key URI（根相对→绝对）
@@ -322,17 +356,26 @@ class Spider(Spider):
         if not raw_url:
             return [200, "image/gif", self._TRANSPARENT_GIF]
 
-        # 下载原图
+        # 下载原图（用 base.spider.fetch，自动走福利代理）
         try:
-            req = urllib.request.Request(raw_url, headers={"User-Agent": self.header["User-Agent"]})
-            resp = urllib.request.urlopen(req, context=self._ssl_ctx, timeout=15)
-            data = resp.read()
+            resp = self.fetch(raw_url, headers={
+                "User-Agent": self.header["User-Agent"]
+            }, verify=False, timeout=15)
+            if resp is None:
+                return [200, "image/gif", self._TRANSPARENT_GIF]
+            data = resp.content if hasattr(resp, 'content') else resp.read()
         except Exception:
             return [200, "image/gif", self._TRANSPARENT_GIF]
 
         # 非 .enc 直接透传
         if not raw_url.endswith(".enc"):
-            ct = resp.headers.get("content-type") or "image/jpeg"
+            ct = "image/jpeg"
+            if hasattr(resp, 'headers'):
+                h = resp.headers
+                if isinstance(h, dict):
+                    ct = h.get("content-type") or h.get("Content-Type") or ct
+                else:
+                    ct = h.get("content-type", ct)
             return [200, ct, data]
 
         # === 主要解密方式：AES-256-CBC ===
@@ -447,17 +490,26 @@ class Spider(Spider):
         return None
 
     def _fetch_and_decompress(self, url):
-        """请求 m3u8 URL 并解压，返回文本或 None"""
+        """请求 m3u8 URL 并解压，返回文本或 None
+
+        使用 base.spider.fetch，自动走福利代理。
+        """
         try:
-            req = urllib.request.Request(url, headers={
+            resp = self.fetch(url, headers={
                 'User-Agent': self.header['User-Agent'],
                 'Referer': self.header['Referer'],
-                # 明确排除 br，优先 gzip/deflate（播放器和代理都能处理）
                 'Accept-Encoding': 'gzip, deflate',
-            })
-            resp = urllib.request.urlopen(req, context=self._ssl_ctx, timeout=15)
-            data = resp.read()
-            ce = resp.headers.get('Content-Encoding', '').lower()
+            }, verify=False, timeout=15)
+            if resp is None:
+                return None
+            data = resp.content if hasattr(resp, 'content') else resp.read()
+            ce = ''
+            if hasattr(resp, 'headers'):
+                h = resp.headers
+                if isinstance(h, dict):
+                    ce = (h.get('content-encoding') or h.get('Content-Encoding') or '').lower()
+                else:
+                    ce = h.get('content-encoding', '').lower()
             return self._decompress_m3u8(data, ce)
         except Exception:
             return None
@@ -542,10 +594,17 @@ class Spider(Spider):
     def _proxy_media(self, raw_url):
         """代理媒体分片，补全 header"""
         try:
-            req = urllib.request.Request(raw_url, headers=self.header)
-            resp = urllib.request.urlopen(req, context=self._ssl_ctx, timeout=30)
-            data = resp.read()
-            ct = resp.headers.get("content-type") or "video/MP2T"
+            resp = self.fetch(raw_url, headers=self.header, verify=False, timeout=30)
+            if resp is None:
+                return [200, "video/MP2T", b""]
+            data = resp.content if hasattr(resp, 'content') else resp.read()
+            ct = "video/MP2T"
+            if hasattr(resp, 'headers'):
+                h = resp.headers
+                if isinstance(h, dict):
+                    ct = h.get("content-type") or h.get("Content-Type") or ct
+                else:
+                    ct = h.get("content-type", ct)
             return [200, ct, data]
         except Exception:
             return [200, "video/MP2T", b""]

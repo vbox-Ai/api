@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.05.1",
-    "updatedAt": "2026-08-05T00:00:00Z"
+    "version": "2026.08.13.1",
+    "updatedAt": "2026-08-13T00:00:00Z"
   },
   "schemaVersion": 1,
   "categories": [
@@ -357,6 +357,27 @@
       "api": "./sources/welfare-js/lusushequ.js",
       "scriptType": "javascript",
       "engine": "spider",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "lusushequ_py",
+      "name": "六速社区(Python)",
+      "category": "video",
+      "icon": "chevron.left.forwardslash.chevron.right",
+      "desc": "Python 蜘蛛福利源（测试）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://215.x89cneo.com:51111"
+      ],
+      "sortOrder": 231,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛脚本驱动的福利平台，用于验证福利专区 Python 资源集成方案；SSL 自签名证书；自动适配自定义域名和代理设置",
+      "api": "./sources/welfare-js/lusushequ.py",
+      "scriptType": "python",
+      "engine": "python",
       "sslBypass": true,
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
