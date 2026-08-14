@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.14.3",
-    "updatedAt": "2026-08-14T12:00:00Z",
+    "version": "2026.08.14.4",
+    "updatedAt": "2026-08-14T12:30:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -296,6 +296,30 @@
       "sslBypass": true,
       "contentType": "video",
       "imageSSLBypass": false,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "shenshi_comic_py",
+      "name": "绅士漫画",
+      "category": "comic",
+      "icon": "books.vertical.fill",
+      "desc": "漫画聚合 (Python 引擎版)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.wn03.ru"
+      ],
+      "sortOrder": 300,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利漫画源，BeautifulSoup 解析 HTML；7 个分类（同人/单行/短篇/韩漫/Cosplay/CG/3D）；自动域名跳转；manga:// 协议返回图片列表，长卷模式浏览",
+      "api": "./sources/welfare-js/shenshi_comic.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "comic",
+      "imageReferer": "https://www.wn03.ru/",
+      "imageSSLBypass": true,
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
