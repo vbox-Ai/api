@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.14.1",
-    "updatedAt": "2026-08-14T10:00:00Z",
+    "version": "2026.08.14.2",
+    "updatedAt": "2026-08-14T11:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -273,31 +273,6 @@
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
-      "platformKey": "sebojuhe_py",
-      "name": "色播聚合",
-      "category": "live",
-      "icon": "tv.fill",
-      "desc": "直播聚合 (Python 引擎版)",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "http://api.hclyz.com:81/mf"
-      ],
-      "sortOrder": 300,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛福利直播源，D2 方案：homeContent 1 个分类「全部平台」；homeVideoContent / categoryContent 拉 json.txt 返回 135+ 个直播平台卡片；detailContent 按平台文件（如 jsonweishizhibo.txt）拉取该平台所有频道，串成 1 条 vod_play_url（截断 200 条）；playerContent 直返 m3u8/flv 直播流（parse=0），iOS AVPlayer 原生播放；旧 sebo_juhe 阶段 2 移除，本条目为新增 Python 版",
-      "api": "./sources/welfare-js/sebojuhe.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "contentType": "live",
-      "imageReferer": "http://api.hclyz.com/",
-      "imageSSLBypass": true,
-      "playerRefererMode": "keep",
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
