@@ -13,49 +13,100 @@ from base.spider import Spider
 class Spider(Spider):
     def getName(self): return "绅士漫画"
 
+    # 发布页地址（用于动态获取最新域名）
+    RELEASE_PAGES = [
+        "http://wnlink.ru",
+        "https://wnacg01.link",
+        "https://wnacg02.link",
+    ]
+
+    # 硬编码备用域名（发布页不可用时的兜底）
+    FALLBACK_DOMAINS = [
+        "https://www.wn09.cfd",
+        "https://www.wn09.shop",
+        "https://www.wnacg.com",
+        "https://www.wnacg.live",
+        "https://www.wn03.ru",
+    ]
+
     def init(self, extend=""):
-        # 当前可用域名列表（按优先级）
-        self.domains = [
-            "https://www.wnacg.ru",
-            "https://wnacg.ru",
-            "https://www.wnacg.com",
-            "https://www.wn03.ru",
-            "https://www.wn07.ru",
-        ]
-        self.baseUrl = self.domains[0]
         self.session = requests.Session()
         self.session.verify = False  # SSL 绕过
         self.ua = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.2957.129'
         self.headers = {'User-Agent': self.ua, 'Accept-Language': 'zh-CN,zh;q=0.9', 'Connection': 'keep-alive'}
-        self.check_domain()
 
-    def check_domain(self):
-        """逐个测试域名，选第一个能访问的"""
-        for d in self.domains:
+        # 优先检查 iOS 注入的有效域名（用户自定义 + defaultHosts）
+        # iOS 在调用 init() 前已将 _vbox_effective_hosts 注入到 Python globals
+        injected_hosts = globals().get('_vbox_effective_hosts')
+        if injected_hosts and isinstance(injected_hosts, list) and len(injected_hosts) > 0:
+            # 使用注入的域名（用户自定义优先），跳过发布页发现以节省时间
+            all_domains = [str(h).rstrip('/') for h in injected_hosts]
+        else:
+            # 非 app 环境或未注入：从发布页动态获取最新域名
+            fresh_domains = self.fetch_domains_from_release_page()
+            all_domains = fresh_domains + self.FALLBACK_DOMAINS
+
+        # 逐个测试，5秒超时，选第一个能用的
+        try:
+            self.baseUrl = self.check_domain(all_domains)
+        except Exception:
+            # 所有域名都失败，使用第一个域名作为兜底（不阻塞初始化）
+            # 后续请求时基类的 _backup_hosts 回退机制仍会尝试其他域名
+            self.baseUrl = all_domains[0] if all_domains else self.FALLBACK_DOMAINS[0]
+
+        # 同步 self.host，让基类的 _vbox_original_host 捕获机制正常工作
+        # 这样 requests patch 才能正确替换 URL 中的域名
+        self.host = self.baseUrl
+
+    def _apply_injected_hosts(self):
+        """重写：先调用基类方法刷新 self.host，再同步 self.baseUrl
+
+        iOS 的 _spider_method_wrap 装饰器会在每次接口方法调用前
+        自动调用此方法刷新域名。通过同步 baseUrl，确保用户在设置中
+        修改自定义域名后，shenshi 的所有方法都能立即使用新域名。
+        """
+        # 调用基类的 _apply_injected_hosts 刷新 self.host 和 _backup_hosts
+        super(Spider, self)._apply_injected_hosts()
+        # 同步 baseUrl，shenshi 的所有方法都使用 baseUrl 构造 URL
+        if getattr(self, 'host', ''):
+            self.baseUrl = self.host
+
+    def fetch_domains_from_release_page(self):
+        """从发布页抓取最新可用域名列表"""
+        for page_url in self.RELEASE_PAGES:
             try:
-                r = self.session.get(d, headers=self.headers, timeout=8, allow_redirects=True)
-                if r.status_code == 200 and len(r.text) > 500:
-                    self.baseUrl = d.rstrip('/')
-                    return
+                r = self.session.get(page_url, headers=self.headers, timeout=5, allow_redirects=True)
+                if r.status_code != 200 or len(r.text) < 500:
+                    continue
+                # 提取所有 href 链接
+                urls = re.findall(r'href="(https?://[^"]+)"', r.text)
+                domains = []
+                for url in urls:
+                    url = url.rstrip('/')
+                    # 排除发布页自身、邮箱、CDN 等非内容链接
+                    if any(x in url for x in ['link', 'email', 'cdn-cgi', 'alicdn', 'javascript']):
+                        continue
+                    # 只保留 wn 开头的域名（绅士漫画的域名规律）
+                    if re.search(r'https?://(www\.)?wn\d+\.', url):
+                        domains.append(url)
+                if domains:
+                    return domains
             except:
                 continue
-        # 所有域名都失败，尝试从 wnlink.ru 获取新域名
-        self.fetch_new_domain()
+        return []
 
-    def fetch_new_domain(self):
-        try:
-            r = requests.get("https://wnlink.ru/", headers=self.headers, timeout=8, verify=False)
-            urls = re.findall(r'href="(https?://[^"]+)"', r.text)
-            for url in urls:
-                if "wn" in url and "link" not in url and "wnacg" not in url:
-                    self.baseUrl = url.rstrip('/')
-                    try:
-                        self.session.get(self.baseUrl, headers=self.headers, timeout=8)
-                        return
-                    except:
-                        continue
-        except:
-            pass
+    def check_domain(self, domains):
+        """逐个测试域名，5秒超时，返回第一个能访问的"""
+        for d in domains:
+            try:
+                r = self.session.get(d, headers=self.headers, timeout=5, allow_redirects=True)
+                # 200 且内容长度 > 500（排除空页面/错误页）
+                if r.status_code == 200 and len(r.text) > 500:
+                    return d.rstrip('/')
+            except:
+                continue
+        # 所有域名都失败，抛出异常
+        raise Exception("所有绅士漫画域名都无法访问，请稍后再试")
 
     def get_header(self, url=None):
         h = self.headers.copy()
