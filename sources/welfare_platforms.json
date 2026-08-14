@@ -308,6 +308,8 @@
       "desc": "漫画聚合 (Python 引擎版)",
       "serviceType": "python_spider",
       "defaultHosts": [
+        "https://www.wnacg.ru",
+        "https://wnacg.ru",
         "https://www.wn03.ru"
       ],
       "sortOrder": 300,
@@ -318,7 +320,7 @@
       "engine": "python",
       "sslBypass": true,
       "contentType": "comic",
-      "imageReferer": "https://www.wn03.ru/",
+      "imageReferer": "https://www.wnacg.ru/",
       "imageSSLBypass": true,
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,

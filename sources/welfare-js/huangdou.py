@@ -51,7 +51,7 @@ class _AESCBC:
 
 class Spider(BaseSpider):
     def __init__(self):
-        self.proxy = "http://api.uumnet.com/tvbox/api/proxyrequest.php?url="
+        self.proxy = "https://api.uumnet.com/tvbox/api/proxyrequest.php?url="
         self.host = "https://xqjzvcvt.top"
         self.api = self.proxy + self.host + "/api"
         self.name = "黄豆短剧"
@@ -70,6 +70,7 @@ class Spider(BaseSpider):
         }
         self.session = requests.Session()
         self.session.headers.update(self.headers)
+        self.session.verify = False
         self.class_cache = None
         self.filter_cache = {}
 
@@ -171,6 +172,17 @@ class Spider(BaseSpider):
             "Origin": self.host,
             "Accept": "*/*"
         }
+        # 优先返回 HTTPS 直链（避免 HTTP 代理被 iOS ATS 拦截）
+        # 仅当直链非 HTTPS 时才走代理
+        if url.startswith("https://"):
+            return {
+                "parse": 0,
+                "playUrl": "",
+                "url": url,
+                "jx": 0,
+                "header": play_header,
+                "headers": play_header
+            }
         return {
             "parse": 0,
             "playUrl": "",
