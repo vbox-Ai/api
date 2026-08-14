@@ -256,7 +256,6 @@ class Spider(Spider):
             protocol = "manga" if "Manga" in flag else "pics"
             return {
                 "parse": 0,
-                "playUrl": "",
                 "url": f"{protocol}://" + "&&".join(img_list),
                 "header": json.dumps(self.get_header(id))
             }

@@ -8,6 +8,7 @@ import sys
 import time
 import uuid
 import requests
+import urllib.parse
 
 try:
     from base.spider import Spider as BaseSpider
@@ -172,21 +173,14 @@ class Spider(BaseSpider):
             "Origin": self.host,
             "Accept": "*/*"
         }
-        # 优先返回 HTTPS 直链（避免 HTTP 代理被 iOS ATS 拦截）
-        # 仅当直链非 HTTPS 时才走代理
-        if url.startswith("https://"):
-            return {
-                "parse": 0,
-                "playUrl": "",
-                "url": url,
-                "jx": 0,
-                "header": play_header,
-                "headers": play_header
-            }
+        # 始终走 HTTPS 代理（代理已是 https://，不会被 iOS ATS 拦截）
+        # m3u8 直链需要代理转发才能正常播放
+        # URL 编码 m3u8 地址，避免 ?line=free 等查询参数被代理 URL 截断
+        encoded_url = urllib.parse.quote(url, safe='')
         return {
             "parse": 0,
             "playUrl": "",
-            "url": self.proxy + url,
+            "url": self.proxy + encoded_url,
             "jx": 0,
             "header": play_header,
             "headers": play_header
