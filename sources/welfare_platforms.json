@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.15.5",
-    "updatedAt": "2026-08-15T15:30:00Z",
+    "version": "2026.08.15.6",
+    "updatedAt": "2026-08-15T16:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -406,6 +406,50 @@
       "defaultProxy": false,
       "notes": "91吃瓜中心；pyquery解析HTML；detailContent从.dplayer提取多集；playerContent成功直链parse=0，失败parse=1；localProxy含m3u8代理+TS代理+AES图片解密+缓存；header为dict格式；依赖pyquery+Crypto.Cipher.AES+hashlib",
       "api": "./sources/welfare-js/lingqi_cg.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "tangxinvlog_py",
+      "name": "糖心Vlog",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "短视频/Vlog Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://tangxinvlog.app"
+      ],
+      "sortOrder": 313,
+      "defaultProxy": false,
+      "notes": "糖心Vlog网页版；CDN直链m3u8(t.5gcdn.xyz)；playerContent返回parse=0+dict header；单集单线路；localProxy封面图防盗链；依赖requests",
+      "api": "./sources/welfare-js/tangxinvlog.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "madouyy_py",
+      "name": "麻豆影院",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "多线路网页解析 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://mdyy6c5c5ce5.1010941.xyz",
+        "https://mdyy.cc",
+        "https://www.mdyy.cc"
+      ],
+      "sortOrder": 314,
+      "defaultProxy": false,
+      "notes": "麻豆影院；3域名轮询回退；detailContent从role页提取多线路；playerContent 6层兜底提取m3u8；localProxy内置m3u8广告拦截+TS过滤(270行)；header统一dict格式；依赖BeautifulSoup4(IPA已集成4.15.0)",
+      "api": "./sources/welfare-js/madouyy.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
