@@ -5,9 +5,9 @@
     "description": "远程默认源入口文件，仅保留 iOS 可用的独立 JS 蜘蛛源（5个），移除 JAR/drpy2/lf/alist 框架依赖"
   },
   "schemaVersion": 1,
-  "configVersion": "2026.08.15.2",
+  "configVersion": "2026.08.15.3",
   "minAppVersion": "1.0.0",
-  "updatedAt": "2026-08-15T08:26:13Z",
+  "updatedAt": "2026-08-15T13:11:10Z",
   "ttlSeconds": 21600,
   "files": {
     "allSources": "https://vbox-ai.github.io/api/sources/all_sources.json",
