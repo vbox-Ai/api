@@ -65,6 +65,33 @@ class Spider(Spider):
             return m.group(1)
         return ""
 
+    def _resolve_redirect(self, url):
+        """处理域名重定向：X工厂原始域名会302重定向到新域名的根路径，丢失原始路径。
+
+        检测到域名变更且路径丢失时，在新域名上重建完整路径URL并重新请求。
+        返回 Response 对象。
+        """
+        try:
+            rsp = self.fetch(url, headers=self.headers)
+            final_url = getattr(rsp, '_url', '') or ''
+
+            if final_url:
+                original = urllib.parse.urlparse(url)
+                final = urllib.parse.urlparse(final_url)
+
+                # 域名变了且路径丢失（重定向到根目录）
+                if original.netloc and final.netloc and original.netloc != final.netloc:
+                    if not final.path or final.path == '/':
+                        resolved_url = urllib.parse.urlunparse((
+                            final.scheme, final.netloc, original.path,
+                            original.params, original.query, original.fragment
+                        ))
+                        rsp = self.fetch(resolved_url, headers=self.headers)
+
+            return rsp
+        except Exception:
+            return self.fetch(url, headers=self.headers)
+
     def _parse_video_items(self, html):
         """自适应解析视频列表"""
         videos = []
@@ -277,7 +304,7 @@ class Spider(Spider):
         tid = array[0]
         # 先尝试标准播放页URL获取详情（因为这个站播放页同时也是详情页）
         url = f'{self.baseUrl}/vodplay/{tid}-1-1/'
-        rsp = self.fetch(url, headers=self.headers)
+        rsp = self._resolve_redirect(url)
         html = rsp.text
         tree = etree.HTML(html)
 
@@ -426,7 +453,7 @@ class Spider(Spider):
             return result
 
         try:
-            rsp = self.fetch(url, headers=self.headers)
+            rsp = self._resolve_redirect(url)
             html = rsp.text
         except Exception:
             result["parse"] = 1
@@ -435,24 +462,44 @@ class Spider(Spider):
             result["header"] = json.dumps(self.headers)
             return result
 
+        # 构建播放请求头：Referer 使用重定向后的最终域名（防盗链）
+        play_headers = dict(self.headers)
+        final_url = getattr(rsp, '_url', '') or url
+        try:
+            parsed_final = urllib.parse.urlparse(final_url)
+            if parsed_final.scheme and parsed_final.netloc:
+                play_headers["Referer"] = f'{parsed_final.scheme}://{parsed_final.netloc}/'
+        except Exception:
+            pass
+
         # ===== 方法1：从 player_aaaa 变量提取（MacCMS标准格式）=====
-        pattern = r'var player_aaaa\s*=\s*({.*?});'
-        match = re.search(pattern, html, re.DOTALL)
-        if match:
+        # 兼容多种格式：结尾可能是 ; </script> 或无结尾
+        player_patterns = [
+            r'var\s+player_aaaa\s*=\s*(\{.*?\})\s*</script>',
+            r'var\s+player_aaaa\s*=\s*(\{.*?\})\s*;',
+            r'var\s+player_aaaa\s*=\s*(\{.*?\})',
+        ]
+        for pp in player_patterns:
+            match = re.search(pp, html, re.DOTALL | re.IGNORECASE)
+            if not match:
+                continue
             try:
                 player_info = json.loads(match.group(1))
                 video_url = player_info.get('url', '')
-                if video_url:
+                encrypt = player_info.get('encrypt', 0)
+                if video_url and int(encrypt) == 0:
                     video_url = video_url.replace('\\/', '/')
                     if video_url.startswith('//'):
                         video_url = 'https:' + video_url
                     result["parse"] = 0
                     result["playUrl"] = ""
                     result["url"] = video_url
-                    result["header"] = json.dumps(self.headers)
+                    result["header"] = json.dumps(play_headers)
                     return result
+                # encrypt != 0 表示URL已加密，跳过继续尝试其他方法
             except Exception:
                 pass
+            break
 
         # ===== 方法2：从各种JS变量中提取 =====
         url_patterns = [
@@ -477,7 +524,7 @@ class Spider(Spider):
                     result["parse"] = 0
                     result["playUrl"] = ""
                     result["url"] = video_url
-                    result["header"] = json.dumps(self.headers)
+                    result["header"] = json.dumps(play_headers)
                     return result
 
         # ===== 方法3：从 video 标签提取 =====
@@ -491,7 +538,7 @@ class Spider(Spider):
             result["parse"] = 0
             result["playUrl"] = ""
             result["url"] = video_url
-            result["header"] = json.dumps(self.headers)
+            result["header"] = json.dumps(play_headers)
             return result
 
         # ===== 方法4：从iframe中提取，递归解析 =====
@@ -517,14 +564,14 @@ class Spider(Spider):
                 result["parse"] = 0
                 result["playUrl"] = ""
                 result["url"] = video_url
-                result["header"] = json.dumps(self.headers)
+                result["header"] = json.dumps(play_headers)
                 return result
 
         # 以上都失败
         result["parse"] = 1
         result["playUrl"] = ""
         result["url"] = url
-        result["header"] = json.dumps(self.headers)
+        result["header"] = json.dumps(play_headers)
 
         return result
 
