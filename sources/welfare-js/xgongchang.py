@@ -449,7 +449,7 @@ class Spider(Spider):
             result["parse"] = 0
             result["playUrl"] = ""
             result["url"] = id
-            result["header"] = json.dumps(self.headers)
+            result["header"] = self.headers
             return result
 
         try:
@@ -459,7 +459,7 @@ class Spider(Spider):
             result["parse"] = 1
             result["playUrl"] = ""
             result["url"] = url
-            result["header"] = json.dumps(self.headers)
+            result["header"] = self.headers
             return result
 
         # 构建播放请求头：Referer 使用重定向后的最终域名（防盗链）
@@ -494,7 +494,7 @@ class Spider(Spider):
                     result["parse"] = 0
                     result["playUrl"] = ""
                     result["url"] = video_url
-                    result["header"] = json.dumps(play_headers)
+                    result["header"] = play_headers
                     return result
                 # encrypt != 0 表示URL已加密，跳过继续尝试其他方法
             except Exception:
@@ -524,7 +524,7 @@ class Spider(Spider):
                     result["parse"] = 0
                     result["playUrl"] = ""
                     result["url"] = video_url
-                    result["header"] = json.dumps(play_headers)
+                    result["header"] = play_headers
                     return result
 
         # ===== 方法3：从 video 标签提取 =====
@@ -538,7 +538,7 @@ class Spider(Spider):
             result["parse"] = 0
             result["playUrl"] = ""
             result["url"] = video_url
-            result["header"] = json.dumps(play_headers)
+            result["header"] = play_headers
             return result
 
         # ===== 方法4：从iframe中提取，递归解析 =====
@@ -564,14 +564,14 @@ class Spider(Spider):
                 result["parse"] = 0
                 result["playUrl"] = ""
                 result["url"] = video_url
-                result["header"] = json.dumps(play_headers)
+                result["header"] = play_headers
                 return result
 
         # 以上都失败
         result["parse"] = 1
         result["playUrl"] = ""
         result["url"] = url
-        result["header"] = json.dumps(play_headers)
+        result["header"] = play_headers
 
         return result
 
