@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.04.2",
-    "updatedAt": "2026-08-04T07:15:00Z"
+    "version": "2026.08.15.1",
+    "updatedAt": "2026-08-15T14:30:00Z"
   },
   "schemaVersion": 1,
   "categories": [
@@ -343,6 +343,50 @@
       ],
       "sortOrder": 300,
       "notes": "由 SBAggregationService / SBAggregationView 提供"
+    },
+    {
+      "platformKey": "tangxinvlog_py",
+      "name": "糖心Vlog",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "短视频/Vlog Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://tangxinvlog.app"
+      ],
+      "sortOrder": 301,
+      "defaultProxy": false,
+      "notes": "糖心Vlog 网页版 Python 源；CDN 直链 m3u8（t.5gcdn.xyz）；playerContent 返回 parse=0 + dict header；单集单线路；localProxy 封面图防盗链；isVideoFormat 返回 False；依赖 requests",
+      "api": "./sources/welfare-js/tangxinvlog.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "madouyy_py",
+      "name": "麻豆影院",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "多线路网页解析 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://mdyy6c5c5ce5.1010941.xyz",
+        "https://mdyy.cc",
+        "https://www.mdyy.cc"
+      ],
+      "sortOrder": 302,
+      "defaultProxy": false,
+      "notes": "麻豆影院 Python 源，20 个分类；3 域名轮询回退；detailContent 从 role 页提取多线路（$$$分隔）；playerContent 6 层兜底提取 m3u8（player_aaaa→JS变量→iframe→video→正则）；localProxy 内置 m3u8 广告拦截+TS 过滤（约270行）；header 统一 dict 格式；依赖 BeautifulSoup4（IPA 已集成 4.15.0）",
+      "api": "./sources/welfare-js/madouyy.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ]
 }
