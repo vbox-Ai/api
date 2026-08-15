@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.15.6",
-    "updatedAt": "2026-08-15T16:00:00Z",
+    "version": "2026.08.15.7",
+    "updatedAt": "2026-08-15T16:30:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -385,27 +385,6 @@
       "defaultProxy": false,
       "notes": "55eejj影视；ENC2加密API（FNV-1a+xorshift32）；playerContent返回mp4/m3u8直链parse=0，失败回退parse=1；header为dict格式；单集单线路；localProxy封面图代理；依赖requests+标准库",
       "api": "./sources/welfare-js/qimao.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
-      "platformKey": "lingqi_cg_py",
-      "name": "007吃瓜",
-      "category": "video",
-      "icon": "film.fill",
-      "desc": "91吃瓜中心 Python 源",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://but.vncchqw.cc"
-      ],
-      "sortOrder": 312,
-      "defaultProxy": false,
-      "notes": "91吃瓜中心；pyquery解析HTML；detailContent从.dplayer提取多集；playerContent成功直链parse=0，失败parse=1；localProxy含m3u8代理+TS代理+AES图片解密+缓存；header为dict格式；依赖pyquery+Crypto.Cipher.AES+hashlib",
-      "api": "./sources/welfare-js/lingqi_cg.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
