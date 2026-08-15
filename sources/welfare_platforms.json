@@ -15,7 +15,7 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.15.1",
+    "version": "2026.08.15.2",
     "updatedAt": "2026-08-15T07:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
@@ -50,7 +50,8 @@
       "ybox_xiangjiao",
       "zangjige_py"
     ],
-    "stage2Notes": "阶段2 清理：移除 16 个 JS 蜘蛛福利平台，保留 7 个指定 JS 平台 + 5 个新增 Python 平台。「色播聚合」JS 老版移除（platformKey: sebo_juhe），保留 Python 版（sebojuhe_py）。「艾旦福利套图」移除（platformKey: aidan_comic）。"
+    "stage2Notes": "阶段2 清理：移除 16 个 JS 蜘蛛福利平台，保留 7 个指定 JS 平台 + 5 个新增 Python 平台。「色播聚合」JS 老版移除（platformKey: sebo_juhe），保留 Python 版（sebojuhe_py）。「艾旦福利套图」移除（platformKey: aidan_comic）。",
+    "lastUpdated": "2026-08-15"
   },
   "schemaVersion": 1,
   "categories": [
@@ -342,6 +343,216 @@
       "defaultProxy": false,
       "notes": "Python 蜘蛛福利源，MacCMS v10 模板，自适应多策略降级设计；依赖 lxml.etree 解析 HTML（24 处使用）；4 种 xpath 降级策略提取视频列表；播放 player_aaaa JSON 提取；封面图走 localProxy 代理防盗链。⚠️ 需要 lxml 集成后才能正常运行（阶段 2 完成）",
       "api": "./sources/welfare-js/xgongchang.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "chaturbate_py",
+      "name": "Chaturbate",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "直播平台 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://chaturbate.com"
+      ],
+      "sortOrder": 301,
+      "defaultProxy": false,
+      "notes": "Chaturbate 直播平台，12 个分类；播放器从页面提取 hls_source m3u8 直链；isVideoFormat 返回 False",
+      "api": "./sources/welfare-js/chaturbate.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": false,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "ziye_gui_py",
+      "name": "子夜归",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "苹果CMS Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://xyjc8.cfd"
+      ],
+      "sortOrder": 302,
+      "defaultProxy": false,
+      "notes": "苹果CMS 非标准模板，23 个分类；detailContent 提取 player_aaaa 或直链 m3u8；playerContent 恒返回 parse=0",
+      "api": "./sources/welfare-js/ziye_gui.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "miyun_py",
+      "name": "蜜云视频",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "自定义模板 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://xn--0810-3cc-i30mr40izsbt77d4ir52ihu1g.zilitv64.cfd"
+      ],
+      "sortOrder": 303,
+      "defaultProxy": false,
+      "notes": "自定义模板，播放器页多层提取 m3u8/mp4；isVideoFormat 判断媒体 URL；依赖 requests + BeautifulSoup（可选）",
+      "api": "./sources/welfare-js/miyun.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "llydy_py",
+      "name": "乱伦伊甸园",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "自定义 CMS Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://yan.llydy53.cc"
+      ],
+      "sortOrder": 304,
+      "defaultProxy": false,
+      "notes": "自定义 CMS 模板，14 个分类；detailContent 返回多线路（$$$分隔）；playerContent 从详情页提取 HlsJsPlayer m3u8；header 统一 dict 格式",
+      "api": "./sources/welfare-js/llydy.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "paradisehill_py",
+      "name": "Paradise Hill",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "欧美视频 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://en.paradisehill.cc"
+      ],
+      "sortOrder": 305,
+      "defaultProxy": false,
+      "notes": "欧美视频源，单线路多集（#分隔）；vod_play_url 为 mp4 直链；playerContent 恒返回 parse=0, header 空字符串；isVideoFormat 返回 None（有隐患）",
+      "api": "./sources/welfare-js/paradisehill.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "yemahl_py",
+      "name": "野马中文",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "混合解析 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.yemahl.xyz"
+      ],
+      "sortOrder": 306,
+      "defaultProxy": false,
+      "notes": "混合解析源，vod_play_url 为自定义 id（classid_vid）；playerContent 内部按 _ 拆分解析，直链返回 parse=0，网页回退 parse=1；header 统一 dict；缺失 isVideoFormat",
+      "api": "./sources/welfare-js/yemahl.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "jyzj_py",
+      "name": "九阴争茎",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "多线路 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://kkb1.sixnicejyzj.xyz"
+      ],
+      "sortOrder": 307,
+      "defaultProxy": false,
+      "notes": "多线路多集数源（#分集+$$$分线路，标准格式）；playerContent 从播放页提取 m3u8 并包装为 localProxy 代理 URL；header 格式不一致（混用 dict 和 json.dumps）",
+      "api": "./sources/welfare-js/jyzj.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "xxbrits_py",
+      "name": "xxBrits",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "视频+写真 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.xxbrits.com/"
+      ],
+      "sortOrder": 308,
+      "defaultProxy": false,
+      "notes": "视频+写真双模式源；视频返回 mp4 直链 parse=0；写真返回图片列表；header 格式不一致（图集 dict，视频 json.dumps）",
+      "api": "./sources/welfare-js/xxbrits.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "uuvision_py",
+      "name": "UU视视",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "JS挑战+API Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://aqx1.8uyp35j.com:51888"
+      ],
+      "sortOrder": 309,
+      "defaultProxy": false,
+      "notes": "JS挑战+API多源发现，多线路（$$$分隔）；playerContent 返回 m3u8 直链 parse=0 或网页 parse=1；强依赖 pycryptodome（AES/SHA256/PBKDF2）；header 统一 dict",
+      "api": "./sources/welfare-js/uuvision.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "yinshuidong_py",
+      "name": "淫水洞",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "多线路网页解析 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://ysd.yinsd1.sbs"
+      ],
+      "sortOrder": 310,
+      "defaultProxy": false,
+      "notes": "多线路多集数源（#分集+$$$分线路）；detailContent 返回网页路径，playerContent 二次请求解析 m3u8；header 格式不一致（混用 dict 和 json.dumps）；使用中文方法名",
+      "api": "./sources/welfare-js/yinshuidong.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
