@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.14.4",
-    "updatedAt": "2026-08-14T12:30:00Z",
+    "version": "2026.08.15.1",
+    "updatedAt": "2026-08-15T07:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -324,6 +324,27 @@
       "contentType": "comic",
       "imageReferer": "https://www.wn09.cfd/",
       "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "xgongchang_py",
+      "name": "X工厂",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "MacCMS v10 自适应 Python 源（lxml 依赖）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://hkcfrsm6.xgongchang.buzz"
+      ],
+      "sortOrder": 236,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，MacCMS v10 模板，自适应多策略降级设计；依赖 lxml.etree 解析 HTML（24 处使用）；4 种 xpath 降级策略提取视频列表；播放 player_aaaa JSON 提取；封面图走 localProxy 代理防盗链。⚠️ 需要 lxml 集成后才能正常运行（阶段 2 完成）",
+      "api": "./sources/welfare-js/xgongchang.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
