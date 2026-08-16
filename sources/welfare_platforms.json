@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.16.3",
-    "updatedAt": "2026-08-16T10:30:00Z",
+    "version": "2026.08.16.4",
+    "updatedAt": "2026-08-16T12:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -51,7 +51,7 @@
       "ybox_xiangjiao",
       "zangjige_py"
     ],
-    "stage3Notes": "阶段3 更新：移除「糖心Vlog」（tangxinvlog_py），新增「狂飙短剧」（kuangbiao_py）、「avgood」（avgood_py）、「一抖阁」（yidouge_py）三个 Python 蜘蛛福利源。",
+    "stage3Notes": "阶段3 更新：移除「糖心Vlog」（tangxinvlog_py），新增「狂飙短剧」（kuangbiao_py）、「avgood」（avgood_py）、「一抖阁」（yidouge_py）三个 Python 蜘蛛福利源。 新增 8 个 Python 蜘蛛福利源：小红薯/香蕉视频/蜜桃视频/迷妹网/黑料网/爆片库/2048核基地/采集聚合。",
     "lastUpdated": "2026-08-16"
   },
   "schemaVersion": 1,
@@ -303,6 +303,27 @@
       "visibleInHome": false
     },
     {
+      "platformKey": "xgongchang_py",
+      "name": "X工厂",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "MacCMS v10 自适应 Python 源（lxml 依赖）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://hkcfrsm6.xgongchang.buzz"
+      ],
+      "sortOrder": 236,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，MacCMS v10 模板，自适应多策略降级设计；依赖 lxml.etree 解析 HTML（24 处使用）；4 种 xpath 降级策略提取视频列表；播放 player_aaaa JSON 提取；封面图走 localProxy 代理防盗链。⚠️ 需要 lxml 集成后才能正常运行（阶段 2 完成）",
+      "api": "./sources/welfare-js/xgongchang.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
       "platformKey": "shenshi_comic_py",
       "name": "绅士漫画",
       "category": "comic",
@@ -326,27 +347,6 @@
       "contentType": "comic",
       "imageReferer": "https://www.wn09.cfd/",
       "imageSSLBypass": true,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
-      "platformKey": "xgongchang_py",
-      "name": "X工厂",
-      "category": "video",
-      "icon": "film.fill",
-      "desc": "MacCMS v10 自适应 Python 源（lxml 依赖）",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://hkcfrsm6.xgongchang.buzz"
-      ],
-      "sortOrder": 236,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛福利源，MacCMS v10 模板，自适应多策略降级设计；依赖 lxml.etree 解析 HTML（24 处使用）；4 种 xpath 降级策略提取视频列表；播放 player_aaaa JSON 提取；封面图走 localProxy 代理防盗链。⚠️ 需要 lxml 集成后才能正常运行（阶段 2 完成）",
-      "api": "./sources/welfare-js/xgongchang.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
@@ -415,6 +415,29 @@
       "visibleInHome": false
     },
     {
+      "platformKey": "madouyy_py",
+      "name": "麻豆影院",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "多线路网页解析 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://mdyy6c5c5ce5.1010941.xyz",
+        "https://mdyy.cc",
+        "https://www.mdyy.cc"
+      ],
+      "sortOrder": 314,
+      "defaultProxy": false,
+      "notes": "麻豆影院；3域名轮询回退；detailContent从role页提取多线路；playerContent 6层兜底提取m3u8；localProxy内置m3u8广告拦截+TS过滤(270行)；header统一dict格式；依赖BeautifulSoup4(IPA已集成4.15.0)",
+      "api": "./sources/welfare-js/madouyy.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
       "platformKey": "avgood_py",
       "name": "avgood",
       "category": "video",
@@ -457,21 +480,167 @@
       "visibleInHome": false
     },
     {
-      "platformKey": "madouyy_py",
-      "name": "麻豆影院",
+      "platformKey": "xiaohongshu_py",
+      "name": "小红薯",
       "category": "video",
       "icon": "film.fill",
-      "desc": "多线路网页解析 Python 源",
+      "desc": "AES加密短视频 Python 源",
       "serviceType": "python_spider",
       "defaultHosts": [
-        "https://mdyy6c5c5ce5.1010941.xyz",
-        "https://mdyy.cc",
-        "https://www.mdyy.cc"
+        "https://fhoumpjjih.work"
       ],
-      "sortOrder": 314,
+      "sortOrder": 400,
       "defaultProxy": false,
-      "notes": "麻豆影院；3域名轮询回退；detailContent从role页提取多线路；playerContent 6层兜底提取m3u8；localProxy内置m3u8广告拦截+TS过滤(270行)；header统一dict格式；依赖BeautifulSoup4(IPA已集成4.15.0)",
-      "api": "./sources/welfare-js/madouyy.py",
+      "notes": "Python 蜘蛛福利源，小红书风格短视频 APP；AES-128-CBC 加密 API（encData）；动态域名探测（4个base随机子域名）；封面图 XOR 加密走 localProxy 解密；m3u8 authPath 解码播放；依赖 Crypto.Cipher.AES",
+      "api": "./sources/welfare-js/xiaohongshu.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "xiangjiao_py",
+      "name": "香蕉视频",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "H5 API Python 源（VIP泄漏）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://h5.xxoo473.org"
+      ],
+      "sortOrder": 401,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，香蕉视频 H5 API；X-Cookie-Auth 认证头；免费视频 reqplay 直链 m3u8；VIP 视频 preview key URI 上溯 master 泄漏模式；封面图走 localProxy 代理",
+      "api": "./sources/welfare-js/xiangjiao.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "mitao_py",
+      "name": "蜜桃视频",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "AES加密APP Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.nht966hht.vip:9527"
+      ],
+      "sortOrder": 402,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，蜜桃视频 H5 APP；AES-128-CBC ZeroPadding 加密 API + MD5 签名；deviceLogin 会话初始化；女优/专题 folder 模式；封面图 XOR 0x88 加密走 localProxy 解密；m3u8 直链播放；依赖 Crypto.Cipher.AES",
+      "api": "./sources/welfare-js/mitao.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "mimei_py",
+      "name": "迷妹网",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "HTML解析 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://3bmm.com",
+        "https://dtijfoc.info"
+      ],
+      "sortOrder": 403,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，迷妹网自建站；HTML 正则解析列表/详情/搜索；CDN HLS + CDN PIC 分离；m3u8 hash 从详情页提取；封面图走 localProxy 代理；纯标准库实现（无第三方依赖）",
+      "api": "./sources/welfare-js/mimei.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "heiliao_py",
+      "name": "黑料网",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "黑料视频/图文 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://heiliao.com"
+      ],
+      "sortOrder": 404,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，黑料网 Wordpress 模板；28 个分类；视频 dplayer config JSON 提取；图文 pics:// 协议；文字 novel:// 协议；封面图 AES-128-CBC 加密走 localProxy 解密；依赖 Crypto.Cipher.AES",
+      "api": "./sources/welfare-js/heiliao.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "baopianku_py",
+      "name": "爆片库",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "MacCMS API+HTML双模式 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://bkpk82.baokuanpk.cc"
+      ],
+      "sortOrder": 405,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，爆款片库 MacCMS；API 优先 / HTML 兜底双模式；50+ 分类；13 层播放地址提取策略（player_aaaa/base64/iframe/meta 等）；m3u8 广告清洗本地代理；封面图走 localProxy 代理；依赖 base64 + 标准库",
+      "api": "./sources/welfare-js/baopianku.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "hejidi2048_py",
+      "name": "2048核基地",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "发布页自动更新域名 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://s7t8u9v0.luanlunba15.cc"
+      ],
+      "sortOrder": 406,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，2048核基地；发布页 cookie 验证 + AJAX 接口自动获取最新域名；MacCMS 模板 HTML 解析；m3u8 广告清洗（前置广告/域名路径识别/累积时长跳过）；封面图走 localProxy 代理；纯标准库实现",
+      "api": "./sources/welfare-js/hejidi2048.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "juhe_py",
+      "name": "采集聚合",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "33站API聚合 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://xingba111.com"
+      ],
+      "sortOrder": 407,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利聚合源，33 个 MacCMS API 站点聚合搜索/分类；线程池并发（限4线程）；统一 vod_id 前缀命名（source@@id）；线路名前缀区分来源；封面直链（部分站点需代理）",
+      "api": "./sources/welfare-js/juhe.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
