@@ -261,9 +261,13 @@ class Spider(_B):
                 if tm:
                     title = _py_aes_decrypt(re.sub(r'<[^>]+>', '', tm.group(1)).strip())
             pic = ''
-            im = re.search(r'data-pic-base64="([^"]+)"', inner, re.S)
+            im = re.search(r'data-base64="([^"]+)"', inner, re.S)
             if im:
-                pic = self._pic(im.group(1).strip())
+                pic = self._image(im.group(1).strip())
+            else:
+                im = re.search(r'data-pic-base64="([^"]+)"', inner, re.S)
+                if im:
+                    pic = self._pic(im.group(1).strip())
             dm = re.search(r'class="[^"]*video-item-date[^"]*"[^>]*>([^<]+)', inner, re.S)
             date = dm.group(1).strip() if dm else ''
             if href and title:
@@ -372,7 +376,7 @@ class Spider(_B):
                 return {'list': [{'vod_id': play_url, 'vod_name': title, 'vod_pic': pics[0],
                     'type_name': '圖片', 'vod_year': '', 'vod_area': '', 'vod_remarks': str(len(pics)) + 'P',
                     'vod_actor': '', 'vod_director': '', 'vod_content': '',
-                    'vod_play_from': '圖片集', 'vod_play_url': '圖片集$' + 'pics://' + '&&'.join(pics)}]}
+                    'vod_play_from': '图片浏览', 'vod_play_url': '图片浏览$' + 'pics://' + '&&'.join(pics)}]}
 
         # 兜底：如果没找到图片，尝试从其他地方提取
         if not img:
@@ -393,7 +397,7 @@ class Spider(_B):
         return {'list': [{'vod_id': play_url, 'vod_name': title, 'vod_pic': img,
             'type_name': '圖片', 'vod_year': '', 'vod_area': '', 'vod_remarks': '',
             'vod_actor': '', 'vod_director': '', 'vod_content': '',
-            'vod_play_from': '圖片集', 'vod_play_url': '圖片集$pics://'}]}
+            'vod_play_from': '图片浏览', 'vod_play_url': '图片浏览$pics://'}]}
 
     def playerContent(self, flag, id, vipFlags=None):
         if id.startswith('pics://'):

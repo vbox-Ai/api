@@ -198,6 +198,20 @@ class Spider(Spider):
             print(f"[shenshi_comic] parse_list error: {e}\n{traceback.format_exc()[:200]}", file=sys.stderr)
             return {"list": []}
 
+    def _extract_images_from_gallery(self, html):
+        """从 gallery 页面 HTML 中提取图片列表（复用 playerContent 中的提取逻辑）"""
+        html = html.replace(r'\/', '/')
+        img_list = []
+        for m in re.findall(r'((?:https?:|//)[^"\'\s<>\[\]{}]+?\.(?:jpg|png|webp|jpeg|gif))', html, re.I):
+            url = "https:" + m if m.startswith("//") else m
+            if any(x in url.lower() for x in ['logo', 'icon', 'avatar', 'banner', 'button', 'favicon', 'loading', 'placeholder']):
+                continue
+            if "thumb" in url.lower():
+                url = url.replace("thumb_", "").replace("_thumb", "")
+            if url not in img_list:
+                img_list.append(url)
+        return img_list
+
     def detailContent(self, ids):
         vid = ids[0]
         url = self.baseUrl + vid if vid.startswith('/') else vid
@@ -216,23 +230,36 @@ class Spider(Spider):
                 if cover.startswith("//"):
                     cover = "https:" + cover
             
-            play_url = vid.replace("index", "gallery")
-            if not play_url.startswith("http"):
-                play_url = self.baseUrl + play_url
+            # 直接请求 gallery 页面，提取图片列表
+            gallery_url = vid.replace("index", "gallery")
+            if not gallery_url.startswith("http"):
+                gallery_url = self.baseUrl + gallery_url
+            
+            gr = self.session.get(gallery_url, headers=self.get_header(gallery_url), timeout=15, allow_redirects=True)
+            img_list = self._extract_images_from_gallery(gr.text)
+            
+            if img_list:
+                play_url = "全集$manga://" + "&&".join(img_list)
+            else:
+                # 兜底：没提取到图片时仍返回 gallery URL，走 playerContent
+                play_url = f"全集${gallery_url}"
             
             return {"list": [{
                 "vod_id": vid,
                 "vod_name": title,
                 "vod_pic": cover,
                 "vod_type": "漫画",
-                "vod_play_from": "绅士漫画$$$绅士漫画(Manga)",
-                "vod_play_url": f"全集${play_url}$$$全集${play_url}"
+                "vod_play_from": "绅士漫画",
+                "vod_play_url": play_url
             }]}
         except Exception as e:
             print(f"[shenshi_comic] detailContent error: {e}", file=sys.stderr)
             return {"list": [{"vod_id": vid, "vod_name": "加载失败", "vod_play_from": "绅士漫画", "vod_play_url": f"全集${url}"}]}
 
     def playerContent(self, flag, id, vipFlags):
+        # 如果 id 已经是 manga:// 协议，直接返回
+        if id.startswith("manga://"):
+            return {"parse": 0, "url": id, "header": json.dumps(self.get_header())}
         try:
             r = self.session.get(id, headers=self.get_header(id), timeout=15, allow_redirects=True)
             html = r.text.replace(r'\/', '/')
