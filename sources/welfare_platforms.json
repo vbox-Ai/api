@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.16.2",
-    "updatedAt": "2026-08-16T02:10:00Z",
+    "version": "2026.08.16.3",
+    "updatedAt": "2026-08-16T10:30:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -34,7 +34,8 @@
       "huadu_video",
       "naitang_video",
       "sebo_juhe",
-      "aidan_comic"
+      "aidan_comic",
+      "tangxinvlog_py"
     ],
     "stage2KeptKeys": [
       "aidan_video",
@@ -50,8 +51,8 @@
       "ybox_xiangjiao",
       "zangjige_py"
     ],
-    "stage2Notes": "阶段2 清理：移除 16 个 JS 蜘蛛福利平台，保留 7 个指定 JS 平台 + 5 个新增 Python 平台。「色播聚合」JS 老版移除（platformKey: sebo_juhe），保留 Python 版（sebojuhe_py）。「艾旦福利套图」移除（platformKey: aidan_comic）。",
-    "lastUpdated": "2026-08-15"
+    "stage3Notes": "阶段3 更新：移除「糖心Vlog」（tangxinvlog_py），新增「狂飙短剧」（kuangbiao_py）、「avgood」（avgood_py）、「一抖阁」（yidouge_py）三个 Python 蜘蛛福利源。",
+    "lastUpdated": "2026-08-16"
   },
   "schemaVersion": 1,
   "categories": [
@@ -393,19 +394,61 @@
       "visibleInHome": false
     },
     {
-      "platformKey": "tangxinvlog_py",
-      "name": "糖心Vlog",
+      "platformKey": "kuangbiao_py",
+      "name": "狂飙短剧",
       "category": "video",
-      "icon": "film.fill",
-      "desc": "短视频/Vlog Python 源",
+      "icon": "play.square.fill",
+      "desc": "API短剧聚合 Python 源",
       "serviceType": "python_spider",
       "defaultHosts": [
-        "https://tangxinvlog.app"
+        "https://ai.dramarush.tv"
       ],
       "sortOrder": 313,
       "defaultProxy": false,
-      "notes": "糖心Vlog网页版；CDN直链m3u8(t.5gcdn.xyz)；playerContent返回parse=0+dict header；单集单线路；localProxy封面图防盗链；依赖requests；verify=False跳过SSL验证+urllib3警告抑制",
-      "api": "./sources/welfare-js/tangxinvlog.py",
+      "notes": "Python 蜘蛛福利短剧源，tRPC API JSON 接口；3 分类（成人短剧/正规短剧/短剧）；多 CDN 回退提取直链（raw.shorttv.online/cdn.shorttv.online）；内置 fallback 内容；playerContent 返回 parse=0 + JSON header；依赖 requests",
+      "api": "./sources/welfare-js/kuangbiao.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "avgood_py",
+      "name": "avgood",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "HTML 解析视频/磁力 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://avgood.com"
+      ],
+      "sortOrder": 315,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，HTML 解析 + regex；30+ 分类；支持在线视频/磁力链接/种子下载；iframe→ajax 多层提取播放地址；init 自动探测域名重定向；依赖 requests",
+      "api": "./sources/welfare-js/avgood.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "yidouge_py",
+      "name": "一抖阁",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "HTML 解析短剧 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://yidouge.com"
+      ],
+      "sortOrder": 316,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利短剧源，HTML 解析 + regex；5 分类（AI短剧/伦理绿帽NTR/现代/古装/PMV）；video-card 模式提取列表；data-video-url/<video>/<source> 多策略提取播放地址；playerContent 返回 parse=0 + dict header；requests 可选（urllib 回退）",
+      "api": "./sources/welfare-js/yidouge.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
