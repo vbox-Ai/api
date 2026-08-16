@@ -111,30 +111,34 @@ def _decode_page(raw_html):
     return raw_html
 
 
-def _discover_domain(session, timeout=8):
+def _discover_domain(session, timeout=6):
     """
-    域名自动发现：
-    1. 先从地址发布页解析出所有内容站候选
-    2. 依次测试可用性，返回第一个可用的
+    域名自动发现（并发版）：
+    1. 先从地址发布页解析出所有内容站候选（并发请求发布页）
+    2. 并发测试所有候选域名可用性，返回第一个成功的
     """
     candidates = []
 
-    # 从发布页解析候选域名
-    for pub_url in _PUBLISH_PAGES:
+    # ---- 步骤1: 并发请求发布页，收集候选域名 ----
+    def _fetch_publish(pub_url):
         try:
             r = session.get(pub_url, timeout=timeout, allow_redirects=True)
             decoded = _decode_page(r.text)
-            # 发布页中列出的内容域名格式
             found = re.findall(
                 r'https?://(?:\d+\.yuese\d+\.cc(?::\d+)?|yuesetv\.net|xxtv\d*\.vip)',
                 decoded
             )
-            for u in found:
-                u = u.rstrip('/')
-                if u not in candidates:
-                    candidates.append(u)
+            return [u.rstrip('/') for u in found]
         except Exception as e:
             print(f"[YUESE] 发布页 {pub_url} 失败: {e}")
+            return []
+
+    with ThreadPoolExecutor(max_workers=len(_PUBLISH_PAGES)) as pub_exec:
+        pub_futures = [pub_exec.submit(_fetch_publish, u) for u in _PUBLISH_PAGES]
+        for f in pub_futures:
+            for u in f.result():
+                if u not in candidates:
+                    candidates.append(u)
 
     # 补充直接候选（防止发布页全挂）
     for u in _DIRECT_CANDIDATES:
@@ -146,19 +150,26 @@ def _discover_domain(session, timeout=8):
     candidates = [u for u in candidates
                   if not any(h in u for h in publish_hosts)]
 
-    print(f"[YUESE] 候选域名: {candidates}")
+    print(f"[YUESE] 候选域名: {len(candidates)}个")
 
-    # 测试每个候选
-    for domain in candidates:
+    # ---- 步骤2: 并发测试候选域名，谁先成功用谁 ----
+    def _test_domain(domain):
         try:
             r = session.get(domain + "/", timeout=timeout, allow_redirects=True)
             decoded = _decode_page(r.text)
-            # 判断是否是真正的内容站（含分类链接）
             if re.search(r'/type/\d+', decoded):
-                print(f"[YUESE] 使用域名: {domain}")
                 return domain.rstrip('/')
-        except Exception as e:
-            print(f"[YUESE] 测试 {domain} 失败: {e}")
+        except Exception:
+            pass
+        return None
+
+    with ThreadPoolExecutor(max_workers=min(len(candidates), 6)) as executor:
+        future_to_domain = {executor.submit(_test_domain, d): d for d in candidates}
+        for future in as_completed(future_to_domain):
+            result = future.result()
+            if result:
+                print(f"[YUESE] 使用域名: {result}")
+                return result
 
     # 全挂兜底
     fallback = _DIRECT_CANDIDATES[0]

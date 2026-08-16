@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-3bmm.com / dtijfoc.info — 迷妹网 TVBox / vbox 兼容爬虫
-站点: https://3bmm.com (301 → dtijfoc.info)
+tmewepu.info — 迷妹网 TVBox / vbox 兼容爬虫
+站点: https://tmewepu.info (原 3bmm.com → dtijfoc.info → tmewepu.info)
 CMS: 自建站点，无签名/无反爬/无倒计时
 适配 vbox PythonSpiderEngine：继承 base.spider.Spider，统一使用 self.fetch / self.post。
 """
@@ -17,8 +17,10 @@ from base.spider import Spider
 # 常量
 # ---------------------------------------------------------------------------
 CANDIDATE_BASE_URLS = [
-    "https://3bmm.com",
+    "https://tmewepu.info",
     "https://dtijfoc.info",
+    "https://www.tmewepu.info",
+    "https://m.tmewepu.info",
 ]
 
 CATEGORY_MAP = {
@@ -43,7 +45,7 @@ CDN_PIC  = "https://aghivwz.info/pic"
 SEARCH_URL = "/e/search/index.php"
 
 # 通用请求头
-TIMEOUT = 5
+TIMEOUT = 4
 
 HEADERS = {
     "User-Agent": (
@@ -167,20 +169,9 @@ class Spider(Spider):
 
     # ------------------------------------------------------------------
     def _resolve_base_url(self):
-        """探测可用的 base_url，3bmm.com 会自动 301，取最终跳转后域名。
+        """探测可用的 base_url，取最终跳转后域名。
         失败时返回空字符串（不抛异常），让分类至少能显示。"""
-        # 候选域名列表（优先使用注入的，再尝试这些）
         candidates = list(CANDIDATE_BASE_URLS)
-        # 额外补充一些可能的镜像
-        extra = [
-            "https://www.3bmm.com",
-            "https://m.3bmm.com",
-            "https://3bmm.tv",
-            "https://mmzy.tv",
-        ]
-        for e in extra:
-            if e not in candidates:
-                candidates.append(e)
 
         print(f'[mimei] 开始探测 {len(candidates)} 个候选域名...')
         for i, url in enumerate(candidates):

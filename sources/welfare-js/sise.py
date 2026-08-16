@@ -10,6 +10,7 @@
 """
 import sys, re, json, base64
 from urllib.parse import quote, unquote, urljoin, urlparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 sys.path.append('..')
 try:
     from base.spider import Spider as _B
@@ -30,20 +31,39 @@ _DOMAIN_CANDIDATES = [
                                   ]
 _ENTER_PATH = '/enter.html'
 
-def _discover_domain(candidates=None, timeout=10):
+def _discover_domain(candidates=None, timeout=6):
+    """并发探测域名，谁先成功返回谁。
+    所有候选域名同时请求，取第一个 200/301/302 响应的。"""
     candidates = candidates or _DOMAIN_CANDIDATES
-    session = requests.Session()
-    session.headers.update({'User-Agent': U, 'Referer': ''})
-    for domain in candidates:
+    if not candidates:
+        return 'https://www.o8q9m.top'
+
+    def _test_one(domain):
         try:
-            r = session.get(domain + _ENTER_PATH, timeout=timeout, allow_redirects=True)
+            import requests
+            sess = requests.Session()
+            sess.headers.update({'User-Agent': U, 'Referer': ''})
+            r = sess.get(domain + _ENTER_PATH, timeout=timeout, allow_redirects=True)
             if r.status_code in (200, 301, 302):
                 final_url = r.url
                 parsed = urlparse(final_url)
                 return f'{parsed.scheme}://{parsed.netloc}'
-        except:
-            continue
-    return candidates[0] if candidates else 'https://www.o8q9m.top'
+        except Exception:
+            pass
+        return None
+
+    # 并发探测，谁先成功用谁
+    with ThreadPoolExecutor(max_workers=len(candidates)) as executor:
+        future_to_domain = {executor.submit(_test_one, d): d for d in candidates}
+        for future in as_completed(future_to_domain):
+            result = future.result()
+            if result:
+                print(f'[四色] 域名探测成功: {result}')
+                return result
+
+    # 全部失败，返回第一个兜底
+    print(f'[四色] 所有域名探测失败，兜底: {candidates[0]}')
+    return candidates[0]
 
 _AES_KEY = 'IdTJq0HklpuI6mu8iB%OO@!vd^4K&uXW'
 _AES_IV = '$0v@krH7V2883346'

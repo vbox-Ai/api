@@ -89,16 +89,26 @@ class Spider(BaseSpider):
 
     # ========== 检测API是否可用 ==========
     def _check_api_available(self):
-        try:
-            test_url = self.api_url + "?ac=list&t=1&pg=1"
-            res = self.fetch(test_url, headers=headerx, timeout=5, verify=False)
-            data = self._resp_json(res)
-            if data.get('code') == 1 and data.get('list'):
-                self.use_api = True
-                print(f"[_check_api] API可用，切换到API模式")
-                return
-        except Exception as e:
-            print(f"[_check_api] API检测失败: {e}")
+        """检测 API 是否可用。
+        注意：站点根路径 API 可能 404，但内容在 /bb/ 子目录下，
+        因此尝试 /bb/api.php/... 路径。"""
+        api_paths = [
+            self.host + "/api.php/provide/vod/?ac=list&t=1&pg=1",
+            self.host + "/bb/api.php/provide/vod/?ac=list&t=1&pg=1",
+        ]
+        for test_url in api_paths:
+            try:
+                res = self.fetch(test_url, headers=headerx, timeout=5, verify=False)
+                data = self._resp_json(res)
+                if data.get('code') == 1 and data.get('list'):
+                    self.use_api = True
+                    # 更新 api_url 到正确路径
+                    if '/bb/' in test_url:
+                        self.api_url = self.host + "/bb/api.php/provide/vod/"
+                    print(f"[_check_api] API可用: {self.api_url}")
+                    return
+            except Exception as e:
+                print(f"[_check_api] {test_url} 检测失败: {e}")
         print(f"[_check_api] API不可用，使用HTML解析模式")
 
     # ========== 首页视频 ==========
@@ -288,7 +298,7 @@ class Spider(BaseSpider):
         return []
 
     def _fetch_categories_from_html(self):
-        """从首页 HTML 解析分类菜单"""
+        """从首页 HTML 解析分类菜单，过滤掉空分类和'更多'等无效项"""
         try:
             res = self.fetch(self.host + '/bb/', headers=headerx, timeout=8, verify=False)
             html = self._resp_text(res)
@@ -301,25 +311,75 @@ class Spider(BaseSpider):
                 re.I
             )
             seen = set()
+            skip_names = ('首页', '全部', '更多', '排行', '留言', '搜索', '专题', 'APP', '下载', '注册', '登录')
             for match in pattern.finditer(html):
                 href = match.group(1)
                 tid = match.group(2)
                 name = match.group(3).strip()
-                # 过滤掉导航栏重复项和非分类项
+                # 过滤无效项
                 if not name or len(name) > 10 or tid in seen:
                     continue
-                if name in ('首页', '全部', '更多', '排行', '留言', '搜索', '专题'):
+                if name in skip_names:
+                    continue
+                # 过滤掉纯数字/符号的名称
+                if re.match(r'^[\d\W]+$', name):
                     continue
                 seen.add(tid)
                 cats.append({'type_id': href, 'type_name': name})
+
+            # 验证每个分类是否有数据（并发探测前几个，快速过滤空分类）
             if cats:
-                print(f"[_fetch_html] 从HTML获取到 {len(cats)} 个分类")
+                cats = self._filter_empty_categories(cats)
+
+            if cats:
+                print(f"[_fetch_html] 从HTML获取到 {len(cats)} 个有效分类")
             else:
                 print("[_fetch_html] HTML解析分类为空")
             return cats
         except Exception as e:
             print(f"[_fetch_html] 解析分类失败: {e}")
             return []
+
+    def _filter_empty_categories(self, cats, max_workers=6):
+        """并发检测分类是否有数据，过滤空分类。
+        最多检测前 40 个，避免请求过多。"""
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        test_cats = cats[:40]
+        valid_cats = []
+
+        def _check_cat(cat):
+            try:
+                url = self.host + cat['type_id']
+                res = self.fetch(url, headers=headerx, timeout=5, verify=False)
+                html = self._resp_text(res)
+                if len(html) < 200:
+                    return None
+                # 检查是否有视频详情链接
+                has_content = bool(re.search(r'/bb/index\.php/vod/detail/id/\d+\.html', html))
+                # 检查是否有"暂无"等空提示
+                is_empty = bool(re.search(r'暂无|没有找到|空空如也', html))
+                if has_content and not is_empty:
+                    return cat
+            except Exception:
+                pass
+            return None
+
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_to_cat = {executor.submit(_check_cat, c): c for c in test_cats}
+            for future in as_completed(future_to_cat):
+                result = future.result()
+                if result:
+                    valid_cats.append(result)
+
+        # 保持原有顺序
+        valid_ids = {c['type_id'] for c in valid_cats}
+        ordered = [c for c in cats if c['type_id'] in valid_ids]
+
+        if len(ordered) < len(cats):
+            print(f"[_filter_empty] 过滤掉 {len(cats) - len(ordered)} 个空分类")
+
+        return ordered
 
     # ========== 分类列表 ==========
     def categoryContent(self, cid, pg, filter, ext):

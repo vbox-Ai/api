@@ -493,12 +493,12 @@
       "desc": "HTML解析 Python 源",
       "serviceType": "python_spider",
       "defaultHosts": [
-        "https://3bmm.com",
+        "https://tmewepu.info",
         "https://dtijfoc.info"
       ],
       "sortOrder": 403,
       "defaultProxy": false,
-      "notes": "Python 蜘蛛福利源，迷妹网自建站；HTML 正则解析列表/详情/搜索；CDN HLS + CDN PIC 分离；m3u8 hash 从详情页提取；封面图走 localProxy 代理；纯标准库实现（无第三方依赖）",
+      "notes": "Python 蜘蛛福利源，迷妹网自建站；HTML 正则解析列表/详情/搜索；CDN HLS + CDN PIC 分离；m3u8 hash 从详情页提取；封面图走 localProxy 代理；纯标准库实现（无第三方依赖）；2026-08-16 更新域名：3bmm.com 已失效，切换至 tmewepu.info",
       "api": "./sources/welfare-js/mimei.py",
       "scriptType": "python",
       "engine": "python",
