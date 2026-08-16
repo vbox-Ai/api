@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.16.7",
-    "updatedAt": "2026-08-16T18:00:00Z",
+    "version": "2026.08.16.8",
+    "updatedAt": "2026-08-16T19:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -352,6 +352,32 @@
       "sslBypass": true,
       "contentType": "comic",
       "imageReferer": "https://www.wn09.cfd/",
+      "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "sise_image_py",
+      "name": "四色图片",
+      "category": "comic",
+      "icon": "photo.fill",
+      "desc": "四色站图片专区 (Python 引擎版)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.b5y0e.top",
+        "https://www.q4k3i.top",
+        "https://www.p4d9s.top"
+      ],
+      "sortOrder": 310,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利图片源，四色站图片专区；AES-128-CBC 加密标题/路径（纯 Python 实现零依赖）；2 大分区（图片区/撸撸区）+ 16 个子分类；pics:// 协议返回图片列表，长卷模式浏览；封面图走 localProxy 代理防盗链",
+      "api": "./sources/welfare-js/sise_image.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "comic",
+      "imageReferer": "https://www.b5y0e.top/",
       "imageSSLBypass": true,
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
