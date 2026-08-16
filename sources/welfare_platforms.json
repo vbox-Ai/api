@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.16.8",
-    "updatedAt": "2026-08-16T19:00:00Z",
+    "version": "2026.08.16.9",
+    "updatedAt": "2026-08-16T20:30:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -58,7 +58,19 @@
       "zangjige_py"
     ],
     "stage3Notes": "阶段3 更新：移除「糖心Vlog」（tangxinvlog_py），新增「狂飙短剧」（kuangbiao_py）、「avgood」（avgood_py）、「一抖阁」（yidouge_py）三个 Python 蜘蛛福利源。 新增 8 个 Python 蜘蛛福利源：小红薯/香蕉视频/蜜桃视频/迷妹网/黑料网/爆片库/2048核基地/采集聚合。",
-    "lastUpdated": "2026-08-16"
+    "lastUpdated": "2026-08-16",
+    "stage4RemovedKeys": [
+      "xiaohongshu_py",
+      "mitao_py",
+      "heiliao_py"
+    ],
+    "stage4Notes": "阶段4 清理：移除「小红薯」（xiaohongshu_py）、「蜜桃视频」（mitao_py）、「黑料网」（heiliao_py）三个无法正常使用的Python蜘蛛福利源。",
+    "stage5AddedKeys": [
+      "sise_image_py",
+      "fuli74p_py",
+      "tuiimg_py"
+    ],
+    "stage5Notes": "阶段5 新增：四色图片、74P福利图、推图网三个写真美图平台（漫画栏目），pics:// 协议直接浏览"
   },
   "schemaVersion": 1,
   "categories": [
@@ -634,6 +646,78 @@
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "fuli74p_py",
+      "name": "74P福利图",
+      "category": "comic",
+      "icon": "photo.on.rectangle.angled",
+      "desc": "美女写真美图 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.74p.net"
+      ],
+      "sortOrder": 310,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利图源，74P福利图；9个写真分类；自动翻页抓取全图；pics:// 协议直接浏览",
+      "api": "./sources/welfare-js/fuli74p.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "comic",
+      "imageReferer": "https://www.74p.net/",
+      "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "tuiimg_py",
+      "name": "推图网",
+      "category": "comic",
+      "icon": "photo.stack",
+      "desc": "美女写真合集 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://m.tuiimg.com"
+      ],
+      "sortOrder": 320,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利图源，推图网移动站；5个写真分类；JS变量批量拼接图片URL；pics:// 协议直接浏览",
+      "api": "./sources/welfare-js/tuiimg.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "comic",
+      "imageReferer": "https://m.tuiimg.com/",
+      "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "sise_image_py",
+      "name": "四色图片",
+      "category": "comic",
+      "icon": "photo.artframe",
+      "desc": "四色图片区合集 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.b5y0e.top"
+      ],
+      "sortOrder": 305,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利图源，四色图片区；图片区+撸撸区共16个子分类；pics:// 协议直接长卷浏览",
+      "api": "./sources/welfare-js/sise_image.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "comic",
+      "imageReferer": "https://www.b5y0e.top/",
+      "imageSSLBypass": true,
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
