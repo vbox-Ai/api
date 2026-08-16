@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.16.4",
-    "updatedAt": "2026-08-16T12:00:00Z",
+    "version": "2026.08.16.5",
+    "updatedAt": "2026-08-16T14:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -430,27 +430,6 @@
       "defaultProxy": false,
       "notes": "麻豆影院；3域名轮询回退；detailContent从role页提取多线路；playerContent 6层兜底提取m3u8；localProxy内置m3u8广告拦截+TS过滤(270行)；header统一dict格式；依赖BeautifulSoup4(IPA已集成4.15.0)",
       "api": "./sources/welfare-js/madouyy.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
-      "platformKey": "avgood_py",
-      "name": "avgood",
-      "category": "video",
-      "icon": "film.fill",
-      "desc": "HTML 解析视频/磁力 Python 源",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://avgood.com"
-      ],
-      "sortOrder": 315,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛福利源，HTML 解析 + regex；30+ 分类；支持在线视频/磁力链接/种子下载；iframe→ajax 多层提取播放地址；init 自动探测域名重定向；依赖 requests",
-      "api": "./sources/welfare-js/avgood.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
