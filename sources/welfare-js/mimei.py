@@ -10,6 +10,7 @@ CMS: 自建站点，无签名/无反爬/无倒计时
 import re
 import html
 from urllib.parse import urljoin, urlparse, quote, unquote
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from base.spider import Spider
 
@@ -169,24 +170,33 @@ class Spider(Spider):
 
     # ------------------------------------------------------------------
     def _resolve_base_url(self):
-        """探测可用的 base_url，取最终跳转后域名。
+        """并发探测可用的 base_url，谁先成功用谁。
         失败时返回空字符串（不抛异常），让分类至少能显示。"""
         candidates = list(CANDIDATE_BASE_URLS)
 
-        print(f'[mimei] 开始探测 {len(candidates)} 个候选域名...')
-        for i, url in enumerate(candidates):
+        print(f'[mimei] 并发探测 {len(candidates)} 个候选域名...')
+
+        def _test_one(url):
             try:
                 r = self.fetch(url, headers=HEADERS, timeout=TIMEOUT, verify=False)
                 code = getattr(r, 'status_code', 0)
                 if code == 200:
                     final = urlparse(getattr(r, 'url', url))
                     base = f"{final.scheme}://{final.netloc}"
-                    print(f'[mimei] 第 {i+1} 个域名可用: {base}')
                     return base
-                else:
-                    print(f'[mimei] 第 {i+1} 个域名 {url} 返回 {code}')
-            except Exception as e:
-                print(f'[mimei] 第 {i+1} 个域名 {url} 异常: {e}')
+            except Exception:
+                pass
+            return None
+
+        # 并发探测，谁先成功返回谁
+        with ThreadPoolExecutor(max_workers=len(candidates)) as executor:
+            future_to_url = {executor.submit(_test_one, u): u for u in candidates}
+            for future in as_completed(future_to_url):
+                result = future.result()
+                if result:
+                    print(f'[mimei] 最快可用域名: {result}')
+                    return result
+
         print('[mimei] 所有候选域名均不可达，返回空 base_url')
         return ''
 
