@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.16.6",
-    "updatedAt": "2026-08-16T16:30:00Z",
+    "version": "2026.08.16.7",
+    "updatedAt": "2026-08-16T18:30:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -52,7 +52,13 @@
       "zangjige_py"
     ],
     "stage3Notes": "阶段3 更新：移除「糖心Vlog」（tangxinvlog_py），新增「狂飙短剧」（kuangbiao_py）、「avgood」（avgood_py）、「一抖阁」（yidouge_py）三个 Python 蜘蛛福利源。 新增 8 个 Python 蜘蛛福利源：小红薯/香蕉视频/蜜桃视频/迷妹网/黑料网/爆片库/2048核基地/采集聚合。",
-    "lastUpdated": "2026-08-16"
+    "lastUpdated": "2026-08-16",
+    "stage4RemovedKeys": [
+      "xiaohongshu_py",
+      "mitao_py",
+      "heiliao_py"
+    ],
+    "stage4Notes": "阶段4 清理：移除「小红薯」（xiaohongshu_py）、「蜜桃视频」（mitao_py）、「黑料网」（heiliao_py）三个无法正常使用的Python蜘蛛福利源。"
   },
   "schemaVersion": 1,
   "categories": [
@@ -459,27 +465,6 @@
       "visibleInHome": false
     },
     {
-      "platformKey": "xiaohongshu_py",
-      "name": "小红薯",
-      "category": "video",
-      "icon": "film.fill",
-      "desc": "AES加密短视频 Python 源",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://fhoumpjjih.work"
-      ],
-      "sortOrder": 400,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛福利源，小红书风格短视频 APP；AES-128-CBC 加密 API（encData）；动态域名探测（4个base随机子域名）；封面图 XOR 加密走 localProxy 解密；m3u8 authPath 解码播放；依赖 Crypto.Cipher.AES",
-      "api": "./sources/welfare-js/xiaohongshu.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
       "platformKey": "xiangjiao_py",
       "name": "香蕉视频",
       "category": "video",
@@ -493,27 +478,6 @@
       "defaultProxy": false,
       "notes": "Python 蜘蛛福利源，香蕉视频 H5 API；X-Cookie-Auth 认证头；免费视频 reqplay 直链 m3u8；VIP 视频 preview key URI 上溯 master 泄漏模式；封面图走 localProxy 代理",
       "api": "./sources/welfare-js/xiangjiao.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
-      "platformKey": "mitao_py",
-      "name": "蜜桃视频",
-      "category": "video",
-      "icon": "film.fill",
-      "desc": "AES加密APP Python 源",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://www.nht966hht.vip:9527"
-      ],
-      "sortOrder": 402,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛福利源，蜜桃视频 H5 APP；AES-128-CBC ZeroPadding 加密 API + MD5 签名；deviceLogin 会话初始化；女优/专题 folder 模式；封面图 XOR 0x88 加密走 localProxy 解密；m3u8 直链播放；依赖 Crypto.Cipher.AES",
-      "api": "./sources/welfare-js/mitao.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
@@ -536,27 +500,6 @@
       "defaultProxy": false,
       "notes": "Python 蜘蛛福利源，迷妹网自建站；HTML 正则解析列表/详情/搜索；CDN HLS + CDN PIC 分离；m3u8 hash 从详情页提取；封面图走 localProxy 代理；纯标准库实现（无第三方依赖）",
       "api": "./sources/welfare-js/mimei.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
-      "platformKey": "heiliao_py",
-      "name": "黑料网",
-      "category": "video",
-      "icon": "film.fill",
-      "desc": "黑料视频/图文 Python 源",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://heiliao.com"
-      ],
-      "sortOrder": 404,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛福利源，黑料网 Wordpress 模板；28 个分类；视频 dplayer config JSON 提取；图文 pics:// 协议；文字 novel:// 协议；封面图 AES-128-CBC 加密走 localProxy 解密；依赖 Crypto.Cipher.AES",
-      "api": "./sources/welfare-js/heiliao.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
