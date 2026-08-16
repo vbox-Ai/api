@@ -586,27 +586,6 @@
       "visibleInHome": false
     },
     {
-      "platformKey": "hejidi2048_py",
-      "name": "2048核基地",
-      "category": "video",
-      "icon": "film.fill",
-      "desc": "发布页自动更新域名 Python 源",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://s7t8u9v0.luanlunba15.cc"
-      ],
-      "sortOrder": 406,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛福利源，2048核基地；发布页 cookie 验证 + AJAX 接口自动获取最新域名；MacCMS 模板 HTML 解析；m3u8 广告清洗（前置广告/域名路径识别/累积时长跳过）；封面图走 localProxy 代理；纯标准库实现",
-      "api": "./sources/welfare-js/hejidi2048.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
       "platformKey": "juhe_py",
       "name": "采集聚合",
       "category": "video",
