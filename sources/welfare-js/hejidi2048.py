@@ -49,16 +49,28 @@ class Spider(BaseSpider):
     # ---------- 本地代理：支持图片代理和 m3u8 清洗 ----------
     def localProxy(self, param):
         EMPTY_GIF = b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
-        # vbox 可能传入 dict，统一为 query string
+        # 兼容多种参数格式：dict / URL query string / JSON string
+        param_dict = {}
         if isinstance(param, dict):
-            param = urlencode(param)
+            param_dict = {str(k): str(v) for k, v in param.items()}
+        elif isinstance(param, str):
+            # 先尝试 JSON 解析（iOS 端通过 WelfarePythonSpiderService 传入的是 JSON 字符串）
+            if param.strip().startswith('{') and param.strip().endswith('}'):
+                try:
+                    param_dict = json.loads(param)
+                    param_dict = {str(k): str(v) for k, v in param_dict.items()}
+                except:
+                    pass
+            # 如果 JSON 解析失败，按 URL query string 解析
+            if not param_dict:
+                param_dict = dict(p.split('=', 1) for p in param.split('&') if '=' in p)
+                param_dict = {k: unquote(v) for k, v in param_dict.items()}
+        
         # 如果请求包含 do=m3u8 则进行 m3u8 广告清洗
-        if 'do=m3u8' in param:
+        if param_dict.get('do') == 'm3u8':
             try:
-                # 解析参数
-                params = dict(p.split('=', 1) for p in param.split('&') if '=' in p)
-                url = unquote(params.get('url', ''))
-                referer = unquote(params.get('referer', self.host))
+                url = param_dict.get('url', '')
+                referer = param_dict.get('referer', self.host)
                 if not url:
                     return [404, "text/plain", "missing url"]
                 # 下载原始 m3u8
@@ -72,10 +84,11 @@ class Spider(BaseSpider):
                 self._log(f'm3u8 清洗异常: {e}')
                 return [404, "text/plain", "proxy error"]
         # 否则走原有的图片代理逻辑
-        if not param or not param.startswith('http'):
+        url = param if isinstance(param, str) and param.startswith('http') else param_dict.get('url', '')
+        if not url or not url.startswith('http'):
             return [200, 'image/gif', EMPTY_GIF]
         try:
-            r = self.fetch(param, headers={
+            r = self.fetch(url, headers={
                 'User-Agent': 'Mozilla/5.0',
                 'Referer': self.host + '/'
             }, timeout=15, verify=False)
