@@ -400,17 +400,44 @@ class Spider(BaseSpider):
         urls = []
         if not html:
             return urls
-        player_match = re.search(r'var\s+player_aaaa\s*=\s*({.*?});', html, re.S)
-        if player_match:
-            try:
-                data = json.loads(player_match.group(1))
-                raw = data.get('url', '')
-                if raw:
-                    decoded = unquote(raw)
-                    if decoded.startswith('http'):
-                        urls.append(decoded)
-            except:
-                pass
+        # 修复：player_aaaa 后可能没有分号（直接跟 </script>），导致正则匹配过多内容
+        # 使用括号深度匹配，精确找到 JSON 对象的边界
+        start_match = re.search(r'var\s+player_aaaa\s*=\s*\{', html)
+        if start_match:
+            start = start_match.end() - 1  # { 的位置
+            depth = 0
+            in_str = False
+            str_char = ''
+            i = start
+            while i < len(html):
+                c = html[i]
+                if in_str:
+                    if c == '\\' and i + 1 < len(html):
+                        i += 2
+                        continue
+                    if c == str_char:
+                        in_str = False
+                else:
+                    if c in ('"', "'"):
+                        in_str = True
+                        str_char = c
+                    elif c == '{':
+                        depth += 1
+                    elif c == '}':
+                        depth -= 1
+                        if depth == 0:
+                            json_str = html[start:i+1]
+                            try:
+                                data = json.loads(json_str)
+                                raw = data.get('url', '')
+                                if raw:
+                                    decoded = unquote(raw)
+                                    if decoded.startswith('http'):
+                                        urls.append(decoded)
+                            except:
+                                pass
+                            break
+                i += 1
         direct = re.findall(r'(https?://[^\s"\'<>]+\.m3u8[^\s"\'<>]*)', html)
         urls.extend(direct)
         if not urls:
