@@ -211,66 +211,115 @@ class Spider(BaseSpider):
     def homeContent(self, filter):
         result = {'class': [], 'filters': {}}
 
-        class_list = [
-            {'type_id': '/bb/index.php/vod/type/id/29.html', 'type_name': '国产自拍'},
-            {'type_id': '/bb/index.php/vod/type/id/30.html', 'type_name': '国产偷拍'},
-            {'type_id': '/bb/index.php/vod/type/id/33.html', 'type_name': '短视频'},
-            {'type_id': '/bb/index.php/vod/type/id/35.html', 'type_name': '国产主播'},
-            {'type_id': '/bb/index.php/vod/type/id/80.html', 'type_name': '国产女王'},
-            {'type_id': '/bb/index.php/vod/type/id/81.html', 'type_name': '国产女奴'},
-            {'type_id': '/bb/index.php/vod/type/id/83.html', 'type_name': '福利姬'},
-            {'type_id': '/bb/index.php/vod/type/id/84.html', 'type_name': '抖阴视频'},
-            {'type_id': '/bb/index.php/vod/type/id/85.html', 'type_name': '国模私拍'},
-            {'type_id': '/bb/index.php/vod/type/id/88.html', 'type_name': '国产乱伦'},
-            {'type_id': '/bb/index.php/vod/type/id/91.html', 'type_name': '网曝系列'},
-            {'type_id': '/bb/index.php/vod/type/id/107.html', 'type_name': '台湾辣妹'},
-            {'type_id': '/bb/index.php/vod/type/id/108.html', 'type_name': '唯美港姐'},
-            {'type_id': '/bb/index.php/vod/type/id/109.html', 'type_name': '国产探花'},
-            {'type_id': '/bb/index.php/vod/type/id/110.html', 'type_name': '野外露出'},
-            {'type_id': '/bb/index.php/vod/type/id/26.html', 'type_name': '国产精品'},
-            {'type_id': '/bb/index.php/vod/type/id/27.html', 'type_name': '国产传媒'},
-            {'type_id': '/bb/index.php/vod/type/id/101.html', 'type_name': '有码精品'},
-            {'type_id': '/bb/index.php/vod/type/id/116.html', 'type_name': '欺辱凌辱'},
-            {'type_id': '/bb/index.php/vod/type/id/117.html', 'type_name': 'AV解说'},
-            {'type_id': '/bb/index.php/vod/type/id/118.html', 'type_name': '有码VR'},
-            {'type_id': '/bb/index.php/vod/type/id/48.html', 'type_name': '美乳巨乳'},
-            {'type_id': '/bb/index.php/vod/type/id/59.html', 'type_name': '丝袜美腿'},
-            {'type_id': '/bb/index.php/vod/type/id/46.html', 'type_name': '口爆颜射'},
-            {'type_id': '/bb/index.php/vod/type/id/50.html', 'type_name': '强奸乱伦'},
-            {'type_id': '/bb/index.php/vod/type/id/93.html', 'type_name': '多人运动'},
-            {'type_id': '/bb/index.php/vod/type/id/52.html', 'type_name': '制服诱惑'},
-            {'type_id': '/bb/index.php/vod/type/id/43.html', 'type_name': '女仆'},
-            {'type_id': '/bb/index.php/vod/type/id/31.html', 'type_name': '人妻熟女'},
-            {'type_id': '/bb/index.php/vod/type/id/58.html', 'type_name': 'cosplay'},
-            {'type_id': '/bb/index.php/vod/type/id/34.html', 'type_name': '潮吹喷射'},
-            {'type_id': '/bb/index.php/vod/type/id/47.html', 'type_name': '萝莉少女'},
-            {'type_id': '/bb/index.php/vod/type/id/44.html', 'type_name': '素人'},
-            {'type_id': '/bb/index.php/vod/type/id/53.html', 'type_name': '女同性恋'},
-            {'type_id': '/bb/index.php/vod/type/id/32.html', 'type_name': 'SM重口味'},
-            {'type_id': '/bb/index.php/vod/type/id/45.html', 'type_name': '熟女'},
-            {'type_id': '/bb/index.php/vod/type/id/55.html', 'type_name': '教师'},
-            {'type_id': '/bb/index.php/vod/type/id/62.html', 'type_name': '无码VR'},
-            {'type_id': '/bb/index.php/vod/type/id/76.html', 'type_name': '制服无码'},
-            {'type_id': '/bb/index.php/vod/type/id/86.html', 'type_name': '女优明星'},
-            {'type_id': '/bb/index.php/vod/type/id/102.html', 'type_name': '无码精品'},
-            {'type_id': '/bb/index.php/vod/type/id/51.html', 'type_name': '日本中字'},
-            {'type_id': '/bb/index.php/vod/type/id/104.html', 'type_name': '欧美精品'},
-            {'type_id': '/bb/index.php/vod/type/id/103.html', 'type_name': '动漫精品'},
-            {'type_id': '/bb/index.php/vod/type/id/39.html', 'type_name': '综合三级'},
-            {'type_id': '/bb/index.php/vod/type/id/82.html', 'type_name': '韩国精品'},
-            {'type_id': '/bb/index.php/vod/type/id/42.html', 'type_name': '恐怖色情'},
-            {'type_id': '/bb/index.php/vod/type/id/54.html', 'type_name': '人兽性交'},
-            {'type_id': '/bb/index.php/vod/type/id/61.html', 'type_name': 'AI换脸'},
-        ]
-        result['class'] = class_list
+        # 优先从站点动态获取分类
+        classes = self._fetch_categories_dynamic()
+        if classes:
+            result['class'] = classes
+            print(f"[homeContent] 动态获取 {len(classes)} 个分类")
+        else:
+            # 兜底：硬编码精简版分类（只保留确定存在的核心分类）
+            result['class'] = self._fallback_categories()
+            print(f"[homeContent] 动态获取失败，使用兜底分类 {len(result['class'])} 个")
 
         if filter and HOT_TAGS:
             result['filters'] = {
                 "tags": [{"n": t, "v": t} for t in HOT_TAGS[:50]]
             }
 
-        print(f"[homeContent] 返回 {len(result['class'])} 个分类")
         return result
+
+    def _fallback_categories(self):
+        """兜底分类：核心分类，ID 相对稳定"""
+        return [
+            {'type_id': '/bb/index.php/vod/type/id/29.html', 'type_name': '国产自拍'},
+            {'type_id': '/bb/index.php/vod/type/id/26.html', 'type_name': '国产精品'},
+            {'type_id': '/bb/index.php/vod/type/id/27.html', 'type_name': '国产传媒'},
+            {'type_id': '/bb/index.php/vod/type/id/30.html', 'type_name': '国产偷拍'},
+            {'type_id': '/bb/index.php/vod/type/id/33.html', 'type_name': '短视频'},
+            {'type_id': '/bb/index.php/vod/type/id/35.html', 'type_name': '国产主播'},
+            {'type_id': '/bb/index.php/vod/type/id/31.html', 'type_name': '人妻熟女'},
+            {'type_id': '/bb/index.php/vod/type/id/47.html', 'type_name': '萝莉少女'},
+            {'type_id': '/bb/index.php/vod/type/id/52.html', 'type_name': '制服诱惑'},
+            {'type_id': '/bb/index.php/vod/type/id/48.html', 'type_name': '美乳巨乳'},
+            {'type_id': '/bb/index.php/vod/type/id/59.html', 'type_name': '丝袜美腿'},
+            {'type_id': '/bb/index.php/vod/type/id/101.html', 'type_name': '有码精品'},
+            {'type_id': '/bb/index.php/vod/type/id/102.html', 'type_name': '无码精品'},
+            {'type_id': '/bb/index.php/vod/type/id/51.html', 'type_name': '日本中字'},
+            {'type_id': '/bb/index.php/vod/type/id/104.html', 'type_name': '欧美精品'},
+            {'type_id': '/bb/index.php/vod/type/id/103.html', 'type_name': '动漫精品'},
+            {'type_id': '/bb/index.php/vod/type/id/32.html', 'type_name': 'SM重口味'},
+            {'type_id': '/bb/index.php/vod/type/id/50.html', 'type_name': '强奸乱伦'},
+            {'type_id': '/bb/index.php/vod/type/id/88.html', 'type_name': '国产乱伦'},
+            {'type_id': '/bb/index.php/vod/type/id/39.html', 'type_name': '综合三级'},
+        ]
+
+    def _fetch_categories_dynamic(self):
+        """动态获取分类列表，优先 API，其次 HTML"""
+        if self.use_api:
+            cats = self._fetch_categories_from_api()
+            if cats:
+                return cats
+        # API 失败或 HTML 模式，从首页 HTML 解析
+        return self._fetch_categories_from_html()
+
+    def _fetch_categories_from_api(self):
+        """从 API 获取分类列表。
+        MacCMS 标准: ?ac=list 返回中可能包含 class 字段
+        也可能需要用 ?ac=list 不带 t 参数时的响应结构"""
+        try:
+            # 尝试从首页列表响应中提取分类
+            url = self.api_url + "?ac=list&pg=1"
+            res = self.fetch(url, headers=headerx, timeout=8, verify=False)
+            data = self._resp_json(res)
+            # 检查是否有 class 字段
+            if data.get('class') and isinstance(data['class'], list) and len(data['class']) > 0:
+                cats = []
+                for c in data['class']:
+                    tid = str(c.get('type_id', c.get('id', '')))
+                    name = c.get('type_name', c.get('name', ''))
+                    if tid and name:
+                        cats.append({'type_id': tid, 'type_name': name})
+                if cats:
+                    print(f"[_fetch_api] 从API获取到 {len(cats)} 个分类")
+                    return cats
+            print("[_fetch_api] API响应无分类字段")
+        except Exception as e:
+            print(f"[_fetch_api] 获取分类失败: {e}")
+        return []
+
+    def _fetch_categories_from_html(self):
+        """从首页 HTML 解析分类菜单"""
+        try:
+            res = self.fetch(self.host + '/bb/', headers=headerx, timeout=8, verify=False)
+            html = self._resp_text(res)
+            if len(html) < 500:
+                return []
+            cats = []
+            # 匹配分类菜单链接: /bb/index.php/vod/type/id/XX.html
+            pattern = re.compile(
+                r'href="(/bb/index\.php/vod/type/id/(\d+)\.html)"[^>]*>\s*([^<]+?)\s*</a>',
+                re.I
+            )
+            seen = set()
+            for match in pattern.finditer(html):
+                href = match.group(1)
+                tid = match.group(2)
+                name = match.group(3).strip()
+                # 过滤掉导航栏重复项和非分类项
+                if not name or len(name) > 10 or tid in seen:
+                    continue
+                if name in ('首页', '全部', '更多', '排行', '留言', '搜索', '专题'):
+                    continue
+                seen.add(tid)
+                cats.append({'type_id': href, 'type_name': name})
+            if cats:
+                print(f"[_fetch_html] 从HTML获取到 {len(cats)} 个分类")
+            else:
+                print("[_fetch_html] HTML解析分类为空")
+            return cats
+        except Exception as e:
+            print(f"[_fetch_html] 解析分类失败: {e}")
+            return []
 
     # ========== 分类列表 ==========
     def categoryContent(self, cid, pg, filter, ext):
