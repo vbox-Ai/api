@@ -513,7 +513,7 @@ class Spider(BaseSpider):
             ep_str = '#'.join([f'{ep_name}${ep_url}' for ep_name, ep_url in episodes])
             url_lines.append(ep_str)
 
-        vod_play_from = '#'.join(from_lines)
+        vod_play_from = '$$$'.join(from_lines)
         vod_play_url = '$$$'.join(url_lines)
 
         self._log(f'vod_play_from: {vod_play_from}')

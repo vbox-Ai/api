@@ -12,9 +12,22 @@ class Spider(Spider):
         self.hs=['fhoumpjjih','dyfcbkggxn','rggwiyhqtg','bpbbmplfxc']
         self.ua='Mozilla/5.0 (Linux; Android 11; M2012K10C Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.141 Mobile Safari/537.36;SuiRui/xhs/ver=1.2.6'
         self.did=self._did()
-        self.host=getattr(self,'host','')
+        # 注入的域名可能是完整 API 域名（含子域名）也可能是基础域名
+        # 提取 base 后缀加入探测列表优先探测
+        injected = getattr(self,'host','')
+        if injected:
+            try:
+                host_part = injected.split('//')[-1].rstrip('/')
+                parts = host_part.split('.')
+                if len(parts) >= 2:
+                    base = parts[-2]  # 取倒数第二段（xxx.work 中的 xxx）
+                    if base and base not in self.hs:
+                        self.hs.insert(0, base)
+            except:
+                pass
         self.token,self.phost,detected=self._token()
-        if not self.host: self.host=detected
+        # 优先用探测到的完整域名；探测失败回退到注入域名
+        self.host = detected or injected
         self.api_cache={}
         self.img_cache={}
         self.class_cache=[]

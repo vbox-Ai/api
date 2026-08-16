@@ -43,6 +43,8 @@ CDN_PIC  = "https://aghivwz.info/pic"
 SEARCH_URL = "/e/search/index.php"
 
 # 通用请求头
+TIMEOUT = 5
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -112,7 +114,21 @@ class Spider(Spider):
 
     def init(self, extend=""):
         # 优先使用 vbox 注入的域名，否则探测候选域名
-        self.base_url = getattr(self, 'host', '') or self._resolve_base_url()
+        injected = getattr(self, 'host', '')
+        if injected:
+            # 验证注入的域名是否可用
+            try:
+                r = self.fetch(injected, headers=HEADERS, timeout=TIMEOUT, verify=False)
+                if getattr(r, 'status_code', 0) == 200:
+                    self.base_url = injected
+                    print(f'[mimei] 注入域名可用: {injected}')
+                    return
+                else:
+                    print(f'[mimei] 注入域名不可用 (status={getattr(r, "status_code", 0)})，开始探测')
+            except Exception as e:
+                print(f'[mimei] 注入域名异常: {e}，开始探测')
+        # 注入域名不可用或未注入，探测候选
+        self.base_url = self._resolve_base_url()
 
     def destroy(self):
         self._hash_cache = {}
@@ -137,7 +153,7 @@ class Spider(Spider):
             url = unquote(url)
             if not url:
                 return [404, "text/plain", b""]
-            r = self.fetch(url, headers=HEADERS, timeout=15, verify=False)
+            r = self.fetch(url, headers=HEADERS, timeout=TIMEOUT, verify=False)
             content_type = "image/jpeg"
             try:
                 ct = r.headers.get("Content-Type", "")
@@ -151,21 +167,41 @@ class Spider(Spider):
 
     # ------------------------------------------------------------------
     def _resolve_base_url(self):
-        """探测可用的 base_url，3bmm.com 会自动 301，取最终跳转后域名。"""
-        for url in CANDIDATE_BASE_URLS:
+        """探测可用的 base_url，3bmm.com 会自动 301，取最终跳转后域名。
+        失败时返回空字符串（不抛异常），让分类至少能显示。"""
+        # 候选域名列表（优先使用注入的，再尝试这些）
+        candidates = list(CANDIDATE_BASE_URLS)
+        # 额外补充一些可能的镜像
+        extra = [
+            "https://www.3bmm.com",
+            "https://m.3bmm.com",
+            "https://3bmm.tv",
+            "https://mmzy.tv",
+        ]
+        for e in extra:
+            if e not in candidates:
+                candidates.append(e)
+
+        print(f'[mimei] 开始探测 {len(candidates)} 个候选域名...')
+        for i, url in enumerate(candidates):
             try:
-                r = self.fetch(url, headers=HEADERS, timeout=15, verify=False)
-                if getattr(r, 'status_code', 0) == 200:
+                r = self.fetch(url, headers=HEADERS, timeout=TIMEOUT, verify=False)
+                code = getattr(r, 'status_code', 0)
+                if code == 200:
                     final = urlparse(getattr(r, 'url', url))
                     base = f"{final.scheme}://{final.netloc}"
+                    print(f'[mimei] 第 {i+1} 个域名可用: {base}')
                     return base
-            except Exception:
-                pass
-        raise RuntimeError("所有候选域名均不可达")
+                else:
+                    print(f'[mimei] 第 {i+1} 个域名 {url} 返回 {code}')
+            except Exception as e:
+                print(f'[mimei] 第 {i+1} 个域名 {url} 异常: {e}')
+        print('[mimei] 所有候选域名均不可达，返回空 base_url')
+        return ''
 
     def _get(self, path, **kwargs):
         url = urljoin(self.base_url, path)
-        r = self.fetch(url, headers=HEADERS, timeout=20, verify=False, **kwargs)
+        r = self.fetch(url, headers=HEADERS, timeout=TIMEOUT, verify=False, **kwargs)
         try:
             r.raise_for_status()
         except Exception:
@@ -222,19 +258,26 @@ class Spider(Spider):
 
     # ------------------------------------------------------------------
     def homeContent(self, filter):
+        # 分类是硬编码的，总是返回
+        classes = [
+            {"type_id": c, "type_name": n}
+            for c, n in CATEGORY_MAP.items()
+        ]
+        items = []
         try:
-            r = self._get(CAT_LIST_URL.format(cat="guochan"))
-            items = self._extract_list_from_html(r.text)
-            return {
-                "class": [
-                    {"type_id": c, "type_name": n}
-                    for c, n in CATEGORY_MAP.items()
-                ],
-                "filters": {},
-                "list": items[:30],
-            }
-        except Exception:
-            return {"class": [], "filters": {}, "list": []}
+            if self.base_url:
+                r = self._get(CAT_LIST_URL.format(cat="guochan"))
+                items = self._extract_list_from_html(r.text)
+                print(f'[mimei] homeContent 获取到 {len(items)} 条视频')
+            else:
+                print('[mimei] homeContent: base_url 为空，跳过视频请求')
+        except Exception as e:
+            print(f'[mimei] homeContent 视频获取异常: {e}')
+        return {
+            "class": classes,
+            "filters": {},
+            "list": items[:30],
+        }
 
     def homeVideoContent(self):
         try:

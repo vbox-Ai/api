@@ -20,7 +20,7 @@ import threading
 from urllib.parse import quote, unquote, parse_qs
 from Crypto.Cipher import AES
 
-TIMEOUT = 10
+TIMEOUT = 6
 
 # ============================================================
 # 站点配置（多站点备用）
@@ -361,6 +361,8 @@ class Spider(BaseSpider):
         if self._session_inited:
             return
 
+        print(f'[mitao] 开始会话初始化，当前 host: {self.host}')
+
         # 优先从缓存恢复（跳过整个 init 流程，避免 429）
         if self._load_session_cache():
             self._session_inited = True
@@ -381,6 +383,10 @@ class Spider(BaseSpider):
 
         # 0.5 appConfig — 真实浏览器第一个调的就是它，获取 videoTypeList 供筛选
         appcfg = self._api_request('/ht/users/appConfig')
+        if not appcfg:
+            print('[mitao] appConfig 请求失败（无响应），可能域名不通或网络错误')
+        elif appcfg.get('code') != 10000:
+            print(f'[mitao] appConfig 返回错误: code={appcfg.get("code")}, msg={appcfg.get("message","")}')
         if appcfg and appcfg.get('code') == 10000:
             ac_data = appcfg.get('data', {})
             if isinstance(ac_data, dict) and ac_data.get('appConfig'):
@@ -392,6 +398,11 @@ class Spider(BaseSpider):
         shared_t = int(time.time() * 1000)
         resp1 = self._api_request('/ht/users/initH5_1', _t=shared_t)
 
+        if not resp1:
+            print('[mitao] initH5_1 请求失败（无响应）')
+        elif resp1.get('code') != 10000:
+            print(f'[mitao] initH5_1 返回错误: code={resp1.get("code")}, msg={resp1.get("message","")}')
+
         if resp1 and resp1.get('code') == 10000:
             data = resp1.get('data', {})
             if data.get('deviceId'):
@@ -399,6 +410,19 @@ class Spider(BaseSpider):
             # 保存分类列表供 homeContent 使用
             if data.get('typeTitleList'):
                 self._categories = data['typeTitleList']
+                print(f'[mitao] initH5_1 获取分类: {len(self._categories)} 个')
+            else:
+                print('[mitao] initH5_1 返回无 typeTitleList，使用兜底分类')
+                # 兜底分类：常见分类，至少能让页面有内容
+                self._categories = [
+                    {'contentId': '1', 'title': '推荐'},
+                    {'contentId': '2', 'title': '国产'},
+                    {'contentId': '3', 'title': '日韩'},
+                    {'contentId': '4', 'title': '欧美'},
+                    {'contentId': '5', 'title': '动漫'},
+                    {'contentId': '6', 'title': '三级片'},
+                    {'contentId': '7', 'title': '剧情'},
+                ]
 
         # 2. initH5_2 (复用 shared_t)
         self._api_request('/ht/users/initH5_2', _t=shared_t)
@@ -461,6 +485,7 @@ class Spider(BaseSpider):
 
         classes = []
         filters = {}
+        print(f'[mitao] homeContent: _categories={len(self._categories)} 个')
 
         # 动态加载真实分类（来自 initH5_1 typeTitleList），过滤掉不需要的
         for cat in self._categories:
