@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.16.1",
-    "updatedAt": "2026-08-16T01:50:00Z",
+    "version": "2026.08.16.2",
+    "updatedAt": "2026-08-16T02:10:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -400,19 +400,11 @@
       "desc": "短视频/Vlog Python 源",
       "serviceType": "python_spider",
       "defaultHosts": [
-        "https://tangxinvlog.app",
-        "https://tangxinvlog.org",
-        "https://tangxinvlog.net",
-        "https://tangxin.icu",
-        "https://tangxin.ink",
-        "https://tangxinapp.cc",
-        "https://t-x.lol",
-        "https://t-x.xyz",
-        "https://tangxin.cfd"
+        "https://tangxinvlog.app"
       ],
       "sortOrder": 313,
       "defaultProxy": false,
-      "notes": "糖心Vlog网页版；CDN直链m3u8(t.5gcdn.xyz)；playerContent返回parse=0+dict header；单集单线路；localProxy封面图防盗链；依赖requests；9域名自动探测回退；支持extend传入自定义域名",
+      "notes": "糖心Vlog网页版；CDN直链m3u8(t.5gcdn.xyz)；playerContent返回parse=0+dict header；单集单线路；localProxy封面图防盗链；依赖requests；verify=False跳过SSL验证+urllib3警告抑制",
       "api": "./sources/welfare-js/tangxinvlog.py",
       "scriptType": "python",
       "engine": "python",

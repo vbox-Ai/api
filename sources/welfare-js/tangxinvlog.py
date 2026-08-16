@@ -1,5 +1,6 @@
-import re,requests
+import re,requests,urllib3
 from urllib.parse import quote,unquote
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 try:
     from base.spider import Spider as BaseSpider
@@ -7,94 +8,23 @@ except Exception:
     BaseSpider=object
 
 class Spider(BaseSpider):
-    FALLBACK_HOSTS=[
-        "https://tangxinvlog.app",
-        "https://tangxinvlog.org",
-        "https://tangxinvlog.net",
-        "https://tangxin.icu",
-        "https://tangxin.ink",
-        "https://tangxinapp.cc",
-        "https://t-x.lol",
-        "https://t-x.xyz",
-        "https://tangxin.cfd",
-    ]
-    FALLBACK_CDNS=[
-        "https://t.5gcdn.xyz/videos",
-    ]
-    DEFAULT_CLASSES=[
-        {"type_id":"latest","type_name":"最新"},
-        {"type_id":"recommend","type_name":"推荐"},
-    ]
-
     def getName(self):
         return "糖心vlog"
 
     def init(self,extend=""):
+        self.host="https://tangxinvlog.app"
         self.lang="/zh-tw"
+        self.cdn="https://t.5gcdn.xyz/videos"
         self.ua="Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0 Mobile Safari/537.36"
+        self.headers={"User-Agent":self.ua,"Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Accept-Language":"zh-TW,zh;q=0.9,en;q=0.8","Referer":self.host+self.lang+"/"}
+        self.img_headers={"User-Agent":self.ua,"Referer":self.host+self.lang+"/","Accept":"image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8","Connection":"keep-alive"}
         self.http=requests.Session()
         self.http.verify=False
-        self.http.headers.update({"User-Agent":self.ua})
         self.img_session=requests.Session()
         self.img_session.verify=False
         self.img_cache={}
         self.bad_img=set()
         self.page_cache={}
-        self._active_host=None
-        self._active_cdn=None
-        self.host=None
-        self.cdn=None
-        if extend:
-            ext=str(extend).strip()
-            if ext.startswith("http"):
-                self.host=ext.rstrip("/")
-                self.cdn=self.FALLBACK_CDNS[0]
-                self._active_host=self.host
-                self._active_cdn=self.cdn
-        if not self.host:
-            self.host=self._find_host()
-            self.cdn=self._find_cdn()
-        if self.host:
-            self.headers={"User-Agent":self.ua,"Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Accept-Language":"zh-TW,zh;q=0.9,en;q=0.8","Referer":self.host+self.lang+"/"}
-            self.img_headers={"User-Agent":self.ua,"Referer":self.host+self.lang+"/","Accept":"image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8","Connection":"keep-alive"}
-        else:
-            self.headers={"User-Agent":self.ua}
-            self.img_headers={"User-Agent":self.ua}
-
-    def _find_host(self):
-        if self._active_host:
-            return self._active_host
-        for h in self.FALLBACK_HOSTS:
-            if self._test_host(h):
-                self._active_host=h
-                return h
-        return self.FALLBACK_HOSTS[0]
-
-    def _find_cdn(self):
-        if self._active_cdn:
-            return self._active_cdn
-        for c in self.FALLBACK_CDNS:
-            if self._test_host(c):
-                self._active_cdn=c
-                return c
-        return self.FALLBACK_CDNS[0]
-
-    def _test_host(self,h):
-        try:
-            r=self.http.get(h+self.lang+"/tag/",headers={"User-Agent":self.ua},timeout=6,verify=False,allow_redirects=True)
-            if r.status_code==200 and len(r.text)>500:
-                if 'class="name"' in r.text or 'article class="card"' in r.text or '/zh-tw/tag/' in r.text:
-                    return True
-        except Exception:
-            pass
-        try:
-            r=self.http.get(h+"/",headers={"User-Agent":self.ua},timeout=6,verify=False,allow_redirects=True)
-            if r.status_code==200 and len(r.text)>500:
-                if '/zh-tw/tag/' in r.text or 'article class="card"' in r.text:
-                    return True
-        except Exception:
-            pass
-        return False
 
     def isVideoFormat(self,url):
         return False
@@ -236,7 +166,7 @@ class Spider(BaseSpider):
 
     def _classes(self):
         h=self._get(self.host+self.lang+"/tag/")
-        arr=list(self.DEFAULT_CLASSES)
+        arr=[{"type_id":"latest","type_name":"最新"},{"type_id":"recommend","type_name":"推荐"}]
         for href,name in re.findall(r'<a href="/zh-tw/tag/([^"]+)"[^>]*>\s*<span class="name"[^>]*>(.*?)</span>',h,re.S|re.I):
             slug=unquote(href).strip("/")
             title=self._clean(name)
