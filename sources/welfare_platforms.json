@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.16.5",
-    "updatedAt": "2026-08-16T14:00:00Z",
+    "version": "2026.08.16.6",
+    "updatedAt": "2026-08-16T16:30:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -599,6 +599,69 @@
       "defaultProxy": false,
       "notes": "Python 蜘蛛福利聚合源，33 个 MacCMS API 站点聚合搜索/分类；线程池并发（限4线程）；统一 vod_id 前缀命名（source@@id）；线路名前缀区分来源；封面直链（部分站点需代理）",
       "api": "./sources/welfare-js/juhe.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "xiongmao_py",
+      "name": "熊猫福利",
+      "category": "video",
+      "icon": "pawprint.fill",
+      "desc": "API聚合 Python 源（多线路）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://spiderscloudcn2.51111666.com"
+      ],
+      "sortOrder": 410,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，API 聚合模式；动态获取服务器线路配置（macVodLinkMap），3 条线路（国内1/国内2/海外）；m3u8 走本地代理；header dict 格式；依赖 requests",
+      "api": "./sources/welfare-js/xiongmao.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "yuesetv_py",
+      "name": "悦色TV",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "域名自动发现 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://yuesetv.net"
+      ],
+      "sortOrder": 411,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，悦色TV；发布页动态发现域名（3个发布页+5个候选）；document.write(decodeURIComponent) 全站解码；WebP .dat 封面转 JPEG data URI；m3u8 走本地代理；header dict 格式；依赖 requests + Pillow（可选）",
+      "api": "./sources/welfare-js/yuesetv.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "sise_py",
+      "name": "四色",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "AES加密综合 Python 源（视频/图片/小说/有声）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.b5y0e.top"
+      ],
+      "sortOrder": 412,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，四色站；AES-128-CBC 加密标题/路径（纯 Python 实现零依赖）；7 大分区（剧情/电影/精品/图片/撸撸/小说/有声）+ 子分类；base64 视频地址+host 拼接；m3u8 走 hls 代理；图片走 img 代理；header dict 格式；pics:///novel:// 协议支持",
+      "api": "./sources/welfare-js/sise.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
