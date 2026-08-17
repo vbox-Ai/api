@@ -9,9 +9,10 @@ vbox 适配：
 3. playerContent header → dict 格式
 4. 继承 base.spider.Spider
 """
-import sys, json, base64, gzip, threading, time, hashlib
+import sys, json, base64, gzip, threading, time, hashlib, warnings
 from urllib.parse import quote, urljoin
 from collections import OrderedDict
+warnings.filterwarnings("ignore")
 
 sys.path.append('..')
 try:
@@ -205,6 +206,7 @@ class Spider(_B):
     def init(self, e=""):
         self.token = ""
         self.sess = requests.Session()
+        self.sess.verify = False
         self.sess.headers.update({
             "user-agent": UA_APP,
             "authorization": "Bearer ",
@@ -293,9 +295,9 @@ class Spider(_B):
         try:
             if method == "POST":
                 h["content-type"] = "application/x-www-form-urlencoded"
-                r = self.sess.post(url, data="payload=" + quote(enc), headers=h, timeout=15)
+                r = self.sess.post(url, data="payload=" + quote(enc), headers=h, timeout=15, verify=False)
             else:
-                r = self.sess.get(url + "?payload=" + quote(enc), headers=h, timeout=15)
+                r = self.sess.get(url + "?payload=" + quote(enc), headers=h, timeout=15, verify=False)
             if r.status_code == 200:
                 return self._decrypt_resp(r.text)
             return None
@@ -343,14 +345,20 @@ class Spider(_B):
                 return cache_key
 
         url = (API_DOMAIN + "/v3/media/" + quality + "/" + vid
-               + ".m3u8?&token=" + self.token + "&h=" + h_host)
+               + ".m3u8?&token=" + self.token + "&h=" + quote(h_host, safe=''))
         try:
-            resp = self.sess.get(url, timeout=20, allow_redirects=True)
+            resp = self.sess.get(url, timeout=20, allow_redirects=True, verify=False)
             if resp.status_code != 200:
                 print("[Fulao2] fetch_m3u8 " + h_label + "-" + quality + " status=" + str(resp.status_code))
                 return None
-            text = self._decrypt_m3u8(resp.text)
+            # 检查是否是明文错误响应
+            rtext = resp.text.strip()
+            if rtext.startswith('{'):
+                print("[Fulao2] fetch_m3u8 " + h_label + "-" + quality + " 明文响应: " + rtext[:200])
+                return None
+            text = self._decrypt_m3u8(rtext)
             if not text:
+                print("[Fulao2] fetch_m3u8 " + h_label + "-" + quality + " 解密失败, resp_len=" + str(len(rtext)))
                 return None
             with self._m3u8_lock:
                 self._m3u8_cache[cache_key] = text
@@ -573,7 +581,7 @@ class Spider(_B):
                 "User-Agent": UA_IMG,
                 "Accept-Encoding": "gzip",
                 "Connection": "Keep-Alive",
-            }, timeout=10, allow_redirects=True)
+            }, timeout=10, allow_redirects=True, verify=False)
             raw = r.content
             body = self._decrypt_img(raw)
             return [200, "image/jpeg", body]
@@ -586,7 +594,7 @@ class Spider(_B):
         try:
             r = requests.get(url, headers={
                 "User-Agent": UA_CDN,
-            }, timeout=10, allow_redirects=True)
+            }, timeout=10, allow_redirects=True, verify=False)
             return [200, "video/mp2t", r.content]
         except Exception as e:
             print("[Fulao2] _serve_ts err: " + str(e))
