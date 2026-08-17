@@ -278,6 +278,9 @@ class Spider(_B):
                 base = self.getProxyUrl()
                 if '?' not in base:
                     base += '?do=py'
+                if ptype == 'cache':
+                    # cache 类型用 key 参数（不是 url）
+                    return base + '&type=cache&key=' + quote(url, safe='')
                 return base + '&type=' + ptype + '&url=' + quote(self._e64(url), safe='')
         except Exception:
             pass
@@ -487,12 +490,13 @@ class Spider(_B):
             r = self._fetch(url)
             if not r:
                 return {'list': []}
-            soup = self._soup(r.text)
+            html = r.text
+            soup = self._soup(html)
 
             plist = []
             used_names = set()
 
-            # DPlayer data-config 解析
+            # 策略 1: DPlayer data-config 解析
             for c, dplayer in enumerate(soup.select('.dplayer'), start=1):
                 config_attr = dplayer.get('data-config')
                 if config_attr:
@@ -521,20 +525,57 @@ class Spider(_B):
                     except Exception:
                         continue
 
-            # 正文链接回退
+            # 策略 2: 正文链接回退
             if not plist:
-                post_content = soup.select_one('.post-content') or soup.select_one('article')
-                if post_content:
-                    for i, a in enumerate(post_content.select('a'), start=1):
-                        link_text = a.get_text(strip=True)
-                        link_href = a.get('href')
-                        if link_href and any(kw in link_text for kw in ['点击观看', '观看', '播放', '视频', '第一弹', '第二弹', '第三弹', '第四弹', '第五弹', '第六弹', '第七弹', '第八弹', '第九弹', '第十弹']):
-                            ep_name = link_text.replace('点击观看：', '').replace('点击观看', '').strip()
-                            if not ep_name:
-                                ep_name = f"视频{i}"
-                            if not link_href.startswith('http'):
-                                link_href = self.host + link_href if link_href.startswith('/') else self.host + '/' + link_href
-                            plist.append(f"{ep_name}${link_href}")
+                post_content = soup.select_one('.post-content') or soup.select_one('article') or soup
+                for i, a in enumerate(post_content.select('a'), start=1):
+                    link_text = a.get_text(strip=True)
+                    link_href = a.get('href')
+                    if link_href and any(kw in link_text for kw in ['点击观看', '观看', '播放', '视频', '第一弹', '第二弹', '第三弹', '第四弹', '第五弹', '第六弹', '第七弹', '第八弹', '第九弹', '第十弹']):
+                        ep_name = link_text.replace('点击观看：', '').replace('点击观看', '').strip()
+                        if not ep_name:
+                            ep_name = f"视频{i}"
+                        if not link_href.startswith('http'):
+                            link_href = self.host + link_href if link_href.startswith('/') else self.host + '/' + link_href
+                        plist.append(f"{ep_name}${link_href}")
+
+            # 策略 3: iframe 中的视频 URL
+            if not plist:
+                for iframe in soup.select('iframe'):
+                    src = iframe.get('src', '')
+                    if src:
+                        if not src.startswith('http'):
+                            src = self.host + src if src.startswith('/') else self.host + '/' + src
+                        plist.append(f"视频1${src}")
+                        break
+
+            # 策略 4: HTML 源码中搜索 m3u8/mp4 直链
+            if not plist:
+                m3u8_urls = re.findall(r'(https?://[^\s"\'<>]+\.(?:m3u8|mp4)[^\s"\'<>]*)', html)
+                if m3u8_urls:
+                    for i, vu in enumerate(m3u8_urls[:5], start=1):
+                        plist.append(f"视频{i}${vu}")
+
+            # 策略 5: script 标签中的视频 URL (JSON/变量)
+            if not plist:
+                for script in soup.select('script'):
+                    script_text = script.string or ''
+                    if not script_text:
+                        continue
+                    for vu in re.findall(r'(https?://[^\s"\'<>]+\.(?:m3u8|mp4)[^\s"\'<>]*)', script_text):
+                        if vu not in [p.split('$', 1)[1] for p in plist]:
+                            plist.append(f"视频{len(plist)+1}${vu}")
+                    if plist:
+                        break
+
+            # 策略 6: 所有带视频文件扩展名的链接
+            if not plist:
+                for a in soup.select('a[href$=".mp4"], a[href$=".m3u8"], a[href$=".ts"]'):
+                    href = a.get('href', '')
+                    if href:
+                        if not href.startswith('http'):
+                            href = self.host + href if href.startswith('/') else self.host + '/' + href
+                        plist.append(f"视频{len(plist)+1}${href}")
 
             play_url = '#'.join(plist) if plist else f"未找到视频源${url}"
 
@@ -562,15 +603,14 @@ class Spider(_B):
                         tags.append(f'[a=cr:{target}/]{name}[/a]')
                         seen_names.add(name)
                         seen_ids.add(id_)
-                vod_content = ' '.join(tags) if tags else soup.select_one('.post-title').get_text(strip=True) if soup.select_one('.post-title') else ''
+                vod_content = ' '.join(tags) if tags else ''
             except Exception:
                 vod_content = ''
 
-            if not vod_content:
-                h1 = soup.find('h1')
-                vod_content = h1.get_text(strip=True) if h1 else '每日大乱斗'
-
             return {'list': [{
+                'vod_id': vod_id,
+                'vod_name': '',
+                'vod_pic': '',
                 'vod_play_from': '每日大乱斗',
                 'vod_play_url': play_url,
                 'vod_content': vod_content
