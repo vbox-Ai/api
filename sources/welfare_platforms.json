@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.17.28",
-    "updatedAt": "2026-08-17T15:00:00Z",
+    "version": "2026.08.17.29",
+    "updatedAt": "2026-08-17T16:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -999,6 +999,27 @@
       "defaultProxy": false,
       "notes": "Python 蜘蛛福利源，VV视频；API JSON 站 + AES-GCM 信封解密 + PoW 反爬验证。加密模块替换：PBKDF2→hashlib.pbkdf2_hmac（标准库）、SHA256→hashlib.sha256、AES-GCM→AES-ECB 实现 CTR 解密（IPA 中 GCM 不可用，ECB 可用）。localProxy 封面图 AES-CBC 解密（IPA 中可用）。动态 API 发现 + 10 个 fallback API。threading.Lock 有 fallback 降级。23 个分类。",
       "api": "./sources/welfare-js/vvvideo.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "fanhaowang_py",
+      "name": "番号网",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "MacCMS eval packer 解密 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://web.fanhaowang1.cc"
+      ],
+      "sortOrder": 425,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，番号网；MacCMS 站，20 个分类；eval packer 解密播放地址（36 进制解密 + 变量替换，提取 source842/source1280 多线路 m3u8）；urllib.request→requests.get；playerContent 递归加深度限制(max=2)",
+      "api": "./sources/welfare-js/fanhaowang.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
