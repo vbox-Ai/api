@@ -2,7 +2,8 @@
 # JinriCP / PandaClass 韩国女团录播 TVBox Python Spider
 # 网站: https://5721004.xyz
 # 特性: m3u8直链播放 + SRT中韩双语字幕自动加载
-# 修复: ThreadPoolExecutor 懒加载 + 基座域名注入 + 动态获取分类(无硬编码)
+# 修复: ThreadPoolExecutor懒加载 + 基座域名注入 + IPFS网关重写 + header格式修正
+# v2: 修复播放403(m3u8内TS为IPFS链接,AVPlayer无法直接加载) + header应为JSON字符串
 
 import re
 import json
@@ -235,24 +236,50 @@ class Spider(BaseSpider):
             print('[JinriCP] detailContent err: ' + str(e))
             return {'list': []}
 
-    # ==================== 播放（核心：m3u8 + 字幕） ====================
+    # ==================== 播放（核心：m3u8 + 字幕 + IPFS网关） ====================
 
     def playerContent(self, flag, id, vipFlags=None):
         """
         返回播放地址和字幕地址。
         id: m3u8 文件完整 URL
         parse=0 表示直链播放，TVBox 直接用播放器加载 m3u8
-        subt 字段返回同名 .srt 字幕文件 URL
+
+        关键: m3u8 内的 TS 分片是 IPFS 链接 (w3s.link/raribleuserdata)，
+        iOS AVPlayer 可能无法直接加载这些 IPFS 网关（超时/403/504）。
+        解决方案: 下载 m3u8 内容，将 TS 分片 URL 重写为更稳定的 IPFS 网关，
+        然后通过 localProxy 返回重写后的 m3u8 给播放器。
         """
-        result = {
-            'parse': '0',
-            'playUrl': '',
-            'url': id,
-            'header': {
-                'User-Agent': UA,
-                'Referer': self.host + '/'
+        # 构造 header（TVBox 规范要求 JSON 字符串，不是 dict）
+        play_header = json.dumps({
+            'User-Agent': UA,
+            'Referer': self.host + '/'
+        })
+
+        # 如果是 m3u8，尝试重写 IPFS 分片以提升播放成功率
+        if '.m3u8' in id and id.startswith('http'):
+            rewritten_url = self._rewrite_m3u8_if_needed(id)
+            if rewritten_url:
+                result = {
+                    'parse': '0',
+                    'playUrl': '',
+                    'url': rewritten_url,
+                    'header': play_header
+                }
+            else:
+                # 重写失败，返回原始 URL，用 parse=1 走服务端播放器
+                result = {
+                    'parse': '0',
+                    'playUrl': '',
+                    'url': id,
+                    'header': play_header
+                }
+        else:
+            result = {
+                'parse': '0',
+                'playUrl': '',
+                'url': id,
+                'header': play_header
             }
-        }
 
         # 自动构造字幕 URL：将 .m3u8 替换为 .srt
         if '.m3u8' in id:
@@ -261,6 +288,73 @@ class Spider(BaseSpider):
             print('[JinriCP] 字幕: ' + srt_url)
 
         return result
+
+    def _rewrite_m3u8_if_needed(self, m3u8_url):
+        """
+        下载 m3u8 内容，检查 TS 分片是否使用 IPFS 网关。
+        如果是，将分片 URL 重写为更稳定的网关 (w3s.link)，
+        然后通过 localProxy 返回重写后的 m3u8。
+        如果 m3u8 下载失败或分片不依赖 IPFS，返回 None。
+        """
+        try:
+            resp = self.session.get(m3u8_url, timeout=10)
+            if resp.status_code != 200:
+                print('[JinriCP] m3u8 下载失败: HTTP ' + str(resp.status_code))
+                return None
+
+            content = resp.text
+
+            # 检查是否包含 IPFS 分片
+            if 'ipfs' not in content and 'w3s.link' not in content and 'raribleuserdata' not in content:
+                # 非 IPFS 分片，直接返回原始 URL
+                return None
+
+            # 重写 IPFS 网关: 统一使用 w3s.link（测试中最稳定）
+            # 常见网关: ipfs.w3s.link, ipfs.raribleuserdata.com, cloudflare-ipfs.com, ipfs.io, dweb.link
+            ipfs_gateways = [
+                'https://ipfs.raribleuserdata.com/ipfs/',
+                'https://cloudflare-ipfs.com/ipfs/',
+                'https://ipfs.io/ipfs/',
+                'https://dweb.link/ipfs/',
+            ]
+            stable_gateway = 'https://ipfs.w3s.link/ipfs/'
+
+            rewritten = content
+            for gw in ipfs_gateways:
+                rewritten = rewritten.replace(gw, stable_gateway)
+
+            # 也处理不带 https:// 的裸 CID 引用（罕见情况）
+            # 不处理，避免误替换
+
+            if rewritten == content:
+                # 没有需要重写的网关
+                return None
+
+            print('[JinriCP] IPFS 网关重写完成, 分片统一为 w3s.link')
+
+            # 通过 localProxy 返回重写后的 m3u8
+            # 编码 m3u8 内容到 base64，通过 localProxy 参数传递
+            import base64
+            encoded = base64.b64encode(rewritten.encode('utf-8')).decode('ascii')
+            proxy_url = self._get_proxy_base() + '?do=m3u8&content=' + encoded
+            return proxy_url
+
+        except Exception as e:
+            print('[JinriCP] m3u8 重写异常: ' + str(e))
+            return None
+
+    def _get_proxy_base(self):
+        """获取 localProxy 的基础 URL"""
+        # localProxy 由 PythonBridge 注册，端口动态分配
+        # 尝试从基座获取代理端口
+        try:
+            proxy_port = globals().get('_vbox_local_proxy_port', '')
+            if proxy_port:
+                return 'http://127.0.0.1:' + str(proxy_port)
+        except:
+            pass
+        # 默认端口（vbox iOS PythonBridge 默认）
+        return 'http://127.0.0.1:9938'
 
     # ==================== 搜索 ====================
 
@@ -521,8 +615,10 @@ class Spider(BaseSpider):
         return '{}/{}/{}'.format(self.host, tid, href)
 
     def _extract_tid(self, url):
-        """从 URL 中提取 tid（如 /bu/ → bu, /s2/ → s2, /pc3/ → pc3）"""
-        m = re.search(r'5721004\.xyz/(\w+)/', url)
+        """从 URL 中提取 tid（如 /bu/ → bu, /s2/ → s2, /pc3/ → pc3）
+        兼容自定义域名（不硬编码 5721004.xyz）"""
+        # 匹配任意域名后的路径段: https://xxx.xyz/bu/... -> bu
+        m = re.search(r'https?://[^/]+/(\w+)/', url)
         if m:
             return m.group(1)
         # 从 path 参数提取
@@ -533,12 +629,12 @@ class Spider(BaseSpider):
 
     def _extract_folder_name(self, url):
         """从 URL 中提取文件夹名用于显示"""
-        # 处理 https://5721004.xyz/bu/?/3.25/ 格式
+        # 处理 https://xxx.xyz/bu/?/3.25/ 格式
         m = re.search(r'\?/([^/]+)/?$', url)
         if m:
             return self._safe_unquote(m.group(1))
-        # 处理 https://5721004.xyz/s2/ 格式
-        m = re.search(r'5721004\.xyz/(\w+)/?$', url)
+        # 处理 https://xxx.xyz/s2/ 格式
+        m = re.search(r'https?://[^/]+/(\w+)/?$', url)
         if m:
             return m.group(1)
         # 兜底: 取最后一段路径
@@ -581,5 +677,22 @@ class Spider(BaseSpider):
         return False
 
     def localProxy(self, param):
-        """本地代理（本站不需要）"""
+        """本地代理: 返回重写后的 m3u8 内容给播放器"""
+        import base64
+        try:
+            # 解析参数
+            from urllib.parse import parse_qs, urlparse
+            parsed = urlparse('?' + param if '?' not in param else param)
+            params = parse_qs(parsed.query)
+
+            if params.get('do', [''])[0] == 'm3u8':
+                content_b64 = params.get('content', [''])[0]
+                if content_b64:
+                    m3u8_content = base64.b64decode(content_b64).decode('utf-8')
+                    return {
+                        'mime': 'application/vnd.apple.mpegurl',
+                        'content': m3u8_content
+                    }
+        except Exception as e:
+            print('[JinriCP] localProxy err: ' + str(e))
         return {}

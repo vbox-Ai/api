@@ -1096,7 +1096,7 @@
       ],
       "sortOrder": 370,
       "defaultProxy": false,
-      "notes": "Python 蜘蛛直播源，JinriCP/PandaClass 韩国女团录播；动态从网站侧边栏获取分类（JinriCP 1-6季 + PandaClass 1-7季 + 粉丝房分享），无硬编码兜底；HLS m3u8 直链播放（parse=0）+ SRT 中韩双语字幕自动加载；粉丝房走 fans.5721004.xyz 独立 API；ThreadPoolExecutor 懒加载并发搜索（iOS兼容）；基座域名注入（_vbox_effective_hosts）",
+      "notes": "Python蜘蛛直播源;动态获取分类(无硬编码);m3u8直链+IPFS网关重写(w3s.link)+SRT字幕;ThreadPoolExecutor懒加载并发搜索(iOS兼容);基座域名注入;header格式修正为JSON字符串;localProxy返回重写后m3u8",
       "api": "./sources/welfare-js/jinricp.py",
       "scriptType": "python",
       "engine": "python",
