@@ -5,7 +5,7 @@ MissAV TVBox Spider — vbox 适配版
 
 vbox 适配：
 1. pyquery → BeautifulSoup4
-2. 多域名并发探测 → 顺序探测（避免 ThreadPoolExecutor 兼容性问题）
+2. 多域名并发探测（ThreadPoolExecutor + as_completed，谁先成功用谁）
 3. playerContent header → dict 格式
 4. 继承 base.spider.Spider
 
@@ -13,6 +13,7 @@ vbox 适配：
 """
 import sys, json, re, base64, warnings
 from urllib.parse import urljoin, quote, unquote
+from concurrent.futures import ThreadPoolExecutor, as_completed
 warnings.filterwarnings("ignore")
 
 sys.path.append('..')
@@ -102,11 +103,11 @@ class Spider(_B):
         pass
 
     # ============================================================
-    # 顺序域名探测：逐个尝试，第一个成功的就用
+    # 并发域名探测：所有域名同时请求，谁先成功就用谁
     # 使用 requests.get 直接请求（不依赖基类 fetch 的返回类型）
     # ============================================================
     def _fetch_best(self, path):
-        """顺序探测域名并请求，返回 (html, base_domain)"""
+        """并发探测域名并请求，返回 (html, base_domain)"""
         global _cached_domain
 
         # 先用缓存域名直接请求
@@ -119,16 +120,24 @@ class Spider(_B):
             except Exception:
                 pass
 
-        # 缓存域名失败，顺序探测所有域名
-        for domain in DOMAINS:
+        # 缓存失败，并发探测所有域名，谁先成功用谁
+        def _try_domain(domain):
             try:
                 full_url = urljoin(domain, path)
                 rsp = requests.get(full_url, headers=self.headers, timeout=15, verify=False)
                 if rsp.status_code == 200 and 'Just a moment...' not in rsp.text:
-                    _cached_domain = domain
                     return rsp.text, domain
             except Exception:
-                continue
+                pass
+            return None
+
+        with ThreadPoolExecutor(max_workers=len(DOMAINS)) as executor:
+            futures = {executor.submit(_try_domain, d): d for d in DOMAINS}
+            for future in as_completed(futures):
+                result = future.result()
+                if result:
+                    _cached_domain = result[1]
+                    return result
 
         return None, DOMAINS[0]
 
