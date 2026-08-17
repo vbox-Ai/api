@@ -1,30 +1,37 @@
 # -*- coding: utf-8 -*-
 """
 74P福利图 - 写真美图福利源
-仅保留写真分类，detailContent 直接返回 pics:// 协议，跳过详情页直接浏览
+v2.0: 网站结构更新，URL 从 /xinggan/1-1.html 变为 /xiurenwang 等，
+      分类从首页动态发现，selectors 更灵活。
 """
 import sys
 import re
 import requests
 from bs4 import BeautifulSoup
 
+try:
+    from base.spider import Spider as _B
+except ImportError:
+    class _B:
+        pass
 
-class Spider:
+
+class Spider(_B):
     """74P福利图 蜘蛛"""
 
     baseUrl = "https://www.74p.net"
 
-    # 分类配置：只保留写真/美图类
-    classes = [
-        {"type_id": "1", "type_name": "性感美女"},
-        {"type_id": "2", "type_name": "清纯美女"},
-        {"type_id": "3", "type_name": "尤物私房"},
-        {"type_id": "4", "type_name": "网络红人"},
-        {"type_id": "5", "type_name": "美女模特"},
-        {"type_id": "6", "type_name": "唯美写真"},
-        {"type_id": "7", "type_name": "美腿丝袜"},
-        {"type_id": "8", "type_name": "街拍美女"},
-        {"type_id": "9", "type_name": "明星写真"},
+    # 硬编码回退分类（当无法访问首页时使用）
+    _FALLBACK_CLASSES = [
+        {"type_id": "xiurenwang", "type_name": "秀人网"},
+        {"type_id": "yuhuajie", "type_name": "语画界"},
+        {"type_id": "huayang", "type_name": "花漾"},
+        {"type_id": "xingyanshe", "type_name": "星颜社"},
+        {"type_id": "feilin", "type_name": "菲林"},
+        {"type_id": "aimishe", "type_name": "爱蜜社"},
+        {"type_id": "boluoshe", "type_name": "菠萝社"},
+        {"type_id": "youmi", "type_name": "尤蜜"},
+        {"type_id": "meinv", "type_name": "美女"},
     ]
 
     def __init__(self, opts=None):
@@ -38,6 +45,53 @@ class Spider:
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
             "Accept-Language": "zh-CN,zh;q=0.9",
         })
+        self._classes = None
+        self._last_home = None
+
+    def _discover_classes(self):
+        """从首页动态发现分类"""
+        if self._classes is not None:
+            return self._classes
+        try:
+            r = self.session.get(self.baseUrl, timeout=15, allow_redirects=True)
+            r.encoding = "utf-8"
+            soup = BeautifulSoup(r.text, "html.parser")
+            seen = set()
+            classes = []
+            for a in soup.select("a[href]"):
+                href = a.get("href", "").strip()
+                text = a.get_text(strip=True)
+                if not href or not text:
+                    continue
+                # 格式: /xiurenwang 之类
+                if href.startswith("/") and href != "/" and len(href) > 1 and not href.startswith("/app"):
+                    # 过滤掉非分类链接
+                    if any(x in href.lower() for x in ["http", "javascript", "mailto", "tel:"]):
+                        continue
+                    slug = href.lstrip("/")
+                    if slug not in seen and len(text) < 20:
+                        seen.add(slug)
+                        classes.append({"type_id": slug, "type_name": text})
+            if len(classes) >= 3:
+                self._classes = classes
+                self._last_home = r.text
+                return classes
+        except Exception as e:
+            print(f"[fuli74p] _discover_classes error: {e}", file=sys.stderr)
+        self._classes = self._FALLBACK_CLASSES
+        return self._classes
+
+    def _get_home_html(self):
+        """获取首页 HTML（缓存）"""
+        if self._last_home:
+            return self._last_home
+        try:
+            r = self.session.get(self.baseUrl, timeout=15, allow_redirects=True)
+            r.encoding = "utf-8"
+            self._last_home = r.text
+        except Exception as e:
+            print(f"[fuli74p] _get_home_html error: {e}", file=sys.stderr)
+        return self._last_home or ""
 
     def get_header(self, referer=None):
         h = {
@@ -50,58 +104,120 @@ class Spider:
         return h
 
     def homeContent(self, filter=False):
-        """首页：只返回分类列表（不发起 HTTP 请求，避免超时）"""
-        return {"class": self.classes}
+        """首页：返回分类列表"""
+        classes = self._discover_classes()
+        return {"class": classes}
 
     def homeVideoContent(self):
-        """首页推荐内容：获取第一分类的第一页数据"""
+        """首页推荐内容：从首页 HTML 中提取"""
         try:
-            r = self.session.get(f"{self.baseUrl}/xinggan/1-1.html", timeout=8, allow_redirects=True)
-            r.encoding = "utf-8"
-            soup = BeautifulSoup(r.text, "html.parser")
+            html = self._get_home_html()
+            if not html:
+                return {"list": []}
+            soup = BeautifulSoup(html, "html.parser")
             videos = self._parse_list(soup)
             return {"list": videos}
         except Exception as e:
             print(f"[fuli74p] homeVideoContent error: {e}", file=sys.stderr)
             return {"list": []}
 
+    def _fix_url(self, url):
+        """补全 URL"""
+        if not url:
+            return ""
+        url = url.strip()
+        if url.startswith("http"):
+            return url
+        if url.startswith("//"):
+            return "https:" + url
+        if url.startswith("/"):
+            return self.baseUrl + url
+        return self.baseUrl + "/" + url
+
     def _parse_list(self, soup):
-        """从 HTML 中提取图片列表"""
+        """从 HTML 中提取图片列表（兼容多种结构）"""
         videos = []
-        for li in soup.select("ul.meinv li, ul.list li, .pic-list li"):
-            a = li.select_one("a")
-            img = li.select_one("img")
-            if not a or not img:
+        seen = set()
+
+        # 尝试多种选择器
+        item_selectors = [
+            "ul.meinv li", "ul.list li", ".pic-list li",
+            "article", ".post", ".item", ".entry", ".loop-item",
+            ".grid-item", ".list-item", "figure", ".card",
+            ".content-item", ".pic-item", ".gallery-item",
+            "ul li", "li",
+        ]
+
+        for sel in item_selectors:
+            items = soup.select(sel)
+            if not items:
                 continue
 
-            href = a.get("href", "")
-            if href.startswith("/"):
-                href = self.baseUrl + href
-            elif not href.startswith("http"):
-                continue
+            for item in items:
+                # 找链接
+                a = item.select_one("a[href]")
+                if not a:
+                    a = item if item.name == "a" else None
+                if not a:
+                    continue
 
-            title = img.get("alt") or a.get("title") or ""
-            # 优先用 data-original（懒加载），其次 src
-            cover = img.get("data-original") or img.get("src") or ""
-            if cover.startswith("//"):
-                cover = "https:" + cover
-            elif cover.startswith("/"):
-                cover = self.baseUrl + cover
+                href = a.get("href", "")
+                if not href:
+                    continue
 
-            if title and cover:
-                videos.append({
-                    "vod_id": href,
-                    "vod_name": title.strip(),
-                    "vod_pic": cover,
-                    "vod_remarks": "",
-                })
+                href = self._fix_url(href)
+
+                # 找图片
+                img = item.select_one("img")
+                cover = ""
+                if img:
+                    cover = img.get("data-original") or img.get("data-src") or img.get("src") or ""
+                    cover = self._fix_url(cover)
+
+                # 标题
+                title = ""
+                if img:
+                    title = img.get("alt", "")
+                if not title:
+                    title = a.get("title", "")
+                if not title:
+                    title = a.get_text(strip=True)
+                if not title:
+                    # 尝试从 h2/h3 获取
+                    h = item.select_one("h2, h3, .title, .name")
+                    if h:
+                        title = h.get_text(strip=True)
+
+                if not title:
+                    title = href
+
+                if href not in seen:
+                    seen.add(href)
+                    videos.append({
+                        "vod_id": href,
+                        "vod_name": title.strip() if title else "",
+                        "vod_pic": cover,
+                        "vod_remarks": "",
+                    })
+
+            if videos:
+                break
+
         return videos
 
     def categoryContent(self, tid, pg, filter=False, extend=""):
         """分类页列表"""
-        url = f"{self.baseUrl}/xinggan/{tid}-{pg}.html"
         try:
-            r = self.session.get(url, timeout=8, allow_redirects=True)
+            pg = int(pg)
+        except:
+            pg = 1
+
+        url = f"{self.baseUrl}/{tid}"
+        if pg > 1:
+            url = f"{self.baseUrl}/{tid}/page/{pg}"
+
+        try:
+            r = self.session.get(url, timeout=15, allow_redirects=True)
             r.encoding = "utf-8"
             soup = BeautifulSoup(r.text, "html.parser")
 
@@ -109,26 +225,34 @@ class Spider:
 
             # 尝试提取总页数
             pagecount = 1
-            page_info = soup.select_one(".pageinfo, .page, .pagination")
+            page_info = soup.select_one(".pageinfo, .page, .pagination, .pager, .nav-links")
             if page_info:
-                pages = re.findall(r"共(\d+)页|共(\d+)条", page_info.get_text())
+                pages = re.findall(r"共(\d+)页|共(\d+)条|/(\d+)页", page_info.get_text())
                 if pages:
-                    pagecount = int(pages[0][0] or pages[0][1])
+                    for p in pages:
+                        val = next((v for v in p if v), None)
+                        if val:
+                            pagecount = int(val)
+                            break
+
+            if not pagecount or pagecount < pg:
+                pagecount = max(pg, pg + (1 if videos else 0))
 
             return {
                 "list": videos,
-                "page": int(pg),
+                "page": pg,
                 "pagecount": pagecount,
             }
         except Exception as e:
             print(f"[fuli74p] categoryContent error: {e}", file=sys.stderr)
-            return {"list": [], "page": int(pg), "pagecount": 1}
+            return {"list": [], "page": pg, "pagecount": 1}
 
     def detailContent(self, ids):
         """详情页：直接返回 pics:// 图片列表协议"""
-        url = ids[0]
+        url = ids[0] if isinstance(ids, (list, tuple)) else str(ids)
+        url = self._fix_url(url)
         try:
-            r = self.session.get(url, timeout=8, allow_redirects=True)
+            r = self.session.get(url, timeout=15, allow_redirects=True)
             r.encoding = "utf-8"
             soup = BeautifulSoup(r.text, "html.parser")
 
@@ -137,14 +261,21 @@ class Spider:
             title = h.get_text(strip=True) if h else "未知标题"
 
             # 封面
-            cover_img = soup.select_one(".content img") or soup.select_one(".article img") or soup.select_one("img.aligncenter")
+            cover_img = (
+                soup.select_one(".content img") or
+                soup.select_one(".article img") or
+                soup.select_one("article img") or
+                soup.select_one(".entry img") or
+                soup.select_one("img")
+            )
             cover = ""
             if cover_img:
-                cover = cover_img.get("data-original") or cover_img.get("src") or ""
-                if cover.startswith("//"):
-                    cover = "https:" + cover
-                elif cover.startswith("/"):
-                    cover = self.baseUrl + cover
+                cover = (
+                    cover_img.get("data-original") or
+                    cover_img.get("data-src") or
+                    cover_img.get("src") or ""
+                )
+                cover = self._fix_url(cover)
 
             # 自动翻页抓取所有图片
             img_list = self._scrape_all_images(url)
@@ -158,7 +289,6 @@ class Spider:
                     "vod_play_url": "全集$"
                 }]}
 
-            # 直接返回 pics:// 协议，客户端跳过详情页直接浏览
             pics_url = "pics://" + "&&".join(img_list)
             return {
                 "list": [{
@@ -186,51 +316,67 @@ class Spider:
             visited.add(current_url)
 
             try:
-                r = self.session.get(current_url, timeout=8, allow_redirects=True)
+                r = self.session.get(current_url, timeout=15, allow_redirects=True)
                 r.encoding = "utf-8"
                 soup = BeautifulSoup(r.text, "html.parser")
 
                 # 提取内容区域的图片
-                content = soup.select_one(".content, .article, .post-content, #post_content")
-                if content:
-                    imgs = content.select("img")
-                else:
-                    imgs = soup.select("article img, .entry img")
+                content = (
+                    soup.select_one(".content") or
+                    soup.select_one(".article") or
+                    soup.select_one(".post-content") or
+                    soup.select_one("#post_content") or
+                    soup.select_one("article") or
+                    soup.select_one(".entry") or
+                    soup
+                )
 
+                imgs = content.select("img") if content else soup.select("img")
                 for img in imgs:
-                    src = img.get("data-original") or img.get("src") or ""
+                    src = (
+                        img.get("data-original") or
+                        img.get("data-src") or
+                        img.get("src") or
+                        ""
+                    )
                     if not src:
                         continue
-                    if src.startswith("//"):
-                        src = "https:" + src
-                    elif src.startswith("/"):
-                        src = self.baseUrl + src
+                    src = self._fix_url(src)
 
                     # 过滤非内容图
-                    if any(x in src.lower() for x in ["logo", "icon", "avatar", "banner", "button", "favicon", "loading", "placeholder", "ad_", "advert"]):
+                    if any(x in src.lower() for x in [
+                        "logo", "icon", "avatar", "banner", "button",
+                        "favicon", "loading", "placeholder", "ad_", "advert",
+                        "background", "bg.", "-bg", "sprite",
+                    ]):
                         continue
-                    if not re.search(r"\.(jpg|png|webp|jpeg|gif)$", src.lower()):
-                        continue
+                    # 只保留图片格式
+                    if not re.search(r"\.(jpg|png|webp|jpeg|gif)(\?|$)", src.lower()):
+                        # 也接受不含扩展名但来自图片CDN的URL
+                        if not any(x in src.lower() for x in ["/img/", "/image/", "/pic/", "/photo/", "/upload/", ".com/images"]):
+                            continue
                     if src not in img_list:
                         img_list.append(src)
 
                 # 找下一页链接
                 next_link = None
-                for a in soup.select(".page a, .pagination a, .pager a"):
+                for a in soup.select("a"):
                     text = a.get_text(strip=True)
-                    if text in ["下一页", "下页", "下一张", "→", ">", "Next"]:
+                    if text in ["下一页", "下页", "下一张", "→", ">", "Next", "next", "»"]:
                         next_link = a.get("href")
                         break
+                # 也尝试找 page-numbers 链接
+                if not next_link:
+                    for a in soup.select(".page a, .pagination a, .pager a, .nav-links a"):
+                        text = a.get_text(strip=True)
+                        if text and text.isdigit() and int(text) == page + 2:
+                            next_link = a.get("href")
+                            break
 
                 if not next_link:
                     break
 
-                if next_link.startswith("/"):
-                    current_url = self.baseUrl + next_link
-                elif next_link.startswith("http"):
-                    current_url = next_link
-                else:
-                    break
+                current_url = self._fix_url(next_link)
 
             except Exception as e:
                 print(f"[fuli74p] scrape page {page} error: {e}", file=sys.stderr)
@@ -262,10 +408,9 @@ class Spider:
 
 
 if __name__ == "__main__":
-    # 简单测试
     s = Spider()
     print("=== 分类测试 ===")
-    r = s.categoryContent("1", "1")
+    r = s.categoryContent("xiurenwang", "1")
     print(f"分类数量: {len(r.get('class', []))}")
     print(f"列表数量: {len(r.get('list', []))}")
     if r.get("list"):

@@ -235,21 +235,18 @@ class Spider(_B):
         return self.H + u if u.startswith('/') else self.H + '/' + u
 
     def _pic(self, path):
-        """返回原始图片 URL（不走代理），客户端 PlatformImageLoader 通过 imageReferer 防盗链加载。"""
+        """返回原始图片 URL（不走代理），客户端 PlatformImageLoader 通过 imageReferer 防盗链加载。
+        注意：data-pic-base64 属性值实际是明文路径（如 /passimg/kt/432713/01.jpg），非 base64 编码。"""
         if not path:
             return ''
-        try:
-            path += '=' * ((4 - len(path) % 4) % 4)
-            decoded = base64.b64decode(path).decode('utf-8', errors='ignore')
-        except Exception:
-            decoded = path
-        if decoded.startswith('http://') or decoded.startswith('https://'):
-            return decoded
-        if decoded.startswith('//'):
-            return 'https:' + decoded
-        if decoded.startswith('/'):
-            return IMG_HOST + decoded
-        return IMG_HOST + '/' + decoded
+        # 已经是完整 URL
+        if path.startswith('http://') or path.startswith('https://'):
+            return path
+        if path.startswith('//'):
+            return 'https:' + path
+        if path.startswith('/'):
+            return IMG_HOST + path
+        return IMG_HOST + '/' + path
 
     def _image(self, path):
         if not path:
@@ -294,6 +291,15 @@ class Spider(_B):
             im = re.search(r'data-pic-base64="([^"]+)"', inner, re.S)
             if im:
                 pic = self._pic(im.group(1).strip())
+            if not pic:
+                # 首页使用 data-src 或 img src
+                im = re.search(r'data-src="([^"]+)"', inner, re.S)
+                if im:
+                    pic = self._image(im.group(1).strip())
+            if not pic:
+                im = re.search(r'<img[^>]+src="([^"]+)"', inner, re.S)
+                if im and 'loading' not in im.group(1).lower():
+                    pic = self._image(im.group(1).strip())
             dm = re.search(r'class="[^"]*video-item-date[^"]*"[^>]*>([^<]+)', inner, re.S)
             date = dm.group(1).strip() if dm else ''
             if href and title:
@@ -318,8 +324,11 @@ class Spider(_B):
         if not h or 'enter-content' in h:
             return {'list': []}
         cards = self._parse_image_items(h)
+        # 首页可能没有 data-pic-base64，用第一个分类首页作为推荐
         if not cards:
-            return {'list': []}
+            all_zones = list(ZONE_SUB.keys())
+            if all_zones:
+                cards = self.categoryContent(all_zones[0], 1).get('list', [])
         return {'list': cards}
 
     def categoryContent(self, tid, pg=1, filter=False, extend=None):
