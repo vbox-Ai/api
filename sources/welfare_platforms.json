@@ -719,6 +719,28 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "ytblive_py",
+      "name": "YouTube直播",
+      "category": "live",
+      "icon": "play.tv.fill",
+      "desc": "YouTube Live 全球直播 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.youtube.com"
+      ],
+      "sortOrder": 340,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛直播源，YouTube 全球直播；通过 YouTube InnerTube API 搜索直播内容；8 个分类（正在直播/新闻/音乐/Lofi/太空/自然/游戏/体育）；4 客户端（WEB/ANDROID/IOS/MWEB）轮询获取 HLS 地址；内置 m3u8 代理重写 TS 分片防盗链；支持 extend.proxy 配置代理（需要科学上网）；extend.hls_proxy 控制 HLS 代理开关",
+      "api": "./sources/welfare-js/ytblive.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ]
 }
