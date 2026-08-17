@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.17.26",
-    "updatedAt": "2026-08-17T11:30:00Z",
+    "version": "2026.08.17.28",
+    "updatedAt": "2026-08-17T15:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -87,7 +87,15 @@
       "hubff_py",
       "acfan_py"
     ],
-    "stage9Notes": "阶段9 新增：hubff（BeautifulSoup4 替代 pyquery + localProxy 图片代理）和 AcFan（动漫/Cosplay 平台，纯正则解析 + localProxy 图片代理）"
+    "stage9Notes": "阶段9 新增：hubff（BeautifulSoup4 替代 pyquery + localProxy 图片代理）和 AcFan（动漫/Cosplay 平台，纯正则解析 + localProxy 图片代理）",
+    "stage10AddedKeys": [
+      "huoporn_py",
+      "wuyuexingkong_py",
+      "zhizhewanshui_py",
+      "haolaiwu_py",
+      "vvvideo_py"
+    ],
+    "stage10Notes": "阶段10 新增：HuoPorn/五月星空/智者玩水/好莱污影院/VV视频 5 个 Python 蜘蛛福利源。IPA 环境分析确认 lxml 已集成、Crypto 仅支持 CBC/ECB、hashlib 标准库可用。VV视频 PBKDF2→hashlib.pbkdf2_hmac + AES-GCM→AES-ECB CTR 替换。"
   },
   "schemaVersion": 1,
   "categories": [
@@ -889,6 +897,111 @@
       "engine": "python",
       "sslBypass": true,
       "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "huoporn_py",
+      "name": "HuoPorn",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "Vue渲染站 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.huoporn.lol"
+      ],
+      "sortOrder": 420,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，HuoPorn Vue 动态渲染站；MacCMS v10 模板，19 个分类；player_aaaa/player_data/iframe 多策略播放地址提取；session.verify=False + urllib3 警告抑制；playerContent 递归加深度限制（max=2）",
+      "api": "./sources/welfare-js/huoporn.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "wuyuexingkong_py",
+      "name": "五月星空",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "纯正则解析 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://d8v8rjm9.bbmm277.sbs"
+      ],
+      "sortOrder": 421,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，五月星空；41 个分类；card 模式正则解析列表；player_data JSON 提取 m3u8；fetch_html 简化为 self.fetch().text（基类返回 Response 对象）；基类 fetch 依赖经基类源码确认返回类型确定",
+      "api": "./sources/welfare-js/wuyuexingkong.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "zhizhewanshui_py",
+      "name": "智者玩水",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "lxml 解析 MacCMS Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.zhizhewanshui.shop"
+      ],
+      "sortOrder": 422,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，智者玩水；MacCMS 站，12 个分类；lxml.etree 解析 HTML（IPA 已集成 lxml，24 处 xpath 直接可用）；player_aaaa/player_data/MacPlayer 多策略播放提取；getDependence 声明 ['lxml','requests']",
+      "api": "./sources/welfare-js/zhizhewanshui.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "haolaiwu_py",
+      "name": "好莱污影院",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "DNS劫持绕过 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://boutiquefire.xyz"
+      ],
+      "sortOrder": 423,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，好莱污影院；DNS 劫持绕过（socket.getaddrinfo patch + 防重复保护 + DoH 动态解析 Cloudflare IP）；纯正则解析；player_aaaa JSON 提取 m3u8；2 个分类（国产/中文字幕）",
+      "api": "./sources/welfare-js/haolaiwu.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "vvvideo_py",
+      "name": "VV视频",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "AES加密API+PoW验证 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://351.dofd1fe.com:25118"
+      ],
+      "sortOrder": 424,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，VV视频；API JSON 站 + AES-GCM 信封解密 + PoW 反爬验证。加密模块替换：PBKDF2→hashlib.pbkdf2_hmac（标准库）、SHA256→hashlib.sha256、AES-GCM→AES-ECB 实现 CTR 解密（IPA 中 GCM 不可用，ECB 可用）。localProxy 封面图 AES-CBC 解密（IPA 中可用）。动态 API 发现 + 10 个 fallback API。threading.Lock 有 fallback 降级。23 个分类。",
+      "api": "./sources/welfare-js/vvvideo.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
