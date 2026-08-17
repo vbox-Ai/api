@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
+# coding=utf-8
 """
 AcFan TVBox Spider — vbox 适配版
 站点: acf.f76typd0.work
@@ -7,8 +8,8 @@ vbox 适配：
 1. requests.Session → 继承基类 self.fetch
 2. playerContent header → dict 格式
 3. 继承 base.spider.Spider
-4. localProxy 图片代理
-5. 补齐 action/getDependence
+
+注意：图片使用站点自己的 media-proxy（/media-proxy?url=），不使用 localProxy
 """
 import sys, re, json
 from urllib.parse import quote, unquote
@@ -16,7 +17,7 @@ from urllib.parse import quote, unquote
 sys.path.append('..')
 try:
     from base.spider import Spider as _B
-except ImportError:
+except Exception:
     class _B:
         pass
 try:
@@ -53,6 +54,8 @@ CLASS_LIST = [
     {"type_name": "Cosplay", "type_id": "cosplay"},
 ]
 
+DEFAULT_PIC = HOST + "/images/default-cover.svg"
+
 
 class Spider(_B):
     headers = {
@@ -62,11 +65,11 @@ class Spider(_B):
         "Accept-Language": "zh-CN,zh;q=0.9"
     }
 
-    def getDependence(self):
-        return ['requests']
-
     def getName(self):
         return "AcFan"
+
+    def init(self, extend=""):
+        pass
 
     def isVideoFormat(self, url):
         if not url:
@@ -76,11 +79,8 @@ class Spider(_B):
     def manualVideoCheck(self):
         return False
 
-    def init(self, extend=""):
-        pass
-
     def destroy(self):
-        pass
+        return "success"
 
     def action(self, action):
         pass
@@ -88,13 +88,21 @@ class Spider(_B):
     # ============================================================
     # 辅助: 请求
     # ============================================================
-    def _fetch(self, url):
+    def fetch(self, url):
         for _ in range(3):
             try:
-                r = self.fetch(url, headers=self.headers, timeout=10)
+                r = self._B_fetch(url, headers=self.headers, timeout=10) if hasattr(self, '_B_fetch') else None
+                if r is None:
+                    import requests as _req
+                    r = _req.get(url, headers=self.headers, timeout=10, verify=False)
                 return r.text or ""
             except Exception:
-                pass
+                try:
+                    import requests as _req
+                    r = _req.get(url, headers=self.headers, timeout=10, verify=False)
+                    return r.text or ""
+                except Exception:
+                    pass
         return ""
 
     def _abs_url(self, url):
@@ -109,13 +117,11 @@ class Spider(_B):
             return HOST + url
         return url
 
-    def _wrap_proxy(self, url):
-        if not url or not url.startswith("http"):
+    # 站点自己的 media-proxy（不使用 localProxy）
+    def proxy_img(self, url):
+        if not url or not url.startswith("http") or "127.0.0.1" in url or "/media-proxy" in url:
             return url
-        if "127.0.0.1" in url or "/media-proxy" in url:
-            return url
-        base = 'http://127.0.0.1:9978/proxy?do=py&url='
-        return base + quote(url, safe='')
+        return HOST + "/media-proxy?url=" + quote(url, safe="")
 
     @staticmethod
     def _match(text, pat):
@@ -134,7 +140,7 @@ class Spider(_B):
     def homeContent(self, filter):
         data = []
         try:
-            html = self._fetch(HOST + "/")
+            html = self.fetch(HOST + "/")
             data = self.parseList(html)
         except Exception:
             pass
@@ -142,7 +148,7 @@ class Spider(_B):
 
     def homeVideoContent(self):
         try:
-            html = self._fetch(HOST + "/")
+            html = self.fetch(HOST + "/")
             return {"list": self.parseList(html)[:24]}
         except Exception:
             return {"list": []}
@@ -159,7 +165,7 @@ class Spider(_B):
             url = HOST + "/category/" + path + "/page/" + str(page)
         else:
             url = HOST + "/category/" + path
-        html = self._fetch(url)
+        html = self.fetch(url)
         pages = [int(p) for p in re.findall(r"/category/[^\"']+/page/(\d+)", html)]
         pc = max(pages) if pages else 1
         data = self.parseList(html)
@@ -177,11 +183,11 @@ class Spider(_B):
         pic = unquote(ps[3]) if len(ps) > 3 else ""
         if play:
             return {"list": [{
-                "vod_id": sid, "vod_name": name, "vod_pic": self._wrap_proxy(pic),
+                "vod_id": sid, "vod_name": name, "vod_pic": self.proxy_img(pic),
                 "vod_content": name, "vod_play_from": "AcFan",
                 "vod_play_url": "播放$" + play
             }]}
-        html = self._fetch(HOST + "/watch/" + vid)
+        html = self.fetch(HOST + "/watch/" + vid)
         vod_name, vod_pic, vod_content, m3u8, cat_name = vid, "", "", "", ""
         for jm in re.finditer(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>', html, re.S):
             try:
@@ -213,7 +219,7 @@ class Spider(_B):
             vod_content = "分类: " + cat_name + "\n" + vod_content
         play_url = ("播放$" + m3u8) if m3u8 else ""
         return {"list": [{
-            "vod_id": sid, "vod_name": vod_name, "vod_pic": self._wrap_proxy(vod_pic),
+            "vod_id": sid, "vod_name": vod_name, "vod_pic": self.proxy_img(vod_pic),
             "vod_content": vod_content, "vod_play_from": "AcFan",
             "vod_play_url": play_url
         }]}
@@ -224,7 +230,7 @@ class Spider(_B):
     def searchContent(self, key, quick, pg="1"):
         page = int(pg) if str(pg).isdigit() else 1
         wd = quote(key)
-        html = self._fetch(HOST + "/search?q=" + wd + "&page=" + str(page))
+        html = self.fetch(HOST + "/search?q=" + wd + "&page=" + str(page))
         pages = [int(p) for p in re.findall(r"/search\?page=(\d+)", html)]
         pc = max(pages) if pages else 1
         return {"list": self.parseList(html), "page": page, "pagecount": pc, "limit": 24, "total": pc * 24}
@@ -237,8 +243,8 @@ class Spider(_B):
         ps = sid.split("@@@")
         url = ps[1] if len(ps) > 1 else sid
         if self.isVideoFormat(url):
-            return {"parse": 0, "url": url, "header": dict(self.headers)}
-        html = self._fetch(HOST + "/watch/" + ps[0])
+            return {"parse": 0, "url": url, "header": self.headers}
+        html = self.fetch(HOST + "/watch/" + ps[0])
         m3u8 = ""
         for jm in re.finditer(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>', html, re.S):
             try:
@@ -251,38 +257,11 @@ class Spider(_B):
             except Exception:
                 pass
         if m3u8:
-            return {"parse": 0, "url": m3u8, "header": dict(self.headers)}
-        return {"parse": 1, "url": url, "header": dict(self.headers)}
+            return {"parse": 0, "url": m3u8, "header": self.headers}
+        return {"parse": 1, "url": url, "header": self.headers}
 
-    # ============================================================
-    # localProxy: 图片代理
-    # ============================================================
     def localProxy(self, param):
-        if isinstance(param, str):
-            from urllib.parse import parse_qs, urlparse
-            params = parse_qs(urlparse(param).query)
-        elif isinstance(param, dict):
-            params = param
-        else:
-            params = {}
-
-        url = params.get('url', [''])[0] if isinstance(params.get('url'), list) else params.get('url', '')
-        if not url:
-            url = params.get('key', [''])[0] if isinstance(params.get('key'), list) else params.get('key', '')
-
-        if not url:
-            return [200, "text/plain", b"", {}]
-
-        try:
-            rsp = requests.get(url, headers={
-                'User-Agent': UA,
-                'Referer': HOST + '/',
-            }, timeout=10, verify=False)
-            content_type = rsp.headers.get('Content-Type', 'image/jpeg')
-            return [200, content_type, rsp.content, {}]
-        except Exception as e:
-            print(f"[AcFan] localProxy error: {e}")
-            return [200, "text/plain", b"", {}]
+        return [200, "text/plain", b""]
 
     # ============================================================
     # 辅助: 列表解析
@@ -301,12 +280,12 @@ class Spider(_B):
             block = html[m.start():m.start() + 6000]
             name = self._match(block, r'<img[^>]*alt="([^"]*)"') or vid
             duration = self._match(block, r'>(\d{1,3}:\d{2}(?::\d{2})?)</span>') or ""
-            pic = cover_map.get(vid, HOST + "/images/default-cover.svg")
+            pic = cover_map.get(vid, DEFAULT_PIC)
             sid = vid + "@@@" + "" + "@@@" + quote(name) + "@@@" + quote(pic)
             res.append({
                 "vod_id": sid,
                 "vod_name": self._clean(name),
-                "vod_pic": self._wrap_proxy(pic),
+                "vod_pic": self.proxy_img(pic),
                 "vod_remarks": self._clean(duration) if duration else ""
             })
         if not res:
@@ -363,7 +342,7 @@ class Spider(_B):
                 res.append({
                     "vod_id": sid,
                     "vod_name": self._clean(name),
-                    "vod_pic": self._wrap_proxy(cover),
+                    "vod_pic": self.proxy_img(cover),
                     "vod_remarks": ""
                 })
         except Exception:

@@ -5,15 +5,14 @@ MissAV TVBox Spider — vbox 适配版
 
 vbox 适配：
 1. pyquery → BeautifulSoup4
-2. 多域名轮询 → 并发探测（ThreadPoolExecutor，先到先用）
+2. 多域名并发探测 → 顺序探测（避免 ThreadPoolExecutor 兼容性问题）
 3. playerContent header → dict 格式
 4. 继承 base.spider.Spider
-5. localProxy 图片代理（防盗链）
+
+注意：不使用 localProxy，图片直接返回原始 URL（与原始脚本一致）
 """
-import sys, json, re, base64, threading
+import sys, json, re, base64
 from urllib.parse import urljoin, quote, unquote
-from collections import OrderedDict
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 sys.path.append('..')
 try:
@@ -32,18 +31,15 @@ except ImportError:
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
-# 域名列表（并发探测时使用）
+# 域名列表（顺序探测）
 DOMAINS = [
     'https://missav.ws',
     'https://missav02.xyz',
     'https://missav.app',
 ]
 
-# 缓存探测到的最优域名，避免每次请求都并发
+# 缓存探测到的可用域名
 _cached_domain = None
-_domain_lock = threading.Lock()
-_domain_last_check = 0
-_DOMAIN_CACHE_TTL = 300  # 5 分钟缓存
 
 # 分类定义
 CATEGORIES = [
@@ -83,9 +79,6 @@ FILTERS = {
 class Spider(_B):
     headers = {'User-Agent': UA}
 
-    def getDependence(self):
-        return ['bs4', 'requests']
-
     def getName(self):
         return "MissAV"
 
@@ -96,7 +89,7 @@ class Spider(_B):
         pass
 
     def init(self, extend=""):
-        print("[MissAV] 插件加载成功")
+        pass
 
     def destroy(self):
         pass
@@ -105,51 +98,10 @@ class Spider(_B):
         pass
 
     # ============================================================
-    # 并发域名探测：哪个域名先返回有效数据就用哪个
+    # 顺序域名探测：逐个尝试，第一个成功的就用
     # ============================================================
-    def _detect_best_domain(self, path="/"):
-        global _cached_domain, _domain_last_check
-        import time
-        now = time.time()
-        with _domain_lock:
-            if _cached_domain and (now - _domain_last_check) < _DOMAIN_CACHE_TTL:
-                return _cached_domain
-
-        def _try_domain(domain):
-            try:
-                full_url = urljoin(domain, path)
-                rsp = self.fetch(full_url, headers=self.headers)
-                if rsp and rsp.status_code == 200 and 'Just a moment...' not in rsp.text:
-                    return domain, rsp.text
-            except Exception:
-                pass
-            return None, None
-
-        winner = None
-        with ThreadPoolExecutor(max_workers=len(DOMAINS)) as pool:
-            futures = {pool.submit(_try_domain, d): d for d in DOMAINS}
-            for f in as_completed(futures):
-                domain, html = f.result()
-                if domain and html:
-                    winner = (domain, html)
-                    # 取消其他任务
-                    for other in futures:
-                        if other != f:
-                            other.cancel()
-                    break
-
-        with _domain_lock:
-            if winner:
-                _cached_domain = winner[0]
-                _domain_last_check = time.time()
-            else:
-                _cached_domain = DOMAINS[0]
-                _domain_last_check = time.time()
-
-        return _cached_domain
-
     def _fetch_best(self, path):
-        """并发探测域名并请求，返回 (html, base_domain)"""
+        """顺序探测域名并请求，返回 (html, base_domain)"""
         global _cached_domain
 
         # 先用缓存域名直接请求
@@ -162,33 +114,17 @@ class Spider(_B):
             except Exception:
                 pass
 
-        # 缓存域名失败，并发探测
-        def _try_domain(domain):
+        # 缓存域名失败，顺序探测所有域名
+        for domain in DOMAINS:
             try:
                 full_url = urljoin(domain, path)
                 rsp = self.fetch(full_url, headers=self.headers)
                 if rsp and rsp.status_code == 200 and 'Just a moment...' not in rsp.text:
-                    return domain, rsp.text
+                    _cached_domain = domain
+                    return rsp.text, domain
             except Exception:
-                pass
-            return None, None
+                continue
 
-        winner = None
-        with ThreadPoolExecutor(max_workers=len(DOMAINS)) as pool:
-            futures = {pool.submit(_try_domain, d): d for d in DOMAINS}
-            for f in as_completed(futures):
-                domain, html = f.result()
-                if domain and html:
-                    winner = (domain, html)
-                    for other in futures:
-                        if other != f:
-                            other.cancel()
-                    break
-
-        if winner:
-            with _domain_lock:
-                _cached_domain = winner[0]
-            return winner[1], winner[0]
         return None, DOMAINS[0]
 
     # ============================================================
@@ -264,7 +200,7 @@ class Spider(_B):
                 title_tag = soup.find('title')
                 title = title_tag.get_text(strip=True) if title_tag else ''
 
-            # 封面图
+            # 封面图（直接返回原始 URL，不代理）
             pic = ''
             img_tag = soup.find('img', class_='w-full')
             if img_tag:
@@ -273,6 +209,8 @@ class Spider(_B):
                 any_img = soup.find('img')
                 if any_img:
                     pic = any_img.get('data-src') or any_img.get('src') or ''
+            if pic and not pic.startswith('http'):
+                pic = urljoin(base_domain, pic)
 
             # 分类名
             type_name = ''
@@ -285,7 +223,6 @@ class Spider(_B):
             if '</a>：' in html and '</p>' in html:
                 try:
                     actor = html.split('</a>：')[1].split('</p>')[0]
-                    # 清理 HTML 标签
                     actor = re.sub(r'<[^>]+>', '', actor).strip()
                 except Exception:
                     actor = ''
@@ -306,7 +243,7 @@ class Spider(_B):
             vod = {
                 'vod_id': vod_id,
                 'vod_name': title,
-                'vod_pic': self._wrap_proxy(pic),
+                'vod_pic': pic,
                 'type_name': type_name,
                 'vod_actor': actor,
                 'vod_content': remarks,
@@ -396,13 +333,9 @@ class Spider(_B):
             return videos
         try:
             soup = BeautifulSoup(html, 'html.parser')
-            # MissAV 列表页: body .gap-5 .group
-            container = soup.find('body')
-            if not container:
-                container = soup
+            container = soup.find('body') or soup
             groups = container.select('.gap-5 .group')
             if not groups:
-                # 兜底: 直接找所有 group
                 groups = container.select('.group')
 
             for item in groups:
@@ -423,13 +356,15 @@ class Spider(_B):
                 if not title:
                     title = a_tag.get('title', '') or a_tag.get_text(strip=True)
 
-                # 封面图
+                # 封面图（直接返回原始 URL，不代理）
                 img = item.find('img')
                 pic = ''
                 if img:
                     pic = img.get('data-src') or img.get('src') or ''
+                if pic and not pic.startswith('http'):
+                    pic = urljoin(base_domain, pic)
 
-                # 备注（时长/清晰度等）
+                # 备注
                 remarks = ''
                 abs_els = item.select('.absolute')
                 texts = []
@@ -443,7 +378,7 @@ class Spider(_B):
                 videos.append({
                     'vod_id': vod_id,
                     'vod_name': title,
-                    'vod_pic': self._wrap_proxy(pic),
+                    'vod_pic': pic,
                     'vod_remarks': remarks
                 })
         except Exception as e:
@@ -451,43 +386,5 @@ class Spider(_B):
 
         return videos
 
-    # ============================================================
-    # localProxy: 图片代理（防盗链）
-    # ============================================================
-    def _wrap_proxy(self, url):
-        if not url:
-            return url
-        if url.startswith('http'):
-            return self._get_proxy_url(url)
-        return url
-
-    def _get_proxy_url(self, url):
-        base = 'http://127.0.0.1:9978/proxy?do=py&url='
-        return base + quote(url, safe='')
-
     def localProxy(self, param):
-        if isinstance(param, str):
-            from urllib.parse import parse_qs, urlparse
-            params = parse_qs(urlparse(param).query)
-        elif isinstance(param, dict):
-            params = param
-        else:
-            params = {}
-
-        url = params.get('url', [''])[0] if isinstance(params.get('url'), list) else params.get('url', '')
-        if not url:
-            url = params.get('key', [''])[0] if isinstance(params.get('key'), list) else params.get('key', '')
-
-        if not url:
-            return [200, 'text/plain', b'no url', {}]
-
-        try:
-            rsp = requests.get(url, headers={
-                'User-Agent': UA,
-                'Referer': _cached_domain or DOMAINS[0],
-            }, timeout=10, verify=False)
-            content_type = rsp.headers.get('Content-Type', 'image/jpeg')
-            return [200, content_type, rsp.content, {}]
-        except Exception as e:
-            print("[MissAV] localProxy err: " + str(e))
-            return [200, 'text/plain', b'proxy err', {}]
+        pass

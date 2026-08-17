@@ -345,20 +345,15 @@ class Spider(_B):
                 return cache_key
 
         url = (API_DOMAIN + "/v3/media/" + quality + "/" + vid
-               + ".m3u8?&token=" + self.token + "&h=" + quote(h_host, safe=''))
+               + ".m3u8?&token=" + self.token + "&h=" + h_host)
         try:
             resp = self.sess.get(url, timeout=20, allow_redirects=True, verify=False)
             if resp.status_code != 200:
                 print("[Fulao2] fetch_m3u8 " + h_label + "-" + quality + " status=" + str(resp.status_code))
                 return None
-            # 检查是否是明文错误响应
-            rtext = resp.text.strip()
-            if rtext.startswith('{'):
-                print("[Fulao2] fetch_m3u8 " + h_label + "-" + quality + " 明文响应: " + rtext[:200])
-                return None
-            text = self._decrypt_m3u8(rtext)
+            text = self._decrypt_m3u8(resp.text)
             if not text:
-                print("[Fulao2] fetch_m3u8 " + h_label + "-" + quality + " 解密失败, resp_len=" + str(len(rtext)))
+                print("[Fulao2] fetch_m3u8 " + h_label + "-" + quality + " 解密失败, resp_len=" + str(len(resp.text)))
                 return None
             with self._m3u8_lock:
                 self._m3u8_cache[cache_key] = text

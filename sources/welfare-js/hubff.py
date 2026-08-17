@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-hubff TVBox Spider — vbox 适配版
-站点: hubff.com
+作者: 飞鱼
+站名: hubff
+发布页: https://hubff.com/
 
 vbox 适配：
 1. pyquery → BeautifulSoup4
-2. 重写 fetch → 继承基类 self.fetch
-3. playerContent header → dict 格式
-4. 继承 base.spider.Spider
-5. localProxy 图片代理（防盗链）
-6. 补齐标准方法 destroy/action/getDependence
+2. playerContent header → dict 格式
+3. 继承 base.spider.Spider
+
+注意：不使用 localProxy，图片直接返回原始 URL（与原始脚本一致）
 """
 import sys, json, re
 from urllib.parse import urljoin, quote
@@ -45,11 +45,11 @@ class Spider(_B):
     }
     timeout = 22
 
-    def getDependence(self):
-        return ['bs4', 'requests']
-
     def getName(self):
         return "hubff"
+
+    def init(self, extend=""):
+        pass
 
     def isVideoFormat(self, url):
         return True
@@ -57,13 +57,7 @@ class Spider(_B):
     def manualVideoCheck(self):
         pass
 
-    def init(self, extend=""):
-        pass
-
     def destroy(self):
-        pass
-
-    def action(self, action):
         pass
 
     # ============================================================
@@ -167,10 +161,10 @@ class Spider(_B):
             vod = {
                 "vod_id": vid,
                 "vod_name": title,
-                "vod_pic": self._wrap_proxy(pic),
+                "vod_pic": self.absoluteUrl(pic),
                 "vod_remarks": "",
                 "vod_content": vid,
-                "vod_play_from": "hubff",
+                "vod_play_from": "飞鱼",
                 "vod_play_url": f"高清${play_url}"
             }
             result['list'] = [vod]
@@ -181,7 +175,7 @@ class Spider(_B):
     # ============================================================
     # 4. 搜索
     # ============================================================
-    def searchContent(self, key, quick, pg="1"):
+    def searchContent(self, key, quick, pg=1):
         result = {}
         try:
             encoded_key = quote(key)
@@ -200,7 +194,7 @@ class Spider(_B):
     # ============================================================
     # 5. 播放接口
     # ============================================================
-    def playerContent(self, flag, id, vipFlags):
+    def playContent(self, flag, id, vipFlags):
         result = {}
         try:
             if id.startswith('http'):
@@ -226,7 +220,7 @@ class Spider(_B):
                     result["header"] = {
                         "User-Agent": UA,
                         "Referer": SITE_URL,
-                        "Origin": SITE_URL.rstrip('/')
+                        "Origin": "https://hubff.com"
                     }
                     return result
 
@@ -234,20 +228,25 @@ class Spider(_B):
             result["parse"] = 1
             result["playUrl"] = ""
             result["url"] = id
-            result["header"] = dict(self.playHeaders)
+            result["header"] = self.playHeaders
         except Exception as e:
-            print(f"[hubff] playerContent error: {e}")
+            print(f"[hubff] playContent error: {e}")
             result["parse"] = 1
             result["playUrl"] = ""
             result["url"] = id
-            result["header"] = dict(self.playHeaders)
+            result["header"] = self.playHeaders
         return result
+
+    def playerContent(self, flag, id, vipFlags):
+        return self.playContent(flag, id, vipFlags)
+
+    def localProxy(self, param):
+        pass
 
     # ============================================================
     # 辅助: 解析视频列表
     # ============================================================
     def parse_video_list(self, html):
-        """通用精准去广告提取函数"""
         videos = []
         if not html or not BeautifulSoup:
             return videos
@@ -296,9 +295,9 @@ class Spider(_B):
 
                 if title and link:
                     videos.append({
-                        "vod_id": self._abs_url(link),
+                        "vod_id": self.absoluteUrl(link),
                         "vod_name": title,
-                        "vod_pic": self._wrap_proxy(self._abs_url(pic)),
+                        "vod_pic": self.absoluteUrl(pic),
                         "vod_remarks": remarks
                     })
         except Exception as e:
@@ -306,53 +305,9 @@ class Spider(_B):
 
         return videos
 
-    # ============================================================
-    # 辅助: URL 拼接
-    # ============================================================
-    def _abs_url(self, url):
+    def absoluteUrl(self, url):
         if not url:
             return ""
         if url.startswith('http'):
             return url
         return urljoin(SITE_URL, url)
-
-    # ============================================================
-    # localProxy: 图片代理（防盗链）
-    # ============================================================
-    def _wrap_proxy(self, url):
-        if not url:
-            return url
-        if url.startswith('http'):
-            return self._get_proxy_url(url)
-        return url
-
-    def _get_proxy_url(self, url):
-        base = 'http://127.0.0.1:9978/proxy?do=py&url='
-        return base + quote(url, safe='')
-
-    def localProxy(self, param):
-        if isinstance(param, str):
-            from urllib.parse import parse_qs, urlparse
-            params = parse_qs(urlparse(param).query)
-        elif isinstance(param, dict):
-            params = param
-        else:
-            params = {}
-
-        url = params.get('url', [''])[0] if isinstance(params.get('url'), list) else params.get('url', '')
-        if not url:
-            url = params.get('key', [''])[0] if isinstance(params.get('key'), list) else params.get('key', '')
-
-        if not url:
-            return [200, 'text/plain', b'no url', {}]
-
-        try:
-            rsp = requests.get(url, headers={
-                'User-Agent': UA,
-                'Referer': SITE_URL,
-            }, timeout=10, verify=False)
-            content_type = rsp.headers.get('Content-Type', 'image/jpeg')
-            return [200, content_type, rsp.content, {}]
-        except Exception as e:
-            print(f"[hubff] localProxy error: {e}")
-            return [200, 'text/plain', b'proxy err', {}]
