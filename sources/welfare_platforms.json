@@ -74,7 +74,11 @@
     "stage6AddedKeys": [
       "daily_battle_daluandou_py"
     ],
-    "stage6Notes": "阶段6 新增：每日大乱斗 Python 蜘蛛版（纯 Python AES + BeautifulSoup，替代原生 Swift 实现）"
+    "stage6Notes": "阶段6 新增：每日大乱斗 Python 蜘蛛版（纯 Python AES + BeautifulSoup，替代原生 Swift 实现）",
+    "stage7AddedKeys": [
+      "fulao2_py"
+    ],
+    "stage7Notes": "阶段7 新增：Fulao2 Python 蜘蛛版（纯 Python AES-256/128-CBC 加密 + localProxy 模式，替代内置 HTTP 服务器）"
   },
   "schemaVersion": 1,
   "categories": [
@@ -135,6 +139,28 @@
       "defaultProxy": false,
       "notes": "Python 蜘蛛版每日大乱斗，纯 Python AES-128-CBC/ECB 图片解密 + BeautifulSoup 解析，替代原生 Swift 实现。支持 DPlayer 视频解析、m3u8 代理、合集页。",
       "api": "./sources/welfare-js/daily_battle.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "fulao2_py",
+      "name": "Fulao2",
+      "category": "video",
+      "icon": "play.circle.fill",
+      "desc": "Python蜘蛛版 — 4线路高清视频",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://api-al.yuytyr.online"
+      ],
+      "sortOrder": 68,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛版 Fulao2，纯 Python AES-256-CBC 请求加密 + AES-256-CBC 响应/m3u8解密 + AES-128-CBC 图片解密。localProxy 模式代理 m3u8/TS/图片（替代原内置 HTTP 服务器）。4条CDN线路(高速/海外)，每线路480p/240p双清晰度。",
+      "api": "./sources/welfare-js/fulao2.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
