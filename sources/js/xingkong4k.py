@@ -14,7 +14,11 @@ except ImportError:
 
 
 class Spider(BaseSpider):
-    API = "https://xk211.xkgzs.xyz/api/vod/"
+    # API 域名：v1.2.7 起从 xk211 变更为 xk21127
+    _API_DOMAINS = [
+        "https://xk21127.xkgzs.xyz",
+        "https://xk211.xkgzs.xyz",
+    ]
     AES_KEY = b"11320jkjksdkxxaw"
     PAGE_SIZE = 36
 
@@ -23,13 +27,38 @@ class Spider(BaseSpider):
         self.session.headers.update({
             "User-Agent": "okhttp/4.12.0",
             "Content-Type": "application/x-www-form-urlencoded",
-            "App-Version-Code": "123",
+            "App-Version-Code": "127",
             "App-Os-Type": "android",
             "App-Ui-Mode": "2",
             "App-Device-Id": "1234567890abcdef1234567890abcdef",
         })
+        self._api_base = None
         self._init_data = None
         self._init_time = 0
+
+    def _get_api(self):
+        """并发探测可用域名，选第一个响应正常的"""
+        if self._api_base:
+            return self._api_base
+        import concurrent.futures
+        def _try(domain):
+            try:
+                r = self.session.post(domain + "/api/vod/init", data={}, timeout=8)
+                d = r.json()
+                if d.get("code") == 0 and d.get("data"):
+                    return domain + "/api/vod/"
+            except:
+                pass
+            return None
+        with concurrent.futures.ThreadPoolExecutor(max_workers=len(self._API_DOMAINS)) as pool:
+            futures = {pool.submit(_try, d): d for d in self._API_DOMAINS}
+            for f in concurrent.futures.as_completed(futures):
+                result = f.result()
+                if result:
+                    self._api_base = result
+                    return result
+        self._api_base = self._API_DOMAINS[0] + "/api/vod/"
+        return self._api_base
 
     def getName(self):
         return "星空4K"
@@ -52,7 +81,8 @@ class Spider(BaseSpider):
         return json.loads(unpad(cipher.decrypt(raw), AES.block_size).decode("utf-8"))
 
     def _post(self, endpoint, data=None):
-        response = self.session.post(self.API + endpoint, data=data or {}, timeout=15)
+        api = self._get_api()
+        response = self.session.post(api + endpoint, data=data or {}, timeout=15)
         response.raise_for_status()
         payload = response.json()
         if payload.get("code") != 0:
@@ -126,9 +156,11 @@ class Spider(BaseSpider):
             episodes = []
             for episode in source.get("urls", []):
                 url = episode.get("url", "")
-                if url and self.isVideoFormat(url):
+                if url and url.startswith("http"):
+                    # 平台直链（v.qq.com、iqiyi.com 等）或视频直链（.m3u8/.mp4）
                     play_id = url
                 else:
+                    # 无 URL 时走服务端解析
                     play_id = "xk://{}/{}/{}".format(ids[0], source_id, episode.get("episode_index", 0))
                 episodes.append(f'{episode.get("name") or "播放"}${play_id}')
             if episodes:
@@ -156,26 +188,32 @@ class Spider(BaseSpider):
         return self.searchContent(key, quick, pg)
 
     def playerContent(self, flag, id, vipFlags=None):
-        # vbox-ios 兼容：3参数调用时 flag=vodId, id=sourceName, vipFlags=episodeUrl
-        # 如果 id 不含 :// 且 vipFlags 有值，则 vipFlags 才是真正的播放地址
         url = id
         if vipFlags and id and "://" not in str(id):
             url = vipFlags
-        # 兼容 $ 分隔符格式：第1话$xk://1888/5/0 → 取最后一段
         if url and "$" in str(url):
             url = str(url).rsplit("$", 1)[-1]
+        # xk:// 协议走服务端解析
         if str(url).startswith("xk://"):
             parts = str(url)[5:].split("/")
             vod_id = parts[0] or flag or ""
             source_id = parts[1] if len(parts) > 1 else ""
             episode_index = parts[2] if len(parts) > 2 else "0"
-            data = self._post("vodParse", {
+            api = self._get_api()
+            response = self.session.post(api + "vodParse", data={
                 "vod_id": vod_id,
                 "player_source_id": source_id,
                 "episode_index": episode_index,
                 "scene": 0,
-            })
-            url = data.get("play_url", "")
+            }, timeout=15)
+            payload = response.json()
+            # code=10001: 解析次数用完，需看激励视频
+            if payload.get("code") != 0:
+                raise RuntimeError(payload.get("msg") or "解析失败")
+            encrypted = payload.get("data")
+            if encrypted:
+                data = self._decrypt(encrypted)
+                url = data.get("play_url", "")
         direct = self.isVideoFormat(url)
         return {
             "parse": 0 if direct else 1,

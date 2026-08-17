@@ -1,7 +1,8 @@
 /*
- * 星空4K JS 蜘蛛 v2.1
+ * 星空4K JS 蜘蛛 v2.2
  * 适配 vbox-ios JSSpiderEngine (type:3 独立引擎)
  * AES-128-CBC 解密 / 无需翻墙
+ * v2.2: API域名更新 xk211→xk21127 + App-Version-Code 123→127 + 平台直链优先
  * v2.1: 修复 detailContent ids 类型兼容 + playerContent vodId 空值兜底 + scene 类型修正
  */
 
@@ -57,13 +58,13 @@ var AES = (function() {
 // ===================== 蜘蛛主体 =====================
 var spider = {
     __jsEvalReturn: function() {
-        var API = 'https://xk211.xkgzs.xyz/api/vod/';
+        var API = 'https://xk21127.xkgzs.xyz/api/vod/';
         var AES_KEY = '11320jkjksdkxxaw';
         var PAGE_SIZE = 36;
         var HEADER = {
             'User-Agent': 'okhttp/4.12.0',
             'Content-Type': 'application/x-www-form-urlencoded',
-            'App-Version-Code': '123',
+            'App-Version-Code': '127',
             'App-Os-Type': 'android',
             'App-Ui-Mode': '2',
             'App-Device-Id': '1234567890abcdef1234567890abcdef'
@@ -252,9 +253,11 @@ var spider = {
                             var ep = urls[k];
                             var url = ep.url || '';
                             var playId;
-                            if (url && isVideoFormat(url)) {
+                            if (url && url.indexOf('http') === 0) {
+                                // 平台直链（v.qq.com、iqiyi.com 等）或视频直链（.m3u8/.mp4）
                                 playId = url;
                             } else {
+                                // 无 URL 时走服务端解析
                                 playId = 'xk://' + vodId + '/' + sourceId + '/' + (ep.episode_index || 0);
                             }
                             episodes.push((ep.name || '播放') + '$' + playId);
