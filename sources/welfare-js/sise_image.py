@@ -62,10 +62,15 @@ class Spider(SiseBaseSpider):
         """首页：只返回图片区的分类和推荐内容。"""
         result_json = super().homeContent(filter=filter)
 
-        try:
-            data = json.loads(result_json)
-        except (json.JSONDecodeError, TypeError):
-            return result_json
+        # 父类 homeContent 返回的是 dict（不是 JSON 字符串）
+        # 直接操作 dict，无需 json.loads
+        if isinstance(result_json, dict):
+            data = result_json
+        else:
+            try:
+                data = json.loads(result_json)
+            except (json.JSONDecodeError, TypeError):
+                return result_json
 
         # 只保留图片分类
         classes = data.get('class', [])
@@ -77,7 +82,7 @@ class Spider(SiseBaseSpider):
         image_filters = {k: v for k, v in filters.items() if k == 'image'}
         data['filters'] = image_filters
 
-        return json.dumps(data, ensure_ascii=False)
+        return data
 
     def categoryContent(self, tid, pg=1, filter=False, extend=None):
         """分类内容：直接复用父类（图片区的子分类路径已能正确解析）。"""
