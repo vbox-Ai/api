@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.16.9",
-    "updatedAt": "2026-08-16T20:30:00Z",
+    "version": "2026.08.17.21",
+    "updatedAt": "2026-08-17T10:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -78,7 +78,11 @@
     "stage7AddedKeys": [
       "fulao2_py"
     ],
-    "stage7Notes": "阶段7 新增：Fulao2 Python 蜘蛛版（纯 Python AES-256/128-CBC 加密 + localProxy 模式，替代内置 HTTP 服务器）"
+    "stage7Notes": "阶段7 新增：Fulao2 Python 蜘蛛版（纯 Python AES-256/128-CBC 加密 + localProxy 模式，替代内置 HTTP 服务器）",
+    "stage8AddedKeys": [
+      "missav_py"
+    ],
+    "stage8Notes": "阶段8 新增：MissAV Python 蜘蛛版（BeautifulSoup4 替代 pyquery + 并发域名探测 + localProxy 图片防盗链）"
   },
   "schemaVersion": 1,
   "categories": [
@@ -161,6 +165,30 @@
       "defaultProxy": false,
       "notes": "Python 蜘蛛版 Fulao2，纯 Python AES-256-CBC 请求加密 + AES-256-CBC 响应/m3u8解密 + AES-128-CBC 图片解密。localProxy 模式代理 m3u8/TS/图片（替代原内置 HTTP 服务器）。4条CDN线路(高速/海外)，每线路480p/240p双清晰度。",
       "api": "./sources/welfare-js/fulao2.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "missav_py",
+      "name": "MissAV",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "Python蜘蛛版 — 多域名并发探测",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://missav.ws",
+        "https://missav02.xyz",
+        "https://missav.app"
+      ],
+      "sortOrder": 69,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛版 MissAV。BeautifulSoup4 替代 pyquery 解析 HTML。多域名并发探测（ThreadPoolExecutor，先到先用）+ 5分钟缓存。player_aaaa 正则提取 m3u8/mp4 直链 + 兜底正则。localProxy 图片代理防盗链。7大分类+子分类筛选。",
+      "api": "./sources/welfare-js/missav.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
