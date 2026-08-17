@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.17.21",
-    "updatedAt": "2026-08-17T10:00:00Z",
+    "version": "2026.08.17.22",
+    "updatedAt": "2026-08-17T10:30:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -82,7 +82,12 @@
     "stage8AddedKeys": [
       "missav_py"
     ],
-    "stage8Notes": "阶段8 新增：MissAV Python 蜘蛛版（BeautifulSoup4 替代 pyquery + 并发域名探测 + localProxy 图片防盗链）"
+    "stage8Notes": "阶段8 新增：MissAV Python 蜘蛛版（BeautifulSoup4 替代 pyquery + 并发域名探测 + localProxy 图片防盗链）",
+    "stage9AddedKeys": [
+      "hubff_py",
+      "acfan_py"
+    ],
+    "stage9Notes": "阶段9 新增：hubff（BeautifulSoup4 替代 pyquery + localProxy 图片代理）和 AcFan（动漫/Cosplay 平台，纯正则解析 + localProxy 图片代理）"
   },
   "schemaVersion": 1,
   "categories": [
@@ -189,6 +194,50 @@
       "defaultProxy": false,
       "notes": "Python 蜘蛛版 MissAV。BeautifulSoup4 替代 pyquery 解析 HTML。多域名并发探测（ThreadPoolExecutor，先到先用）+ 5分钟缓存。player_aaaa 正则提取 m3u8/mp4 直链 + 兜底正则。localProxy 图片代理防盗链。7大分类+子分类筛选。",
       "api": "./sources/welfare-js/missav.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "hubff_py",
+      "name": "hubff",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "Python蜘蛛版 — BeautifulSoup4 解析",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://hubff.com"
+      ],
+      "sortOrder": 70,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛版 hubff。BeautifulSoup4 替代 pyquery。Aliplayer source 提取 + 二次备用解析。localProxy 图片代理防盗链。动态分类抓取 + 搜索支持。",
+      "api": "./sources/welfare-js/hubff.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "acfan_py",
+      "name": "AcFan",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "Python蜘蛛版 — 动漫/Cosplay 平台",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://acf.f76typd0.work"
+      ],
+      "sortOrder": 71,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛版 AcFan。纯正则解析（无 pyquery 依赖）。10 大分类（国产动漫/里番/泡面番/Motion Anime/3DCG/2.5D/2D动画/AI生成/MMD/Cosplay）。JSON-LD VideoObject 提取 m3u8 直链。localProxy 图片代理。",
+      "api": "./sources/welfare-js/acfan.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
