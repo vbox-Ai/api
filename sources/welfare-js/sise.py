@@ -31,27 +31,54 @@ _DOMAIN_CANDIDATES = [
 _ENTER_PATH = '/enter.html'
 
 def _discover_domain(candidates=None, timeout=6):
-    """串行探测域名，返回第一个可用的。
-    iOS CPython 无 concurrent.futures 模块，改为串行探测。"""
+    """并发探测所有候选域名，返回第一个成功响应的。
+    concurrent.futures 是 Python 3.2+ 标准库模块，iOS CPython 同样可用。"""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
     candidates = candidates or _DOMAIN_CANDIDATES
     if not candidates:
         return 'https://www.o8q9m.top'
 
-    for domain in candidates:
+    def _probe(domain):
         try:
-            import requests
             sess = requests.Session()
             sess.headers.update({'User-Agent': U, 'Referer': ''})
             r = sess.get(domain + _ENTER_PATH, timeout=timeout, allow_redirects=True)
             if r.status_code in (200, 301, 302):
-                final_url = r.url
-                parsed = urlparse(final_url)
-                print(f'[四色] 域名探测成功: {parsed.scheme}://{parsed.netloc}')
+                parsed = urlparse(r.url)
+                return f'{parsed.scheme}://{parsed.netloc}'
+        except Exception:
+            pass
+        return None
+
+    # 并发探测：哪个域名先返回有效响应就用哪个
+    executor = ThreadPoolExecutor(max_workers=len(candidates))
+    try:
+        futures = [executor.submit(_probe, d) for d in candidates]
+        for future in as_completed(futures, timeout=timeout + 2):
+            result = future.result()
+            if result:
+                print(f'[四色] 域名探测成功: {result}')
+                executor.shutdown(wait=False)
+                return result
+    except Exception as e:
+        print(f'[四色] 并发探测异常: {e}')
+    finally:
+        executor.shutdown(wait=False)
+
+    # 兜底：串行再试一次
+    for domain in candidates:
+        try:
+            sess = requests.Session()
+            sess.headers.update({'User-Agent': U, 'Referer': ''})
+            r = sess.get(domain + _ENTER_PATH, timeout=timeout, allow_redirects=True)
+            if r.status_code in (200, 301, 302):
+                parsed = urlparse(r.url)
+                print(f'[四色] 域名探测成功(兜底): {parsed.scheme}://{parsed.netloc}')
                 return f'{parsed.scheme}://{parsed.netloc}'
         except Exception:
             pass
 
-    # 全部失败，返回第一个兜底
     print(f'[四色] 所有域名探测失败，兜底: {candidates[0]}')
     return candidates[0]
 

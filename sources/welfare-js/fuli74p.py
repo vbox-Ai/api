@@ -50,47 +50,62 @@ class Spider:
         return h
 
     def homeContent(self, filter=False):
-        """首页 = 分类 + 第一页列表"""
-        result = self.categoryContent("1", "1")
-        result["class"] = self.classes
-        return result
+        """首页：只返回分类列表（不发起 HTTP 请求，避免超时）"""
+        return {"class": self.classes}
+
+    def homeVideoContent(self):
+        """首页推荐内容：获取第一分类的第一页数据"""
+        try:
+            r = self.session.get(f"{self.baseUrl}/xinggan/1-1.html", timeout=8, allow_redirects=True)
+            r.encoding = "utf-8"
+            soup = BeautifulSoup(r.text, "html.parser")
+            videos = self._parse_list(soup)
+            return {"list": videos}
+        except Exception as e:
+            print(f"[fuli74p] homeVideoContent error: {e}", file=sys.stderr)
+            return {"list": []}
+
+    def _parse_list(self, soup):
+        """从 HTML 中提取图片列表"""
+        videos = []
+        for li in soup.select("ul.meinv li, ul.list li, .pic-list li"):
+            a = li.select_one("a")
+            img = li.select_one("img")
+            if not a or not img:
+                continue
+
+            href = a.get("href", "")
+            if href.startswith("/"):
+                href = self.baseUrl + href
+            elif not href.startswith("http"):
+                continue
+
+            title = img.get("alt") or a.get("title") or ""
+            # 优先用 data-original（懒加载），其次 src
+            cover = img.get("data-original") or img.get("src") or ""
+            if cover.startswith("//"):
+                cover = "https:" + cover
+            elif cover.startswith("/"):
+                cover = self.baseUrl + cover
+
+            if title and cover:
+                videos.append({
+                    "vod_id": href,
+                    "vod_name": title.strip(),
+                    "vod_pic": cover,
+                    "vod_remarks": "",
+                })
+        return videos
 
     def categoryContent(self, tid, pg, filter=False, extend=""):
         """分类页列表"""
         url = f"{self.baseUrl}/xinggan/{tid}-{pg}.html"
         try:
-            r = self.session.get(url, timeout=12, allow_redirects=True)
+            r = self.session.get(url, timeout=8, allow_redirects=True)
             r.encoding = "utf-8"
             soup = BeautifulSoup(r.text, "html.parser")
 
-            videos = []
-            for li in soup.select("ul.meinv li, ul.list li, .pic-list li"):
-                a = li.select_one("a")
-                img = li.select_one("img")
-                if not a or not img:
-                    continue
-
-                href = a.get("href", "")
-                if href.startswith("/"):
-                    href = self.baseUrl + href
-                elif not href.startswith("http"):
-                    continue
-
-                title = img.get("alt") or a.get("title") or ""
-                # 优先用 data-original（懒加载），其次 src
-                cover = img.get("data-original") or img.get("src") or ""
-                if cover.startswith("//"):
-                    cover = "https:" + cover
-                elif cover.startswith("/"):
-                    cover = self.baseUrl + cover
-
-                if title and cover:
-                    videos.append({
-                        "vod_id": href,
-                        "vod_name": title.strip(),
-                        "vod_pic": cover,
-                        "vod_remarks": "",
-                    })
+            videos = self._parse_list(soup)
 
             # 尝试提取总页数
             pagecount = 1
@@ -101,20 +116,19 @@ class Spider:
                     pagecount = int(pages[0][0] or pages[0][1])
 
             return {
-                "class": self.classes,
                 "list": videos,
                 "page": int(pg),
                 "pagecount": pagecount,
             }
         except Exception as e:
             print(f"[fuli74p] categoryContent error: {e}", file=sys.stderr)
-            return {"class": self.classes, "list": []}
+            return {"list": [], "page": int(pg), "pagecount": 1}
 
     def detailContent(self, ids):
         """详情页：直接返回 pics:// 图片列表协议"""
         url = ids[0]
         try:
-            r = self.session.get(url, timeout=15, allow_redirects=True)
+            r = self.session.get(url, timeout=8, allow_redirects=True)
             r.encoding = "utf-8"
             soup = BeautifulSoup(r.text, "html.parser")
 
@@ -172,7 +186,7 @@ class Spider:
             visited.add(current_url)
 
             try:
-                r = self.session.get(current_url, timeout=12, allow_redirects=True)
+                r = self.session.get(current_url, timeout=8, allow_redirects=True)
                 r.encoding = "utf-8"
                 soup = BeautifulSoup(r.text, "html.parser")
 
@@ -224,7 +238,7 @@ class Spider:
 
         return img_list
 
-    def playerContent(self, flag, id, vipFlags):
+    def playerContent(self, flag, id, vipFlags=None):
         """播放：如果收到 pics:// 协议直接返回，否则兼容旧模式"""
         if id.startswith("pics://"):
             return {"parse": 0, "url": id}

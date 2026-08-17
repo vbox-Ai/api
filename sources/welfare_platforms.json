@@ -697,30 +697,6 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
-    },
-    {
-      "platformKey": "sise_image_py",
-      "name": "四色图片",
-      "category": "comic",
-      "icon": "photo.artframe",
-      "desc": "四色图片区合集 (Python)",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://www.b5y0e.top"
-      ],
-      "sortOrder": 305,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛福利图源，四色图片区；图片区+撸撸区共16个子分类；pics:// 协议直接长卷浏览",
-      "api": "./sources/welfare-js/sise_image.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "contentType": "comic",
-      "imageReferer": "https://www.b5y0e.top/",
-      "imageSSLBypass": true,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
     }
   ]
 }
