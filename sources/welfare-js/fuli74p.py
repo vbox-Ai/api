@@ -93,6 +93,21 @@ class Spider(_B):
             print(f"[fuli74p] _get_home_html error: {e}", file=sys.stderr)
         return self._last_home or ""
 
+    def init(self, ext=''):
+        try:
+            super().init(ext)
+        except Exception:
+            pass
+
+    def getName(self):
+        return '74P福利图'
+
+    def isVideoFormat(self, u):
+        return False
+
+    def manualVideoCheck(self):
+        return False
+
     def get_header(self, referer=None):
         h = {
             "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
