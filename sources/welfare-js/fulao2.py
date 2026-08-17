@@ -123,13 +123,6 @@ def _aes_block_encrypt(block, key):
     _add_round_key(s, rks[Nr])
     return bytes(s[r][c] for c in range(4) for r in range(4))
 
-def _aes_ecb_encrypt(plaintext, key):
-    """AES-ECB 加密（用于 IV 派生）"""
-    if len(plaintext) < 16:
-        return plaintext
-    block = plaintext[:16]
-    return _aes_block_encrypt(block, key)
-
 def _aes_cbc_decrypt_pure(ct, key, iv):
     """AES-CBC 解密 + PKCS7 unpad"""
     out = b''; prev = iv
@@ -256,7 +249,7 @@ class Spider(_B):
     def _decrypt_resp(self, text):
         try:
             ct = base64.b64decode(text)
-            iv_block = _aes_ecb_encrypt(ct[:16], RESP_KEY)
+            iv_block = _aes_block_decrypt(ct[:16], RESP_KEY)
             marker = b'{"status":{"code'.ljust(16, b'\x00')
             iv = bytes(a ^ b for a, b in zip(iv_block, marker))
             raw = _aes_cbc_decrypt_pure(ct, RESP_KEY, iv)
@@ -270,7 +263,7 @@ class Spider(_B):
     def _decrypt_m3u8(self, text):
         try:
             ct = base64.b64decode(text)
-            iv_block = _aes_ecb_encrypt(ct[:16], RESP_KEY)
+            iv_block = _aes_block_decrypt(ct[:16], RESP_KEY)
             marker = b'#EXTM3U\n#EXT-X-V'
             iv = bytes(a ^ b for a, b in zip(iv_block, marker))
             raw = _aes_cbc_decrypt_pure(ct, RESP_KEY, iv)
