@@ -70,7 +70,11 @@
       "fuli74p_py",
       "tuiimg_py"
     ],
-    "stage5Notes": "阶段5 新增：四色图片、74P福利图、推图网三个写真美图平台（漫画栏目），pics:// 协议直接浏览"
+    "stage5Notes": "阶段5 新增：四色图片、74P福利图、推图网三个写真美图平台（漫画栏目），pics:// 协议直接浏览",
+    "stage6AddedKeys": [
+      "daily_battle_daluandou_py"
+    ],
+    "stage6Notes": "阶段6 新增：每日大乱斗 Python 蜘蛛版（纯 Python AES + BeautifulSoup，替代原生 Swift 实现）"
   },
   "schemaVersion": 1,
   "categories": [
@@ -116,6 +120,28 @@
       ],
       "sortOrder": 60,
       "notes": "由 DailyBattleService / DailyBattleMainView 提供"
+    },
+    {
+      "platformKey": "daily_battle_daluandou_py",
+      "name": "每日大乱斗(Python)",
+      "category": "video",
+      "icon": "flame.fill",
+      "desc": "Python蜘蛛版 — 每日更新视频",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://border.bshzjjgq.cc"
+      ],
+      "sortOrder": 65,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛版每日大乱斗，纯 Python AES-128-CBC/ECB 图片解密 + BeautifulSoup 解析，替代原生 Swift 实现。支持 DPlayer 视频解析、m3u8 代理、合集页。",
+      "api": "./sources/welfare-js/daily_battle.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     },
     {
       "platformKey": "daily_battle_dasai",
