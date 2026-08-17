@@ -155,10 +155,20 @@ class Spider(BaseSpider):
     def searchContentPage(self, key, quick, pg):
         return self.searchContent(key, quick, pg)
 
-    def playerContent(self, flag, id, vipFlags):
+    def playerContent(self, flag, id, vipFlags=None):
+        # vbox-ios 兼容：3参数调用时 flag=vodId, id=sourceName, vipFlags=episodeUrl
+        # 如果 id 不含 :// 且 vipFlags 有值，则 vipFlags 才是真正的播放地址
         url = id
-        if id.startswith("xk://"):
-            vod_id, source_id, episode_index = id[5:].split("/", 2)
+        if vipFlags and id and "://" not in str(id):
+            url = vipFlags
+        # 兼容 $ 分隔符格式：第1话$xk://1888/5/0 → 取最后一段
+        if url and "$" in str(url):
+            url = str(url).rsplit("$", 1)[-1]
+        if str(url).startswith("xk://"):
+            parts = str(url)[5:].split("/")
+            vod_id = parts[0] or flag or ""
+            source_id = parts[1] if len(parts) > 1 else ""
+            episode_index = parts[2] if len(parts) > 2 else "0"
             data = self._post("vodParse", {
                 "vod_id": vod_id,
                 "player_source_id": source_id,
@@ -170,5 +180,5 @@ class Spider(BaseSpider):
         return {
             "parse": 0 if direct else 1,
             "url": url,
-            "header": json.dumps({"User-Agent": self.session.headers["User-Agent"]}, ensure_ascii=False),
+            "header": {"User-Agent": self.session.headers["User-Agent"]},
         }
