@@ -402,6 +402,51 @@ class Spider(_B):
             print(f"[fuli74p] playerContent error: {e}", file=sys.stderr)
             return {"parse": 0, "url": ""}
 
+    def localProxy(self, param):
+        """图片代理：从 74p.net 获取图片，带 Referer 防盗链"""
+        try:
+            import json as _json
+            if isinstance(param, str):
+                try:
+                    param = _json.loads(param)
+                except Exception:
+                    param = {}
+            url = param.get('url', '') if isinstance(param, dict) else ''
+            if not url:
+                return [404, 'text/plain', b'']
+
+            from urllib.parse import unquote as _unquote
+            url = _unquote(url) if '%' in url else url
+            if not url.startswith('http'):
+                return [404, 'text/plain', b'']
+
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15',
+                'Referer': self.baseUrl + '/',
+                'Accept': 'image/webp,image/*,*/*;q=0.8',
+            }
+            r = self.session.get(url, headers=headers, timeout=30, allow_redirects=True)
+            if r.status_code != 200:
+                return [r.status_code, 'text/plain', b'']
+
+            content = r.content
+            ct = r.headers.get('Content-Type', 'image/jpeg')
+            if 'text/plain' in ct:
+                if content[:3] == b'\xff\xd8\xff':
+                    ct = 'image/jpeg'
+                elif content[:4] == b'\x89PNG':
+                    ct = 'image/png'
+                elif content[:4] == b'RIFF':
+                    ct = 'image/webp'
+                elif content[:6] in (b'GIF89a', b'GIF87a'):
+                    ct = 'image/gif'
+                else:
+                    ct = 'image/jpeg'
+
+            return [200, ct, content]
+        except Exception:
+            return [404, 'text/plain', b'']
+
     def searchContent(self, key, pg):
         """搜索功能（如网站支持）"""
         return {"list": [], "page": 1, "pagecount": 0}

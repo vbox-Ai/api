@@ -426,4 +426,43 @@ class Spider(_B):
         return {'list': []}
 
     def localProxy(self, param):
-        return [404, 'text/plain', b'']
+        """图片代理：从 IMG_HOST 获取图片并返回正确 Content-Type。
+        IMG_HOST CDN 返回 Content-Type: text/plain，需根据内容判断真实类型。"""
+        try:
+            if isinstance(param, str):
+                try:
+                    param = json.loads(param)
+                except Exception:
+                    param = {}
+            url = param.get('url', '') if isinstance(param, dict) else ''
+            if not url:
+                return [404, 'text/plain', b'']
+            
+            url = unquote(url) if '%' in url else url
+            if not url.startswith('http'):
+                return [404, 'text/plain', b'']
+            
+            headers = {'User-Agent': U, 'Referer': self.H + '/'}
+            r = self.s.get(url, headers=headers, timeout=30)
+            if r.status_code != 200:
+                return [r.status_code, 'text/plain', b'']
+            
+            content = r.content
+            ct = r.headers.get('Content-Type', '')
+            
+            # IMG_HOST CDN 返回 text/plain，根据内容特征判断真实类型
+            if ct == 'text/plain' or 'text/plain' in ct:
+                if content[:3] == b'\xff\xd8\xff':
+                    ct = 'image/jpeg'
+                elif content[:4] == b'\x89PNG':
+                    ct = 'image/png'
+                elif content[:4] == b'RIFF':
+                    ct = 'image/webp'
+                elif content[:6] == b'GIF89a' or content[:6] == b'GIF87a':
+                    ct = 'image/gif'
+                else:
+                    ct = 'image/jpeg'
+            
+            return [200, ct, content]
+        except Exception as e:
+            return [404, 'text/plain', b'']
