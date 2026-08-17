@@ -741,6 +741,50 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "live_aggregator_py",
+      "name": "全能直播聚合",
+      "category": "live",
+      "icon": "tv.fill",
+      "desc": "IPTV 直播聚合 (Python) — 内置 fanmingming 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://live.fanmingming.com"
+      ],
+      "sortOrder": 350,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛直播聚合，内置 fanmingming IPv6/Global/ITV 三个公共 IPTV 直播源；支持 M3U/TXT/JSON 多格式解析；AES-128-CBC 解密引擎；频道标准化（CCTV/卫视/地方台）；EPG 节目单；支持 extend.lives 自定义源列表；默认无需额外配置即可使用",
+      "api": "./sources/welfare-js/live_aggregator.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "pandalive_pro_py",
+      "name": "PandaLive专业版",
+      "category": "live",
+      "icon": "antenna.radiowaves.left.and.right",
+      "desc": "PandaLive 韩国直播 (Python Pro)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://5721004.xyz"
+      ],
+      "sortOrder": 360,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛直播源，PandaLive韩国直播专业版；第三方代理站 list.json + list.m3u 提供数据；7条线路（1直连+6代理）；m3u8 直链播放（parse=0）；支持筛选（全部/19+/密码房/粉丝房）和排序（观众/热度/关注）",
+      "api": "./sources/welfare-js/pandalive_pro.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ]
 }
