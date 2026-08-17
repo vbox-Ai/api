@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.17.29",
-    "updatedAt": "2026-08-17T16:00:00Z",
+    "version": "2026.08.17.30",
+    "updatedAt": "2026-08-17T16:30:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -1020,6 +1020,69 @@
       "defaultProxy": false,
       "notes": "Python 蜘蛛福利源，番号网；MacCMS 站，20 个分类；eval packer 解密播放地址（36 进制解密 + 变量替换，提取 source842/source1280 多线路 m3u8）；urllib.request→requests.get；playerContent 递归加深度限制(max=2)",
       "api": "./sources/welfare-js/fanhaowang.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "avtop10_py",
+      "name": "AVTOP10",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "AVTOP10 Python 蜘蛛源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://avtop10.com"
+      ],
+      "sortOrder": 426,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，AVTOP10；11 个分类（中文字幕/国产AV/欧美大片等）；lxml+etree 解析；extract_play 多策略播放提取（video/source标签+player_data+__INITIAL_STATE__+__NUXT__+__NEXT_DATA__+iframe递归）；playerContent header→dict；iframe递归深度限制(max=2)",
+      "api": "./sources/welfare-js/avtop10.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "luwangi_py",
+      "name": "撸王宝典",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "撸王宝典 AES 加密 API Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://s7t8u9v0.luwangi.cc"
+      ],
+      "sortOrder": 427,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，撸王宝典；40 个分类；AES-CBC 加密 API（KEY/IV 逆向提取）；本地HTTP服务器→vbox localProxy 机制替代（图片防盗链代理）；Crypto.Cipher.AES+Util.Padding IPA 已可用",
+      "api": "./sources/welfare-js/luwangi.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "xjjjuhe_py",
+      "name": "小姐姐聚合",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "54个随机视频API聚合 Python 源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://api.yujn.cn"
+      ],
+      "sortOrder": 428,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利源，小姐姐聚合；54 个随机视频 API 聚合（小姐姐/JK/热舞/白丝/黑丝/萝莉/COS等）；ThreadPoolExecutor 并发获取；每分类返回12条随机视频；header→dict；playerContent 参数名标准化",
+      "api": "./sources/welfare-js/xjjjuhe.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
