@@ -11,8 +11,9 @@ vbox 适配：
 
 注意：不使用 localProxy，图片直接返回原始 URL（与原始脚本一致）
 """
-import sys, json, re, base64
+import sys, json, re, base64, warnings
 from urllib.parse import urljoin, quote, unquote
+warnings.filterwarnings("ignore")
 
 sys.path.append('..')
 try:
@@ -82,6 +83,9 @@ class Spider(_B):
     def getName(self):
         return "MissAV"
 
+    def getDependence(self):
+        return ['bs4', 'requests']
+
     def isVideoFormat(self, url):
         pass
 
@@ -99,6 +103,7 @@ class Spider(_B):
 
     # ============================================================
     # 顺序域名探测：逐个尝试，第一个成功的就用
+    # 使用 requests.get 直接请求（不依赖基类 fetch 的返回类型）
     # ============================================================
     def _fetch_best(self, path):
         """顺序探测域名并请求，返回 (html, base_domain)"""
@@ -108,8 +113,8 @@ class Spider(_B):
         if _cached_domain:
             try:
                 full_url = urljoin(_cached_domain, path)
-                rsp = self.fetch(full_url, headers=self.headers)
-                if rsp and rsp.status_code == 200 and 'Just a moment...' not in rsp.text:
+                rsp = requests.get(full_url, headers=self.headers, timeout=15, verify=False)
+                if rsp.status_code == 200 and 'Just a moment...' not in rsp.text:
                     return rsp.text, _cached_domain
             except Exception:
                 pass
@@ -118,8 +123,8 @@ class Spider(_B):
         for domain in DOMAINS:
             try:
                 full_url = urljoin(domain, path)
-                rsp = self.fetch(full_url, headers=self.headers)
-                if rsp and rsp.status_code == 200 and 'Just a moment...' not in rsp.text:
+                rsp = requests.get(full_url, headers=self.headers, timeout=15, verify=False)
+                if rsp.status_code == 200 and 'Just a moment...' not in rsp.text:
                     _cached_domain = domain
                     return rsp.text, domain
             except Exception:
@@ -147,7 +152,14 @@ class Spider(_B):
         return result
 
     def homeVideoContent(self):
-        return self.homeContent(False)
+        try:
+            html, base_domain = self._fetch_best("/label/new/")
+            if html:
+                videos = self._parse_cards(html, base_domain)
+                return {"list": videos}
+        except Exception as e:
+            print("[MissAV] homeVideoContent err: " + str(e))
+        return {"list": []}
 
     # ============================================================
     # 2. 分类列表
@@ -286,8 +298,8 @@ class Spider(_B):
             'header': dict(self.headers)
         }
         try:
-            rsp = self.fetch(id, headers=self.headers)
-            html = rsp.text if rsp else ""
+            rsp = requests.get(id, headers=self.headers, timeout=15, verify=False)
+            html = rsp.text if rsp.status_code == 200 else ""
 
             # 优先: player_aaaa 正则提取
             match = re.search(r'var\s+player_aaaa\s*=\s*(\{.*?\});', html)

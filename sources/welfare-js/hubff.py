@@ -61,6 +61,12 @@ class Spider(_B):
         pass
 
     # ============================================================
+    # fetch 覆盖（与原始脚本一致，确保 Origin/Referer 头始终发送）
+    # ============================================================
+    def fetch(self, url, headers=None, timeout=10):
+        return requests.get(url, headers=headers or self.headers, timeout=timeout)
+
+    # ============================================================
     # 1. 首页
     # ============================================================
     def homeContent(self, filter):
