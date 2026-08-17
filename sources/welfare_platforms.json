@@ -59,12 +59,6 @@
     ],
     "stage3Notes": "阶段3 更新：移除「糖心Vlog」（tangxinvlog_py），新增「狂飙短剧」（kuangbiao_py）、「avgood」（avgood_py）、「一抖阁」（yidouge_py）三个 Python 蜘蛛福利源。 新增 8 个 Python 蜘蛛福利源：小红薯/香蕉视频/蜜桃视频/迷妹网/黑料网/爆片库/2048核基地/采集聚合。",
     "lastUpdated": "2026-08-16",
-    "stage4RemovedKeys": [
-      "xiaohongshu_py",
-      "mitao_py",
-      "heiliao_py"
-    ],
-    "stage4Notes": "阶段4 清理：移除「小红薯」（xiaohongshu_py）、「蜜桃视频」（mitao_py）、「黑料网」（heiliao_py）三个无法正常使用的Python蜘蛛福利源。",
     "stage5AddedKeys": [
       "sise_image_py",
       "fuli74p_py",
@@ -1102,7 +1096,7 @@
       ],
       "sortOrder": 370,
       "defaultProxy": false,
-      "notes": "Python 蜘蛛直播源，JinriCP/PandaClass 韩国女团录播；动态从网站侧边栏获取分类（JinriCP 1-6季 + PandaClass 1-7季 + 粉丝房分享），无硬编码兜底；HLS m3u8 直链播放（parse=0）+ SRT 中韩双语字幕自动加载；粉丝房走 fans.5721004.xyz 独立 API；ThreadPoolExecutor 并发搜索",
+      "notes": "Python 蜘蛛直播源，JinriCP/PandaClass 韩国女团录播；动态从网站侧边栏获取分类（JinriCP 1-6季 + PandaClass 1-7季 + 粉丝房分享），无硬编码兜底；HLS m3u8 直链播放（parse=0）+ SRT 中韩双语字幕自动加载；粉丝房走 fans.5721004.xyz 独立 API；ThreadPoolExecutor 懒加载并发搜索（iOS兼容）；基座域名注入（_vbox_effective_hosts）",
       "api": "./sources/welfare-js/jinricp.py",
       "scriptType": "python",
       "engine": "python",

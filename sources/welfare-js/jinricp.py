@@ -2,12 +2,12 @@
 # JinriCP / PandaClass 韩国女团录播 TVBox Python Spider
 # 网站: https://5721004.xyz
 # 特性: m3u8直链播放 + SRT中韩双语字幕自动加载
+# 修复: ThreadPoolExecutor 懒加载 + 基座域名注入 + 动态获取分类(无硬编码)
 
 import re
 import json
 import urllib3
 from urllib.parse import quote, unquote
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import requests
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -29,7 +29,7 @@ except ImportError:
 
 # ==================== 全局常量 ====================
 
-HOST = 'https://5721004.xyz'
+DEFAULT_HOST = 'https://5721004.xyz'
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 
 # 需要排除的非分类路径前缀
@@ -45,12 +45,24 @@ class Spider(BaseSpider):
     def init(self, extend=""):
         self.headers = {
             'User-Agent': UA,
-            'Referer': HOST + '/'
+            'Referer': DEFAULT_HOST + '/'
         }
         self.session = requests.Session()
         self.session.headers.update(self.headers)
         self.session.verify = False
         self._timeout = 15
+
+        # 读取基座注入的域名（Swift 层通过 PythonBridge 注入 globals）
+        # 如果用户配置了自定义域名，优先使用注入域名；否则用默认域名
+        self.host = DEFAULT_HOST
+        try:
+            effective_hosts = globals().get('_vbox_effective_hosts', [])
+            if effective_hosts and len(effective_hosts) > 0:
+                self.host = effective_hosts[0].rstrip('/')
+                print('[JinriCP] 使用注入域名: ' + self.host)
+        except Exception as e:
+            print('[JinriCP] 读取注入域名失败, 使用默认: ' + str(e))
+
         # 初始化时预加载分类列表
         global _cached_categories
         if _cached_categories is None:
@@ -81,7 +93,7 @@ class Spider(BaseSpider):
         if tid == 'fans':
             return self._fans_category_content(pg)
 
-        url = '{}/{}'.format(HOST, tid) + '/'
+        url = '{}/{}/'.format(self.host, tid)
         try:
             resp = self.session.get(url, timeout=self._timeout)
             if resp.status_code != 200:
@@ -238,7 +250,7 @@ class Spider(BaseSpider):
             'url': id,
             'header': {
                 'User-Agent': UA,
-                'Referer': HOST + '/'
+                'Referer': self.host + '/'
             }
         }
 
@@ -256,6 +268,7 @@ class Spider(BaseSpider):
         """
         本站无搜索 API，通过遍历各季度的文件夹名进行关键词匹配。
         使用 ThreadPoolExecutor 并发请求，提升搜索速度。
+        如果 ThreadPoolExecutor 导入失败，退回串行搜索。
         """
         results = []
 
@@ -263,7 +276,7 @@ class Spider(BaseSpider):
             tid = cat['type_id']
             cat_name = cat['type_name']
             try:
-                url = '{}/{}/'.format(HOST, tid)
+                url = '{}/{}/'.format(self.host, tid)
                 resp = self.session.get(url, timeout=10)
                 if resp.status_code != 200:
                     return []
@@ -282,9 +295,13 @@ class Spider(BaseSpider):
             except:
                 return []
 
-        # 并发搜索所有分类
         cats = _cached_categories or []
+
+        # 懒加载 ThreadPoolExecutor —— 从顶层导入移到函数内部
+        # 避免 iOS CPython 环境下 threading/concurrent.futures 降级
+        # 导致整个模块加载失败
         try:
+            from concurrent.futures import ThreadPoolExecutor, as_completed
             with ThreadPoolExecutor(max_workers=5) as executor:
                 futures = [executor.submit(_search_one, cat) for cat in cats]
                 for future in as_completed(futures):
@@ -292,8 +309,10 @@ class Spider(BaseSpider):
                         results.extend(future.result())
                     except:
                         pass
-        except:
-            # 并发失败时退回串行
+            print('[JinriCP] 并发搜索完成, 结果数: ' + str(len(results)))
+        except Exception as e:
+            # 并发不可用时退回串行
+            print('[JinriCP] ThreadPoolExecutor 不可用, 退回串行: ' + str(e))
             for cat in cats:
                 results.extend(_search_one(cat))
 
@@ -304,7 +323,7 @@ class Spider(BaseSpider):
     def _fetch_categories(self):
         """
         动态获取分类列表 —— 完全从网站侧边栏 HTML 解析，不依赖硬编码。
-        
+
         网站每个页面都包含相同的侧边栏，所以从任意可用页面获取即可。
         首页可能因服务器 PHP 错误不可用，因此依次尝试多个已知页面。
         未来网站新增的分类会自动出现在侧边栏中，无需修改代码。
@@ -324,10 +343,10 @@ class Spider(BaseSpider):
         # 依次尝试多个页面获取侧边栏 HTML
         # 每个分类页面的侧边栏内容完全一致
         candidate_urls = [
-            HOST + '/bu/',   # JinriCP 第一季（最稳定，几乎不可能下线）
-            HOST + '/s2/',   # JinriCP 第二季
-            HOST + '/pc/',   # PandaClass 第一季
-            HOST + '/',      # 首页（可能恢复）
+            self.host + '/bu/',   # JinriCP 第一季（最稳定，几乎不可能下线）
+            self.host + '/s2/',   # JinriCP 第二季
+            self.host + '/pc/',   # PandaClass 第一季
+            self.host + '/',      # 首页（可能恢复）
         ]
 
         html = None
@@ -495,11 +514,11 @@ class Spider(BaseSpider):
         if href.startswith('//'):
             return 'https:' + href
         if href.startswith('/'):
-            return HOST + href
+            return self.host + href
         # ./folder/file.m3u8 → HOST/tid/folder/file.m3u8
         if href.startswith('./'):
             href = href[2:]
-        return '{}/{}/{}'.format(HOST, tid, href)
+        return '{}/{}/{}'.format(self.host, tid, href)
 
     def _extract_tid(self, url):
         """从 URL 中提取 tid（如 /bu/ → bu, /s2/ → s2, /pc3/ → pc3）"""
