@@ -9,10 +9,12 @@ vbox 修复点：
 2. localProxy 兼容 iOS 端 JSON 字符串参数格式
 3. m3u8 直链走本地代理（防盗链）
 """
-import sys, re, json, html as htmlmod, base64, io
+import sys, re, json, html as htmlmod, base64, io, warnings
 from urllib.parse import quote, unquote, urljoin
 from collections import OrderedDict
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+warnings.filterwarnings("ignore")
 
 try:
     from PIL import Image
@@ -179,6 +181,9 @@ def _discover_domain(session, timeout=6):
 
 class Spider(_B):
 
+    def getDependence(self):
+        return ['requests']
+
     def init(self, ext=""):
         self.s = requests.Session()
         self.s.headers.update({
@@ -206,6 +211,12 @@ class Spider(_B):
 
     def manualVideoCheck(self):
         return False
+
+    def destroy(self):
+        try:
+            self._executor.shutdown(wait=False)
+        except Exception:
+            pass
 
     # --------------------------------------------------------
     # 内部工具
@@ -399,7 +410,7 @@ class Spider(_B):
             {"type_id": tid, "type_name": name}
             for name, tid in _CATS
         ]
-        return {"class": classes}
+        return {"class": classes, "filters": {}}
 
     def homeVideoContent(self):
         """首页视频：取第一个分类（国产传媒）的第一页"""
