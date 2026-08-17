@@ -16,13 +16,13 @@ class Spider:
     baseUrl = "https://m.tuiimg.com"
     imgCdn = "https://i.tuiimg.net"
 
-    # 分类配置
+    # 分类配置（type_id 为路径名，对应网站 URL 路径）
     classes = [
         {"type_id": "0", "type_name": "最新推荐"},
-        {"type_id": "1", "type_name": "性感美女"},
-        {"type_id": "2", "type_name": "清纯美女"},
-        {"type_id": "3", "type_name": "妹子图"},
-        {"type_id": "4", "type_name": "美女写真"},
+        {"type_id": "meinv", "type_name": "美女图片"},
+        {"type_id": "fengjing", "type_name": "风景图片"},
+        {"type_id": "dongwu", "type_name": "动物图片"},
+        {"type_id": "jianzhu", "type_name": "建筑图片"},
     ]
 
     def __init__(self, opts=None):
@@ -59,7 +59,11 @@ class Spider:
             # 最新推荐走首页
             url = f"{self.baseUrl}/index_{pg}.html" if int(pg) > 1 else self.baseUrl + "/"
         else:
-            url = f"{self.baseUrl}/meinv/{tid}-{pg}.html"
+            # 分类页：第一页 /{tid}/，第N页 /{tid}/list_{pg}.html
+            if int(pg) > 1:
+                url = f"{self.baseUrl}/{tid}/list_{pg}.html"
+            else:
+                url = f"{self.baseUrl}/{tid}/"
 
         try:
             r = self.session.get(url, timeout=12, allow_redirects=True)
@@ -105,7 +109,8 @@ class Spider:
                 if last_link:
                     for a in last_link:
                         href = a.get("href", "")
-                        m = re.search(r"[-_](\d+)\.html", href)
+                        # 推图网分页格式: list_{N}.html 或 index_{N}.html
+                        m = re.search(r"(?:list|index)_(\d+)\.html", href)
                         if m:
                             pagecount = max(pagecount, int(m.group(1)))
 
