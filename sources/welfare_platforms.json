@@ -743,28 +743,6 @@
       "visibleInHome": false
     },
     {
-      "platformKey": "live_aggregator_py",
-      "name": "全能直播聚合",
-      "category": "live",
-      "icon": "tv.fill",
-      "desc": "IPTV 直播聚合 (Python) — 内置 fanmingming 源",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://live.fanmingming.com"
-      ],
-      "sortOrder": 350,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛直播聚合，内置 fanmingming IPv6/Global/ITV 三个公共 IPTV 直播源；支持 M3U/TXT/JSON 多格式解析；AES-128-CBC 解密引擎；频道标准化（CCTV/卫视/地方台）；EPG 节目单；支持 extend.lives 自定义源列表；默认无需额外配置即可使用",
-      "api": "./sources/welfare-js/live_aggregator.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "contentType": "live",
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
       "platformKey": "pandalive_pro_py",
       "name": "PandaLive专业版",
       "category": "live",
