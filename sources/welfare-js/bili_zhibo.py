@@ -187,55 +187,66 @@ class Spider(Spider):
         return result
 
     def detailContent(self, ids):
-        did = ids[0]
-        result = {}
-        videos = []
-        xianlu = ''
-        bofang = ''
+        try:
+            did = ids[0]
+            result = {}
+            videos = []
+            xianlu = ''
+            bofang = ''
 
-        url = f'{xurl1}/xlive/web-room/v2/index/getRoomPlayInfo?room_id={did}&platform=web&protocol=0,1&format=0,1,2&codec=0,1'
-        detail = requests.get(url=url, headers=headerx)
-        detail.encoding = "utf-8"
-        data = detail.json()
+            url = f'{xurl1}/xlive/web-room/v2/index/getRoomPlayInfo?room_id={did}&platform=web&protocol=0,1&format=0,1,2&codec=0,1'
+            detail = requests.get(url=url, headers=headerx, timeout=15)
+            detail.encoding = "utf-8"
+            data = detail.json()
 
-        content = '欢迎观看哔哩直播'
+            content = '欢迎观看哔哩直播'
 
-        setup = data['data']['playurl_info']['playurl']['stream']
+            setup = data['data']['playurl_info']['playurl']['stream']
 
-        nam = 0
+            nam = 0
 
-        for vod in setup:
+            for vod in setup:
 
-            try:
-                host = vod['format'][nam]['codec'][0]['url_info'][1]['host']
-            except (KeyError, IndexError):
-                continue
+                try:
+                    host = vod['format'][nam]['codec'][0]['url_info'][1]['host']
+                except (KeyError, IndexError):
+                    continue
 
-            base = vod['format'][nam]['codec'][0]['base_url']
+                base = vod['format'][nam]['codec'][0]['base_url']
 
-            extra = vod['format'][nam]['codec'][0]['url_info'][1]['extra']
+                extra = vod['format'][nam]['codec'][0]['url_info'][1]['extra']
 
-            id = host + base + extra
+                id = host + base + extra
 
-            nam = nam + 1
+                nam = nam + 1
 
-            namc = f"{nam}号线路"
+                namc = f"{nam}号线路"
 
-            bofang = bofang + namc + '$' + id + '#'
+                bofang = bofang + namc + '$' + id + '#'
 
-        bofang = bofang[:-1]
+            bofang = bofang[:-1]
 
-        xianlu = '哔哩专线'
+            xianlu = '哔哩专线'
 
-        videos.append({
-            "vod_id": did,
-            "vod_content": content,
-            "vod_play_from": xianlu,
-            "vod_play_url": bofang
-                     })
+            videos.append({
+                "vod_id": did,
+                "vod_content": content,
+                "vod_play_from": xianlu,
+                "vod_play_url": bofang
+                         })
 
-        result['list'] = videos
-        return result
+            result['list'] = videos
+            return result
+        except Exception as e:
+            print(f'[哔哩直播] detailContent err: {e}')
+            return {
+                'list': [{
+                    'vod_id': ids[0] if ids else '',
+                    'vod_name': '加载失败',
+                    'vod_play_from': '哔哩专线',
+                    'vod_play_url': f'点击重试${xurl1}'
+                }]
+            }
 
     def playerContent(self, flag, id, vipFlags):
 

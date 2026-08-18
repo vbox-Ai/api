@@ -383,8 +383,6 @@ class Spider(BaseSpider):
             "playUrl": "",
             "url": id,
             "header": {
-                "User-Agent": self.headers["User-Agent"],
-                "Referer": self.host,
-                "Origin": self.host,
+                "User-Agent": self.headers["User-Agent"]
             }
         }

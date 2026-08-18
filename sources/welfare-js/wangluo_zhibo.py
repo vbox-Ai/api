@@ -1247,7 +1247,7 @@ class Spider(Spider):
 
     def getpq_text(self, url, headers=None, cookies=None):
         """Replacement for getpq(...).('script').eq(-1).text()"""
-        data = self.fetch(url, headers=headers, cookies=cookies).text()
+        data = self.fetch(url, headers=headers, cookies=cookies).text
         scripts = re.findall(r'<script[^>]*>([\s\S]*?)</script>', data)
         return scripts[-1] if scripts else ''
 
@@ -1261,4 +1261,9 @@ class Spider(Spider):
 
     def handle_exception(self, e):
         print(f"报错: {str(e)}")
-        return {'vod_play_from': '哎呀翻车啦', 'vod_play_url': f'翻车啦${self.excepturl}'}
+        return {
+            'vod_id': 'error',
+            'vod_name': '加载失败',
+            'vod_play_from': '哎呀翻车啦',
+            'vod_play_url': f'点击重试${self.excepturl}'
+        }
