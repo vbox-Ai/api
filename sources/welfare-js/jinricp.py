@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # JinriCP / PandaClass 韩国女团录播 vbox Python Spider
 # 网站: https://5721004.xyz
+# v6: 修复 localProxy — 使用基类 getProxyUrl() + 列表返回格式 [code, mime, bytes]
 # v5: 修复 IPFS 播放 — w3s.link 网关已关闭(301→storacha.network→fil.one)
 #     所有 IPFS 分片通过 localProxy 代理, 尝试多个可用网关 (ipfs.io/cloudflare/dweb/pinata/4everland)
 # v4: 重写分类逻辑 — 三级结构(季→日期文件夹→m3u8剧集) + 封面图 + 中文URL编码 + 过滤非视频项
-# 特性: m3u8直链播放 + SRT中韩双语字幕自动加载 + IPFS分片代理 + preview封面图
+# 特性: m3u8直链播放 + SRT中韩双语字幕自动加载 + IPFS分片代理(getProxyUrl+列表返回) + preview封面图
 
 import re
 import json
@@ -399,14 +400,12 @@ class Spider(BaseSpider):
             if 'ipfs' not in content and 'w3s.link' not in content and 'raribleuserdata' not in content:
                 return None
 
-            proxy_base = self._get_proxy_base()
-
             # 重写所有 IPFS 分片 URL 为 localProxy 代理 URL
             # 原始: https://ipfs.w3s.link/ipfs/CID
-            # 重写: http://127.0.0.1:port?do=ipfs&cid=CID
+            # 重写: <proxy_base>?do=py&type=ts&key=CID
             def _replace_ipfs(match):
                 cid = match.group(1)
-                return proxy_base + '?do=ipfs&cid=' + cid
+                return self._build_proxy_url('ts', cid)
 
             rewritten = re.sub(
                 r'https?://[a-z0-9.-]+/ipfs/([a-zA-Z0-9]+)',
@@ -422,21 +421,25 @@ class Spider(BaseSpider):
             globals()['_m3u8_cache'][cache_key] = rewritten
 
             print('[JinriCP] IPFS 分片 URL 重写完成, cache=' + cache_key)
-            proxy_url = proxy_base + '?do=m3u8&id=' + cache_key
+            proxy_url = self._build_proxy_url('m3u8', cache_key)
             return proxy_url
 
         except Exception as e:
             print('[JinriCP] m3u8 重写异常: ' + str(e))
             return None
 
-    def _get_proxy_base(self):
+    def _build_proxy_url(self, ptype, key):
+        """构建 localProxy 代理 URL（使用基类 getProxyUrl）"""
         try:
-            proxy_port = globals().get('_vbox_local_proxy_port', '')
-            if proxy_port:
-                return 'http://127.0.0.1:' + str(proxy_port)
-        except:
+            if hasattr(self, 'getProxyUrl'):
+                base = self.getProxyUrl()
+                if '?' not in base:
+                    base += '?do=py'
+                return base + '&type=' + ptype + '&key=' + quote(key, safe='')
+        except Exception:
             pass
-        return 'http://127.0.0.1:9938'
+        # 无法获取代理 URL，返回原始 key
+        return key
 
     # ==================== 搜索 ====================
 
@@ -718,30 +721,49 @@ class Spider(BaseSpider):
     def manualVideoCheck(self):
         return False
 
+    def _parse_proxy_params(self, param):
+        """解析 localProxy 参数 (兼容 dict / JSON string / query string)"""
+        if isinstance(param, dict):
+            return param
+        if isinstance(param, str):
+            try:
+                d = json.loads(param)
+                if isinstance(d, dict):
+                    return d
+            except Exception:
+                pass
+            result = {}
+            qs = param.split('?', 1)[1] if '?' in param else param
+            for pair in qs.split('&'):
+                if '=' in pair:
+                    from urllib.parse import unquote
+                    k, v = pair.split('=', 1)
+                    result[k] = unquote(v)
+            return result
+        return {}
+
     def localProxy(self, param):
-        """本地代理: 返回 m3u8 内容或代理 IPFS 分片"""
+        """本地代理: 返回 m3u8 内容或代理 IPFS 分片
+
+        返回格式: [status_code, content_type, content_bytes]
+        """
         try:
-            from urllib.parse import parse_qs, urlparse
-            parsed = urlparse('?' + param if '?' not in param else param)
-            params = parse_qs(parsed.query)
+            p = self._parse_proxy_params(param)
+            ptype = p.get('type', '')
+            key = p.get('key', '')
 
-            do = params.get('do', [''])[0]
+            if ptype == 'm3u8':
+                # 从缓存返回重写后的 m3u8
+                m3u8_content = globals().get('_m3u8_cache', {}).get(key)
+                if m3u8_content:
+                    return [200, 'application/vnd.apple.mpegurl', m3u8_content.encode('utf-8')]
+                return [404, 'text/plain', b'm3u8 not found']
 
-            if do == 'm3u8':
-                cache_key = params.get('id', [''])[0]
-                if cache_key:
-                    m3u8_content = globals().get('_m3u8_cache', {}).get(cache_key)
-                    if m3u8_content:
-                        return {
-                            'mime': 'application/vnd.apple.mpegurl',
-                            'content': m3u8_content
-                        }
-                return {}
-
-            elif do == 'ipfs':
-                cid = params.get('cid', [''])[0]
+            elif ptype == 'ts':
+                # 代理 IPFS 分片 — key 是 CID
+                cid = key
                 if not cid:
-                    return {}
+                    return [404, 'text/plain', b'missing cid']
 
                 # 尝试多个 IPFS 网关 (w3s.link 已关闭)
                 gateways = [
@@ -773,18 +795,15 @@ class Spider(BaseSpider):
 
                         if data and len(data) > 0:
                             print('[JinriCP] IPFS 分片获取成功: ' + gw + ' ' + str(len(data)) + ' bytes')
-                            return {
-                                'mime': 'video/mp2t',
-                                'content': data
-                            }
+                            return [200, 'video/mp2t', data]
                     except Exception as e:
                         print('[JinriCP] 网关 ' + gw + ' 失败: ' + str(e))
                         continue
 
                 print('[JinriCP] IPFS 分片获取失败, 所有网关不可用, cid=' + cid)
-                return {}
+                return [404, 'text/plain', b'ipfs unavailable']
 
-            return {}
+            return [404, 'text/plain', b'']
         except Exception as e:
             print('[JinriCP] localProxy err: ' + str(e))
-            return {}
+            return [404, 'text/plain', b'']
