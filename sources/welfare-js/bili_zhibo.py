@@ -201,30 +201,41 @@ class Spider(Spider):
 
             content = '欢迎观看哔哩直播'
 
-            setup = data['data']['playurl_info']['playurl']['stream']
+            playurl_info = data['data'].get('playurl_info')
+            if not playurl_info or not playurl_info.get('playurl'):
+                return {
+                    'list': [{
+                        'vod_id': did,
+                        'vod_name': '房间未开播或已下播',
+                        'vod_play_from': '哔哩专线',
+                        'vod_play_url': f'点击重试${xurl1}'
+                    }]
+                }
+
+            setup = playurl_info['playurl'].get('stream', [])
 
             nam = 0
 
-            for vod in setup:
+            for stream in setup:
+                for fmt in stream.get('format', []):
+                    for codec in fmt.get('codec', []):
+                        base = codec.get('base_url', '')
+                        if not base:
+                            continue
+                        for url_info in codec.get('url_info', []):
+                            host = url_info.get('host', '')
+                            extra = url_info.get('extra', '')
+                            if not host:
+                                continue
+                            play_url = host + base + extra
+                            nam = nam + 1
+                            namc = f"{nam}号线路"
+                            bofang = bofang + namc + '$' + play_url + '#'
 
-                try:
-                    host = vod['format'][nam]['codec'][0]['url_info'][1]['host']
-                except (KeyError, IndexError):
-                    continue
-
-                base = vod['format'][nam]['codec'][0]['base_url']
-
-                extra = vod['format'][nam]['codec'][0]['url_info'][1]['extra']
-
-                id = host + base + extra
-
-                nam = nam + 1
-
-                namc = f"{nam}号线路"
-
-                bofang = bofang + namc + '$' + id + '#'
-
-            bofang = bofang[:-1]
+            if bofang:
+                bofang = bofang[:-1]
+            else:
+                bofang = f'点击重试${xurl1}'
 
             xianlu = '哔哩专线'
 

@@ -37,7 +37,7 @@ class Spider(BaseSpider):
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
             "Accept": "application/json, text/plain, */*",
-            "Referer": "https://kafeizhibo.com/live/all"
+            "Referer": self.host + "/live/all"
         }
 
     def log(self, msg):
@@ -116,7 +116,12 @@ class Spider(BaseSpider):
                 referer=self.host + "/room/{}".format(room_id)
             )
             if data.get("code") != 200 or not data.get("data"):
-                return {"list": []}
+                return {"list": [{
+                    "vod_id": "live_{}".format(room_id),
+                    "vod_name": "加载失败",
+                    "vod_play_from": "直播线路",
+                    "vod_play_url": "点击重试$" + self.host
+                }]}
 
             d = data["data"]
             room_info = d.get("room_info", {})
@@ -135,7 +140,7 @@ class Spider(BaseSpider):
             # 每条 signal 是一个线路（官方直播/原声直播）
             episodes = []
             for sig in signals:
-                url = sig.get("stream_url", "")
+                url = self._normalize_url(sig.get("stream_url", ""))
                 if url:
                     name = sig.get("name", "线路")
                     episodes.append("{}${}".format(name, url))
@@ -143,9 +148,17 @@ class Spider(BaseSpider):
             # 如果 signals 为空，fallback 到 archor
             if not episodes:
                 archor = d.get("archor", {})
-                url = archor.get("stream_url", "")
+                url = self._normalize_url(archor.get("stream_url", ""))
                 if url:
                     episodes.append("{}${}".format(archor.get("name", "直播"), url))
+
+            if not episodes:
+                return {"list": [{
+                    "vod_id": "live_{}".format(room_id),
+                    "vod_name": "无播放线路",
+                    "vod_play_from": "直播线路",
+                    "vod_play_url": "点击重试$" + self.host
+                }]}
 
             vod = {
                 "vod_id": "live_{}".format(room_id),
@@ -160,7 +173,12 @@ class Spider(BaseSpider):
             return {"list": [vod]}
         except Exception as e:
             self.log("直播详情失败: " + str(e))
-            return {"list": []}
+            return {"list": [{
+                "vod_id": "live_{}".format(room_id),
+                "vod_name": "加载失败",
+                "vod_play_from": "直播线路",
+                "vod_play_url": "点击重试$" + self.host
+            }]}
 
     # =========================================================
     # 录像部分
@@ -211,7 +229,12 @@ class Spider(BaseSpider):
             )
             data = resp.json()
             if data.get("code") != 200 or not data.get("data"):
-                return {"list": []}
+                return {"list": [{
+                    "vod_id": str(vid),
+                    "vod_name": "加载失败",
+                    "vod_play_from": "录像源",
+                    "vod_play_url": "点击重试$" + self.host
+                }]}
 
             match = data["data"]["match"]
             replays = data["data"].get("replays", [])
@@ -224,13 +247,23 @@ class Spider(BaseSpider):
 
             episodes = []
             for idx, rec in enumerate(replays):
-                if rec.get("video_url"):
+                url = self._normalize_url(rec.get("video_url", ""))
+                if url:
                     name = rec.get("title") or "录像{}".format(idx + 1)
-                    episodes.append("{}${}".format(name, rec["video_url"]))
+                    episodes.append("{}${}".format(name, url))
             for idx, rec in enumerate(highlights):
-                if rec.get("video_url"):
+                url = self._normalize_url(rec.get("video_url", ""))
+                if url:
                     name = rec.get("title") or "集锦{}".format(idx + 1)
-                    episodes.append("{}${}".format(name, rec["video_url"]))
+                    episodes.append("{}${}".format(name, url))
+
+            if not episodes:
+                return {"list": [{
+                    "vod_id": str(vid),
+                    "vod_name": "无录像资源",
+                    "vod_play_from": "录像源",
+                    "vod_play_url": "点击重试$" + self.host
+                }]}
 
             vod = {
                 "vod_id": str(vid),
@@ -248,7 +281,12 @@ class Spider(BaseSpider):
             return {"list": [vod]}
         except Exception as e:
             self.log("录像详情失败: " + str(e))
-            return {"list": []}
+            return {"list": [{
+                "vod_id": str(vid),
+                "vod_name": "加载失败",
+                "vod_play_from": "录像源",
+                "vod_play_url": "点击重试$" + self.host
+            }]}
 
     # =========================================================
     # FongMi 接口
@@ -383,6 +421,7 @@ class Spider(BaseSpider):
             "playUrl": "",
             "url": id,
             "header": {
-                "User-Agent": self.headers["User-Agent"]
+                "User-Agent": self.headers["User-Agent"],
+                "Referer": self.host + "/"
             }
         }

@@ -15,15 +15,19 @@ from base.spider import Spider
 class Spider(Spider):
 
     def init(self, extend=""):
-        tid = 'douyin'
-        headers = self.gethr(0, tid)
-        response = requests.head(self.hosts[tid], headers=headers)
-        ttwid = response.cookies.get('ttwid')
-        headers.update({
-            'authority': self.hosts[tid].split('//')[-1],
-            'cookie': f'ttwid={ttwid}' if ttwid else ''
-        })
-        self.dyheaders = headers
+        try:
+            tid = 'douyin'
+            headers = self.gethr(0, tid)
+            response = requests.head(self.hosts[tid], headers=headers, timeout=10)
+            ttwid = response.cookies.get('ttwid')
+            headers.update({
+                'authority': self.hosts[tid].split('//')[-1],
+                'cookie': f'ttwid={ttwid}' if ttwid else ''
+            })
+            self.dyheaders = headers
+        except Exception as e:
+            print(f"init douyin error: {e}")
+            self.dyheaders = self.gethr(0, 'douyin')
         pass
 
     def getName(self):
@@ -448,12 +452,17 @@ class Spider(Spider):
             data = self.fetch(
                 f'{self.hosts[ids[0]][0]}/xlive/web-room/v2/index/getRoomPlayInfo?room_id={ids[1]}&protocol=0%2C1&format=0%2C1%2C2&codec=0%2C1&platform=web',
                 headers=self.gethr(0, ids[0])).json()
-            vdnams = data['data']['playurl_info']['playurl']['g_qn_desc']
+            playurl_info = data.get('data', {}).get('playurl_info')
+            if not playurl_info or not playurl_info.get('playurl'):
+                vod['vod_play_from'] = '哔哩专线'
+                vod['vod_play_url'] = f'未开播${self.excepturl}'
+                return vod
+            vdnams = playurl_info['playurl'].get('g_qn_desc', [])
             all_accept_qns = []
-            streams = data['data']['playurl_info']['playurl']['stream']
+            streams = playurl_info['playurl'].get('stream', [])
             for stream in streams:
-                for format_item in stream['format']:
-                    for codec in format_item['codec']:
+                for format_item in stream.get('format', []):
+                    for codec in format_item.get('codec', []):
                         if 'accept_qn' in codec:
                             all_accept_qns.append(codec['accept_qn'])
             max_accept_qn = max(all_accept_qns, key=len) if all_accept_qns else []
@@ -461,7 +470,9 @@ class Spider(Spider):
                 item['qn']: item['desc']
                 for item in vdnams
             }
-            quality_names = [f"{quality_map.get(qn)}${ids[0]}@@{ids[1]}@@{qn}" for qn in max_accept_qn]
+            quality_names = [f"{quality_map.get(qn, str(qn))}${ids[0]}@@{ids[1]}@@{qn}" for qn in max_accept_qn]
+            if not quality_names:
+                quality_names = [f"原画${ids[0]}@@{ids[1]}@@10000"]
             vod['vod_play_url'] = "#".join(quality_names)
             return vod
         except Exception as e:
@@ -496,6 +507,11 @@ class Spider(Spider):
                             quality_name = quality['sDisplayName']
                             bit_rate = quality['iBitRate']
                             base_url = cdn['url']
+                            if not base_url:
+                                continue
+                            # HTTP转HTTPS (iOS ATS要求)
+                            if base_url.startswith('http://'):
+                                base_url = 'https://' + base_url[7:]
                             if bit_rate > 0:
                                 if '.m3u8' in base_url:
                                     new_url = base_url.replace(
@@ -620,13 +636,18 @@ class Spider(Spider):
         try:
             ids = id.split('@@')
             p = 1
-            if ids[0] in ['wangyi', 'douyin','huya']:
+            url = self.excepturl
+            header = self.headers[0]
+            if ids[0] in ['wangyi', 'douyin', 'huya']:
                 p, url = 0, json.loads(self.d64(ids[1]))
+                header = self.playheaders.get(ids[0], header)
             elif ids[0] == 'bili':
                 p, url = self.biliplay(ids)
+                header = self.playheaders.get(ids[0], header)
             elif ids[0] == 'douyu':
                 p, url = self.douyuplay(ids)
-            return {'parse': p, 'url': url, 'header': self.playheaders[ids[0]]}
+                header = self.playheaders.get(ids[0], header)
+            return {'parse': p, 'url': url, 'header': header}
         except Exception as e:
             return {'parse': 1, 'url': self.excepturl, 'header': self.headers[0]}
 
@@ -763,7 +784,7 @@ class Spider(Spider):
         return scripts[-1] if scripts else ''
 
     def gethr(self, index, rf='', zr=''):
-        headers = self.headers[index]
+        headers = dict(self.headers[index])
         if zr:
             headers['referer'] = zr
         else:

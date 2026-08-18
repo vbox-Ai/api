@@ -572,158 +572,81 @@ class Spider(Spider):
 
     def huyaDetail(self, ids):
         """
-        虎牙播放详情 - 参考最新三合一.js重构
-        支持多线路多清晰度选择
-        核心算法：通过房间信息API获取uid、streamName和rateArray，为每个清晰度生成签名URL
-        清晰度说明：
-        - 蓝光8M/6M/4M/10M = 8000/6000/4000/10000 kbps = 1080P+
-        - 蓝光 = 3000 kbps = 1080P
-        - 超清 = 2000 kbps = 1080P (官方标准)
-        - 高清 = 1200 kbps = 720P
-        - 标清/流畅 = 500-800 kbps = 480P/540P
+        虎牙播放详情 - 使用 multiLine/rateArray 直接获取URL
+        比签名算法更可靠，因为URL直接从API响应中获取
         """
         try:
             room_id = ids[1]
-            
-            # 1. 获取房间信息
             api_url = f'{self.hosts[ids[0]][1]}/cache.php?m=Live&do=profileRoom&roomid={room_id}'
             res = self.fetch(api_url, headers=self.headers[0])
-            
+
             if res.status_code != 200:
                 return self.handle_exception(Exception(f"API请求失败: {res.status_code}"))
-            
+
             data = res.json()
             if not data or not data.get('data'):
                 return self.handle_exception(Exception("房间数据为空"))
-            
+
             room_data = data['data']
-            
-            # 2. 提取关键信息
-            uid = room_data.get('profileInfo', {}).get('uid')
-            stream_info = room_data.get('stream', {})
             live_data = room_data.get('liveData', {})
-            
-            if not uid:
-                return self.handle_exception(Exception("缺少uid"))
-            
-            # 3. 获取streamName和码率信息
-            base_stream_list = stream_info.get('baseSteamInfoList', [])
-            if not base_stream_list:
-                return self.handle_exception(Exception("无直播流信息"))
-            
-            # 获取第一个CDN的streamName作为基准
-            base_stream = base_stream_list[0]
-            stream_name = base_stream.get('sStreamName')
-            if not stream_name:
-                return self.handle_exception(Exception("无法获取streamName"))
-            
-            # 4. 构建VOD对象
+            stream_info = room_data.get('stream', {})
+
             vod = self.buildvod(
                 vod_name=live_data.get('introduction', '虎牙直播'),
                 type_name=live_data.get('gameFullName', ''),
                 vod_director=live_data.get('nick', ''),
                 vod_remarks=live_data.get('contentIntro', ''),
             )
-            
-            # 5. 获取所有CDN线路
-            cdn_list = []
-            for stream in base_stream_list:
-                cdn_type = stream.get('sCdnType', 'AL')
-                flv_url = stream.get('sFlvUrl', '')
-                hls_url = stream.get('sHlsUrl', '')
-                stream_name_cdn = stream.get('sStreamName', stream_name)
-                
-                if flv_url:
-                    cdn_list.append({
-                        'cdn': cdn_type,
-                        'flv_base': flv_url,
-                        'hls_base': hls_url,
-                        'stream_name': stream_name_cdn,
-                        'priority': stream.get('iWebPriorityRate', 0)
-                    })
-            
-            # 按优先级排序
-            cdn_list.sort(key=lambda x: x['priority'], reverse=True)
-            
-            # 6. 获取清晰度列表 (rateArray)
-            rate_array = stream_info.get('rateArray', [])
-            
-            # 如果没有rateArray，尝试从vMultiStreamInfo获取
-            if not rate_array and 'vMultiStreamInfo' in room_data:
-                rate_array = room_data['vMultiStreamInfo']
-            
-            # 如果仍然没有，使用默认清晰度（按虎牙官方标准）
-            if not rate_array:
-                rate_array = [
-                    {'sDisplayName': '蓝光4M', 'iBitRate': 4000},
-                    {'sDisplayName': '蓝光', 'iBitRate': 3000},
-                    {'sDisplayName': '超清', 'iBitRate': 2000},  # 2000kbps = 1080P
-                    {'sDisplayName': '高清', 'iBitRate': 1200},   # 1200kbps = 720P
-                    {'sDisplayName': '流畅', 'iBitRate': 500}
-                ]
-            
-            # 过滤和排序清晰度
-            # 虎牙的rateArray中，iBitRate就是码率值，sDisplayName是显示名称
-            # 需要确保：超清=2000kbps(1080P)，高清=1200kbps(720P)
-            filtered_rates = []
-            seen_bitrates = set()
-            
-            for rate in rate_array:
-                bit_rate = rate.get('iBitRate', 0)
-                name = rate.get('sDisplayName', '')
-                
-                # 跳过重复的码率
-                if bit_rate in seen_bitrates:
+
+            names = []
+            plist = []
+            for stream_type, stream_data in stream_info.items():
+                if not isinstance(stream_data, dict):
                     continue
-                
-                # 修正清晰度名称，确保符合虎牙标准
-                # 2000kbps应该是超清(1080P)，不是高清
-                if bit_rate == 2000 and ('高清' in name or '720' in name):
-                    name = '超清'  # 强制修正为超清
-                elif bit_rate == 1200 and ('标清' in name or '480' in name):
-                    name = '高清'  # 1200kbps对应高清
-                elif bit_rate == 2000 and name == '原画':
-                    name = '超清'  # 修正原画为超清
-                
-                seen_bitrates.add(bit_rate)
-                filtered_rates.append({
-                    'sDisplayName': name,
-                    'iBitRate': bit_rate
-                })
-            
-            # 按码率从高到低排序
-            sorted_rates = sorted(filtered_rates, key=lambda x: x['iBitRate'], reverse=True)
-            
-            # 7. 为每个CDN生成各清晰度的播放URL
-            play_lines = []
-            line_names = []
-            
-            for cdn_idx, cdn in enumerate(cdn_list[:3]):  # 最多取3个CDN
-                cdn_name = cdn['cdn']
-                line_names.append(f"线路{cdn_idx + 1}({cdn_name})")
-                
-                qualities = []
-                for rate in sorted_rates:
-                    quality_name = rate['sDisplayName']
-                    bit_rate = rate['iBitRate']
-                    
-                    # 生成该清晰度的URL
-                    quality_url = self._generate_huya_play_url(
-                        cdn, uid, stream_name, bit_rate
-                    )
-                    
-                    qualities.extend([quality_name, quality_url])
-                
-                # 编码该线路的所有清晰度
-                encoded_qualities = self.e64(json.dumps(qualities))
-                play_lines.append(f"{live_data.get('introduction', '直播')}${ids[0]}@@{encoded_qualities}")
-            
-            # 8. 构建播放数据
-            vod['vod_play_from'] = "$$$".join(line_names)
-            vod['vod_play_url'] = "$$$".join(play_lines)
-            
+                if 'multiLine' not in stream_data or 'rateArray' not in stream_data:
+                    continue
+
+                names.append(f"线路{len(names) + 1}")
+                qualities = sorted(
+                    stream_data['rateArray'],
+                    key=lambda x: x.get('iBitRate', 0),
+                    reverse=True
+                )
+                cdn_urls = []
+                for cdn in stream_data['multiLine']:
+                    quality_urls = []
+                    for quality in qualities:
+                        quality_name = quality.get('sDisplayName', '')
+                        bit_rate = quality.get('iBitRate', 0)
+                        base_url = cdn.get('url', '')
+                        if not base_url:
+                            continue
+                        # HTTP转HTTPS
+                        if base_url.startswith('http://'):
+                            base_url = 'https://' + base_url[7:]
+                        if bit_rate > 0:
+                            if '.m3u8' in base_url:
+                                new_url = base_url.replace('ratio=2000', f'ratio={bit_rate}')
+                            else:
+                                new_url = base_url.replace('imgplus.flv', f'imgplus_{bit_rate}.flv')
+                        else:
+                            new_url = base_url
+                        quality_urls.extend([quality_name, new_url])
+                    if quality_urls:
+                        encoded_urls = self.e64(json.dumps(quality_urls))
+                        cdn_urls.append(f"{cdn.get('cdnType', 'CDN')}${ids[0]}@@{encoded_urls}")
+                if cdn_urls:
+                    plist.append('#'.join(cdn_urls))
+
+            if not plist:
+                vod['vod_play_from'] = '虎牙专线'
+                vod['vod_play_url'] = f'未开播${self.excepturl}'
+                return vod
+
+            vod['vod_play_from'] = "$$$".join(names)
+            vod['vod_play_url'] = "$$$".join(plist)
             return vod
-            
+
         except Exception as e:
             return self.handle_exception(e)
     
@@ -1066,15 +989,21 @@ class Spider(Spider):
         try:
             ids = id.split('@@')
             p = 1
+            url = self.excepturl
+            header = self.headers[0]
             if ids[0] in ['wangyi']:
                 p, url = 0, json.loads(self.d64(ids[1]))
+                header = self.playheaders.get(ids[0], header)
             elif ids[0] == 'bili':
                 p, url = self.biliplay(ids)
+                header = self.playheaders.get(ids[0], header)
             elif ids[0] == 'huya':
                 p, url = self.huyaplay(ids)
+                header = self.playheaders.get(ids[0], header)
             elif ids[0] == 'douyu':
                 p, url = self.douyuplay(ids)
-            return {'parse': p, 'url': url, 'header': self.playheaders[ids[0]]}
+                header = self.playheaders.get(ids[0], header)
+            return {'parse': p, 'url': url, 'header': header}
         except Exception as e:
             return {'parse': 1, 'url': self.excepturl, 'header': self.headers[0]}
 
@@ -1252,7 +1181,7 @@ class Spider(Spider):
         return scripts[-1] if scripts else ''
 
     def gethr(self, index, rf='', zr=''):
-        headers = self.headers[index]
+        headers = dict(self.headers[index])
         if zr:
             headers['referer'] = zr
         else:
