@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 # JinriCP / PandaClass 韩国女团录播 vbox Python Spider
 # 网站: https://5721004.xyz
+# v5: 修复 IPFS 播放 — w3s.link 网关已关闭(301→storacha.network→fil.one)
+#     所有 IPFS 分片通过 localProxy 代理, 尝试多个可用网关 (ipfs.io/cloudflare/dweb/pinata/4everland)
 # v4: 重写分类逻辑 — 三级结构(季→日期文件夹→m3u8剧集) + 封面图 + 中文URL编码 + 过滤非视频项
-# 特性: m3u8直链播放 + SRT中韩双语字幕自动加载 + IPFS网关重写 + preview封面图
+# 特性: m3u8直链播放 + SRT中韩双语字幕自动加载 + IPFS分片代理 + preview封面图
 
 import re
 import json
 import base64
+import hashlib
 import urllib3
 from urllib.parse import quote, unquote
 import requests
@@ -38,6 +41,7 @@ _EXCLUDE_PATHS = {'player'}
 _IGNORE_FILES = {'readme.md', '下载链接说明.txt', '节目预览图.gif'}
 
 _cached_categories = None
+_m3u8_cache = {}
 
 # ==================== Spider 主类 ====================
 
@@ -379,7 +383,11 @@ class Spider(BaseSpider):
         return result
 
     def _rewrite_m3u8_if_needed(self, m3u8_url):
-        """下载 m3u8，重写 IPFS 网关为 w3s.link，通过 localProxy 返回"""
+        """下载 m3u8，重写死掉的 IPFS 网关 URL，通过 localProxy 代理分片
+
+        w3s.link 网关已关闭 (301 → storacha.network → fil.one 营销页)
+        所有 IPFS 分片 URL 需通过 localProxy 代理，尝试多个可用网关
+        """
         try:
             resp = self.session.get(m3u8_url, timeout=10)
             if resp.status_code != 200:
@@ -387,27 +395,34 @@ class Spider(BaseSpider):
 
             content = resp.text
 
+            # 检查是否包含 IPFS URL
             if 'ipfs' not in content and 'w3s.link' not in content and 'raribleuserdata' not in content:
                 return None
 
-            ipfs_gateways = [
-                'https://ipfs.raribleuserdata.com/ipfs/',
-                'https://cloudflare-ipfs.com/ipfs/',
-                'https://ipfs.io/ipfs/',
-                'https://dweb.link/ipfs/',
-            ]
-            stable_gateway = 'https://ipfs.w3s.link/ipfs/'
+            proxy_base = self._get_proxy_base()
 
-            rewritten = content
-            for gw in ipfs_gateways:
-                rewritten = rewritten.replace(gw, stable_gateway)
+            # 重写所有 IPFS 分片 URL 为 localProxy 代理 URL
+            # 原始: https://ipfs.w3s.link/ipfs/CID
+            # 重写: http://127.0.0.1:port?do=ipfs&cid=CID
+            def _replace_ipfs(match):
+                cid = match.group(1)
+                return proxy_base + '?do=ipfs&cid=' + cid
+
+            rewritten = re.sub(
+                r'https?://[a-z0-9.-]+/ipfs/([a-zA-Z0-9]+)',
+                _replace_ipfs,
+                content
+            )
 
             if rewritten == content:
                 return None
 
-            print('[JinriCP] IPFS 网关重写完成')
-            encoded = base64.b64encode(rewritten.encode('utf-8')).decode('ascii')
-            proxy_url = self._get_proxy_base() + '?do=m3u8&content=' + encoded
+            # 缓存重写后的 m3u8，用 md5 作为 key (避免 URL 过长)
+            cache_key = hashlib.md5(rewritten.encode('utf-8')).hexdigest()[:12]
+            globals()['_m3u8_cache'][cache_key] = rewritten
+
+            print('[JinriCP] IPFS 分片 URL 重写完成, cache=' + cache_key)
+            proxy_url = proxy_base + '?do=m3u8&id=' + cache_key
             return proxy_url
 
         except Exception as e:
@@ -704,20 +719,71 @@ class Spider(BaseSpider):
         return False
 
     def localProxy(self, param):
-        """本地代理: 返回重写后的 m3u8 内容给播放器"""
+        """本地代理: 返回 m3u8 内容或代理 IPFS 分片"""
         try:
             from urllib.parse import parse_qs, urlparse
             parsed = urlparse('?' + param if '?' not in param else param)
             params = parse_qs(parsed.query)
 
-            if params.get('do', [''])[0] == 'm3u8':
-                content_b64 = params.get('content', [''])[0]
-                if content_b64:
-                    m3u8_content = base64.b64decode(content_b64).decode('utf-8')
-                    return {
-                        'mime': 'application/vnd.apple.mpegurl',
-                        'content': m3u8_content
-                    }
+            do = params.get('do', [''])[0]
+
+            if do == 'm3u8':
+                cache_key = params.get('id', [''])[0]
+                if cache_key:
+                    m3u8_content = globals().get('_m3u8_cache', {}).get(cache_key)
+                    if m3u8_content:
+                        return {
+                            'mime': 'application/vnd.apple.mpegurl',
+                            'content': m3u8_content
+                        }
+                return {}
+
+            elif do == 'ipfs':
+                cid = params.get('cid', [''])[0]
+                if not cid:
+                    return {}
+
+                # 尝试多个 IPFS 网关 (w3s.link 已关闭)
+                gateways = [
+                    'https://ipfs.io/ipfs/',
+                    'https://cloudflare-ipfs.com/ipfs/',
+                    'https://dweb.link/ipfs/',
+                    'https://gateway.pinata.cloud/ipfs/',
+                    'https://4everland.io/ipfs/',
+                ]
+
+                for gw in gateways:
+                    try:
+                        gw_resp = requests.get(
+                            gw + cid, timeout=10, verify=False, stream=True,
+                            headers={'User-Agent': UA}
+                        )
+                        if gw_resp.status_code != 200:
+                            gw_resp.close()
+                            continue
+
+                        content_type = gw_resp.headers.get('Content-Type', '')
+                        # 跳过 HTML 响应 (网关返回的是错误页/营销页)
+                        if 'text/html' in content_type:
+                            gw_resp.close()
+                            continue
+
+                        data = gw_resp.content
+                        gw_resp.close()
+
+                        if data and len(data) > 0:
+                            print('[JinriCP] IPFS 分片获取成功: ' + gw + ' ' + str(len(data)) + ' bytes')
+                            return {
+                                'mime': 'video/mp2t',
+                                'content': data
+                            }
+                    except Exception as e:
+                        print('[JinriCP] 网关 ' + gw + ' 失败: ' + str(e))
+                        continue
+
+                print('[JinriCP] IPFS 分片获取失败, 所有网关不可用, cid=' + cid)
+                return {}
+
             return {}
         except Exception as e:
             print('[JinriCP] localProxy err: ' + str(e))
