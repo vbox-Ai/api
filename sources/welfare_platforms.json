@@ -1083,28 +1083,6 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
-    },
-    {
-      "platformKey": "jinricp_py",
-      "name": "JinriCP韩国女团",
-      "category": "live",
-      "icon": "antenna.radiowaves.left.and.right",
-      "desc": "JinriCP/PandaClass 韩国女团录播 (Python)",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://5721004.xyz"
-      ],
-      "sortOrder": 370,
-      "defaultProxy": false,
-      "notes": "Python蜘蛛直播源;动态获取分类(无硬编码);m3u8直链+IPFS网关重写(w3s.link)+SRT字幕;ThreadPoolExecutor懒加载并发搜索(iOS兼容);基座域名注入;header格式修正为JSON字符串;localProxy返回重写后m3u8",
-      "api": "./sources/welfare-js/jinricp.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "contentType": "live",
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
     }
   ]
 }
