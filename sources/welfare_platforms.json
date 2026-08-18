@@ -1083,6 +1083,116 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "jinricp_py",
+      "name": "JinriCP韩国女团",
+      "category": "live",
+      "icon": "antenna.radiowaves.left.and.right",
+      "desc": "JinriCP/PandaClass 韩国女团录播 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://5721004.xyz"
+      ],
+      "sortOrder": 430,
+      "defaultProxy": false,
+      "notes": "v3:文件夹vod_id改为folder@@tid@@name格式(避免URL中?导致iOS异常);header改dict格式;fans详情修复;动态获取分类(无硬编码);m3u8直链+IPFS网关重写(w3s.link)+SRT字幕;ThreadPoolExecutor懒加载并发搜索;基座域名注入;localProxy返回重写后m3u8",
+      "api": "./sources/welfare-js/jinricp.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "wangluo_zhibo_py",
+      "name": "网络直播",
+      "category": "live",
+      "icon": "antenna.radiowaves.left.and.right",
+      "desc": "虎牙+斗鱼+网易CC+B站 直播聚合 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.huya.com"
+      ],
+      "sortOrder": 431,
+      "defaultProxy": false,
+      "notes": "四平台直播聚合;pyquery替换为正则;ThreadPoolExecutor懒加载;header为dict格式;B站WBI签名绕过风控;斗鱼安全密钥签名;多清晰度选择",
+      "api": "./sources/welfare-js/wangluo_zhibo.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "bili_zhibo_py",
+      "name": "哔哩直播",
+      "category": "live",
+      "icon": "antenna.radiowaves.left.and.right",
+      "desc": "B站直播搜索 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://search.bilibili.com"
+      ],
+      "sortOrder": 432,
+      "defaultProxy": false,
+      "notes": "B站直播搜索;lxml替换为html.parser;header为dict格式;12个分类(舞蹈/音乐/手游/网游等);BeautifulSoup解析;Crypto依赖",
+      "api": "./sources/welfare-js/bili_zhibo.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "kafei_zhibo_py",
+      "name": "咖啡直播",
+      "category": "live",
+      "icon": "sportscourt.fill",
+      "desc": "体育赛事直播+录像回放 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://kafeizhibo.cc"
+      ],
+      "sortOrder": 433,
+      "defaultProxy": false,
+      "notes": "体育赛事直播+录像;header改dict格式;base.spider继承;基座域名注入;7个分类(直播全部/足球/篮球+录像全部/足球/篮球/NBA);API驱动",
+      "api": "./sources/welfare-js/kafei_zhibo.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "zhibo_pingtai_py",
+      "name": "直播平台",
+      "category": "live",
+      "icon": "antenna.radiowaves.left.and.right",
+      "desc": "虎牙+B站+抖音+斗鱼+网易 五合一直播聚合 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.huya.com"
+      ],
+      "sortOrder": 434,
+      "defaultProxy": false,
+      "notes": "五平台直播聚合(含抖音);pyquery替换为正则;ThreadPoolExecutor懒加载;header为dict格式;抖音ttwid cookie获取;B站WBI签名;斗鱼安全密钥签名",
+      "api": "./sources/welfare-js/zhibo_pingtai.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ]
 }
