@@ -106,7 +106,7 @@ class Spider(Spider):
 
     def process_douyin(self):
         try:
-            data = self.fetch(self.hosts['douyin'], headers=self.dyheaders).text()
+            data = self.fetch(self.hosts['douyin'], headers=self.dyheaders).text
             scripts = re.findall(r'<script[^>]*>([\s\S]*?)</script>', data)
             for i in scripts:
                 if 'categoryData' in i:
