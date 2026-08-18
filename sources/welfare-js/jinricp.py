@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-# JinriCP / PandaClass 韩国女团录播 TVBox Python Spider
+# JinriCP / PandaClass 韩国女团录播 vbox Python Spider
 # 网站: https://5721004.xyz
-# 特性: m3u8直链播放 + SRT中韩双语字幕自动加载 + IPFS网关重写
-# v3: 修复文件夹vod_id格式(避免?导致iOS层异常) + header改为dict格式 + fans详情修复
+# v4: 重写分类逻辑 — 三级结构(季→日期文件夹→m3u8剧集) + 封面图 + 中文URL编码 + 过滤非视频项
+# 特性: m3u8直链播放 + SRT中韩双语字幕自动加载 + IPFS网关重写 + preview封面图
 
 import re
 import json
+import base64
 import urllib3
 from urllib.parse import quote, unquote
 import requests
@@ -33,6 +34,8 @@ DEFAULT_HOST = 'https://5721004.xyz'
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 
 _EXCLUDE_PATHS = {'player'}
+# 非视频/非文件夹文件 — 不在分类列表中展示
+_IGNORE_FILES = {'readme.md', '下载链接说明.txt', '节目预览图.gif'}
 
 _cached_categories = None
 
@@ -74,7 +77,7 @@ class Spider(BaseSpider):
     def homeVideoContent(self):
         return {}
 
-    # ==================== 分类列表 ====================
+    # ==================== 分类列表（一级：季） ====================
 
     def categoryContent(self, tid, pg, filter, extend):
         if tid == 'fans':
@@ -87,7 +90,7 @@ class Spider(BaseSpider):
                 return self._empty_list(pg)
 
             html = resp.text
-            vod_list = self._parse_items(html, tid)
+            vod_list = self._parse_category_items(html, tid)
 
             return {
                 'list': vod_list,
@@ -128,7 +131,6 @@ class Spider(BaseSpider):
                 if cover_id:
                     cover_url = 'https://fans.5721004.xyz/stream/{}'.format(cover_id)
 
-                # v3: 使用 fans@@pid 格式，避免特殊字符问题
                 vod_id = 'fans@@{}'.format(pid)
 
                 remarks = ''
@@ -155,7 +157,7 @@ class Spider(BaseSpider):
             print('[JinriCP] _fans_category_content err: ' + str(e))
             return self._empty_list(pg)
 
-    # ==================== 详情 ====================
+    # ==================== 详情（二级→三级：文件夹→m3u8剧集） ====================
 
     def detailContent(self, ids):
         if not ids:
@@ -163,12 +165,12 @@ class Spider(BaseSpider):
 
         vod_id = ids[0]
 
-        # v3: 解析 fans@@pid 格式
+        # 粉丝房
         if vod_id.startswith('fans@@'):
             return self._fans_detail_content(vod_id[6:])
 
-        # 如果已经是 m3u8 直链，直接返回单集
-        if '.m3u8' in vod_id:
+        # m3u8 直链 — 直接返回单集
+        if '.m3u8' in vod_id and vod_id.startswith('http'):
             name = self._extract_filename(vod_id)
             return {'list': [{
                 'vod_id': vod_id,
@@ -178,13 +180,15 @@ class Spider(BaseSpider):
                 'vod_play_url': '播放$' + vod_id
             }]}
 
-        # v3: 解析 folder@@tid@@folder_name 格式
+        # v4: folder@@tid@@folder_name — 获取子目录的 m3u8 剧集列表
         if vod_id.startswith('folder@@'):
             parts = vod_id.split('@@', 2)
             if len(parts) == 3:
                 tid = parts[1]
                 folder_name = parts[2]
-                folder_url = '{}/{}/?/{}/'.format(self.host, tid, folder_name)
+                # v4: URL编码中文文件夹名
+                encoded_name = quote(folder_name, safe='')
+                folder_url = '{}/{}/?/{}/'.format(self.host, tid, encoded_name)
                 return self._fetch_folder_detail(folder_url, tid, folder_name)
 
         # 兼容旧格式：直接 URL
@@ -220,16 +224,22 @@ class Spider(BaseSpider):
         return {'list': []}
 
     def _fetch_folder_detail(self, folder_url, tid, folder_name):
-        """请求文件夹页面，解析 m3u8 文件列表"""
+        """请求子目录页面，解析 m3u8 文件列表 + 封面图"""
         try:
             resp = self.session.get(folder_url, timeout=self._timeout)
             if resp.status_code != 200:
-                print('[JinriCP] 文件夹页面请求失败: HTTP ' + str(resp.status_code))
-                return {'list': []}
+                print('[JinriCP] 子目录请求失败: HTTP ' + str(resp.status_code) + ' ' + folder_url)
+                return {'list': [{
+                    'vod_id': 'folder@@' + tid + '@@' + folder_name,
+                    'vod_name': self._safe_unquote(folder_name),
+                    'vod_pic': '',
+                    'vod_play_from': 'JinriCP',
+                    'vod_play_url': '加载失败$' + self.host
+                }]}
 
             html = resp.text
             play_items = self._parse_m3u8_items(html, tid)
-            cover_url = self._find_cover_image(html, tid)
+            cover_url = self._fetch_preview_cover(tid, folder_name)
 
             if play_items:
                 play_parts = []
@@ -247,11 +257,46 @@ class Spider(BaseSpider):
                 }
                 return {'list': [vod]}
             else:
-                print('[JinriCP] 文件夹内未找到 m3u8 文件: ' + folder_url)
-                return {'list': []}
+                print('[JinriCP] 子目录内未找到 m3u8: ' + folder_url)
+                return {'list': [{
+                    'vod_id': 'folder@@' + tid + '@@' + folder_name,
+                    'vod_name': self._safe_unquote(folder_name),
+                    'vod_pic': '',
+                    'vod_play_from': 'JinriCP',
+                    'vod_play_url': '暂无剧集$' + self.host
+                }]}
         except Exception as e:
             print('[JinriCP] _fetch_folder_detail err: ' + str(e))
-            return {'list': []}
+            return {'list': [{
+                'vod_id': 'folder@@' + tid + '@@' + folder_name,
+                'vod_name': self._safe_unquote(folder_name),
+                'vod_pic': '',
+                'vod_play_from': 'JinriCP',
+                'vod_play_url': '加载失败$' + self.host
+            }]}
+
+    def _fetch_preview_cover(self, tid, folder_name):
+        """尝试从 preview 子文件夹获取封面图"""
+        try:
+            encoded_name = quote(folder_name, safe='')
+            preview_url = '{}/{}/?/{}/preview/'.format(self.host, tid, encoded_name)
+            resp = self.session.get(preview_url, timeout=10)
+            if resp.status_code != 200:
+                return ''
+
+            html = resp.text
+            # 找第一个图片文件
+            img_pattern = (
+                r'data-sort-name="([^"]+\.(?:jpg|png|gif))"'
+                r'[^>]*>.*?href="([^"]+)"'
+            )
+            m = re.search(img_pattern, html, re.S | re.I)
+            if m:
+                href = m.group(2)
+                return self._fix_url(href, tid)
+        except Exception as e:
+            print('[JinriCP] 获取封面图失败: ' + str(e))
+        return ''
 
     def _fans_detail_content(self, pid):
         """粉丝房详情：通过 API 获取视频播放地址"""
@@ -295,13 +340,9 @@ class Spider(BaseSpider):
             print('[JinriCP] _fans_detail_content err: ' + str(e))
             return {'list': []}
 
-    # ==================== 播放（核心：m3u8 + 字幕 + IPFS网关） ====================
+    # ==================== 播放（m3u8 + 字幕 + IPFS网关） ====================
 
     def playerContent(self, flag, id, vipFlags=None):
-        """
-        返回播放地址和字幕地址。
-        v3: header 改为 dict 格式（v19.0文档确认 PythonSpiderEngine 期望 dict）
-        """
         play_header = {
             'User-Agent': UA,
             'Referer': self.host + '/'
@@ -334,7 +375,6 @@ class Spider(BaseSpider):
         if '.m3u8' in id:
             srt_url = id.rsplit('.m3u8', 1)[0] + '.srt'
             result['subt'] = srt_url
-            print('[JinriCP] 字幕: ' + srt_url)
 
         return result
 
@@ -343,7 +383,6 @@ class Spider(BaseSpider):
         try:
             resp = self.session.get(m3u8_url, timeout=10)
             if resp.status_code != 200:
-                print('[JinriCP] m3u8 下载失败: HTTP ' + str(resp.status_code))
                 return None
 
             content = resp.text
@@ -366,9 +405,7 @@ class Spider(BaseSpider):
             if rewritten == content:
                 return None
 
-            print('[JinriCP] IPFS 网关重写完成, 分片统一为 w3s.link')
-
-            import base64
+            print('[JinriCP] IPFS 网关重写完成')
             encoded = base64.b64encode(rewritten.encode('utf-8')).decode('ascii')
             proxy_url = self._get_proxy_base() + '?do=m3u8&content=' + encoded
             return proxy_url
@@ -399,7 +436,7 @@ class Spider(BaseSpider):
                 resp = self.session.get(url, timeout=10)
                 if resp.status_code != 200:
                     return []
-                items = self._parse_items(resp.text, tid)
+                items = self._parse_category_items(resp.text, tid)
                 matched = []
                 kw = key.lower()
                 for item in items:
@@ -425,9 +462,7 @@ class Spider(BaseSpider):
                         results.extend(future.result())
                     except:
                         pass
-            print('[JinriCP] 并发搜索完成, 结果数: ' + str(len(results)))
-        except Exception as e:
-            print('[JinriCP] ThreadPoolExecutor 不可用, 退回串行: ' + str(e))
+        except:
             for cat in cats:
                 results.extend(_search_one(cat))
 
@@ -436,7 +471,7 @@ class Spider(BaseSpider):
     # ==================== 工具方法 ====================
 
     def _fetch_categories(self):
-        """动态获取分类列表 —— 从网站侧边栏 HTML 解析"""
+        """从网站侧边栏 HTML 动态获取分类列表"""
         candidate_urls = [
             self.host + '/bu/',
             self.host + '/s2/',
@@ -459,11 +494,12 @@ class Spider(BaseSpider):
                 continue
 
         if html is None:
-            print('[JinriCP] 所有页面均不可用, 分类列表为空')
-            return []
+            print('[JinriCP] 所有页面均不可用, 使用备用分类')
+            return self._fallback_categories()
 
         categories = []
 
+        # 侧边栏分类链接格式: <a href="/bu/" class="mdui-list-item mdui-ripple">
         pattern = (
             r'<a\s+href="(/[a-zA-Z0-9_]+)/?"\s+class="mdui-list-item\s+mdui-ripple"[^>]*>'
             r'(.*?)'
@@ -501,17 +537,32 @@ class Spider(BaseSpider):
             })
 
         if categories:
-            print('[JinriCP] 动态获取到 ' + str(len(categories)) + ' 个分类: ' +
-                  ', '.join(c['type_name'] for c in categories))
+            print('[JinriCP] 动态获取到 ' + str(len(categories)) + ' 个分类')
             return categories
         else:
-            print('[JinriCP] 动态获取分类为空')
-            return []
+            print('[JinriCP] 动态获取分类为空, 使用备用')
+            return self._fallback_categories()
 
-    def _parse_items(self, html, tid):
+    def _fallback_categories(self):
+        """备用分类列表（当网站侧边栏不可用时）"""
+        return [
+            {'type_id': 'bu', 'type_name': 'JinriCP第一季'},
+            {'type_id': 's2', 'type_name': 'JinriCP第二季'},
+            {'type_id': 's3', 'type_name': 'JinriCP第三季'},
+            {'type_id': 's4', 'type_name': 'JinriCP第四季'},
+            {'type_id': 's5', 'type_name': 'JinriCP第五季'},
+            {'type_id': 's6', 'type_name': 'JinriCP第六季'},
+            {'type_id': 'pc', 'type_name': 'PandaClass第一季'},
+            {'type_id': 'pc2', 'type_name': 'PandaClass第二季'},
+            {'type_id': 'pc3', 'type_name': 'PandaClass第三季'},
+            {'type_id': 'fans', 'type_name': '粉丝房分享'},
+        ]
+
+    def _parse_category_items(self, html, tid):
         """
-        解析文件目录页面 HTML，提取文件夹和 m3u8 文件列表。
-        v3: 文件夹 vod_id 使用 folder@@tid@@folder_name 格式，避免 URL 中的 ? 导致 iOS 层异常
+        v4: 解析分类页面，只返回文件夹和顶层m3u8文件
+        过滤掉 README.md、txt、gif 等非视频内容
+        文件夹使用 folder@@tid@@name 格式
         """
         result = []
 
@@ -528,7 +579,9 @@ class Spider(BaseSpider):
             is_folder = (size == '-')
 
             if is_folder:
-                # v3: 使用 folder@@tid@@folder_name 格式
+                # v4: 跳过 preview 文件夹（它是封面图文件夹，不是剧集目录）
+                if name.lower() == 'preview':
+                    continue
                 folder_name = self._safe_unquote(name)
                 vod_id = 'folder@@' + tid + '@@' + name
                 result.append({
@@ -537,7 +590,11 @@ class Spider(BaseSpider):
                     'vod_pic': '',
                     'vod_remarks': '📁'
                 })
-            elif '.m3u8' in name:
+            elif '.m3u8' in name.lower():
+                # v4: 过滤非视频文件
+                name_lower = name.lower()
+                if name_lower in _IGNORE_FILES:
+                    continue
                 display_name = self._safe_unquote(name.replace('.m3u8', ''))
                 result.append({
                     'vod_name': display_name,
@@ -545,11 +602,12 @@ class Spider(BaseSpider):
                     'vod_pic': '',
                     'vod_remarks': size or '▶️'
                 })
+            # 其他文件类型（txt, gif, md）直接跳过
 
         return result
 
     def _parse_m3u8_items(self, html, tid):
-        """从文件夹页面解析所有 m3u8 文件"""
+        """从子目录页面解析所有 m3u8 文件"""
         result = []
 
         pattern = (
@@ -557,7 +615,7 @@ class Spider(BaseSpider):
             r'[^>]*>.*?href="([^"]+)"'
         )
 
-        for m in re.finditer(pattern, html, re.S):
+        for m in re.finditer(pattern, html, re.S | re.I):
             raw_name = m.group(1)
             href = m.group(2)
             display_name = self._safe_unquote(raw_name.replace('.m3u8', ''))
@@ -569,7 +627,7 @@ class Spider(BaseSpider):
         return result
 
     def _find_cover_image(self, html, tid):
-        """尝试从文件夹页面提取封面图"""
+        """尝试从页面提取封面图"""
         pattern = (
             r'data-sort-name="([^"]+\.(?:jpg|png|gif))"'
             r'[^>]*>.*?href="([^"]+)"'
@@ -647,7 +705,6 @@ class Spider(BaseSpider):
 
     def localProxy(self, param):
         """本地代理: 返回重写后的 m3u8 内容给播放器"""
-        import base64
         try:
             from urllib.parse import parse_qs, urlparse
             parsed = urlparse('?' + param if '?' not in param else param)
