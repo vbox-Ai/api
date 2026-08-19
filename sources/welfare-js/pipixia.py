@@ -3,8 +3,9 @@
 # 严禁将其用于任何商业用途，下载后请于 24 小时内删除，搜索结果均来自源站，本人不承担任何责任。
 
 import re,sys,uuid
-from base.spider import Spider as _BaseSpider
-class Spider(_BaseSpider):
+from base.spider import Spider
+sys.path.append('..')
+class Spider(Spider):
     host,config,local_uuid,parsing_config = '','','',[]
     # 头部添加token认证
     headers = {
@@ -15,17 +16,7 @@ class Spider(_BaseSpider):
     }
     def init(self, extend=''):
         try:
-            # 先走 base.spider，应用 _vbox_effective_hosts 域名注入
-            super().init(extend)
-        except Exception:
-            pass
-        try:
-            # 注入域名优先
-            injected = (getattr(self, '_vbox_effective_hosts', None)
-                        or globals().get('_vbox_effective_hosts')) or []
-            host = str(injected[0]).rstrip('/') if injected else ''
-            if not host.startswith('http'):
-                host = extend.strip() if isinstance(extend, str) else ''
+            host = extend.strip()
             if not host.startswith('http'):
                 return {}
             if not re.match(r'^https?://[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(:\d+)?/?$', host):
