@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.19.33",
-    "updatedAt": "2026-08-19T01:00:00Z",
+    "version": "2026.08.19.34",
+    "updatedAt": "2026-08-19T01:10:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -103,7 +103,10 @@
       "pipixia_py_old",
       "huangdou_py"
     ],
-    "stage13Notes": "阶段13：移除黄豆短剧 huangdou_py（源站 xqjzvcvt.top 已挂）+ 移除改动版 pipixia_py。重新新增原版皮皮虾脚本（不改动，class Spider(Spider)+sys.path 原样保留）。"
+    "stage13Notes": "阶段13：移除黄豆短剧 huangdou_py（源站 xqjzvcvt.top 已挂）+ 移除改动版 pipixia_py。重新新增原版皮皮虾脚本（不改动，class Spider(Spider)+sys.path 原样保留）。",
+    "stage14AddedKeys": [
+      "huangdou_new_py"
+    ]
   },
   "schemaVersion": 1,
   "categories": [
@@ -1297,6 +1300,29 @@
       "engine": "python",
       "sslBypass": true,
       "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "huangdou_new_py",
+      "name": "黄豆短剧",
+      "category": "video",
+      "icon": "play.square.fill",
+      "desc": "短剧聚合（新站加密接口版）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://xqjzvcvt.top"
+      ],
+      "sortOrder": 237,
+      "defaultProxy": false,
+      "notes": "黄豆短剧。AES-CBC 加密+GZIP压缩接口。域名注入 base_url 会覆盖 BASE_URL。原样保留 _AESCBC 兼容层（Crypto→cryptography兜底）。",
+      "api": "./sources/welfare-js/huangdou.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "imageSSLBypass": false,
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
