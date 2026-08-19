@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.17.30",
-    "updatedAt": "2026-08-17T16:30:00Z",
+    "version": "2026.08.19.31",
+    "updatedAt": "2026-08-19T00:20:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -58,7 +58,7 @@
       "zangjige_py"
     ],
     "stage3Notes": "阶段3 更新：移除「糖心Vlog」（tangxinvlog_py），新增「狂飙短剧」（kuangbiao_py）、「avgood」（avgood_py）、「一抖阁」（yidouge_py）三个 Python 蜘蛛福利源。 新增 8 个 Python 蜘蛛福利源：小红薯/香蕉视频/蜜桃视频/迷妹网/黑料网/爆片库/2048核基地/采集聚合。",
-    "lastUpdated": "2026-08-16",
+    "lastUpdated": "2026-08-19",
     "stage5AddedKeys": [
       "sise_image_py",
       "fuli74p_py",
@@ -89,7 +89,12 @@
       "haolaiwu_py",
       "vvvideo_py"
     ],
-    "stage10Notes": "阶段10 新增：HuoPorn/五月星空/智者玩水/好莱污影院/VV视频 5 个 Python 蜘蛛福利源。IPA 环境分析确认 lxml 已集成、Crypto 仅支持 CBC/ECB、hashlib 标准库可用。VV视频 PBKDF2→hashlib.pbkdf2_hmac + AES-GCM→AES-ECB CTR 替换。"
+    "stage10Notes": "阶段10 新增：HuoPorn/五月星空/智者玩水/好莱污影院/VV视频 5 个 Python 蜘蛛福利源。IPA 环境分析确认 lxml 已集成、Crypto 仅支持 CBC/ECB、hashlib 标准库可用。VV视频 PBKDF2→hashlib.pbkdf2_hmac + AES-GCM→AES-ECB CTR 替换。",
+    "stage11AddedKeys": [
+      "aw51_py",
+      "tuite_py"
+    ],
+    "stage11Notes": "阶段11 新增：51暗网（aw51_py）+ 推特APP（tuite_py）两个 Python 蜘蛛福利源。51暗网 AES-CBC 可用直接运行；推特APP 已修复 playerContent（can/watch 解析真实 m3u8）。"
   },
   "schemaVersion": 1,
   "categories": [
@@ -1213,6 +1218,56 @@
       "engine": "python",
       "sslBypass": true,
       "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "aw51_py",
+      "name": "51暗网",
+      "category": "video",
+      "icon": "eye.slash.fill",
+      "desc": "黑料吃瓜图文·CloudFront多线路并发",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://adjust.gtrazibvz.com",
+        "https://burden.gtrazibvz.com",
+        "https://borrow.gtrazibvz.com",
+        "https://bite.gtrazibvz.com"
+      ],
+      "sortOrder": 433,
+      "defaultProxy": false,
+      "notes": "51暗网。AES-128-CBC 兼容层可用。发布页解析线路 + 4 个 CloudFront 子域并发探测（ThreadPoolExecutor，先到先用）。localProxy 图片代理。19分类+首页推荐。",
+      "api": "./sources/welfare-js/aw51.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "tuite_py",
+      "name": "推特APP",
+      "category": "video",
+      "icon": "bird.fill",
+      "desc": "Twitter风格短视频·5域并发选线",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://a1.wcyfhknomg.work",
+        "https://a2.wcyfhknomg.work",
+        "https://a3.pdcqllfomw.work",
+        "https://a4.alxhzjvean.work"
+      ],
+      "sortOrder": 434,
+      "defaultProxy": false,
+      "notes": "推特APP。AES-128-CBC 兼容层可用。5个 .work 顶级域×4随机子域并发探测（先到先用）。playerContent 已修复：can/watch 接口解析真实 m3u8。11分类+AI影视。",
+      "api": "./sources/welfare-js/tuite.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
