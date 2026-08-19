@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.19.31",
-    "updatedAt": "2026-08-19T00:20:00Z",
+    "version": "2026.08.19.32",
+    "updatedAt": "2026-08-19T00:35:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -94,7 +94,11 @@
       "aw51_py",
       "tuite_py"
     ],
-    "stage11Notes": "阶段11 新增：51暗网（aw51_py）+ 推特APP（tuite_py）两个 Python 蜘蛛福利源。51暗网 AES-CBC 可用直接运行；推特APP 已修复 playerContent（can/watch 解析真实 m3u8）。"
+    "stage11Notes": "阶段11 新增：51暗网（aw51_py）+ 推特APP（tuite_py）两个 Python 蜘蛛福利源。51暗网 AES-CBC 可用直接运行；推特APP 已修复 playerContent（can/watch 解析真实 m3u8）。",
+    "stage12RemovedKeys": [
+      "huangdou_v2_py"
+    ],
+    "stage12Notes": "阶段12：移除黄豆短剧(纯Python) huangdou_v2_py（源站 xqjzvcvt.top 已挂）。新增91porna_py + pipixia_py + 91kdw_py 三个 Python 福利源，均已补 super().init()+域名注入。"
   },
   "schemaVersion": 1,
   "categories": [
@@ -447,29 +451,6 @@
       "defaultProxy": false,
       "notes": "Python 蜘蛛福利短剧源，AES-CBC 加密 + GZIP 压缩；所有请求走 uumnet 代理；_unlock 解锁全部付费集；m3u8 直链播放（parse=0）",
       "api": "./sources/welfare-js/huangdou.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "contentType": "video",
-      "imageSSLBypass": false,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
-      "platformKey": "huangdou_v2_py",
-      "name": "黄豆短剧(纯Python)",
-      "category": "video",
-      "icon": "play.square.fill",
-      "desc": "短剧聚合 (纯 Python AES 零依赖版)",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://xqjzvcvt.top"
-      ],
-      "sortOrder": 236,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛福利短剧源 v2，纯 Python AES-256-CBC 加密+GZIP 压缩（零第三方依赖，复用 fulao2.py AES 实现）；域名注入 _vbox_effective_hosts；_unlock 解锁全部付费集；HTTP→HTTPS 转换（iOS ATS 合规）；m3u8 走 uumnet HTTPS 代理播放（parse=0）",
-      "api": "./sources/welfare-js/huangdou_v2.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
@@ -1264,6 +1245,72 @@
       "defaultProxy": false,
       "notes": "推特APP。AES-128-CBC 兼容层可用。5个 .work 顶级域×4随机子域并发探测（先到先用）。playerContent 已修复：can/watch 接口解析真实 m3u8。11分类+AI影视。",
       "api": "./sources/welfare-js/tuite.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "91porna_py",
+      "name": "91porna",
+      "category": "video",
+      "icon": "play.rectangle.fill",
+      "desc": "漫画/视频源 · HTML解析",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://91porna.com"
+      ],
+      "sortOrder": 501,
+      "defaultProxy": false,
+      "notes": "91porna。AES-CBC 兼容层可用，BeautifulSoup(html.parser) 解析。已补 super().init()+_vbox_effective_hosts 域名注入。9个硬编码分类。",
+      "api": "./sources/welfare-js/91porna.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "pipixia_py",
+      "name": "皮皮虾",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "AppTo v5 短视频源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://pipixia.tv"
+      ],
+      "sortOrder": 502,
+      "defaultProxy": false,
+      "notes": "皮皮虾。AppTo v5 API。已修复 class Spider(Spider) 类名冲突 + 补 _vbox_effective_hosts 域名注入。域名需通过 extend 动态解析。",
+      "api": "./sources/welfare-js/pipixia.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "91kdw_py",
+      "name": "91Porn蝌蚪窝",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "91视频 · HTML解析",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://91kdw.cc"
+      ],
+      "sortOrder": 503,
+      "defaultProxy": false,
+      "notes": "91Porn蝌蚪窝(91kdw)。91kdw.cc 有响应(403需UA)。已补 super().init()+host兜底+_vbox_effective_hosts 域名注入。每页解析20条视频+13有效分类。",
+      "api": "./sources/welfare-js/91kdw.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
