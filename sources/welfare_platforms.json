@@ -15,7 +15,7 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.16.8",
+    "version": "2026.08.22.1",
     "updatedAt": "2026-08-16T19:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
@@ -58,7 +58,14 @@
       "zangjige_py"
     ],
     "stage3Notes": "阶段3 更新：移除「糖心Vlog」（tangxinvlog_py），新增「狂飙短剧」（kuangbiao_py）、「avgood」（avgood_py）、「一抖阁」（yidouge_py）三个 Python 蜘蛛福利源。 新增 8 个 Python 蜘蛛福利源：小红薯/香蕉视频/蜜桃视频/迷妹网/黑料网/爆片库/2048核基地/采集聚合。",
-    "lastUpdated": "2026-08-16"
+    "lastUpdated": "2026-08-16",
+    "stage15AddedKeys": [
+      "kugou_live_py",
+      "yushan_live_py",
+      "eroluxe_live_py",
+      "lookluping_py"
+    ],
+    "stage15Notes": "阶段15 新增四个 Python 直播源"
   },
   "schemaVersion": 1,
   "categories": [
@@ -637,6 +644,74 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "kugou_live_py",
+      "name": "酷狗直播",
+      "category": "live",
+      "icon": "star.fill",
+      "desc": "酷狗繁星直播",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://fanxing.kugou.com"
+      ],
+      "sortOrder": 500,
+      "notes": "Python蜘蛛，7分类",
+      "api": "./sources/welfare-js/kugou_live_py.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live"
+    },
+    {
+      "platformKey": "yushan_live_py",
+      "name": "玉山视频直播",
+      "category": "live",
+      "icon": "tv.fill",
+      "desc": "国内直播",
+      "serviceType": "python_spider",
+      "defaultHosts": [],
+      "sortOrder": 510,
+      "notes": "Python蜘蛛，475个频道",
+      "api": "./sources/welfare-js/yushan_live_py.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live"
+    },
+    {
+      "platformKey": "eroluxe_live_py",
+      "name": "欧美大片直播",
+      "category": "live",
+      "icon": "film.fill",
+      "desc": "EroLuxe成人频道",
+      "serviceType": "python_spider",
+      "defaultHosts": [],
+      "sortOrder": 520,
+      "notes": "Python蜘蛛，40个频道",
+      "api": "./sources/welfare-js/eroluxe_live_py.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live"
+    },
+    {
+      "platformKey": "lookluping_py",
+      "name": "直播录屏",
+      "category": "live",
+      "icon": "record.circle.fill",
+      "desc": "TG群直播录屏",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.lookluping.xyz"
+      ],
+      "sortOrder": 530,
+      "notes": "Python蜘蛛，单分类",
+      "api": "./sources/welfare-js/lookluping_py.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live"
     }
   ]
 }
