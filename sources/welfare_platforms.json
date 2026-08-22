@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.19.34",
-    "updatedAt": "2026-08-19T01:10:00Z",
+    "version": "2026.08.22.1",
+    "updatedAt": "2026-08-22T02:50:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -58,7 +58,7 @@
       "zangjige_py"
     ],
     "stage3Notes": "阶段3 更新：移除「糖心Vlog」（tangxinvlog_py），新增「狂飙短剧」（kuangbiao_py）、「avgood」（avgood_py）、「一抖阁」（yidouge_py）三个 Python 蜘蛛福利源。 新增 8 个 Python 蜘蛛福利源：小红薯/香蕉视频/蜜桃视频/迷妹网/黑料网/爆片库/2048核基地/采集聚合。",
-    "lastUpdated": "2026-08-19",
+    "lastUpdated": "2026-08-22",
     "stage5AddedKeys": [
       "sise_image_py",
       "fuli74p_py",
@@ -106,7 +106,13 @@
     "stage13Notes": "阶段13：移除黄豆短剧 huangdou_py（源站 xqjzvcvt.top 已挂）+ 移除改动版 pipixia_py。重新新增原版皮皮虾脚本（不改动，class Spider(Spider)+sys.path 原样保留）。",
     "stage14AddedKeys": [
       "huangdou_new_py"
-    ]
+    ],
+    "stage15AddedKeys": [
+      "kugou_py",
+      "zhiboluping_py",
+      "oumei_py"
+    ],
+    "stage15Notes": "阶段15 新增3个福利区直播平台: 酷狗直播(真人秀实时直播,7分类)、直播录屏(录播分享,三层链路取m3u8)、欧美大片直播(EroLuxe成人直播40频道,薄蜘蛛读取oumei.m3u)。实测均可播。(玉山视频因freetv源已401排除)"
   },
   "schemaVersion": 1,
   "categories": [
@@ -1323,6 +1329,72 @@
       "sslBypass": true,
       "contentType": "video",
       "imageSSLBypass": false,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "kugou_py",
+      "name": "酷狗直播",
+      "category": "live",
+      "icon": "antenna.radiowaves.left.and.right",
+      "desc": "酷狗繁星真人秀直播 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://fanxing.kugou.com"
+      ],
+      "sortOrder": 510,
+      "defaultProxy": false,
+      "notes": "酷狗繁星直播。7分类(推荐/一起玩/音乐/舞蹈/颜值/酷次元/新秀)。_get_play_url 调酷狗接口按 hls→httpshls→flv 取实时流。含300s缓存+房间信息缓存减少重复请求。playerContent 直接返回已解析流地址(parse=0)。",
+      "api": "./sources/welfare-js/kugou.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "zhiboluping_py",
+      "name": "直播录屏",
+      "category": "live",
+      "icon": "play.tv.fill",
+      "desc": "直播录屏分享 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.lookluping.xyz"
+      ],
+      "sortOrder": 511,
+      "defaultProxy": false,
+      "notes": "直播录屏分享站(录播视频)。HTML正则解析。三层播放链路: 详情页buyvideo取classid/xxid→POST /e/moyublog/bofang/→抓DownSys→取真实m3u8。实测多视频可播(parse=0)。单分类'免费视频'。优雅降级try/except继承。",
+      "api": "./sources/welfare-js/zhiboluping.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "oumei_py",
+      "name": "欧美大片直播",
+      "category": "live",
+      "icon": "play.square.stack.fill",
+      "desc": "EroLuxe 成人直播 (Python+m3u)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "http://u.vipl.one"
+      ],
+      "sortOrder": 512,
+      "defaultProxy": false,
+      "notes": "EroLuxe成人直播40频道。薄蜘蛛在线读取仓库内 oumei.m3u 数据文件，解析频道列表→直链播放(parse=0)。实测40/40 m3u8 可播。每频道带 tvg-logo 封面。",
+      "api": "./sources/welfare-js/oumei.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
