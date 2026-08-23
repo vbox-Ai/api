@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-平台名称：香蕉
-平台标识：banana_py
+平台名称：熟女汇
+平台标识：shunvhzuna_py
 作者：原始 tvshare23 · 适配：vbox Python Spider 框架
 适配日期：2026-08-23
 说明：
@@ -9,14 +9,12 @@
   - 域名注入：从 _vbox_effective_hosts 取候选域名
   - 并发域名探测：主域名 + 备用域名同时探测，先到先用
   - 10 分钟冷静期：成功域名缓存 600s，过期重新探测
-  - 保留动态子域生成 + getat 认证
-  - playerContent 返回 parse=0 直链
+  - 保留 iframe 嵌套 m3u8 提取
+  - playerContent 返回 parse=0 m3u8 直链
 """
 import re
 import json
 import time
-import random
-import string
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -36,7 +34,7 @@ except ImportError:
 
 class Spider(BaseSpider):
     def getName(self):
-        return "banana"
+        return "shunvhzuna"
 
     def init(self, extend=""):
         try:
@@ -50,21 +48,21 @@ class Spider(BaseSpider):
         if injected and str(injected[0]).startswith("http"):
             self.host = str(injected[0]).rstrip("/")
         else:
-            self.host = "https://www.bjhpz.com"
+            self.host = "https://shunvhzuna.lol"
 
         self.headers = {
-            "User-Agent": ("Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) "
-                           "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 "
-                           "Mobile/15E148 Safari/604.1"),
-            "Accept": "application/json, text/plain, */*",
+            "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                           "AppleWebKit/537.36 (KHTML, like Gecko) "
+                           "Chrome/120.0.0.0 Safari/537.36"),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Accept-Language": "zh-CN,zh;q=0.9",
+            "Referer": self.host + "/",
         }
-        self.session = requests.Session()
-        self.session.verify = False
-        self.session.headers.update(self.headers)
+        self.s = requests.Session()
+        self.s.verify = False
+        self.s.headers.update(self.headers)
         self._probe_cache = {}
         self._PROBE_COOLDOWN = 600
-        self._token = ""
 
     def _probe_domain(self, domain):
         domain = str(domain).rstrip("/")
@@ -74,7 +72,7 @@ class Spider(BaseSpider):
             if now - ts < self._PROBE_COOLDOWN:
                 return ok
         try:
-            r = self.session.get(domain, headers=self.headers, timeout=8, allow_redirects=True)
+            r = self.s.get(domain, headers=self.headers, timeout=8, allow_redirects=True)
             ok = r.status_code == 200 and len(r.text) > 500
         except Exception:
             ok = False
@@ -85,7 +83,7 @@ class Spider(BaseSpider):
         injected = getattr(self, "_vbox_effective_hosts", None) or []
         hosts = [str(h).rstrip("/") for h in injected if str(h).startswith("http")]
         if not hosts:
-            hosts = ["https://www.bjhpz.com"]
+            hosts = ["https://shunvhzuna.lol"]
         return hosts
 
     def _resolve_host(self):
@@ -98,26 +96,9 @@ class Spider(BaseSpider):
         if alive:
             self.host = alive[0]
 
-    def _rand_subdomain(self):
-        base = "bjhpz.com"
-        prefix = "".join(random.choices(string.ascii_lowercase + string.digits, k=6))
-        return f"https://{prefix}.{base}"
-
-    def _get_host(self):
-        self._resolve_host()
-        return self.host
-
-    def getat(self):
-        try:
-            r = self.session.get(f"{self.host}/api/at", timeout=10)
-            if r.status_code == 200:
-                self._token = r.text.strip()
-        except Exception:
-            self._token = ""
-
     def _fetch(self, url, timeout=15):
         try:
-            r = self.session.get(url, timeout=timeout, allow_redirects=True)
+            r = self.s.get(url, headers=self.headers, timeout=timeout, allow_redirects=True)
             r.encoding = "utf-8"
             if r.status_code == 200 and len(r.text) > 500:
                 return r.text
@@ -125,53 +106,48 @@ class Spider(BaseSpider):
             pass
         return ""
 
-    def _fetch_json(self, url, timeout=15):
-        try:
-            r = self.session.get(url, timeout=timeout, headers={
-                **self.headers,
-                "Authorization": f"Bearer {self._token}" if self._token else "",
+    def _parse_list(self, text):
+        if not text:
+            return []
+        items, seen = [], set()
+        for m in re.finditer(
+            r'<a[^>]*href="(/v/\d+[^"]*)"[^>]*>(.*?)</a>', text, re.S
+        ):
+            vid = m.group(1)
+            if vid in seen:
+                continue
+            seen.add(vid)
+            block = m.group(2)
+            title = ""
+            tm = re.search(r"<h2[^>]*>([^<]+)</h2>", block)
+            if tm:
+                title = tm.group(1).strip()
+            if not title:
+                title = vid
+            pic = ""
+            pm = re.search(r'data-src="([^"]+)"', block)
+            if pm:
+                pic = pm.group(1)
+            items.append({
+                "vod_id": vid,
+                "vod_name": title,
+                "vod_pic": pic,
+                "vod_remarks": "",
             })
-            if r.status_code == 200:
-                return r.json()
-        except Exception:
-            pass
-        return {}
+        return items
 
     def homeContent(self, filter=False):
         self._resolve_host()
-        self.getat()
-        data = self._fetch_json(f"{self.host}/api/home")
-        if not data:
-            return {"class": [], "list": []}
-        cats = []
-        for c in data.get("category", []):
-            cats.append({"type_name": c.get("name", ""), "type_id": c.get("id", "")})
-        items = []
-        for v in data.get("videos", []):
-            items.append({
-                "vod_id": str(v.get("id", "")),
-                "vod_name": v.get("title", ""),
-                "vod_pic": v.get("cover", ""),
-                "vod_remarks": v.get("time", ""),
-            })
-        return {"class": cats, "list": items, "filters": {}}
+        return {"class": [], "list": self._parse_list(self._fetch(self.host + "/"))}
 
     def homeVideoContent(self):
-        return self.homeContent(False)
+        return {"list": []}
 
     def categoryContent(self, tid, pg, filter=False, extend=None):
         self._resolve_host()
-        self.getat()
         page = int(pg) if pg else 1
-        data = self._fetch_json(f"{self.host}/api/category?id={tid}&page={page}")
-        items = []
-        for v in data.get("videos", []):
-            items.append({
-                "vod_id": str(v.get("id", "")),
-                "vod_name": v.get("title", ""),
-                "vod_pic": v.get("cover", ""),
-                "vod_remarks": v.get("time", ""),
-            })
+        url = f"{self.host}/list/{tid}?page={page}"
+        items = self._parse_list(self._fetch(url))
         return {
             "list": items,
             "page": page,
@@ -182,35 +158,49 @@ class Spider(BaseSpider):
 
     def detailContent(self, ids):
         self._resolve_host()
-        self.getat()
         vid = str(ids[0] if isinstance(ids, list) else ids)
-        data = self._fetch_json(f"{self.host}/api/video?id={vid}")
-        if not data:
+        html = self._fetch(f"{self.host}/{vid}")
+        if not html:
             return {"list": []}
-        play_url = data.get("url", "")
+        title, cover, m3u8 = "", "", ""
+        tm = re.search(r"<title>(.*?)</title>", html, re.S)
+        if tm:
+            title = re.sub(r"<[^>]+>", "", tm.group(1)).strip()
+        cm = re.search(r'data-src="([^"]+)"', html)
+        if cm:
+            cover = cm.group(1)
+        for m in re.finditer(r'<iframe[^>]+src="([^"]+)"[^>]*>', html, re.S):
+            iframe_src = m.group(1)
+            if iframe_src.startswith("//"):
+                iframe_src = "https:" + iframe_src
+            if not iframe_src.startswith("http"):
+                iframe_src = self.host + "/" + iframe_src.lstrip("/")
+            iframe_html = self._fetch(iframe_src)
+            if iframe_html:
+                mm = re.search(r"(https?://[^\"'\s]+\.m3u8[^\"'\s]*)", iframe_html, re.I)
+                if mm:
+                    m3u8 = mm.group(1)
+                    break
+        if not m3u8:
+            mm = re.search(r"(https?://[^\"'\s]+\.m3u8[^\"'\s]*)", html, re.I)
+            if mm:
+                m3u8 = mm.group(1)
+        play_url = m3u8 if m3u8 else f"{self.host}/{vid}"
         return {
             "list": [{
                 "vod_id": vid,
-                "vod_name": data.get("title", vid),
-                "vod_pic": data.get("cover", ""),
+                "vod_name": title or vid,
+                "vod_pic": cover,
                 "vod_play_from": "默认线路",
-                "vod_play_url": f"正片${play_url}" if play_url else "",
+                "vod_play_url": f"正片${play_url}",
             }]
         }
 
     def searchContent(self, key, quick=False, pg="1"):
         self._resolve_host()
-        self.getat()
         page = int(pg) if pg else 1
-        data = self._fetch_json(f"{self.host}/api/search?kw={quote(key)}&page={page}")
-        items = []
-        for v in data.get("videos", []):
-            items.append({
-                "vod_id": str(v.get("id", "")),
-                "vod_name": v.get("title", ""),
-                "vod_pic": v.get("cover", ""),
-                "vod_remarks": v.get("time", ""),
-            })
+        url = f"{self.host}/search?kw={quote(key)}&page={page}"
+        items = self._parse_list(self._fetch(url))
         return {
             "list": items,
             "page": page,
@@ -238,7 +228,7 @@ class Spider(BaseSpider):
 
     def destroy(self):
         try:
-            if hasattr(self, "session"):
-                self.session.close()
+            if hasattr(self, "s"):
+                self.s.close()
         except Exception:
             pass
