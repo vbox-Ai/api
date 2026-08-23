@@ -1647,30 +1647,6 @@
       "visibleInHome": false
     },
     {
-      "platformKey": "guodong_py",
-      "name": "果冻传媒",
-      "category": "video",
-      "icon": "play.rectangle.fill",
-      "desc": "JavDB数据源 · 3域名并发探测",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://www.javdb.com",
-        "https://www.javdb0.com",
-        "https://javdb.com"
-      ],
-      "sortOrder": 523,
-      "defaultProxy": false,
-      "notes": "果冻传媒。JavDB 数据源 + 3 域名并发探测（ThreadPoolExecutor，先到先用）+ 10分钟冷静期。playerContent 返回 parse=0 m3u8 直链。",
-      "api": "./sources/welfare-js/guodong.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "contentType": "video",
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
       "platformKey": "yemah_py",
       "name": "野马中文",
       "category": "video",
