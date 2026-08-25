@@ -39,8 +39,8 @@
     {
       "name": "欧歌资源",
       "type": "cms",
-      "searchurl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://woog.430520.xyz",
+      "searchurl": "https://woog.nxog.fun/index.php/vod/search.html?wd=",
+      "detailBase": "https://woog.nxog.fun",
       "ua": "pc",
       "enabled": true,
       "priority": 1006,
@@ -125,8 +125,8 @@
     {
       "name": "飞猫影视",
       "type": "cms",
-      "searchurl": "http://tvpanpan.site/index.php/vod/search.html?wd=",
-      "detailBase": "http://tvpanpan.site",
+      "searchurl": "http://feimo.fun/index.php/vod/search.html?wd=",
+      "detailBase": "http://feimo.fun",
       "enabled": true,
       "priority": 1020,
       "group": "cloud"
@@ -134,8 +134,8 @@
     {
       "name": "2小盘",
       "type": "cms",
-      "searchurl": "https://wexwp.cc/index.php/vod/search.html?wd=",
-      "detailBase": "https://wexwp.cc",
+      "searchurl": "https://www.wexwp.cc/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.wexwp.cc",
       "enabled": true,
       "priority": 1021,
       "group": "cloud"
