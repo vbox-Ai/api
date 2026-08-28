@@ -29,8 +29,8 @@
     {
       "name": "多多资源",
       "type": "cms",
-      "searchurl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
-      "detailBase": "https://tv.yydsys.cc",
+      "searchurl": "https://tv.214521.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://tv.214521.xyz",
       "ua": "pc",
       "enabled": true,
       "priority": 1004,
@@ -39,8 +39,8 @@
     {
       "name": "欧歌资源",
       "type": "cms",
-      "searchurl": "https://woog.nxog.fun/index.php/vod/search.html?wd=",
-      "detailBase": "https://woog.nxog.fun",
+      "searchurl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://woog.430520.xyz",
       "ua": "pc",
       "enabled": true,
       "priority": 1006,
@@ -125,8 +125,8 @@
     {
       "name": "飞猫影视",
       "type": "cms",
-      "searchurl": "http://feimo.fun/index.php/vod/search.html?wd=",
-      "detailBase": "http://feimo.fun",
+      "searchurl": "http://tvpanpan.site/index.php/vod/search.html?wd=",
+      "detailBase": "http://tvpanpan.site",
       "enabled": true,
       "priority": 1020,
       "group": "cloud"
@@ -134,8 +134,8 @@
     {
       "name": "2小盘",
       "type": "cms",
-      "searchurl": "https://www.2xiaopan.top/index.php/vod/search.html?wd=",
-      "detailBase": "https://www.2xiaopan.top",
+      "searchurl": "https://wexwp.cc/index.php/vod/search.html?wd=",
+      "detailBase": "https://wexwp.cc",
       "enabled": true,
       "priority": 1021,
       "group": "cloud"
@@ -143,8 +143,8 @@
     {
       "name": "闪电优汐",
       "type": "cms",
-      "searchurl": "http://sd.sduc.site/index.php/vod/search.html?wd=",
-      "detailBase": "http://sd.sduc.site",
+      "searchurl": "http://shandian.blog/index.php/vod/search.html?wd=",
+      "detailBase": "http://shandian.blog",
       "enabled": true,
       "priority": 1022,
       "group": "cloud"
@@ -177,11 +177,9 @@
     {
       "name": "LIBVIO",
       "type": "cms",
-      "searchurl": "https://libvio.host/search/-------------.html?wd=",
-      "detailBase": "https://libvio.host",
+      "searchurl": "https://www.libvio.in/search/-------------.html?wd=",
+      "detailBase": "https://www.libvio.in",
       "searchurls": [
-        "https://libvio.host/search/-------------.html?wd=",
-        "https://libviobd.com/search/-------------.html?wd=",
         "https://www.libvio.in/search/-------------.html?wd="
       ],
       "enabled": true,
