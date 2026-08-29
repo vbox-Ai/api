@@ -1683,6 +1683,28 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "duanju巴士_py",
+      "name": "短剧巴士",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "短剧巴士 - MacCMS短剧聚合Python源",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.duanju84.com"
+      ],
+      "sortOrder": 530,
+      "defaultProxy": false,
+      "notes": "短剧巴士MacCMS站点，HTML解析模式",
+      "api": "./sources/welfare-js/duanju巴士.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ]
 }
