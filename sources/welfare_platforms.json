@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.22.1",
-    "updatedAt": "2026-08-22T02:50:00Z",
+    "version": "2026.08.30.1",
+    "updatedAt": "2026-08-30T00:52:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -1632,6 +1632,50 @@
       "defaultProxy": false,
       "notes": "香蕉。动态子域生成 + getat 认证 + 3 域名并发探测（ThreadPoolExecutor，先到先用）+ 10分钟冷静期。playerContent 返回 parse=0 直链。",
       "api": "./sources/welfare-js/xiangjiao.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "nvshenxuesheng_py",
+      "name": "女神学生",
+      "category": "video",
+      "icon": "flame.fill",
+      "desc": "MacCMS v10 采集源 — 女神学生系列，Python蜘蛛版",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://eiy.mtyx9.fit"
+      ],
+      "sortOrder": 528,
+      "defaultProxy": false,
+      "notes": "苹果CMS v10 + qyu5_pc 模板，单集单视频无播放列表。详情页不存在直接跳播放页，player_data JSON 提取，encrypt=0 无需解密。HOST 已更新为 301 后真实域名 eiy.mtyx9.fit。",
+      "api": "./sources/welfare-js/nvshenxuesheng.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "sifangyanjiushuo_py",
+      "name": "私房研究所",
+      "category": "video",
+      "icon": "flame.fill",
+      "desc": "自定义CMS采集源 — 私房研究所系列，Python蜘蛛版",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://deb.sfyjs9.ink"
+      ],
+      "sortOrder": 529,
+      "defaultProxy": false,
+      "notes": "自定义 CMS (008blacktwo_wtpl 模板)，无JS Cookie验证，DPlayer + HLS 直链。播放页内嵌 m3u8，playerContent 直接返回直链。原域名 lcw.sfyjs7.beauty 301 到 deb.sfyjs9.ink。",
+      "api": "./sources/welfare-js/sifangyanjiushuo.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
