@@ -345,7 +345,18 @@
       "changeable": 1,
       "ext": "",
       "timeout": 30
+    },
+    {
+      "key": "y_duanjubasi",
+      "name": "短剧 | 短剧巴士[py]",
+      "type": 3,
+      "api": "./js/duanjubasi.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "ext": "",
+      "timeout": 30
     }
   ],
-  "siteCount": 33
+  "siteCount": 34
 }
