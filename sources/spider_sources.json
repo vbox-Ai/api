@@ -334,7 +334,29 @@
       "changeable": 1,
       "ext": "",
       "timeout": 30
+    },
+    {
+      "key": "y_xingying4k",
+      "name": "影视 | 星影4K[py]",
+      "type": 3,
+      "api": "./js/xingying4k_live.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "ext": "",
+      "timeout": 30
+    },
+    {
+      "key": "y_zhenbucuo4k",
+      "name": "影视 | 真不错4K[py]",
+      "type": 3,
+      "api": "./js/zhenbucuo4k.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "ext": "",
+      "timeout": 30
     }
   ],
-  "siteCount": 30
+  "siteCount": 32
 }
