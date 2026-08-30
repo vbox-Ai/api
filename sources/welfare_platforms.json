@@ -634,27 +634,6 @@
       "visibleInHome": false
     },
     {
-      "platformKey": "xiangjiao_py",
-      "name": "香蕉视频",
-      "category": "video",
-      "icon": "film.fill",
-      "desc": "H5 API Python 源（VIP泄漏）",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://h5.xxoo473.org"
-      ],
-      "sortOrder": 401,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛福利源，香蕉视频 H5 API；X-Cookie-Auth 认证头；免费视频 reqplay 直链 m3u8；VIP 视频 preview key URI 上溯 master 泄漏模式；封面图走 localProxy 代理",
-      "api": "./sources/welfare-js/xiangjiao.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
       "platformKey": "mimei_py",
       "name": "迷妹网",
       "category": "video",
