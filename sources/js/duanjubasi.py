@@ -1,21 +1,21 @@
 #coding=utf-8
 
-    import sys
-    import re
-    import json
-    import time
-    import threading
-    import urllib.parse
-    import html as html_module
+import sys
+import re
+import json
+import time
+import threading
+import urllib.parse
+import html as html_module
 
-    import requests
+import requests
 
-    sys.path.append('..')
-    from base.spider import Spider
+sys.path.append('..')
+from base.spider import Spider
 
-    class Spider(Spider):
+class Spider(Spider):
 
-        # ------------------------------------------------------------------ #
+    # ------------------------------------------------------------------ #
         # 基础配置
         # ------------------------------------------------------------------ #
         def getName(self):
