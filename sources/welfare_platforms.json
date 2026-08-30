@@ -1290,29 +1290,6 @@
       "visibleInHome": false
     },
     {
-      "platformKey": "huangdou_new_py",
-      "name": "黄豆短剧",
-      "category": "video",
-      "icon": "play.square.fill",
-      "desc": "短剧聚合（新站加密接口版）",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://xqjzvcvt.top"
-      ],
-      "sortOrder": 237,
-      "defaultProxy": false,
-      "notes": "黄豆短剧。AES-CBC 加密+GZIP压缩接口。域名注入 base_url 会覆盖 BASE_URL。原样保留 _AESCBC 兼容层（Crypto→cryptography兜底）。",
-      "api": "./sources/welfare-js/huangdou.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "contentType": "video",
-      "imageSSLBypass": false,
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
       "platformKey": "kugou_py",
       "name": "酷狗直播",
       "category": "live",
@@ -1587,30 +1564,6 @@
       "defaultProxy": false,
       "notes": "野马中文。base64 双重解密 + magnet 链解析 + 3 域名并发探测（ThreadPoolExecutor，先到先用）+ 10分钟冷静期。playerContent 返回 parse=0 m3u8 直链。21分类。",
       "api": "./sources/welfare-js/yemah.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "contentType": "video",
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
-      "platformKey": "xiangjiao_py",
-      "name": "香蕉",
-      "category": "video",
-      "icon": "play.rectangle.fill",
-      "desc": "动态子域+API认证 · 3域名并发探测",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://www.bjhpz.com",
-        "https://bjhpz.com",
-        "https://api.bjhpz.com"
-      ],
-      "sortOrder": 527,
-      "defaultProxy": false,
-      "notes": "香蕉。动态子域生成 + getat 认证 + 3 域名并发探测（ThreadPoolExecutor，先到先用）+ 10分钟冷静期。playerContent 返回 parse=0 直链。",
-      "api": "./sources/welfare-js/xiangjiao.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
