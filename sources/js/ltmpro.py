@@ -210,6 +210,7 @@ class Spider(Spider):
             year = (data.get("first_air_date") or data.get("release_date") or "")[:4]
             overview = data.get("overview", "暂无简介")
             
+            # 获取网盘资源
             pan_r = None
             for _ in range(2):
                 try:
@@ -249,16 +250,58 @@ class Spider(Spider):
                     if full_link not in grouped[drive_key]:
                         grouped[drive_key].append(full_link)
             
+            # 构建播放列表
             play_from, play_url = [], []
             PAN_ORDER = ['baidu', 'a115', 'quark', 'ali', 'uc', 'xunlei']
             PAN_NAMES = {'ali': "阿里云盘", 'quark': "夸克网盘", 'uc': "UC网盘", 'xunlei': "迅雷网盘", 'a123': "123云盘", 'a189': "天翼网盘", 'a115': "115网盘", 'baidu': "百度网盘"}
             
-            for p_key in PAN_ORDER:
-                if p_key in grouped:
-                    for i, link in enumerate(grouped[p_key][:3]):
-                        line_name = PAN_NAMES.get(p_key, p_key) if len(play_from) == 0 else f"{PAN_NAMES.get(p_key, p_key)}#{len(play_from)+1}"
-                        play_from.append(line_name)
-                        play_url.append(f"点击播放$push://{link}")
+            # 判断是否为剧集
+            is_tv = media_type == "tv"
+            seasons = data.get("seasons", []) if is_tv else []
+            
+            if is_tv and seasons:
+                # 剧集：按季/集构建播放列表
+                # 获取第一个网盘链接（通常包含整个剧集）
+                first_drive_link = None
+                for p_key in PAN_ORDER:
+                    if p_key in grouped and grouped[p_key]:
+                        first_drive_link = grouped[p_key][0]
+                        break
+                
+                if first_drive_link:
+                    # 为每个季/集创建播放项
+                    for season in seasons:
+                        season_num = season.get("season_number", 0)
+                        if season_num == 0:  # 跳过特别季
+                            continue
+                        episode_count = season.get("episode_count", 0)
+                        season_name = season.get("name", f"第{season_num}季")
+                        
+                        for ep in range(1, episode_count + 1):
+                            ep_name = f"第{ep}集"
+                            play_from.append(f"{season_name}")
+                            play_url.append(f"{ep_name}$push://{first_drive_link}")
+                else:
+                    # 没有网盘资源，显示季/集信息但提示未收录
+                    for season in seasons:
+                        season_num = season.get("season_number", 0)
+                        if season_num == 0:
+                            continue
+                        episode_count = season.get("episode_count", 0)
+                        season_name = season.get("name", f"第{season_num}季")
+                        
+                        for ep in range(1, episode_count + 1):
+                            ep_name = f"第{ep}集"
+                            play_from.append(f"{season_name}")
+                            play_url.append(f"{ep_name}$push://https://www.douban.com/search?q={urllib.parse.quote(search_title)}")
+            else:
+                # 电影或无季信息的剧集：按网盘类型分组
+                for p_key in PAN_ORDER:
+                    if p_key in grouped:
+                        for i, link in enumerate(grouped[p_key][:3]):
+                            line_name = PAN_NAMES.get(p_key, p_key) if len(play_from) == 0 else f"{PAN_NAMES.get(p_key, p_key)}#{len(play_from)+1}"
+                            play_from.append(line_name)
+                            play_url.append(f"点击播放$push://{link}")
                         
             if not play_from:
                 play_from.append("温馨提示")
