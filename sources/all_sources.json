@@ -221,8 +221,8 @@
       {
         "name": "欧歌资源",
         "type": "cms",
-        "searchurl": "https://woog.nxog.fun/index.php/vod/search.html?wd=",
-        "detailBase": "https://woog.nxog.fun",
+        "searchurl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
+        "detailBase": "https://woog.430520.xyz",
         "ua": "pc",
         "enabled": true,
         "priority": 1006,
@@ -231,8 +231,8 @@
       {
         "name": "至臻影视",
         "type": "cms",
-        "searchurl": "https://www.mihdr.top/index.php/vod/search.html?wd=",
-        "detailBase": "https://www.mihdr.top",
+        "searchurl": "https://mihdr.top/index.php/vod/search.html?wd=",
+        "detailBase": "https://mihdr.top",
         "enabled": true,
         "priority": 1008,
         "group": "cloud"
@@ -316,8 +316,8 @@
       {
         "name": "2小盘",
         "type": "cms",
-        "searchurl": "https://www.2xiaopan.top/index.php/vod/search.html?wd=",
-        "detailBase": "https://www.2xiaopan.top",
+        "searchurl": "https://wexwp.cc/index.php/vod/search.html?wd=",
+        "detailBase": "https://wexwp.cc",
         "enabled": true,
         "priority": 1021,
         "group": "cloud"
@@ -325,8 +325,8 @@
       {
         "name": "闪电优汐",
         "type": "cms",
-        "searchurl": "http://sd.sduc.site/index.php/vod/search.html?wd=",
-        "detailBase": "http://sd.sduc.site",
+        "searchurl": "http://shandian.blog/index.php/vod/search.html?wd=",
+        "detailBase": "http://shandian.blog",
         "enabled": true,
         "priority": 1022,
         "group": "cloud"
@@ -661,17 +661,6 @@
         "timeout": 30
       },
       {
-        "key": "y_zhencai4k",
-        "name": "影视 | 臻彩4K[py]",
-        "type": 3,
-        "api": "./js/zhencai4k.py",
-        "searchable": 1,
-        "quickSearch": 1,
-        "changeable": 1,
-        "ext": "",
-        "timeout": 30
-      },
-      {
         "key": "y_dingji",
         "name": "影视 | 顶级影院[py]",
         "type": 3,
@@ -716,10 +705,21 @@
         "timeout": 30
       },
       {
-        "key": "y_duanjubasi",
-        "name": "短剧 | 短剧巴士[py]",
+        "key": "y_xingying4k",
+        "name": "影视 | 星影4K[py]",
         "type": 3,
-        "api": "./js/duanjubasi.py",
+        "api": "./js/xingying4k_live.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "y_zhenbucuo4k",
+        "name": "影视 | 真不错4K[py]",
+        "type": 3,
+        "api": "./js/zhenbucuo4k.py",
         "searchable": 1,
         "quickSearch": 1,
         "changeable": 1,
@@ -727,7 +727,7 @@
         "timeout": 30
       }
     ],
-    "siteCount": 34
+    "siteCount": 32
   },
   "domainOverrides": {
     "overrides": []
@@ -1252,27 +1252,6 @@
         "defaultProxy": false,
         "notes": "Python 蜘蛛福利短剧源，HTML 解析 + regex；5 分类（AI短剧/伦理绿帽NTR/现代/古装/PMV）；video-card 模式提取列表；data-video-url/<video>/<source> 多策略提取播放地址；playerContent 返回 parse=0 + dict header；requests 可选（urllib 回退）",
         "api": "./sources/welfare-js/yidouge.py",
-        "scriptType": "python",
-        "engine": "python",
-        "sslBypass": true,
-        "visibleInNormalSpider": false,
-        "visibleInGlobalSearch": false,
-        "visibleInHome": false
-      },
-      {
-        "platformKey": "xiangjiao_py",
-        "name": "香蕉视频",
-        "category": "video",
-        "icon": "film.fill",
-        "desc": "H5 API Python 源（VIP泄漏）",
-        "serviceType": "python_spider",
-        "defaultHosts": [
-          "https://h5.xxoo473.org"
-        ],
-        "sortOrder": 401,
-        "defaultProxy": false,
-        "notes": "Python 蜘蛛福利源，香蕉视频 H5 API；X-Cookie-Auth 认证头；免费视频 reqplay 直链 m3u8；VIP 视频 preview key URI 上溯 master 泄漏模式；封面图走 localProxy 代理",
-        "api": "./sources/welfare-js/xiangjiao.py",
         "scriptType": "python",
         "engine": "python",
         "sslBypass": true,
@@ -1937,29 +1916,6 @@
         "visibleInHome": false
       },
       {
-        "platformKey": "huangdou_new_py",
-        "name": "黄豆短剧",
-        "category": "video",
-        "icon": "play.square.fill",
-        "desc": "短剧聚合（新站加密接口版）",
-        "serviceType": "python_spider",
-        "defaultHosts": [
-          "https://xqjzvcvt.top"
-        ],
-        "sortOrder": 237,
-        "defaultProxy": false,
-        "notes": "黄豆短剧。AES-CBC 加密+GZIP压缩接口。域名注入 base_url 会覆盖 BASE_URL。原样保留 _AESCBC 兼容层（Crypto→cryptography兜底）。",
-        "api": "./sources/welfare-js/huangdou.py",
-        "scriptType": "python",
-        "engine": "python",
-        "sslBypass": true,
-        "contentType": "video",
-        "imageSSLBypass": false,
-        "visibleInNormalSpider": false,
-        "visibleInGlobalSearch": false,
-        "visibleInHome": false
-      },
-      {
         "platformKey": "kugou_py",
         "name": "酷狗直播",
         "category": "live",
@@ -2243,30 +2199,6 @@
         "visibleInHome": false
       },
       {
-        "platformKey": "xiangjiao_py",
-        "name": "香蕉",
-        "category": "video",
-        "icon": "play.rectangle.fill",
-        "desc": "动态子域+API认证 · 3域名并发探测",
-        "serviceType": "python_spider",
-        "defaultHosts": [
-          "https://www.bjhpz.com",
-          "https://bjhpz.com",
-          "https://api.bjhpz.com"
-        ],
-        "sortOrder": 527,
-        "defaultProxy": false,
-        "notes": "香蕉。动态子域生成 + getat 认证 + 3 域名并发探测（ThreadPoolExecutor，先到先用）+ 10分钟冷静期。playerContent 返回 parse=0 直链。",
-        "api": "./sources/welfare-js/xiangjiao.py",
-        "scriptType": "python",
-        "engine": "python",
-        "sslBypass": true,
-        "contentType": "video",
-        "visibleInNormalSpider": false,
-        "visibleInGlobalSearch": false,
-        "visibleInHome": false
-      },
-      {
         "platformKey": "nvshenxuesheng_py",
         "name": "女神学生",
         "category": "video",
@@ -2306,6 +2238,28 @@
         "engine": "python",
         "sslBypass": true,
         "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "taiwan_live_py",
+        "name": "台湾成人直播",
+        "category": "live",
+        "icon": "antenna.radiowaves.left.and.right",
+        "desc": "台湾成人直播频道聚合 (Python蜘蛛版)",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "http://localhost"
+        ],
+        "sortOrder": 530,
+        "defaultProxy": false,
+        "notes": "内嵌 m3u 数据源，解析台湾成人直播频道列表，支持 .ts/.flv 直链播放",
+        "api": "./sources/welfare-js/taiwan_live.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "live",
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
