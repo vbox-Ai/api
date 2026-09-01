@@ -59,6 +59,7 @@ class Spider(BaseSpider):
         channels = self._load_channels()
         return {
             'class': [{'type_id': 'taiwan_live', 'type_name': '台湾成人直播'}],
+            'list': self._to_vodlist(channels),
             'filters': {}
         }
 
