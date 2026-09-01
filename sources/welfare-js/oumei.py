@@ -65,7 +65,11 @@ class Spider(BaseSpider):
         return items
 
     def homeContent(self, filter=False):
-        return {'class': [{'type_id': 'oumei', 'type_name': '欧美直播'}], 'filters': {}}
+        return {
+            'class': [{'type_id': 'oumei', 'type_name': '欧美直播'}],
+            'list': self._to_vodlist(self._load_m3u())[:12],
+            'filters': {}
+        }
 
     def homeVideoContent(self):
         return {'list': self._to_vodlist(self._load_m3u())[:48]}
