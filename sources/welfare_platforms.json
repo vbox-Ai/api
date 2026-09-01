@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.30.8",
-    "updatedAt": "2026-09-01T01:15:25Z",
+    "version": "2026.08.30.9",
+    "updatedAt": "2026-09-01T04:26:12Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -1623,7 +1623,9 @@
       "icon": "antenna.radiowaves.left.and.right",
       "desc": "台湾成人直播频道聚合 (Python蜘蛛版)",
       "serviceType": "python_spider",
-      "defaultHosts": [],
+      "defaultHosts": [
+        "http://localhost"
+      ],
       "sortOrder": 530,
       "defaultProxy": false,
       "notes": "内嵌 m3u 数据源，解析台湾成人直播频道列表，支持 .ts/.flv 直链播放",
