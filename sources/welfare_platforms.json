@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.30.9",
-    "updatedAt": "2026-09-01T04:26:12Z",
+    "version": "2026.08.30.10",
+    "updatedAt": "2026-09-01T07:35:39Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
