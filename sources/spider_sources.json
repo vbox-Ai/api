@@ -356,7 +356,18 @@
       "changeable": 1,
       "ext": "",
       "timeout": 30
+    },
+    {
+      "key": "y_ltmpro",
+      "name": "影视 | 流媒体PRO[py]",
+      "type": 3,
+      "api": "./js/ltmpro.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "ext": "",
+      "timeout": 30
     }
   ],
-  "siteCount": 32
+  "siteCount": 33
 }
