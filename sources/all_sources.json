@@ -2241,28 +2241,6 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
-      },
-      {
-        "platformKey": "taiwan_live_py",
-        "name": "台湾成人直播",
-        "category": "live",
-        "icon": "antenna.radiowaves.left.and.right",
-        "desc": "台湾成人直播频道聚合 (Python蜘蛛版)",
-        "serviceType": "python_spider",
-        "defaultHosts": [
-          "http://localhost"
-        ],
-        "sortOrder": 530,
-        "defaultProxy": false,
-        "notes": "内嵌 m3u 数据源，解析台湾成人直播频道列表，支持 .ts/.flv 直链播放",
-        "api": "./sources/welfare-js/taiwan_live.py",
-        "scriptType": "python",
-        "engine": "python",
-        "sslBypass": true,
-        "contentType": "live",
-        "visibleInNormalSpider": false,
-        "visibleInGlobalSearch": false,
-        "visibleInHome": false
       }
     ]
   }
