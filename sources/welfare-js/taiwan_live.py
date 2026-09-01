@@ -57,13 +57,6 @@ class Spider(BaseSpider):
 
     def homeContent(self, filter=False):
         channels = self._load_channels()
-        # 按频道名去重，保留第一个URL
-        seen = set()
-        unique = []
-        for ch in channels:
-            if ch['name'] not in seen:
-                seen.add(ch['name'])
-                unique.append(ch)
         return {
             'class': [{'type_id': 'taiwan_live', 'type_name': '台湾成人直播'}],
             'filters': {}
