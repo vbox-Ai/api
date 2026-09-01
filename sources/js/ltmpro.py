@@ -260,40 +260,28 @@ class Spider(Spider):
             seasons = data.get("seasons", []) if is_tv else []
             
             if is_tv and seasons:
-                # 剧集：按季/集构建播放列表
-                # 获取第一个网盘链接（通常包含整个剧集）
-                first_drive_link = None
+                # 剧集：先显示网盘，每个网盘下显示集数列表
                 for p_key in PAN_ORDER:
                     if p_key in grouped and grouped[p_key]:
-                        first_drive_link = grouped[p_key][0]
-                        break
-                
-                if first_drive_link:
-                    # 为每个季/集创建播放项
-                    for season in seasons:
-                        season_num = season.get("season_number", 0)
-                        if season_num == 0:  # 跳过特别季
-                            continue
-                        episode_count = season.get("episode_count", 0)
-                        season_name = season.get("name", f"第{season_num}季")
+                        drive_name = PAN_NAMES.get(p_key, p_key)
+                        drive_link = grouped[p_key][0]  # 取第一个链接（通常包含整个剧集）
                         
-                        for ep in range(1, episode_count + 1):
-                            ep_name = f"第{ep}集"
-                            play_from.append(f"{season_name}")
-                            play_url.append(f"{ep_name}$push://{first_drive_link}")
-                else:
-                    # 没有网盘资源，显示季/集信息但提示未收录
-                    for season in seasons:
-                        season_num = season.get("season_number", 0)
-                        if season_num == 0:
-                            continue
-                        episode_count = season.get("episode_count", 0)
-                        season_name = season.get("name", f"第{season_num}季")
+                        # 构建该网盘下的所有集数
+                        episode_list = []
+                        for season in seasons:
+                            season_num = season.get("season_number", 0)
+                            if season_num == 0:  # 跳过特别季
+                                continue
+                            episode_count = season.get("episode_count", 0)
+                            season_name = season.get("name", f"第{season_num}季")
+                            
+                            for ep in range(1, episode_count + 1):
+                                ep_name = f"{season_name}第{ep}集"
+                                episode_list.append(f"{ep_name}$push://{drive_link}")
                         
-                        for ep in range(1, episode_count + 1):
-                            ep_name = f"第{ep}集"
-                            play_from.append(f"{season_name}")
-                            play_url.append(f"{ep_name}$push://https://www.douban.com/search?q={urllib.parse.quote(search_title)}")
+                        if episode_list:
+                            play_from.append(drive_name)
+                            play_url.append("#".join(episode_list))
             else:
                 # 电影或无季信息的剧集：按网盘类型分组
                 for p_key in PAN_ORDER:

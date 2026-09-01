@@ -728,7 +728,7 @@
       },
       {
         "key": "y_ltmpro",
-        "name": "影视 | 流媒体PRO[py]",
+        "name": "网盘 | 流媒体PRO[py]",
         "type": 3,
         "api": "./js/ltmpro.py",
         "searchable": 1,
