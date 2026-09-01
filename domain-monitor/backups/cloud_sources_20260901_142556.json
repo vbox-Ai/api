@@ -20,8 +20,8 @@
     {
       "name": "木偶资源",
       "type": "cms",
-      "searchurl": "https://www.muou.asia/index.php/vod/search.html?wd=",
-      "detailBase": "https://www.muou.asia",
+      "searchurl": "https://666.666291.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://666.666291.xyz",
       "enabled": true,
       "priority": 1003,
       "group": "cloud"
@@ -49,8 +49,8 @@
     {
       "name": "至臻影视",
       "type": "cms",
-      "searchurl": "https://mihdr.top/index.php/vod/search.html?wd=",
-      "detailBase": "https://mihdr.top",
+      "searchurl": "https://www.mihdr.top/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.mihdr.top",
       "enabled": true,
       "priority": 1008,
       "group": "cloud"
@@ -125,8 +125,8 @@
     {
       "name": "飞猫影视",
       "type": "cms",
-      "searchurl": "http://feimo.fun/index.php/vod/search.html?wd=",
-      "detailBase": "http://feimo.fun",
+      "searchurl": "http://tvpanpan.site/index.php/vod/search.html?wd=",
+      "detailBase": "http://tvpanpan.site",
       "enabled": true,
       "priority": 1020,
       "group": "cloud"
@@ -143,8 +143,8 @@
     {
       "name": "闪电优汐",
       "type": "cms",
-      "searchurl": "http://shandian.blog/index.php/vod/search.html?wd=",
-      "detailBase": "http://shandian.blog",
+      "searchurl": "http://sd.sduc.site/index.php/vod/search.html?wd=",
+      "detailBase": "http://sd.sduc.site",
       "enabled": true,
       "priority": 1022,
       "group": "cloud"
