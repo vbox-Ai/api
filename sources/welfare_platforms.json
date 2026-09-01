@@ -1615,6 +1615,28 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "ltmpro_py",
+      "name": "流媒体PRO",
+      "category": "video",
+      "icon": "tv.fill",
+      "desc": "TMDB元数据+盘搜网盘资源聚合 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://api.tmdb.org"
+      ],
+      "sortOrder": 600,
+      "defaultProxy": false,
+      "notes": "Python蜘蛛影视源。TMDB API元数据（海报/评分/简介/分类）+ 盘搜API网盘资源搜索。14个流媒体平台分类（Netflix/HBO/Disney+/爱奇艺/腾讯/B站等）+ 4种内容类型筛选 + 5种排序。支持8种网盘（百度/夸克/阿里/115/UC/迅雷/123/天翼）。push://协议推送到网盘播放器。自适应TMDB代理（extend.tmdb_proxy）。",
+      "api": "./sources/welfare-js/ltmpro.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ]
 }
