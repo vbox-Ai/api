@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.08.30.10",
-    "updatedAt": "2026-09-01T07:35:39Z",
+    "version": "2026.09.02.4",
+    "updatedAt": "2026-09-02T13:00:00Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -112,7 +112,11 @@
       "zhiboluping_py",
       "oumei_py"
     ],
-    "stage15Notes": "阶段15 新增3个福利区直播平台: 酷狗直播(真人秀实时直播,7分类)、直播录屏(录播分享,三层链路取m3u8)、欧美大片直播(EroLuxe成人直播40频道,薄蜘蛛读取oumei.m3u)。实测均可播。(玉山视频因freetv源已401排除)"
+    "stage15Notes": "阶段15 新增3个福利区直播平台: 酷狗直播(真人秀实时直播,7分类)、直播录屏(录播分享,三层链路取m3u8)、欧美大片直播(EroLuxe成人直播40频道,薄蜘蛛读取oumei.m3u)。实测均可播。(玉山视频因freetv源已401排除)",
+    "stage16AddedKeys": [
+      "jilejingqu_py"
+    ],
+    "stage16Notes": "阶段16 新增：极乐禁区 Python 蜘蛛版（50+分类+播放器适配+封面图代理）"
   },
   "schemaVersion": 1,
   "categories": [
@@ -1615,6 +1619,24 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "jilejingqu_py",
+      "name": "极乐禁区",
+      "category": "video",
+      "icon": "play.rectangle.fill",
+      "serviceType": "python_spider",
+      "scriptType": "python",
+      "scriptUrl": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/welfare-js/jilejingqu.py",
+      "scriptVersion": "v1.0",
+      "defaultHosts": [
+        "https://iegeewiet-4mag.hscwang26y2m.xyz"
+      ],
+      "searchable": true,
+      "filterable": true,
+      "quickSearch": true,
+      "proxySupport": true,
+      "localProxySupport": true
     }
   ]
 }
