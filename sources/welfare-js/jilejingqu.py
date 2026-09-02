@@ -144,6 +144,15 @@ class Spider(_B):
             self._session.headers.update({'User-Agent': UA})
             self._session.verify = False
 
+        # ✅ 将模块级常量绑定为实例属性（base.spider.Spider 无 __getattr__）
+        self._special_cats = _SPECIAL_CATS
+        self._video_cats = _VIDEO_CATS
+        self._sub_types = _SUB_TYPES
+        self._media_cats = _MEDIA_CATS
+        self._actress_cats = _ACTRESS_CATS
+        self._code_cats = _CODE_CATS
+        self._tanflower_cats = _TANFLOWER_CATS
+
         # ✅ vbox 域名注入：优先使用注入的域名
         try:
             effective_hosts = globals().get('_vbox_effective_hosts', [])
@@ -178,11 +187,14 @@ class Spider(_B):
         """使用 base/spider.py 的 self.fetch 方法（自动走域名注入和代理）"""
         hdrs = self._headers(referer)
         try:
-            text = self.fetch(url, headers=hdrs)
+            rsp = self.fetch(url, headers=hdrs)
+            if not rsp or not hasattr(rsp, 'text'):
+                return ''
+            text = rsp.text
             if not text:
                 return ''
             # 处理编码
-            if hasattr(self, '_encoding'):
+            if hasattr(self, '_encoding') and self._encoding:
                 try:
                     text = text.encode('latin-1').decode(self._encoding)
                 except Exception:
