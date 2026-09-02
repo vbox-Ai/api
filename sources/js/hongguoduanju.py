@@ -1,474 +1,318 @@
-# coding=utf-8
-# !/usr/bin/python
+# -*- coding: utf-8 -*-
 """
-红果短剧 TVBox / OK影视 / 影视仓 Python 源。
-
-合并优化点：
-1. 参考模板动态读取红果官网 selectorList，自动生成标准筛选器。
-2. 保留底部分类入口：热门短剧、全部短剧、官网背景分类。
-3. 不依赖播放桥，播放时直接解析官方播放器页 video_player_info.main_url。
-4. 只展示官网网页端当前可访问的集数，避免后续未开放集数点开 404 黑屏。
-5. 播放直链失败时回退 parse=1，交给 OK影视/影视仓通用解析。
+红果短剧 TVBox 爬虫
+站点: hongguoduanju.com (字节跳动系 React SSR)
+数据来源: 页面内嵌 _ROUTER_DATA JSON
+视频格式: MP4 (qznovelvod CDN)
 """
-
+from base.spider import Spider
 import json
-import math
-import re
-import sys
-import time
-from urllib.parse import quote, urlencode
-
-import requests
-
-sys.path.append("..")
-sys.path.append("../../")
-try:
-    from base.spider import Spider
-except ImportError:
-    class Spider:
-        pass
+import urllib.parse
+import urllib.request
 
 
 class Spider(Spider):
-    def __init__(self):
-        self.host = "https://hongguoduanju.com"
-        self.headers = {
-            "User-Agent": (
-                "Mozilla/5.0 (Linux; Android 12; TV) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/126.0 Safari/537.36"
-            ),
-            "Referer": self.host + "/",
-            "Origin": self.host,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "zh-CN,zh;q=0.9",
-        }
-        self.timeout = 20
-        self.page_size = 30
-        self._cache = {}
-        self.class_list = []
-        self.search_pool = []
+    host = "https://hongguoduanju.com"
+    UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+    timeout = 15
 
     def getName(self):
         return "红果短剧"
 
     def init(self, extend=""):
-        return
+        pass
 
     def isVideoFormat(self, url):
-        return False
+        pass
 
     def manualVideoCheck(self):
-        return False
+        pass
 
-    def destroy(self):
-        return
+    # ---- network & parse helpers ----
+
+    def _header_str(self):
+        return "User-Agent=%s&Referer=%s" % (self.UA, self.host)
+
+    def _fetch_text(self, url, t=None):
+        try:
+            rsp = self.fetch(url)
+            text = rsp.text
+            if text and len(text) > 500:
+                return text
+        except Exception:
+            pass
+        req = urllib.request.Request(url)
+        req.add_header("User-Agent", self.UA)
+        req.add_header("Referer", self.host)
+        with urllib.request.urlopen(req, timeout=t or self.timeout) as resp:
+            return resp.read().decode("utf-8", errors="ignore")
+
+    def _extract_router_data(self, html):
+        """从 HTML 中提取 _ROUTER_DATA JSON 对象"""
+        idx = html.find("_ROUTER_DATA")
+        if idx == -1:
+            return None
+        eq = html.find("=", idx)
+        start = eq + 1
+        while start < len(html) and html[start] in " \t\n":
+            start += 1
+        json_start = html.find("{", start)
+        if json_start == -1:
+            return None
+        try:
+            decoder = json.JSONDecoder()
+            obj, _ = decoder.raw_decode(html[json_start:])
+            return obj
+        except Exception:
+            return None
+
+    def _get_loader_data(self, url, key=None):
+        """获取页面 loaderData, 可选按 key 取子项"""
+        try:
+            text = self._fetch_text(url)
+            obj = self._extract_router_data(text)
+            if obj and "loaderData" in obj:
+                ld = obj["loaderData"]
+                if key:
+                    return ld.get(key)
+                return ld
+            return None
+        except Exception:
+            return None
+
+    @staticmethod
+    def _build_video_item(item, title_key="series_name"):
+        """将 SSR item 转为 TVBox vod dict"""
+        series_id = str(item.get("series_id", ""))
+        title = item.get(title_key, item.get("series_title", ""))
+        pic = item.get("series_cover", "")
+        remarks = item.get("episode_right_text", "")
+        if not remarks:
+            ep_cnt = item.get("episode_cnt", "")
+            if ep_cnt:
+                remarks = "全%s集" % ep_cnt
+        return {
+            "vod_id": series_id,
+            "vod_name": title,
+            "vod_pic": pic,
+            "vod_remarks": remarks,
+            "vod_content": ""
+        }
+
+    # ---- home ----
 
     def homeContent(self, filter):
-        data = self._router_data(self.host + "/category?sort_type=1") or {}
-        page = self._pick_page(data, "category_page")
-        selector_list = page.get("selectorList") or []
-        filters = self._build_filters(selector_list)
-
-        classes = [
-            {"type_id": "home", "type_name": "热门短剧"},
-            {"type_id": "all", "type_name": "全部短剧"},
-        ]
-
-        if selector_list:
-            for item in selector_list[0].get("items", []):
-                name = item.get("show_name")
-                value = item.get("selector_item_id")
-                if name and value:
-                    classes.append({"type_id": str(value), "type_name": str(name)})
-
-        self.class_list = classes
-        result = {
-            "class": classes,
-            "list": self.homeVideoContent().get("list", []),
-        }
-        if filter:
-            result["filters"] = filters
-        return result
+        classes = [{"type_id": "", "type_name": "全部"}]
+        filters = {}
+        try:
+            cat_data = self._get_loader_data(self.host + "/category", "category_page")
+            if cat_data:
+                sl = cat_data.get("selectorList", [])
+                # row 0: background -> classes
+                if sl and len(sl) > 0:
+                    for item in sl[0].get("items", []):
+                        classes.append({
+                            "type_id": item.get("selector_item_id", ""),
+                            "type_name": item.get("show_name", "")
+                        })
+                # row 3: gender
+                if len(sl) > 3:
+                    gf = [{"n": "全部", "v": "2"}]
+                    for item in sl[3].get("items", []):
+                        gf.append({"n": item.get("show_name", ""), "v": str(item.get("selector_item_id", ""))})
+                    filters["gender"] = gf
+                # row 1: topic
+                if len(sl) > 1:
+                    tf = [{"n": "全部", "v": ""}]
+                    for item in sl[1].get("items", []):
+                        tf.append({"n": item.get("show_name", ""), "v": item.get("selector_item_id", "")})
+                    filters["topic"] = tf
+                # row 2: setting
+                if len(sl) > 2:
+                    sf = [{"n": "全部", "v": ""}]
+                    for item in sl[2].get("items", []):
+                        sf.append({"n": item.get("show_name", ""), "v": item.get("selector_item_id", "")})
+                    filters["setting"] = sf
+                # row 4: time
+                if len(sl) > 4:
+                    tmf = [{"n": "全部", "v": "0"}]
+                    for item in sl[4].get("items", []):
+                        tmf.append({"n": item.get("show_name", ""), "v": str(item.get("selector_item_id", ""))})
+                    filters["min_first_visible_time"] = tmf
+                # row 5: sort
+                if len(sl) > 5:
+                    stf = [{"n": "默认", "v": "0"}]
+                    for item in sl[5].get("items", []):
+                        stf.append({"n": item.get("show_name", ""), "v": str(item.get("selector_item_id", ""))})
+                    filters["sort_type"] = stf
+        except Exception:
+            pass
+        return {"class": classes, "filters": filters}
 
     def homeVideoContent(self):
         try:
-            data = self._router_data(self.host + "/") or {}
-            page = self._pick_page(data, "page")
-            videos = page.get("videoList") or []
-            if not videos:
-                videos = self._category_items({"sort_type": "1"})
-            return {"list": self._vod_list(videos[:self.page_size])}
-        except Exception as exc:
-            print("红果首页读取失败:", exc)
+            data = self._get_loader_data(self.host + "/", "page")
+            if not data:
+                return {"list": []}
+            hs = data.get("homeSections", [])
+            videos = []
+            if hs:
+                vl = hs[0].get("video_list", [])
+                for item in vl:
+                    videos.append(self._build_video_item(item, title_key="series_title"))
+            return {"list": videos}
+        except Exception:
             return {"list": []}
 
-    def categoryContent(self, tid, pg, filter, extend):
-        page_num = self._safe_int(pg, 1)
-        try:
-            if str(tid) == "home":
-                data = self._router_data(self.host + "/") or {}
-                page = self._pick_page(data, "page")
-                videos = page.get("videoList") or []
-                if not videos:
-                    videos = self._category_items({"sort_type": "1"})
-            else:
-                query = self._category_query(tid, extend or {})
-                videos = self._category_items(query)
+    # ---- category ----
 
-            total = len(videos)
-            start = (page_num - 1) * self.page_size
-            end = start + self.page_size
+    def categoryContent(self, cid, pg, filter, ext):
+        page = int(pg) if pg else 1
+        params = []
+        if cid:
+            params.append("background=%s" % cid)
+        ext = ext or {}
+        gender = ext.get("gender", "2")
+        sort_type = ext.get("sort_type", "0")
+        topic = ext.get("topic", "")
+        setting = ext.get("setting", "")
+        min_time = ext.get("min_first_visible_time", "0")
+        params.append("gender=%s" % gender)
+        params.append("sort_type=%s" % sort_type)
+        if topic:
+            params.append("topic=%s" % topic)
+        if setting:
+            params.append("setting=%s" % setting)
+        if min_time and min_time != "0":
+            params.append("min_first_visible_time=%s" % min_time)
+        if page > 1:
+            params.append("page=%d" % page)
+        url = "%s/category?%s" % (self.host, "&".join(params))
+        try:
+            data = self._get_loader_data(url, "category_page")
+            if not data:
+                return {"list": [], "page": page, "pagecount": 1, "limit": 24, "total": 0}
+            rl = data.get("recommendList", [])
+            pg_data = data.get("pagination", {})
+            videos = [self._build_video_item(item, title_key="series_name") for item in rl]
             return {
-                "page": page_num,
-                "pagecount": max(1, int(math.ceil(total / float(self.page_size)))) if total else 1,
-                "limit": self.page_size,
-                "total": total,
-                "list": self._vod_list(videos[start:end]),
+                "list": videos,
+                "page": pg_data.get("pageNum", page),
+                "pagecount": pg_data.get("totalPages", 1),
+                "limit": pg_data.get("pageSize", 24),
+                "total": pg_data.get("total", 0)
             }
-        except Exception as exc:
-            print("红果分类读取失败:", exc)
-            return {"list": [], "page": page_num, "pagecount": page_num}
+        except Exception:
+            return {"list": [], "page": page, "pagecount": 1, "limit": 24, "total": 0}
+
+    # ---- detail ----
 
     def detailContent(self, ids):
-        sid = ids[0] if isinstance(ids, list) else ids
+        series_id = str(ids[0])
+        url = "%s/detail?series_id=%s" % (self.host, series_id)
         try:
-            data = self._router_data(self.host + "/detail?series_id=" + quote(str(sid))) or {}
-            page = self._pick_page(data, "detail_page")
-            detail = page.get("seriesDetail") or {}
-            if not detail:
+            data = self._get_loader_data(url, "detail_page")
+            if not data:
                 return {"list": []}
-
-            sid = str(detail.get("series_id") or sid)
-            name = detail.get("series_name") or ""
-            pic = detail.get("series_cover") or ""
-            intro = detail.get("series_intro") or ""
-            tags = detail.get("tags") or []
-
-            actors = []
-            for item in detail.get("celebrities") or []:
-                actor = item.get("nickname") or ""
-                role = item.get("sub_title") or ""
-                if actor:
-                    actors.append(actor + ((" " + role) if role else ""))
-
-            vids = [str(x) for x in (detail.get("vid_list") or []) if str(x)]
-            total = self._safe_int(detail.get("episode_cnt") or len(vids), len(vids))
-            accessible_count = self._safe_int(detail.get("accessible_episode_cnt") or 0, 0)
-            if accessible_count <= 0 or accessible_count > len(vids):
-                accessible_count = len(vids)
-
-            playable_vids = vids[:accessible_count]
-            play_urls = [
-                "第%s集$%s|%s" % (index, sid, vid)
-                for index, vid in enumerate(playable_vids, 1)
-            ]
-
-            tag_text = " / ".join([str(x) for x in tags[:4]]) if isinstance(tags, list) else str(tags)
-            remark = "可播%s集/全%s集" % (len(playable_vids), total) if total else ""
-
+            sd = data.get("seriesDetail", {})
+            if not sd:
+                return {"list": []}
+            vid_list = sd.get("vid_list", [])
+            series_name = sd.get("series_name", "")
+            series_cover = sd.get("series_cover", "")
+            series_intro = sd.get("series_intro", "")
+            episode_cnt = sd.get("episode_cnt", 0)
+            tags = sd.get("tags", [])
+            episode_right_text = sd.get("episode_right_text", "")
+            # expose all episodes; player will handle playback per episode
+            play_urls = []
+            for i, vid in enumerate(vid_list):
+                play_urls.append("第%d集$%s_%s" % (i + 1, series_id, vid))
+            # notice about free vs paid (some episodes may require login)
+            free_cnt = sd.get("accessible_episode_cnt", len(vid_list))
+            notice = ""
+            if episode_cnt > free_cnt:
+                notice = "（前%d集免费，后续%d集可能需登录解锁）" % (free_cnt, episode_cnt - free_cnt)
             vod = {
-                "vod_id": sid,
-                "vod_name": name,
-                "vod_pic": pic,
-                "type_name": tag_text,
-                "vod_year": "",
-                "vod_area": "大陆",
-                "vod_remarks": remark,
-                "vod_actor": " / ".join(actors),
-                "vod_director": "",
-                "vod_content": intro,
-                "vod_play_from": "红果直连",
-                "vod_play_url": "#".join(play_urls),
+                "vod_id": series_id,
+                "vod_name": series_name,
+                "vod_pic": series_cover,
+                "vod_content": series_intro + notice,
+                "vod_remarks": episode_right_text or ("全%s集" % episode_cnt),
+                "type_name": " ".join(tags) if tags else "短剧",
+                "vod_play_from": "红果短剧",
+                "vod_play_url": "#".join(play_urls)
             }
             return {"list": [vod]}
-        except Exception as exc:
-            print("红果详情读取失败:", exc)
+        except Exception:
             return {"list": []}
 
-    def searchContent(self, key, quick, pg="1"):
-        page_num = self._safe_int(pg, 1)
-        keyword = str(key or "").strip().lower()
-        if not keyword:
-            return {"list": [], "page": page_num}
+    # ---- player ----
 
+    def playerContent(self, flag, id, vipFlags):
         try:
-            pool = self._get_search_pool()
-            matched = []
-            exists = set()
-            for item in pool:
-                sid = str(item.get("series_id") or "")
-                if not sid or sid in exists:
-                    continue
-                text = " ".join([
-                    str(item.get("series_name") or ""),
-                    str(item.get("series_intro") or ""),
-                    " ".join([str(x) for x in (item.get("tags") or [])]),
-                ]).lower()
-                if keyword in text:
-                    matched.append(item)
-                    exists.add(sid)
-
-            total = len(matched)
-            start = (page_num - 1) * self.page_size
-            end = start + self.page_size
+            parts = str(id).split("_")
+            if len(parts) < 2:
+                return {"parse": 0, "playUrl": "", "url": "", "header": self._header_str()}
+            series_id = parts[0]
+            vid = "_".join(parts[1:])
+            url = "%s/player/%s/%s" % (self.host, series_id, vid)
+            ld = self._get_loader_data(url)
+            if not ld:
+                return {"parse": 0, "playUrl": "", "url": "", "header": self._header_str()}
+            # find player page key (contains "player" and "page")
+            player_key = None
+            for k in ld:
+                if "player" in k and "page" in k:
+                    player_key = k
+                    break
+            if not player_key:
+                return {"parse": 0, "playUrl": "", "url": "", "header": self._header_str()}
+            vpi = ld[player_key].get("video_player_info", {})
+            main_url = vpi.get("main_url", "")
+            if not main_url:
+                return {"parse": 0, "playUrl": "", "url": "", "header": self._header_str()}
             return {
-                "page": page_num,
-                "pagecount": max(1, int(math.ceil(total / float(self.page_size)))) if total else 1,
-                "limit": self.page_size,
-                "total": total,
-                "list": self._vod_list(matched[start:end]),
+                "parse": 0,
+                "playUrl": "",
+                "url": main_url,
+                "header": self._header_str()
             }
-        except Exception as exc:
-            print("红果搜索失败:", exc)
-            return {"list": [], "page": page_num}
-
-    def searchContentPage(self, key, quick, pg):
-        return self.searchContent(key, quick, pg)
-
-    def playerContent(self, flag, pid, vipFlags):
-        sid, vid = self._split_play_id(pid)
-        if not sid:
-            return {"parse": 1, "playUrl": "", "url": str(pid or "")}
-
-        page_url = self.host + "/player/" + quote(sid)
-        if vid:
-            page_url += "/" + quote(vid)
-
-        try:
-            data = self._router_data(page_url) or {}
-            info = self._first_value_by_key(data.get("loaderData") or {}, "video_player_info") or {}
-            play_url = str(info.get("main_url") or info.get("backup_url") or "")
-            poster = str(info.get("poster_url") or "")
-
-            if play_url:
-                return {
-                    "parse": 0,
-                    "playUrl": "",
-                    "url": play_url,
-                    "header": {
-                        "User-Agent": self.headers["User-Agent"],
-                        "Referer": page_url,
-                        "Origin": self.host,
-                    },
-                    "jx": 0,
-                    "pic": poster,
-                }
-        except Exception as exc:
-            print("红果直链解析失败，尝试通用解析:", exc)
-
-        return {
-            "parse": 1,
-            "playUrl": "",
-            "url": page_url,
-            "header": {
-                "User-Agent": self.headers["User-Agent"],
-                "Referer": self.host + "/",
-            },
-        }
-
-    def localProxy(self, params):
-        return [404, "text/plain", "not found"]
-
-    def _router_data(self, url):
-        cached = self._cache.get(url)
-        if cached and time.time() - cached[0] < 300:
-            return cached[1]
-
-        response = requests.get(url, headers=self.headers, timeout=self.timeout)
-        response.raise_for_status()
-        response.encoding = "utf-8"
-        match = re.search(
-            r"window\._ROUTER_DATA\s*=\s*(\{.*?\})\s*</script>",
-            response.text,
-            re.S,
-        )
-        if not match:
-            return {}
-
-        data = json.loads(match.group(1))
-        self._cache[url] = (time.time(), data)
-        return data
-
-    def _pick_page(self, router_data, preferred):
-        loader = (router_data or {}).get("loaderData") or {}
-        if isinstance(loader.get(preferred), dict):
-            return loader.get(preferred) or {}
-        for key, value in loader.items():
-            if isinstance(value, dict) and key.endswith("/page"):
-                return value
-        for value in loader.values():
-            if isinstance(value, dict):
-                return value
-        return {}
-
-    def _build_filters(self, selector_list):
-        key_map = {
-            1: ("background", "背景"),
-            2: ("topic", "主题"),
-            3: ("setting", "设定"),
-            4: ("gender", "受众"),
-            5: ("time", "时间"),
-            6: ("sort_type", "排序"),
-        }
-
-        values = []
-        for row in selector_list or []:
-            row_id = row.get("row_id")
-            key, name = key_map.get(row_id, ("row_%s" % row_id, row.get("row_name") or "筛选"))
-            value = [{"n": "全部", "v": ""}]
-            for item in row.get("items") or []:
-                n = item.get("show_name")
-                v = item.get("selector_item_id")
-                if n and v is not None:
-                    value.append({"n": str(n), "v": str(v)})
-            if len(value) > 1:
-                values.append({"key": key, "name": name, "value": value})
-
-        filters = {"home": values, "all": values}
-        for cls in self.class_list:
-            tid = cls.get("type_id")
-            if tid:
-                filters[str(tid)] = values
-        if selector_list:
-            for item in selector_list[0].get("items", []):
-                tid = item.get("selector_item_id")
-                if tid:
-                    filters[str(tid)] = values
-        return filters
-
-    def _category_query(self, tid, extend):
-        query = {}
-        data = extend if isinstance(extend, dict) else {}
-        for key in ("background", "topic", "setting", "gender", "time", "sort_type"):
-            value = data.get(key)
-            if value is not None and str(value) != "":
-                query[key] = str(value)
-
-        tid = str(tid or "")
-        if tid == "all":
-            if not query.get("sort_type"):
-                query["sort_type"] = "1"
-            return query
-
-        if tid.startswith("cate_") and not query.get("background"):
-            query["background"] = tid
-        elif "=" in tid:
-            key, value = tid.split("=", 1)
-            if key and value:
-                query[key] = value
-
-        if not query.get("sort_type"):
-            query["sort_type"] = "1"
-        return query
-
-    def _category_items(self, query):
-        if isinstance(query, dict):
-            url = self.host + "/category"
-            if query:
-                url += "?" + urlencode(query)
-        else:
-            text = str(query or "")
-            url = self.host + "/category" + (("?" + text) if text else "")
-
-        data = self._router_data(url) or {}
-        page = self._pick_page(data, "category_page")
-        items = page.get("recommendList") or []
-        if not items:
-            category_data = page.get("categoryData") or {}
-            if isinstance(category_data, dict):
-                items = category_data.get("recommendList") or []
-
-        seen = set()
-        result = []
-        for item in items:
-            sid = str(item.get("series_id") or "")
-            if sid and sid not in seen:
-                seen.add(sid)
-                result.append(item)
-        return result
-
-    def _vod_list(self, videos):
-        result = []
-        for item in videos or []:
-            sid = str(item.get("series_id") or "")
-            if not sid:
-                continue
-
-            tags = item.get("tags") or []
-            tag_text = " / ".join([str(x) for x in tags[:2]]) if isinstance(tags, list) else str(tags)
-            remark = item.get("episode_right_text") or ""
-            if not remark:
-                count = item.get("episode_cnt") or len(item.get("vid_list") or [])
-                remark = ("全%s集" % count) if count else tag_text
-            elif tag_text:
-                remark = remark + " · " + tag_text
-
-            result.append({
-                "vod_id": sid,
-                "vod_name": item.get("series_name") or "",
-                "vod_pic": (
-                    item.get("series_cover")
-                    or item.get("background_cover")
-                    or item.get("background_cover_mobile")
-                    or ""
-                ),
-                "vod_remarks": remark,
-                "vod_content": item.get("series_intro") or "",
-            })
-        return result
-
-    def _get_search_pool(self):
-        if self.search_pool:
-            return self.search_pool
-
-        pool = []
-        for url, preferred, key in [
-            (self.host + "/", "page", "videoList"),
-            (self.host + "/category?sort_type=1", "category_page", "recommendList"),
-            (self.host + "/category?sort_type=2", "category_page", "recommendList"),
-        ]:
-            try:
-                data = self._router_data(url) or {}
-                page = self._pick_page(data, preferred)
-                pool.extend(page.get(key) or [])
-            except Exception:
-                pass
-
-        self.search_pool = pool
-        return pool
-
-    def _split_play_id(self, play_id):
-        raw = str(play_id or "")
-        if "|" in raw:
-            sid, vid = raw.split("|", 1)
-            return sid.strip(), vid.strip()
-        if "@@@" in raw:
-            sid, vid = raw.split("@@@", 1)
-            return sid.strip(), vid.strip()
-        parts = raw.strip("/").split("/")
-        if len(parts) >= 2 and parts[-2].isdigit():
-            return parts[-2], parts[-1]
-        if parts and parts[-1].isdigit():
-            return parts[-1], ""
-        return raw, ""
-
-    def _safe_int(self, value, default=0):
-        try:
-            return int(value)
         except Exception:
-            return default
+            return {"parse": 0, "playUrl": "", "url": "", "header": self._header_str()}
 
-    def _first_value_by_key(self, obj, target_key):
-        if isinstance(obj, dict):
-            if target_key in obj:
-                return obj.get(target_key)
-            for value in obj.values():
-                found = self._first_value_by_key(value, target_key)
-                if found is not None:
-                    return found
-        elif isinstance(obj, list):
-            for value in obj:
-                found = self._first_value_by_key(value, target_key)
-                if found is not None:
-                    return found
-        return None
+    # ---- search ----
+
+    def searchContent(self, key, quick, pg=1):
+        page = int(pg) if pg else 1
+        keyword = urllib.parse.quote(key)
+        url = "%s/search?keyword=%s" % (self.host, keyword)
+        if page > 1:
+            url += "&page=%d" % page
+        try:
+            ld = self._get_loader_data(url)
+            if not ld:
+                return {"list": []}
+            # find search page key
+            search_key = None
+            for k in ld:
+                if "search" in k:
+                    search_key = k
+                    break
+            if not search_key:
+                return {"list": []}
+            sp = ld[search_key]
+            sl = sp.get("searchList", [])
+            if not sl:
+                return {"list": []}
+            videos = [self._build_video_item(item, title_key="series_name") for item in sl]
+            total = sp.get("totalCount", 0)
+            return {
+                "list": videos,
+                "page": page,
+                "pagecount": (total + 23) // 24 if total > 0 else 1,
+                "limit": 24,
+                "total": total
+            }
+        except Exception:
+            return {"list": []}

@@ -640,7 +640,7 @@
       },
       {
         "key": "y_hongguoduanju",
-        "name": "短剧 | 红果短剧新[py]",
+        "name": "短剧 | 红果短剧[py]",
         "type": 3,
         "api": "./js/hongguoduanju.py",
         "searchable": 1,
