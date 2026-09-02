@@ -1619,28 +1619,6 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
-    },
-    {
-      "platformKey": "jilejingqu_py",
-      "name": "极乐禁区",
-      "category": "video",
-      "icon": "play.rectangle.fill",
-      "serviceType": "python_spider",
-      "scriptType": "python",
-      "defaultHosts": [
-        "https://iegeewiet-4mag.hscwang26y2m.xyz"
-      ],
-      "api": "./sources/welfare-js/jilejingqu.py",
-      "defaultProxy": false,
-      "notes": "极乐禁区Python蜘蛛福利源，50+分类，需浏览器UA访问",
-      "contentType": "video",
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false,
-      "desc": "极乐禁区 · 50+分类 Python 蜘蛛福利源",
-      "sortOrder": 240,
-      "engine": "python",
-      "sslBypass": true
     }
   ]
 }
