@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "name": "vbox \u8fdc\u7a0b\u9ed8\u8ba4\u6e90 manifest",
+    "name": "vbox 远程默认源 manifest",
     "type": "manifest",
-    "description": "\u8fdc\u7a0b\u9ed8\u8ba4\u6e90\u5165\u53e3\u6587\u4ef6\uff0c\u4ec5\u4fdd\u7559 iOS \u53ef\u7528\u7684\u72ec\u7acb JS \u8718\u86db\u6e90\uff085\u4e2a\uff09\uff0c\u79fb\u9664 JAR/drpy2/lf/alist \u6846\u67b6\u4f9d\u8d56"
+    "description": "远程默认源入口文件，仅保留 iOS 可用的独立 JS 蜘蛛源（5个），移除 JAR/drpy2/lf/alist 框架依赖"
   },
   "schemaVersion": 1,
-  "configVersion": "2026.09.02.10",
+  "configVersion": "2026.09.03.1",
   "minAppVersion": "1.0.0",
-  "updatedAt": "2026-09-02T15:30:00Z",
+  "updatedAt": "2026-09-03T05:33:33Z",
   "ttlSeconds": 21600,
   "files": {
     "allSources": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/all_sources.json",
