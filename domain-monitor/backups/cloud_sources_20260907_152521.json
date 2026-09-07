@@ -10,8 +10,8 @@
     {
       "name": "玩偶资源",
       "type": "cms",
-      "searchurl": "https://woggpan.xxooo.cf/vodsearch/-------------.html?wd=",
-      "detailBase": "https://woggpan.xxooo.cf",
+      "searchurl": "https://woggpan.888484.xyz/vodsearch/-------------.html?wd=",
+      "detailBase": "https://woggpan.888484.xyz",
       "ua": "pc",
       "enabled": true,
       "priority": 1002,
@@ -20,8 +20,8 @@
     {
       "name": "木偶资源",
       "type": "cms",
-      "searchurl": "https://www.muou.asia/index.php/vod/search.html?wd=",
-      "detailBase": "https://www.muou.asia",
+      "searchurl": "https://123.666291.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://123.666291.xyz",
       "enabled": true,
       "priority": 1003,
       "group": "cloud"
@@ -29,8 +29,8 @@
     {
       "name": "多多资源",
       "type": "cms",
-      "searchurl": "https://yydsys.de5.net/index.php/vod/search.html?wd=",
-      "detailBase": "https://yydsys.de5.net",
+      "searchurl": "https://tv.yydsys.top/index.php/vod/search.html?wd=",
+      "detailBase": "https://tv.yydsys.top",
       "ua": "pc",
       "enabled": true,
       "priority": 1004,
@@ -134,8 +134,8 @@
     {
       "name": "2小盘",
       "type": "cms",
-      "searchurl": "https://www.2xiaopan.top/index.php/vod/search.html?wd=",
-      "detailBase": "https://www.2xiaopan.top",
+      "searchurl": "https://www.wexwp.cc/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.wexwp.cc",
       "enabled": true,
       "priority": 1021,
       "group": "cloud"
@@ -143,8 +143,8 @@
     {
       "name": "闪电优汐",
       "type": "cms",
-      "searchurl": "http://sd.sduc.site/index.php/vod/search.html?wd=",
-      "detailBase": "http://sd.sduc.site",
+      "searchurl": "http://shandian.blog/index.php/vod/search.html?wd=",
+      "detailBase": "http://shandian.blog",
       "enabled": true,
       "priority": 1022,
       "group": "cloud"
