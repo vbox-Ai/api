@@ -202,8 +202,8 @@
       {
         "name": "木偶资源",
         "type": "cms",
-        "searchurl": "https://123.666291.xyz/index.php/vod/search.html?wd=",
-        "detailBase": "https://123.666291.xyz",
+        "searchurl": "https://www.muou.asia/index.php/vod/search.html?wd=",
+        "detailBase": "https://www.muou.asia",
         "enabled": true,
         "priority": 1003,
         "group": "cloud"
@@ -211,8 +211,8 @@
       {
         "name": "多多资源",
         "type": "cms",
-        "searchurl": "https://tv.yydsys.top/index.php/vod/search.html?wd=",
-        "detailBase": "https://tv.yydsys.top",
+        "searchurl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
+        "detailBase": "https://tv.yydsys.cc",
         "ua": "pc",
         "enabled": true,
         "priority": 1004,
@@ -231,8 +231,8 @@
       {
         "name": "至臻影视",
         "type": "cms",
-        "searchurl": "https://www.mihdr.top/index.php/vod/search.html?wd=",
-        "detailBase": "https://www.mihdr.top",
+        "searchurl": "https://mihdr.top/index.php/vod/search.html?wd=",
+        "detailBase": "https://mihdr.top",
         "enabled": true,
         "priority": 1008,
         "group": "cloud"
@@ -316,8 +316,8 @@
       {
         "name": "2小盘",
         "type": "cms",
-        "searchurl": "https://www.wexwp.cc/index.php/vod/search.html?wd=",
-        "detailBase": "https://www.wexwp.cc",
+        "searchurl": "https://wexwp.cc/index.php/vod/search.html?wd=",
+        "detailBase": "https://wexwp.cc",
         "enabled": true,
         "priority": 1021,
         "group": "cloud"
@@ -2491,6 +2491,30 @@
         "sortOrder": 611,
         "defaultProxy": false,
         "notes": "苹果CMS模板，m3u8 直链",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "guotianxiang_py",
+        "name": "国色天香",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "国色天香/我草视频 Python 蜘蛛源 v2",
+        "serviceType": "python_spider",
+        "scriptType": "python",
+        "engine": "python",
+        "api": "./sources/welfare-js/guotianxiang.py",
+        "defaultHosts": [
+          "https://9njecqnvzcai.wckz803.vip:8801",
+          "https://cvx48e9nvzcai.wckk793.vip:8801",
+          "https://www.wocao03.com"
+        ],
+        "sortOrder": 612,
+        "defaultProxy": false,
+        "notes": "并发域名抓取 + 10分钟缓存 + XOR(0x88)封面解密 + 标题字符映射解密 + 多播放源m3u8直链",
         "sslBypass": true,
         "contentType": "video",
         "visibleInNormalSpider": false,

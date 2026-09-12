@@ -1873,6 +1873,30 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "guotianxiang_py",
+      "name": "国色天香",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "国色天香/我草视频 Python 蜘蛛源 v2",
+      "serviceType": "python_spider",
+      "scriptType": "python",
+      "engine": "python",
+      "api": "./sources/welfare-js/guotianxiang.py",
+      "defaultHosts": [
+        "https://9njecqnvzcai.wckz803.vip:8801",
+        "https://cvx48e9nvzcai.wckk793.vip:8801",
+        "https://www.wocao03.com"
+      ],
+      "sortOrder": 612,
+      "defaultProxy": false,
+      "notes": "并发域名抓取 + 10分钟缓存 + XOR(0x88)封面解密 + 标题字符映射解密 + 多播放源m3u8直链",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ]
 }
