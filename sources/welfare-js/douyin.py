@@ -1,13 +1,26 @@
-# coding=utf-8
-import json, time, ssl, re, base64, random
-from base.spider import Spider
-import requests
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
+# -*- coding: utf-8 -*-
+import sys, json, time, ssl, re, base64, random
 from urllib.parse import quote, unquote
 
+sys.path.append('..')
+try:
+    from base.spider import Spider as _B
+except Exception:
+    class _B:
+        pass
+try:
+    import requests
+except ImportError:
+    requests = None
+try:
+    from Crypto.Cipher import AES
+    from Crypto.Util.Padding import unpad
+except ImportError:
+    AES = None
+    unpad = None
 
-class Spider(Spider):
+
+class Spider(_B):
 
     def getName(self):
         return "抖阴"
@@ -20,7 +33,6 @@ class Spider(Spider):
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
             "Accept-Language": "zh-CN,zh;q=0.9",
         }
-        self.session = requests.Session()
         try:
             ssl._create_default_https_context = ssl._create_unverified_context
         except:
@@ -39,18 +51,24 @@ class Spider(Spider):
         return self.host
 
     def _resolve_domain(self):
+        # 如果客户端已注入 self.host，直接使用
+        if self.host:
+            self._host_cache_time = time.time()
+            return
         headers = {"User-Agent": self.ua}
-        try:
-            r = requests.get("https://dys18.com/", headers=headers, timeout=3, verify=False)
-            if r.status_code == 200 and len(r.text) > 1000:
-                self.host = "https://dys18.com"
-                self._host_cache_time = time.time()
-                self.headers.update({"Referer": f"{self.host}/", "Origin": self.host})
-                return
-        except:
-            pass
-        main_domain = ""
-        backup_domain = ""
+        # 尝试 defaultHosts 中的域名
+        candidates = ["https://dys18.com", "https://18dyw.net"]
+        for host in candidates:
+            try:
+                r = requests.get(host, headers=headers, timeout=5, verify=False)
+                if r.status_code == 200 and len(r.text) > 1000:
+                    self.host = host.rstrip('/')
+                    self._host_cache_time = time.time()
+                    self.headers.update({"Referer": f"{self.host}/", "Origin": self.host})
+                    return
+            except:
+                continue
+        # 最后尝试从发布页提取主域名
         try:
             r = requests.get(self.publish_url, headers=headers, timeout=10, verify=False)
             if r.status_code == 200:
@@ -58,27 +76,26 @@ class Spider(Spider):
                 m = re.search(r"var\s+mainDomain\s*=\s*'([^']+)'", html)
                 if m:
                     main_domain = m.group(1)
-                m = re.search(r"var\s+backupDomain\s*=\s*'([^']+)'", html)
-                if m:
-                    backup_domain = m.group(1)
+                    m2 = re.search(r"var\s+backupDomain\s*=\s*'([^']+)'", html)
+                    backup_domain = m2.group(1) if m2 else ""
+                    chars = "abcdefghjkmnpqrstuvwxy23456789"
+                    for _ in range(10):
+                        prefix = ''.join(random.choices(chars, k=4))
+                        for suffix in [main_domain, backup_domain]:
+                            if not suffix:
+                                continue
+                            domain = f"https://{prefix}.{suffix}"
+                            try:
+                                r2 = requests.get(domain, headers=headers, timeout=3, verify=False)
+                                if r2.status_code == 200 and len(r2.text) > 1000:
+                                    self.host = domain.rstrip('/')
+                                    self._host_cache_time = time.time()
+                                    self.headers.update({"Referer": f"{self.host}/", "Origin": self.host})
+                                    return
+                            except:
+                                continue
         except:
             pass
-        chars = "abcdefghjkmnpqrstuvwxy23456789"
-        for _ in range(10):
-            prefix = ''.join(random.choices(chars, k=4))
-            for suffix in [main_domain, backup_domain]:
-                if not suffix:
-                    continue
-                domain = f"https://{prefix}.{suffix}"
-                try:
-                    r = requests.get(domain, headers=headers, timeout=3, verify=False)
-                    if r.status_code == 200 and len(r.text) > 1000:
-                        self.host = domain.rstrip('/')
-                        self._host_cache_time = time.time()
-                        self.headers.update({"Referer": f"{self.host}/", "Origin": self.host})
-                        return
-                except:
-                    continue
 
     def _req(self, url):
         self._get_host()
