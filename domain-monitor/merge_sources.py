@@ -34,11 +34,18 @@ SOURCE_FILES = {
 
 
 def bump_version(version: str) -> str:
-    """版本号自动 +1，格式 2026.07.20.1 → 2026.07.20.2"""
+    """版本号自动 +1，格式 2026.07.20.1 → 2026.07.20.2
+    日期前缀始终对齐当天 UTC 日期，避免跨天后版本号倒退。"""
+    today = datetime.now(timezone.utc).strftime('%Y.%m.%d')
     parts = version.rsplit(".", 1)
     if len(parts) == 2 and parts[1].isdigit():
-        return f"{parts[0]}.{int(parts[1]) + 1}"
-    return f"{version}.1"
+        old_date = '.'.join(parts[0].split('.')[:3])
+        old_seq = int(parts[1])
+        if old_date == today:
+            return f"{today}.{old_seq + 1}"
+        else:
+            return f"{today}.1"
+    return f"{today}.1"
 
 
 def main():

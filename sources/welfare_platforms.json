@@ -1897,6 +1897,29 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "douyin_py",
+      "name": "抖阴",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "抖阴/18dyw.net Python 蜘蛛源 - 精选AV/黑料吃瓜/AV影片/AV女优",
+      "serviceType": "python_spider",
+      "scriptType": "python",
+      "engine": "python",
+      "api": "./sources/welfare-js/douyin.py",
+      "defaultHosts": [
+        "https://dys18.com",
+        "https://18dyw.net"
+      ],
+      "sortOrder": 614,
+      "defaultProxy": false,
+      "notes": "随机子域名暴力探测 + AES-128-CBC 图片解密 + JS混淆解包(黑料吃瓜) + 6大内容板块",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ]
 }
