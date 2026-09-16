@@ -10,8 +10,8 @@
     {
       "name": "玩偶资源",
       "type": "cms",
-      "searchurl": "https://wogg.xxooo.cf/vodsearch/-------------.html?wd=",
-      "detailBase": "https://wogg.xxooo.cf",
+      "searchurl": "https://woggpan.xxooo.cf/vodsearch/-------------.html?wd=",
+      "detailBase": "https://woggpan.xxooo.cf",
       "ua": "pc",
       "enabled": true,
       "priority": 1002,
@@ -20,8 +20,8 @@
     {
       "name": "木偶资源",
       "type": "cms",
-      "searchurl": "https://123.666291.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://123.666291.xyz",
+      "searchurl": "https://www.muou.asia/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.muou.asia",
       "enabled": true,
       "priority": 1003,
       "group": "cloud"
@@ -29,8 +29,8 @@
     {
       "name": "多多资源",
       "type": "cms",
-      "searchurl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
-      "detailBase": "https://tv.yydsys.cc",
+      "searchurl": "https://yydsys.de5.net/index.php/vod/search.html?wd=",
+      "detailBase": "https://yydsys.de5.net",
       "ua": "pc",
       "enabled": true,
       "priority": 1004,
@@ -39,8 +39,8 @@
     {
       "name": "欧歌资源",
       "type": "cms",
-      "searchurl": "https://woog.nxog.eu.org/index.php/vod/search.html?wd=",
-      "detailBase": "https://woog.nxog.eu.org",
+      "searchurl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://woog.430520.xyz",
       "ua": "pc",
       "enabled": true,
       "priority": 1006,
@@ -143,8 +143,8 @@
     {
       "name": "闪电优汐",
       "type": "cms",
-      "searchurl": "http://shandian.blog/index.php/vod/search.html?wd=",
-      "detailBase": "http://shandian.blog",
+      "searchurl": "http://sd.sduc.site/index.php/vod/search.html?wd=",
+      "detailBase": "http://sd.sduc.site",
       "enabled": true,
       "priority": 1022,
       "group": "cloud"

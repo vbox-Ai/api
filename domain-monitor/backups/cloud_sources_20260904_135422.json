@@ -10,8 +10,8 @@
     {
       "name": "玩偶资源",
       "type": "cms",
-      "searchurl": "https://wogg.xxooo.cf/vodsearch/-------------.html?wd=",
-      "detailBase": "https://wogg.xxooo.cf",
+      "searchurl": "https://woggpan.888484.xyz/vodsearch/-------------.html?wd=",
+      "detailBase": "https://woggpan.888484.xyz",
       "ua": "pc",
       "enabled": true,
       "priority": 1002,
@@ -20,8 +20,8 @@
     {
       "name": "木偶资源",
       "type": "cms",
-      "searchurl": "https://123.666291.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://123.666291.xyz",
+      "searchurl": "https://www.muou.asia/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.muou.asia",
       "enabled": true,
       "priority": 1003,
       "group": "cloud"
@@ -39,8 +39,8 @@
     {
       "name": "欧歌资源",
       "type": "cms",
-      "searchurl": "https://woog.nxog.eu.org/index.php/vod/search.html?wd=",
-      "detailBase": "https://woog.nxog.eu.org",
+      "searchurl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://woog.430520.xyz",
       "ua": "pc",
       "enabled": true,
       "priority": 1006,
@@ -49,8 +49,8 @@
     {
       "name": "至臻影视",
       "type": "cms",
-      "searchurl": "https://www.mihdr.top/index.php/vod/search.html?wd=",
-      "detailBase": "https://www.mihdr.top",
+      "searchurl": "https://mihdr.top/index.php/vod/search.html?wd=",
+      "detailBase": "https://mihdr.top",
       "enabled": true,
       "priority": 1008,
       "group": "cloud"
@@ -134,8 +134,8 @@
     {
       "name": "2小盘",
       "type": "cms",
-      "searchurl": "https://www.2xiaopan.top/index.php/vod/search.html?wd=",
-      "detailBase": "https://www.2xiaopan.top",
+      "searchurl": "https://wexwp.cc/index.php/vod/search.html?wd=",
+      "detailBase": "https://wexwp.cc",
       "enabled": true,
       "priority": 1021,
       "group": "cloud"
