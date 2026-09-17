@@ -6,17 +6,6 @@
   },
   "sites": [
     {
-      "key": "js_腾讯视频",
-      "name": "官源 | 腾讯视频[js]",
-      "type": 3,
-      "api": "./js/txsp.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
-    },
-    {
       "key": "js_剧迷",
       "name": "影视 | 剧迷[js]",
       "type": 3,
@@ -32,17 +21,6 @@
       "name": "影视 | 韩小圈[js]",
       "type": 3,
       "api": "./js/hanxiaoquan.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
-    },
-    {
-      "key": "js_哇哇影视",
-      "name": "影视 | 哇哇影视[js]",
-      "type": 3,
-      "api": "./js/wawa_video.js",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1,
@@ -160,28 +138,6 @@
       "timeout": 25
     },
     {
-      "key": "js_TVSO",
-      "name": "网盘 | TVSO[js]",
-      "type": 3,
-      "api": "./js/tvso.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 20
-    },
-    {
-      "key": "js_爱盼",
-      "name": "网盘 | 爱盼[js]",
-      "type": 3,
-      "api": "./js/aipan.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 20
-    },
-    {
       "key": "js_TG搜索",
       "name": "网盘 | TG搜索[js]",
       "type": 3,
@@ -191,50 +147,6 @@
       "changeable": 1,
       "ext": "",
       "timeout": 25
-    },
-    {
-      "key": "js_爱奇艺",
-      "name": "官源 | 爱奇艺[js]",
-      "type": 3,
-      "api": "./js/iqiyi.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
-    },
-    {
-      "key": "js_优酷",
-      "name": "官源 | 优酷[js]",
-      "type": 3,
-      "api": "./js/youku.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
-    },
-    {
-      "key": "js_芒果TV",
-      "name": "官源 | 芒果TV[js]",
-      "type": 3,
-      "api": "./js/mgtv.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
-    },
-    {
-      "key": "y_pianku",
-      "name": "影视 | 片库TV[py]",
-      "type": 3,
-      "api": "./js/pianku.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
     },
     {
       "key": "y_damahou",
@@ -270,76 +182,10 @@
       "timeout": 30
     },
     {
-      "key": "y_hongguoduanju",
-      "name": "短剧 | 红果短剧[py]",
-      "type": 3,
-      "api": "./js/hongguoduanju.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
-    },
-    {
-      "key": "y_yunduo",
-      "name": "影视 | 云朵影视[py]",
-      "type": 3,
-      "api": "./js/yunduo.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
-    },
-    {
       "key": "y_dingji",
       "name": "影视 | 顶级影院[py]",
       "type": 3,
       "api": "./js/dingji.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
-    },
-    {
-      "key": "y_xinhanju",
-      "name": "影视 | 新韩剧网[py]",
-      "type": 3,
-      "api": "./js/xinhanju.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
-    },
-    {
-      "key": "y_xingkong4k",
-      "name": "影视 | 星空4K[py]",
-      "type": 3,
-      "api": "./js/xingkong4k.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
-    },
-    {
-      "key": "y_bubu4k",
-      "name": "影视 | 布布4K[py]",
-      "type": 3,
-      "api": "./js/bubu4k.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "",
-      "timeout": 30
-    },
-    {
-      "key": "y_xingying4k",
-      "name": "影视 | 星影4K[py]",
-      "type": 3,
-      "api": "./js/xingying4k_live.py",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1,
