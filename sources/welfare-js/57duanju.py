@@ -226,9 +226,51 @@ class Spider(SpiderBase):
         elif pic_url.startswith("/"):
             pic_url = self._get_base() + pic_url
 
-        if "s.chigua.media" in pic_url and "@" not in pic_url:
-            return "%s@Referer=%s@User-Agent=%s" % (pic_url, self._get_base() + "/", quote(self._ua))
+        # 防盗链图片（s.chigua.media）走 localProxy 代理通道回源带 Referer
+        # @Referer= 是 TVBox 语法，本平台图片加载器不识别，需改用 getProxyUrl 代理
+        if "s.chigua.media" in pic_url:
+            return self._build_pic_proxy(pic_url)
         return pic_url
+
+    def _build_pic_proxy(self, url):
+        """构造 localProxy 代理 URL（对齐 daily_battle.py 的 img 代理模式）"""
+        try:
+            if hasattr(self, 'getProxyUrl'):
+                base = self.getProxyUrl()
+                if not base:
+                    return url
+                if '?' not in base:
+                    base += '?do=py'
+                return base + '&type=img&url=' + quote(
+                    base64.b64encode(url.encode()).decode(), safe=''
+                )
+        except Exception:
+            pass
+        return url
+
+    def _parse_proxy_params(self, param):
+        """解析 localProxy 参数（dict 或 query string）"""
+        if isinstance(param, dict):
+            return param
+        if isinstance(param, str):
+            try:
+                d = json.loads(param)
+                if isinstance(d, dict):
+                    return d
+            except Exception:
+                pass
+            result = {}
+            qs = param.split('?', 1)[1] if '?' in param else param
+            for pair in qs.split('&'):
+                if '=' in pair:
+                    k, v = pair.split('=', 1)
+                    from urllib.parse import unquote
+                    result[k] = unquote(v)
+            return result
+        return {}
+
+    def _d64(self, text):
+        return base64.b64decode(str(text).encode()).decode()
 
     def homeContent(self, filter):
         classes = [
@@ -479,11 +521,35 @@ class Spider(SpiderBase):
         return ""
 
     def localProxy(self, params):
-        url = params.get("url", "")
-        if not url:
-            return [404, "text/plain; charset=utf-8", "Missing url parameter"]
-        res = self._fetch(url, referer=self._get_base() + "/")
-        return [res.get("code", 200), "image/jpeg", res.get("bytes", b"")]
+        try:
+            p = self._parse_proxy_params(params)
+            type_ = p.get('type', '')
+            url = p.get('url', '')
+
+            if type_ == 'img':
+                # url 是 base64 编码的原图地址，解码后带 Referer 回源
+                real_url = url
+                if url and not url.startswith('http'):
+                    try:
+                        real_url = self._d64(url)
+                    except Exception:
+                        real_url = url
+                if not real_url.startswith('http'):
+                    return [404, "text/plain; charset=utf-8", b""]
+                res = self._fetch(real_url, referer=self._get_base() + "/")
+                code = res.get("code", 404)
+                if code == 200 and res.get("bytes"):
+                    return [200, "image/jpeg", res.get("bytes", b"")]
+                return [404, "text/plain; charset=utf-8", b""]
+
+            # 兜底：直接代理 url 参数（老逻辑）
+            if not url:
+                return [404, "text/plain; charset=utf-8", "Missing url parameter"]
+            res = self._fetch(url, referer=self._get_base() + "/")
+            return [res.get("code", 200), "image/jpeg", res.get("bytes", b"")]
+        except Exception as e:
+            print("[57D] localProxy err: " + str(e))
+            return [404, "text/plain; charset=utf-8", b""]
 
     def destroy(self):
         self.options = {}
