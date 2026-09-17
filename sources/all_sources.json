@@ -2543,6 +2543,78 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "911baoliao_py",
+        "name": "911爆料网",
+        "category": "video",
+        "icon": "newspaper.fill",
+        "desc": "Python蜘蛛版 — 5域名并发探测+10分钟缓存",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://barely.jysznvsj.cc",
+          "https://abopf.jysznvsj.cc",
+          "https://392d.3920279.cc",
+          "https://aaqq5838.cqcsms.com",
+          "https://blw66.com"
+        ],
+        "sortOrder": 620,
+        "defaultProxy": false,
+        "notes": "911爆料网。5域名并发探测（ThreadPoolExecutor，先到先用）+ 10分钟TTL缓存。XOR解密 + DOM切片解析 + data-config JSON 提取真实m3u8直链。9大分类（今日大瓜/AI短剧/优先投放区/每日大赛/海角社区/午夜剧场/动漫天堂/水果派解说/独家爆料）。封面图走本地占位图。",
+        "api": "./sources/welfare-js/911baoliao.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "fcjav_py",
+        "name": "FCJAV",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "Python蜘蛛版 — 3域名并发+Cloudflare检测",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://fcjav.com",
+          "https://fcjav.tv",
+          "https://fcjav.club"
+        ],
+        "sortOrder": 621,
+        "defaultProxy": false,
+        "notes": "FCJAV。3域名并发探测（ThreadPoolExecutor，先到先用）+ 10分钟TTL缓存。HTMLParser+正则双重解析 + Cloudflare验证页检测 + UPN AES-128-CBC解密播放 + 多线路智能择优。6大分类（最近更新/素人/有码/无码/无码破解/无码流出）+ 5类筛选（类型/演员/片商/厂牌/导演）。",
+        "api": "./sources/welfare-js/fcjav.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "jiuheyi_py",
+        "name": "九合一",
+        "category": "video",
+        "icon": "square.grid.2x2.fill",
+        "desc": "Python蜘蛛版 — 9区并发域名+按zone独立缓存",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://6182094.xyz"
+        ],
+        "sortOrder": 622,
+        "defaultProxy": false,
+        "notes": "九合一。9区域名矩阵 + 远程域名池同步 + 按zone独立并发探测（ThreadPoolExecutor，先到先用）+ 10分钟TTL缓存。m3u8 AES-128解密内联（data URI）+ 图片XOR解密代理（z4 XOR 0x5A / z5z8z9 XOR img_key_589）。9区共100+子分类。playerContent 返回 parse=0 直链或 data: m3u8。",
+        "api": "./sources/welfare-js/jiuheyi.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ]
   }
