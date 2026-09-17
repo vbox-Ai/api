@@ -487,6 +487,30 @@
       "visibleInHome": false
     },
     {
+      "platformKey": "aidjst_py",
+      "name": "Ai顶级涩图",
+      "category": "comic",
+      "icon": "photo.fill",
+      "desc": "AI绘画图片站 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://aidjst.cc/888"
+      ],
+      "sortOrder": 330,
+      "defaultProxy": false,
+      "notes": "Ai顶级涩图(Ai顶级涩图)。WordPress 站，分类页 404，所有分类均返回首页内容；pics:// 协议浏览图片；@Referer 内联防盗链；SSL 自签名。",
+      "api": "./sources/welfare-js/aidjst.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "comic",
+      "imageReferer": "https://aidjst.cc/888/",
+      "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
       "platformKey": "shenshi_comic_py",
       "name": "绅士漫画",
       "category": "comic",
