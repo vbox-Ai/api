@@ -751,6 +751,10 @@
     "disabledHosts": []
   },
   "welfarePlatforms": {
+    "_meta_version_override": {
+      "version": "2026.09.17.4",
+      "updatedAt": "2026-09-17T20:00:00Z"
+    },
     "schemaVersion": 1,
     "categories": [
       {
@@ -2614,6 +2618,77 @@
         "notes": "随机子域名暴力探测 + AES-128-CBC 图片解密 + JS混淆解包(黑料吃瓜) + 6大内容板块",
         "sslBypass": true,
         "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "thisav_py",
+        "name": "蝴蝶·ThisAV完整版",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "MissAV 多域名动态探测 Python 源（34分类+女优筛选）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://www.thisav.my",
+          "https://x99dh.cc",
+          "https://x99dh.one"
+        ],
+        "sortOrder": 623,
+        "defaultProxy": false,
+        "notes": "导航站动态解析域名+缓存。34个分类（中文字幕/最近更新/女优一览/女优排行/全部类型/全部发行商/VR专区/今日/本週/本月热门/FC2/HEYZO/东京热/加勒比等）。女优页支持身高/罩杯/年龄/出道年筛选。封面图 @Referer 内联防盗链+dummyimage 兜底。三层播放提取：JS packer 反混淆→surrit.com UUID 直连→网页嗅探兜底。纯标准库，零第三方依赖。",
+        "api": "./sources/welfare-js/thisav.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "imageSSLBypass": true,
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "qzjp_py",
+        "name": "茄子精品",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "MacCMS 11分类 Python 源",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://oxh.qzjp4.beer"
+        ],
+        "sortOrder": 624,
+        "defaultProxy": false,
+        "notes": "MacCMS fed-list 模板，11个分类（美女写真/国产精品/无码专区/中文字幕/人妻熟女/亚洲情色/制服丝袜/SM捆绑等）。封面图 @Referer 内联防盗链。player_data JSON 提取 m3u8 直链（parse=0）。纯标准库，零第三方依赖。",
+        "api": "./sources/welfare-js/qzjp.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "imageSSLBypass": true,
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "libvio_py",
+        "name": "Libvio",
+        "category": "video",
+        "icon": "play.rectangle.fill",
+        "desc": "苹果CMS Stui + AES-128-CBC 内置解密 Python 源（5主分类）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://www.libvio.cam"
+        ],
+        "sortOrder": 625,
+        "defaultProxy": false,
+        "notes": "苹果CMS Stui 模板。5主分类（电影/电视剧/纪录片/动漫/综艺）+子类型/地区/年份三级筛选。Artplayer 页面混淆常量提取（playPageUrl/secretKeySeed/timestamp）+ MD5签名 API 请求 + AES-128-CBC 内置纯 Python 解密（零加密库依赖）。localProxy 代理 m3u8/TS 分片防盗链。依赖 requests+lxml（IPA 已集成）。",
+        "api": "./sources/welfare-js/libvio.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "imageSSLBypass": true,
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
