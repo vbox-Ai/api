@@ -413,7 +413,8 @@ class Spider(SpiderBase):
                     raw_pic = "https:" + raw_pic
                 elif raw_pic.startswith("/"):
                     raw_pic = urllib.parse.urljoin(self.baseHost, raw_pic)
-                proxy_pic = ("%s@Referer=%s/@User-Agent=%s" % (raw_pic, self.baseHost, quote(self._ua))) if raw_pic else ""
+                # 封面图直连 CDN（spic2-147.71352.men 无防盗链），纯 URL 不带 @Referer
+                proxy_pic = raw_pic if raw_pic else ""
 
                 alt_m = re.search(r'alt=["\']([^"\']+)["\']', block)
                 title = alt_m.group(1).strip() if alt_m else ""
@@ -571,7 +572,8 @@ class Spider(SpiderBase):
             if raw_pic.startswith("//"):
                 raw_pic = "https:" + raw_pic
 
-            proxy_pic = "%s@Referer=%s/@User-Agent=%s" % (raw_pic, self.baseHost, quote(self._ua))
+            # 封面图直连 CDN（spic2-147.71352.men 无防盗链），纯 URL 不带 @Referer
+            proxy_pic = raw_pic
 
             dur_m = re.search(r'(\d{1,2}:\d{2}(?::\d{2})?)', ch)
             dur = ("蝴蝶影视 · %s" % dur_m.group(1)) if dur_m else "蝴蝶影视"

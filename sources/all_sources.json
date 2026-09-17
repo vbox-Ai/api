@@ -2671,29 +2671,6 @@
         "visibleInHome": false
       },
       {
-        "platformKey": "libvio_py",
-        "name": "Libvio",
-        "category": "video",
-        "icon": "play.rectangle.fill",
-        "desc": "苹果CMS Stui + AES-128-CBC 内置解密 Python 源（5主分类）",
-        "serviceType": "python_spider",
-        "defaultHosts": [
-          "https://www.libvio.cam"
-        ],
-        "sortOrder": 625,
-        "defaultProxy": false,
-        "notes": "苹果CMS Stui 模板。5主分类（电影/电视剧/纪录片/动漫/综艺）+子类型/地区/年份三级筛选。Artplayer 页面混淆常量提取（playPageUrl/secretKeySeed/timestamp）+ MD5签名 API 请求 + AES-128-CBC 内置纯 Python 解密（零加密库依赖）。localProxy 代理 m3u8/TS 分片防盗链。依赖 requests+lxml（IPA 已集成）。",
-        "api": "./sources/welfare-js/libvio.py",
-        "scriptType": "python",
-        "engine": "python",
-        "sslBypass": true,
-        "contentType": "video",
-        "imageSSLBypass": true,
-        "visibleInNormalSpider": false,
-        "visibleInGlobalSearch": false,
-        "visibleInHome": false
-      },
-      {
         "platformKey": "jiuheyi_py",
         "name": "九合一",
         "category": "video",

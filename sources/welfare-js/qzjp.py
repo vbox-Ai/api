@@ -103,10 +103,10 @@ class Spider(BaseSpider):
         for href, pic, title in items[:120]:
             m = _re.search(r'/id/(\d+)/', href)
             vid = m.group(1) if m else href
-            # 封面图防盗链：拼 @Referer 内联，客户端 PlatformImageLoader 加载时自动带 Referer
+            # 封面图 CDN（pic.heiimg.com 等）实测无需 Referer，纯 URL 直连，不带 @Referer
             if pic and pic.startswith("//"):
                 pic = "https:" + pic
-            proxy_pic = f"{pic}@Referer={self.siteUrl}/" if pic else ""
+            proxy_pic = pic if pic else ""
             video_list.append({
                 "vod_id": vid,
                 "vod_name": title,
@@ -129,8 +129,21 @@ class Spider(BaseSpider):
         html = self._fetch_text(url)
 
         # 真实结构: player_data={"url":"https:\/\/xxx.m3u8"}
-        m3u8_match = _re.search(r'"url":"(https?:\\?/\\?/[^"]+\.m3u8[^"]*)"', html)
-        m3u8_url = m3u8_match.group(1).replace("\\/", "/") if m3u8_match else ""
+        # 优先从 player_data JSON 块提取 url，避免误匹配其它 "url":"" 空字段
+        m3u8_url = ""
+        pd_match = _re.search(r'player_data\s*=\s*(\{.*?\})\s*;', html, _re.S)
+        if pd_match:
+            pd_text = pd_match.group(1)
+            # 反转义 JSON 字符串里的 \/
+            pd_text = pd_text.replace("\\/", "/")
+            u_match = _re.search(r'"url"\s*:\s*"(https?://[^"]+)"', pd_text)
+            if u_match:
+                m3u8_url = u_match.group(1)
+        # 兜底：全页找 m3u8 直链
+        if not m3u8_url:
+            fb = _re.search(r'(https?://[^"\']+\.m3u8[^"\']*)', html)
+            if fb:
+                m3u8_url = fb.group(1).replace("\\/", "/")
 
         title_match = _re.search(r'<h1[^>]*>([^<]*)</h1>', html)
         title = title_match.group(1).strip() if title_match else vid
@@ -139,7 +152,8 @@ class Spider(BaseSpider):
         pic = pic_match.group(1).strip() if pic_match else ""
         if pic and pic.startswith("//"):
             pic = "https:" + pic
-        proxy_pic = f"{pic}@Referer={self.siteUrl}/" if pic else ""
+        # 纯 URL，不带 @Referer
+        proxy_pic = pic if pic else ""
 
         result["list"] = [{
             "vod_id": vid,
@@ -183,7 +197,7 @@ class Spider(BaseSpider):
                 vid = m.group(1) if m else href
                 if pic and pic.startswith("//"):
                     pic = "https:" + pic
-                proxy_pic = f"{pic}@Referer={self.siteUrl}/" if pic else ""
+                proxy_pic = pic if pic else ""
                 video_list.append({
                     "vod_id": vid,
                     "vod_name": title,
@@ -199,11 +213,14 @@ class Spider(BaseSpider):
         return result
 
     def playerContent(self, flag, id, vipFlags):
+        # m3u8 直链播放：CDN（v.heicdn.com / *.lbsl2026.com）实测无需 Referer，
+        # 带本站 Referer 反而可能被部分 CDN 识别为异源请求而拒绝。
+        # 返回空 header，让播放器用默认 User-Agent 直接请求。
         result = {}
         result["parse"] = 0
         result["jx"] = 0
         result["url"] = id
-        result["header"] = self.headers
+        result["header"] = {}
         return result
 
     def localProxy(self, param):
