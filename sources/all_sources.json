@@ -2537,6 +2537,31 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "duanju_57_py",
+        "name": "57短剧(Python)",
+        "category": "video",
+        "icon": "tv.fill",
+        "desc": "Python蜘蛛版 — 短剧/吃瓜视频，域名池并发探测",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://57cg1.com",
+          "https://57cg2.com",
+          "https://57cg5.com",
+          "https://57cg6.com"
+        ],
+        "sortOrder": 625,
+        "defaultProxy": false,
+        "notes": "57短剧/57吃瓜 Python 蜘蛛 V4.2。零外部依赖（纯 urllib）。域名池并发探测（cg1/2/5/6+CloudFront镜像+cg3/4/duanju.org兜底），10分钟缓存，反诈劫持页自动识别踢出。原主站57duanju.org已被劫持，cg站为全功能站。",
+        "api": "./sources/welfare-js/57duanju.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ]
   }
