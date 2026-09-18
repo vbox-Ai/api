@@ -582,9 +582,31 @@
         "changeable": 1,
         "ext": "",
         "timeout": 30
+      },
+      {
+        "key": "y_323ys",
+        "name": "影视 | 323影视[py]",
+        "type": 3,
+        "api": "./js/323ys.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "y_guazipian",
+        "name": "影视 | 瓜子APP[py]",
+        "type": 3,
+        "api": "./js/guazipian.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
       }
     ],
-    "siteCount": 33
+    "siteCount": 21
   },
   "domainOverrides": {
     "overrides": []
