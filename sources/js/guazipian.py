@@ -401,8 +401,6 @@ t5lYKfpe8k83ZA==
             t = str(int(time.time()))
             body1 = {"token_id": self.token_id, "vod_id": vod_id, "mobile_time": t, "token": self.token}
             qdata = self.get_data(body1, '/App/IndexPlay/playInfo')
-            body2 = {"vurl_cloud_id": "2", "vod_d_id": vod_id}
-            jdata = self.get_data(body2, '/App/Resource/Vurl/show')
             if not qdata or 'vodInfo' not in qdata:
                 return {'list': []}
             vod = qdata['vodInfo']
@@ -415,22 +413,31 @@ t5lYKfpe8k83ZA==
                 "vod_actor": vod.get('vod_actor', ''),
                 "vod_director": vod.get('vod_director', ''),
                 "vod_content": vod.get('vod_use_content', '').strip(),
-                "vod_play_from": "瓜子影视"
+                "vod_play_from": "瓜子影视",
+                "vod_play_url": ""
             }
+
+            # 主路：Vurl/show 取每集完整 param（含 vurl_id + domain_type）
+            body2 = {"vurl_cloud_id": "2", "vod_d_id": vod_id}
+            jdata = self.get_data(body2, '/App/Resource/Vurl/show')
             play_list = []
-            if jdata and 'list' in jdata:
+            if jdata and 'list' in jdata and jdata['list']:
                 for index, item in enumerate(jdata['list']):
                     if 'play' in item:
                         n, p = [], []
                         for key, value in item['play'].items():
-                            if 'param' in value and value['param']:
+                            if isinstance(value, dict) and value.get('param'):
                                 n.append(key)
                                 p.append(value['param'])
                         if p:
                             play_name = str(index + 1) if len(jdata['list']) != 1 else vod.get('vod_name', '')
                             play_url = f"{p[-1]}||{'@'.join(n)}"
                             play_list.append(f"{play_name}${play_url}")
-            video_detail["vod_play_url"] = "#".join(play_list)
+                video_detail["vod_play_url"] = "#".join(play_list)
+            else:
+                # 兜底：Vurl/show 返回空（部分电影），用 showOne 默认参数构造可播放链接
+                video_detail["vod_play_url"] = f"{vod.get('vod_name', vod_id)}$vod_d_id={vod_id}&vurl_id={vod_id}&domain_type=8&resolution=1080&type=play||1080"
+
             return {'list': [video_detail]}
         except Exception as e:
             print(f"获取详情失败: {e}")

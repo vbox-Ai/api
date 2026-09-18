@@ -501,7 +501,8 @@ class Spider(SpiderBase):
         for line in enabled_lines:
             # 统一改名：优先按线路代码匹配，其次按原名匹配，都没有就保留原名
             show_name = self.RENAME_MAP.get(line["from_code"]) or self.RENAME_MAP.get(line["show"]) or line["show"]
-            display_parts.append(show_name)      # 只显示名，不带 @@代码
+            # 显示名@@代码 格式：播放器只显示 show_name，playerContent 通过 @@ 还原线路代码
+            display_parts.append("{}@@{}".format(show_name, line["from_code"]))
             url_parts.append(line["url_group"])
 
         vod_play_from = "$$$".join(display_parts)
