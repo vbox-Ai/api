@@ -748,7 +748,7 @@
         "timeout": 30,
         "group": "music",
         "engineType": "lxMusic",
-        "pluginPath": "sources/lx/daxe.js",
+        "pluginPath": "lx/daxe.js",
         "version": "v5",
         "md5": "cb80978d97b290b328ba1ada3c3f8406"
       },
@@ -765,7 +765,7 @@
         "timeout": 30,
         "group": "music",
         "engineType": "lxMusic",
-        "pluginPath": "sources/lx/nianxin.js",
+        "pluginPath": "lx/nianxin.js",
         "version": "1.0.2",
         "md5": "7eab33be0802b27962a5a0c020497125"
       }
