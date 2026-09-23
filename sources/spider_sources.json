@@ -639,20 +639,6 @@
       "engineType": "node"
     },
     {
-      "key": "nodejs_animexifan",
-      "name": "动漫 | 稀饭[采集]",
-      "type": 3,
-      "api": "",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "changeable": 0,
-      "ext": "",
-      "timeout": 30,
-      "group": "video",
-      "engineType": "node"
-    },
-    {
       "key": "nodejs_animehuazi",
       "name": "动漫 | 花子[采集]",
       "type": 3,
@@ -667,5 +653,5 @@
       "engineType": "node"
     }
   ],
-  "siteCount": 52
+  "siteCount": 51
 }
