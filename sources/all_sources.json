@@ -784,20 +784,6 @@
         "engineType": "node"
       },
       {
-        "key": "nodejs_guazi",
-        "name": "影视 | 瓜子[秒播]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "video",
-        "engineType": "node"
-      },
-      {
         "key": "nodejs_wexDuBoKu",
         "name": "影视 | 独播[秒播]",
         "type": 3,
@@ -826,36 +812,8 @@
         "engineType": "node"
       },
       {
-        "key": "nodejs_wencai",
-        "name": "影视 | 文采[秒播]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "video",
-        "engineType": "node"
-      },
-      {
         "key": "nodejs_appv7dashixiong",
         "name": "影视 | 大师兄[秒播]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "video",
-        "engineType": "node"
-      },
-      {
-        "key": "nodejs_appv7fenzhu",
-        "name": "影视 | 粉猪追剧[秒播]",
         "type": 3,
         "api": "",
         "searchable": 1,
@@ -898,20 +856,6 @@
       {
         "key": "nodejs_appv7xiaoyouzi",
         "name": "影视 | 小柚子[秒播]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "video",
-        "engineType": "node"
-      },
-      {
-        "key": "nodejs_appv7xiaoningmeng",
-        "name": "影视 | 小柠檬[秒播]",
         "type": 3,
         "api": "",
         "searchable": 1,
@@ -980,20 +924,6 @@
         "engineType": "node"
       },
       {
-        "key": "nodejs_yiyingshi",
-        "name": "影视 | 伊影[秒播]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "video",
-        "engineType": "node"
-      },
-      {
         "key": "nodejs_rebo",
         "name": "影视 | 热播[秒播]",
         "type": 3,
@@ -1036,7 +966,7 @@
         "engineType": "node"
       }
     ],
-    "siteCount": 52
+    "siteCount": 47
   },
   "domainOverrides": {
     "overrides": []
