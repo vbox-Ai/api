@@ -812,6 +812,34 @@
         "engineType": "node"
       },
       {
+        "key": "nodejs_wexaitiantang",
+        "name": "影视 | 天堂[采集]",
+        "type": 3,
+        "api": "",
+        "searchable": 1,
+        "quickSearch": 1,
+        "filterable": 1,
+        "changeable": 0,
+        "ext": "",
+        "timeout": 30,
+        "group": "video",
+        "engineType": "node"
+      },
+      {
+        "key": "nodejs_ikanbot",
+        "name": "影视 | 爱看[采集]",
+        "type": 3,
+        "api": "",
+        "searchable": 1,
+        "quickSearch": 1,
+        "filterable": 1,
+        "changeable": 0,
+        "ext": "",
+        "timeout": 30,
+        "group": "video",
+        "engineType": "node"
+      },
+      {
         "key": "nodejs_appv7dashixiong",
         "name": "影视 | 大师兄[秒播]",
         "type": 3,
