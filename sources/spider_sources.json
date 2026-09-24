@@ -665,7 +665,21 @@
       "timeout": 30,
       "group": "video",
       "engineType": "node"
+    },
+    {
+      "key": "nodejs_biliys",
+      "name": "哔哩 | 影视[采集]",
+      "type": 3,
+      "api": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "ext": "",
+      "timeout": 30,
+      "group": "video",
+      "engineType": "node"
     }
   ],
-  "siteCount": 52
+  "siteCount": 53
 }
