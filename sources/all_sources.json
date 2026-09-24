@@ -1022,62 +1022,6 @@
         "engineType": "node"
       },
       {
-        "key": "nodejs_manjuhuolong",
-        "name": "漫剧 | 小龙[采集]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "video",
-        "engineType": "node"
-      },
-      {
-        "key": "nodejs_manjuqimao",
-        "name": "漫剧 | 小猫[采集]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "video",
-        "engineType": "node"
-      },
-      {
-        "key": "nodejs_manjuhongguo",
-        "name": "漫剧 | 小红[采集]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "video",
-        "engineType": "node"
-      },
-      {
-        "key": "nodejs_manjuxifan",
-        "name": "漫剧 | 小喜[采集]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "video",
-        "engineType": "node"
-      },
-      {
         "key": "nodejs_hema",
         "name": "短漫 | 小马[采集]",
         "type": 3,
@@ -1090,9 +1034,23 @@
         "timeout": 30,
         "group": "video",
         "engineType": "node"
+      },
+      {
+        "key": "nodejs_biliys",
+        "name": "哔哩 | 影视[采集]",
+        "type": 3,
+        "api": "",
+        "searchable": 1,
+        "quickSearch": 1,
+        "filterable": 1,
+        "changeable": 0,
+        "ext": "",
+        "timeout": 30,
+        "group": "video",
+        "engineType": "node"
       }
     ],
-    "siteCount": 56
+    "siteCount": 53
   },
   "domainOverrides": {
     "overrides": []
