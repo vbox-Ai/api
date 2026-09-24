@@ -17,7 +17,9 @@
     "domainOverrides": "https://vbox-ai.github.io/api/sources/domain_overrides.json",
     "parsers": "https://vbox-ai.github.io/api/sources/parsers.json",
     "disabledSources": "https://vbox-ai.github.io/api/sources/disabled_sources.json",
-    "welfarePlatforms": "https://vbox-ai.github.io/api/sources/welfare_platforms.json"
+    "welfarePlatforms": "https://vbox-ai.github.io/api/sources/welfare_platforms.json",
+    "nodeRuntimeBundle": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/bundles/kstore_index.js",
+    "nodeRuntimeBundleVer": "https://raw.githubusercontent.com/vbox-Ai/api/main/sources/bundles/kstore.version"
   },
   "disabledKeys": [],
   "forceRefresh": true

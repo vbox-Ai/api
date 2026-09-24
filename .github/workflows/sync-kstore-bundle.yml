@@ -1,0 +1,68 @@
+name: Sync KStore Bundle
+
+# 每 3 天轮询一次 kstore 上游 bundle 官方源；
+# 若上游 index.js.md5 与仓库 sources/bundles/kstore_index.js 不一致，
+# 则下载最新 bundle 覆盖入库并更新版本号，从而让 vbox 启动拉取到最新版。
+
+on:
+  schedule:
+    - cron: "0 3 */3 * *"   # 每 3 天 03:00 (UTC) 轮询
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# 排队执行，避免与 bump-version / check-domains 同时 push 冲突
+concurrency:
+  group: sync-kstore-bundle
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compare and pull latest bundle
+        run: |
+          UPSTREAM_MD5=$(curl -s -m 60 https://9280.kstore.vip/cat/index.js.md5 | tr -d '[:space:]')
+          echo "upstream md5: $UPSTREAM_MD5"
+          if [ ! -f sources/bundles/kstore_index.js ]; then
+            LOCAL_MD5="absent"
+          else
+            LOCAL_MD5=$(md5sum sources/bundles/kstore_index.js | awk '{print $1}')
+          fi
+          echo "local    md5: $LOCAL_MD5"
+          if [ -z "$UPSTREAM_MD5" ] || [ "$UPSTREAM_MD5" = "$LOCAL_MD5" ]; then
+            echo "bundle up to date, skipping"
+            echo "HAS_CHANGE=no" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          echo "new upstream bundle detected, downloading..."
+          curl -sL -m 300 https://9280.kstore.vip/cat/index.js -o sources/bundles/kstore_index.js
+          md5sum sources/bundles/kstore_index.js
+          date -u +%Y%m%d > sources/bundles/kstore.version
+          echo "HAS_CHANGE=yes" >> "$GITHUB_ENV"
+
+      - name: Commit and push (if changed)
+        if: env.HAS_CHANGE == 'yes'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add sources/bundles/
+          git diff --cached --quiet && echo "no staged change" && exit 0
+          git commit -m "chore: sync kstore bundle to $(cat sources/bundles/kstore.version)"
+          for i in 1 2 3; do
+            git pull --rebase origin main
+            if git push; then
+              echo "Push succeeded on attempt $i"
+              exit 0
+            fi
+            echo "Push failed on attempt $i, retrying in 10s..."
+            sleep 10
+          done
+          echo "Push failed after 3 attempts"
+          exit 1
