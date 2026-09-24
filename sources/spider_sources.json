@@ -679,7 +679,21 @@
       "timeout": 30,
       "group": "video",
       "engineType": "node"
+    },
+    {
+      "key": "nodejs_bilibili",
+      "name": "哔哩 | 合集[采集]",
+      "type": 3,
+      "api": "",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "ext": "",
+      "timeout": 30,
+      "group": "video",
+      "engineType": "node"
     }
   ],
-  "siteCount": 53
+  "siteCount": 54
 }
