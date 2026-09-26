@@ -280,15 +280,6 @@
         "group": "cloud"
       },
       {
-        "name": "319影社",
-        "type": "wordpress",
-        "searchurl": "https://www.319312.com/?s=",
-        "detailBase": "https://www.319312.com",
-        "enabled": true,
-        "priority": 1018,
-        "group": "cloud"
-      },
-      {
         "name": "人人电影",
         "type": "dedecms",
         "searchurl": "https://www.rrdynb.com/plus/search.php?q=",
@@ -302,24 +293,6 @@
         },
         "enabled": true,
         "priority": 1019,
-        "group": "cloud"
-      },
-      {
-        "name": "飞猫影视",
-        "type": "cms",
-        "searchurl": "http://feimo.fun/index.php/vod/search.html?wd=",
-        "detailBase": "http://feimo.fun",
-        "enabled": true,
-        "priority": 1020,
-        "group": "cloud"
-      },
-      {
-        "name": "2小盘",
-        "type": "cms",
-        "searchurl": "https://www.2xiaopan.top/index.php/vod/search.html?wd=",
-        "detailBase": "https://www.2xiaopan.top",
-        "enabled": true,
-        "priority": 1021,
         "group": "cloud"
       },
       {
