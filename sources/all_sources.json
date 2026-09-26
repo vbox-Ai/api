@@ -111,18 +111,6 @@
         "group": "api"
       },
       {
-        "key": "feimo",
-        "name": "飞猫影视",
-        "type": 1,
-        "api": "http://feimo.fun/api.php/provide/vod",
-        "searchable": 1,
-        "quickSearch": 0,
-        "filterable": 0,
-        "enabled": true,
-        "priority": 1010,
-        "group": "api"
-      },
-      {
         "key": "builtin_闪电资源",
         "name": "闪电资源",
         "type": 1,
