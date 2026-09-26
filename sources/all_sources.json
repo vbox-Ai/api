@@ -181,7 +181,11 @@
         "name": "玩偶资源",
         "type": "cms",
         "searchurl": "https://woggpan.888484.xyz/vodsearch/-------------.html?wd=",
+        "searchurls": [
+          "https://wogg.xxooo.cf/vodsearch/-------------.html?wd="
+        ],
         "detailBase": "https://woggpan.888484.xyz",
+        "detailPattern": "<h3[^>]*>\\s*<a[^>]*href=\"((/voddetail/\\d+\\.html))\"[^>]*>(.+?)</a>\\s*</h3>",
         "ua": "pc",
         "enabled": true,
         "priority": 1002,
@@ -329,6 +333,56 @@
         ],
         "enabled": true,
         "priority": 1035,
+        "group": "cloud"
+      },
+      {
+        "name": "片库4K",
+        "type": "cms",
+        "searchurl": "https://4k01.pianku.online/vodsearch/-------------.html?wd=",
+        "detailBase": "https://4k01.pianku.online",
+        "ua": "pc",
+        "enabled": true,
+        "priority": 1036,
+        "group": "cloud"
+      },
+      {
+        "name": "原盘4K",
+        "type": "cms",
+        "searchurl": "https://4kzn.cc/?post_type=book&s=",
+        "searchurls": [
+          "https://www.4kzn.cc/?post_type=book&s="
+        ],
+        "detailBase": "https://4kzn.cc",
+        "detailPattern": "<a[^>]*href=\"(?:https?://[^/]+)?(/book/(\\d+)\\.html)\"[^>]*>(.+?)</a>",
+        "ua": "pc",
+        "enabled": true,
+        "priority": 1037,
+        "group": "cloud"
+      },
+      {
+        "name": "剧透4K",
+        "type": "cms",
+        "searchurl": "https://1.star2.cn/search/?keyword=",
+        "detailBase": "https://1.star2.cn",
+        "detailPattern": "<a[^>]*href=\"((?:/ju/|/mv/)[^\"]*?(\\d+)\\.html)\"[^>]*>(.+?)</a>",
+        "ua": "pc",
+        "enabled": true,
+        "priority": 1038,
+        "group": "cloud"
+      },
+      {
+        "name": "七味4K",
+        "type": "spa",
+        "searchurl": "https://www.qwmkv.com",
+        "detailBase": "https://www.qwmkv.com",
+        "apiSearch": "https://www.qwmkv.com/index.php/ajax/suggest?mid=1&limit=20&wd={kw}",
+        "resultField": "list",
+        "titleField": "name",
+        "urlField": "id",
+        "urlTemplate": "/mv/{id}.html",
+        "ua": "pc",
+        "enabled": true,
+        "priority": 1039,
         "group": "cloud"
       }
     ]
@@ -1081,48 +1135,6 @@
         "engineType": "node"
       },
       {
-        "key": "nodejs_wogg",
-        "name": "网盘 | 玩偶[4K]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "cloud",
-        "engineType": "node"
-      },
-      {
-        "key": "nodejs_qwmkv",
-        "name": "网盘 | 七味[4K]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "cloud",
-        "engineType": "node"
-      },
-      {
-        "key": "nodejs_pianku",
-        "name": "网盘 | 片库[4K]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "cloud",
-        "engineType": "node"
-      },
-      {
         "key": "nodejs_woniu4k",
         "name": "网盘 | 蜗牛[4K]",
         "type": 3,
@@ -1135,51 +1147,9 @@
         "timeout": 30,
         "group": "cloud",
         "engineType": "node"
-      },
-      {
-        "key": "nodejs_zhinan4k",
-        "name": "网盘 | 原盘[4K]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "cloud",
-        "engineType": "node"
-      },
-      {
-        "key": "nodejs_jutou",
-        "name": "网盘 | 剧透[4K]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "cloud",
-        "engineType": "node"
-      },
-      {
-        "key": "nodejs_renren",
-        "name": "网盘 | 人人[4K]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "cloud",
-        "engineType": "node"
       }
     ],
-    "siteCount": 65
+    "siteCount": 59
   },
   "domainOverrides": {
     "overrides": []
