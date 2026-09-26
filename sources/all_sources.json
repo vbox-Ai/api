@@ -1082,7 +1082,7 @@
       },
       {
         "key": "nodejs_wogg",
-        "name": "影视 | 玩偶[4K]",
+        "name": "☁️网盘 | 玩偶[4K]",
         "type": 3,
         "api": "",
         "searchable": 1,
@@ -1091,12 +1091,12 @@
         "changeable": 0,
         "ext": "",
         "timeout": 30,
-        "group": "video",
+        "group": "cloud",
         "engineType": "node"
       },
       {
         "key": "nodejs_qwmkv",
-        "name": "影视 | 七味[4K]",
+        "name": "☁️网盘 | 七味[4K]",
         "type": 3,
         "api": "",
         "searchable": 1,
@@ -1105,12 +1105,12 @@
         "changeable": 0,
         "ext": "",
         "timeout": 30,
-        "group": "video",
+        "group": "cloud",
         "engineType": "node"
       },
       {
         "key": "nodejs_pianku",
-        "name": "影视 | 片库[4K]",
+        "name": "☁️网盘 | 片库[4K]",
         "type": 3,
         "api": "",
         "searchable": 1,
@@ -1119,12 +1119,12 @@
         "changeable": 0,
         "ext": "",
         "timeout": 30,
-        "group": "video",
+        "group": "cloud",
         "engineType": "node"
       },
       {
         "key": "nodejs_woniu4k",
-        "name": "影视 | 蜗牛[4K]",
+        "name": "☁️网盘 | 蜗牛[4K]",
         "type": 3,
         "api": "",
         "searchable": 1,
@@ -1133,12 +1133,12 @@
         "changeable": 0,
         "ext": "",
         "timeout": 30,
-        "group": "video",
+        "group": "cloud",
         "engineType": "node"
       },
       {
         "key": "nodejs_zhinan4k",
-        "name": "影视 | 原盘[4K]",
+        "name": "☁️网盘 | 原盘[4K]",
         "type": 3,
         "api": "",
         "searchable": 1,
@@ -1147,12 +1147,12 @@
         "changeable": 0,
         "ext": "",
         "timeout": 30,
-        "group": "video",
+        "group": "cloud",
         "engineType": "node"
       },
       {
         "key": "nodejs_jutou",
-        "name": "影视 | 剧透[4K]",
+        "name": "☁️网盘 | 剧透[4K]",
         "type": 3,
         "api": "",
         "searchable": 1,
@@ -1161,12 +1161,12 @@
         "changeable": 0,
         "ext": "",
         "timeout": 30,
-        "group": "video",
+        "group": "cloud",
         "engineType": "node"
       },
       {
         "key": "nodejs_renren",
-        "name": "影视 | 人人[4K]",
+        "name": "☁️网盘 | 人人[4K]",
         "type": 3,
         "api": "",
         "searchable": 1,
@@ -1175,7 +1175,7 @@
         "changeable": 0,
         "ext": "",
         "timeout": 30,
-        "group": "video",
+        "group": "cloud",
         "engineType": "node"
       }
     ],
