@@ -51,18 +51,6 @@
         "group": "api"
       },
       {
-        "key": "tyyszy",
-        "name": "TY影视",
-        "type": 1,
-        "api": "https://tyyszyapi.com/api.php/provide/vod",
-        "searchable": 1,
-        "quickSearch": 0,
-        "filterable": 0,
-        "enabled": true,
-        "priority": 1005,
-        "group": "api"
-      },
-      {
         "key": "360zyzz",
         "name": "360资源",
         "type": 1,
@@ -422,6 +410,17 @@
         "name": "影视 | 袋鼠影视[js]",
         "type": 3,
         "api": "./js/daishu_video.js",
+        "searchable": 1,
+        "quickSearch": 1,
+        "changeable": 1,
+        "ext": "",
+        "timeout": 30
+      },
+      {
+        "key": "js_TY影视",
+        "name": "影视 | TY影视[js]",
+        "type": 3,
+        "api": "./js/tyyszy.js",
         "searchable": 1,
         "quickSearch": 1,
         "changeable": 1,
@@ -1155,7 +1154,7 @@
         "engineType": "node"
       }
     ],
-    "siteCount": 59
+    "siteCount": 60
   },
   "domainOverrides": {
     "overrides": []

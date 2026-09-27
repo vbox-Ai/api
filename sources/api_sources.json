@@ -55,18 +55,6 @@
       "group": "api"
     },
     {
-      "key": "tyyszy",
-      "name": "TY影视",
-      "type": 1,
-      "api": "https://tyyszyapi.com/api.php/provide/vod",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 0,
-      "enabled": true,
-      "priority": 1005,
-      "group": "api"
-    },
-    {
       "key": "360zyzz",
       "name": "360资源",
       "type": 1,
