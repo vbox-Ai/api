@@ -345,18 +345,6 @@
         "group": "cloud"
       },
       {
-        "name": "片库4K",
-        "type": "cms",
-        "searchurl": "https://4k01.pianku.online/vodsearch/-------------.html?wd=",
-        "detailBase": "https://4k01.pianku.online",
-        "detailPattern": "<a[^>]*href=\"(/voddetail/(\\d+)\\.html)\"[^>]*title=\"([^\"]+)\"",
-        "categoryURL": "/vodtype/{id}-{page}.html",
-        "ua": "pc",
-        "enabled": true,
-        "priority": 1036,
-        "group": "cloud"
-      },
-      {
         "name": "原盘4K",
         "type": "cms",
         "searchurl": "https://4kzn.cc/?post_type=book&s=",
