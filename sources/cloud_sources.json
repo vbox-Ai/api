@@ -107,12 +107,12 @@
       "searchurl": "https://www.rrdynb.com/plus/search.php?q=",
       "detailBase": "https://www.rrdynb.com",
       "detailPattern": "<a[^>]*href=\"((?:/movie/|/dianshiju/|/zongyi/|/dongman/)\\d{4}/\\d{4}/\\d+\\.html)\"[^>]*>(.*?)</a>",
-      "categoryURL": "/{slug}/list_{id}_{page}.html",
+      "categoryURL": "/{id}_{page}.html",
       "categoryIdMap": {
-        "movie": "2",
-        "dianshiju": "6",
-        "zongyi": "10",
-        "dongman": "13"
+        "movie": "movie/list_2",
+        "dianshiju": "dianshiju/list_6",
+        "zongyi": "zongyi/list_10",
+        "dongman": "dongman/list_13"
       },
       "categoryRegex": "<a[^>]*href=\"/(movie|dianshiju|zongyi|dongman)/\"[^>]*>\\s*([^<]{2,6})\\s*</a>",
       "ua": "pc",
