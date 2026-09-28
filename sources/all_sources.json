@@ -1130,8 +1130,8 @@
   },
   "welfarePlatforms": {
     "_meta_version_override": {
-      "version": "2026.09.17.4",
-      "updatedAt": "2026-09-17T20:00:00Z"
+      "version": "2026.09.28.17",
+      "updatedAt": "2026-09-28T13:11:59Z"
     },
     "schemaVersion": 1,
     "categories": [
@@ -1846,6 +1846,30 @@
         "sslBypass": true,
         "contentType": "comic",
         "imageReferer": "https://m.tuiimg.com/",
+        "imageSSLBypass": true,
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "aituitu_py",
+        "name": "爱推图",
+        "category": "comic",
+        "icon": "photo.stack",
+        "desc": "写真美图合集 (Python)",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://ww.aituitu.com"
+        ],
+        "sortOrder": 325,
+        "defaultProxy": false,
+        "notes": "Python 蜘蛛福利图源，爱推图写真套图站（WordPress）；9个写真分类；详情页正文内嵌 tu.aituitu.com CDN 图片直取；pics:// 协议直接浏览，localProxy 带 Referer 防盗链",
+        "api": "./sources/welfare-js/aituitu.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "comic",
+        "imageReferer": "https://ww.aituitu.com/",
         "imageSSLBypass": true,
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,

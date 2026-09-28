@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.09.17.4",
-    "updatedAt": "2026-09-17T20:00:00Z",
+    "version": "2026.09.28.17",
+    "updatedAt": "2026-09-28T13:11:59Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -58,7 +58,7 @@
       "zangjige_py"
     ],
     "stage3Notes": "阶段3 更新：移除「糖心Vlog」（tangxinvlog_py），新增「狂飙短剧」（kuangbiao_py）、「avgood」（avgood_py）、「一抖阁」（yidouge_py）三个 Python 蜘蛛福利源。 新增 8 个 Python 蜘蛛福利源：小红薯/香蕉视频/蜜桃视频/迷妹网/黑料网/爆片库/2048核基地/采集聚合。",
-    "lastUpdated": "2026-08-22",
+    "lastUpdated": "2026-09-28",
     "stage5AddedKeys": [
       "sise_image_py",
       "fuli74p_py",
@@ -131,11 +131,15 @@
       "thisav_py",
       "qzjp_py"
     ],
-    "stage17Notes": "阶段17 新增视频栏目 Python 蜘蛛源：蝴蝶·ThisAV完整版（导航站动态域名探测+34分类+女优筛选+三层播放提取）、茄子精品（MacCMS 11分类+player_data m3u8直连播放）"
+    "stage17Notes": "阶段17 新增视频栏目 Python 蜘蛛源：蝴蝶·ThisAV完整版（导航站动态域名探测+34分类+女优筛选+三层播放提取）、茄子精品（MacCMS 11分类+player_data m3u8直连播放）",
+    "stage18AddedKeys": [
+      "aituitu_py"
+    ],
+    "stage18Notes": "阶段18 新增：爱推图（aituitu_py），写真美图套图站，归入漫画栏目。详情页正文内嵌 tu.aituitu.com CDN 图片直取，pics:// 协议浏览，9个写真分类 + 搜索。"
   },
   "_meta_version_override": {
-    "version": "2026.09.17.4",
-    "updatedAt": "2026-09-17T20:00:00Z"
+    "version": "2026.09.28.17",
+    "updatedAt": "2026-09-28T13:11:59Z"
   },
   "schemaVersion": 1,
   "categories": [
@@ -850,6 +854,30 @@
       "sslBypass": true,
       "contentType": "comic",
       "imageReferer": "https://m.tuiimg.com/",
+      "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "aituitu_py",
+      "name": "爱推图",
+      "category": "comic",
+      "icon": "photo.stack",
+      "desc": "写真美图合集 (Python)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://ww.aituitu.com"
+      ],
+      "sortOrder": 325,
+      "defaultProxy": false,
+      "notes": "Python 蜘蛛福利图源，爱推图写真套图站（WordPress）；9个写真分类；详情页正文内嵌 tu.aituitu.com CDN 图片直取；pics:// 协议直接浏览，localProxy 带 Referer 防盗链",
+      "api": "./sources/welfare-js/aituitu.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "comic",
+      "imageReferer": "https://ww.aituitu.com/",
       "imageSSLBypass": true,
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
