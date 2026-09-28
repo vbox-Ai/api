@@ -67,18 +67,6 @@
       "group": "api"
     },
     {
-      "key": "sbjson",
-      "name": "SBJSON影视",
-      "type": 1,
-      "api": "http://zltaa.sbjson.com/api.php/provide/vod",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 0,
-      "enabled": true,
-      "priority": 1007,
-      "group": "api"
-    },
-    {
       "key": "donw",
       "name": "DONW影视",
       "type": 1,
