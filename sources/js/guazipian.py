@@ -155,7 +155,8 @@ t5lYKfpe8k83ZA==
             "PackageName": "com.ae06aebdbb.y286327f5a.ofe849883320260517",
             "Ver": "3.0.3.2",
             "api-ver": "3.0.3.2",
-            "Accept-Encoding": "gzip",
+            # 注意：不要带 Accept-Encoding: gzip —— 服务端会真的返回 gzip 体，
+            # 而 base.spider 的 urllib 不会自动解压，会导致 JSON 解析失败、分类/搜索全空。
         }
 
     # ---------------- 业务接口 ----------------
@@ -371,7 +372,6 @@ t5lYKfpe8k83ZA==
             headers = {
                 "User-Agent": self.PLAY_UA,
                 "Referer": "http://WJiZxLXA2.com/",
-                "Accept-Encoding": "gzip",
             }
             return {
                 "parse": 0,
