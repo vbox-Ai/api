@@ -372,6 +372,11 @@ t5lYKfpe8k83ZA==
             headers = {
                 "User-Agent": self.PLAY_UA,
                 "Referer": "http://WJiZxLXA2.com/",
+                # 该 CDN 开启防盗链：Referer 必须是主站域名（或为空），且 UA 必须是 Lavf/*。
+                # vbox 播放器默认策略是「脚本 Referer 域名 != 播放域名时，改用 CDN 自身 Referer」，
+                # 那样会带上 vd.wmvbo.com，直接踩中防盗链被 302 到 19.57s 推广视频。
+                # 此内部标记让播放器保留脚本返回的 Referer，从而拿到真实影片流。
+                "X-VBox-Player-Referer-Mode": "keep",
             }
             return {
                 "parse": 0,
