@@ -441,10 +441,7 @@ t5lYKfpe8k83ZA==
         if self.token_ready and self.token:
             return
         if not self.token:
-            if self.registered:
-                self.sign_in()
-            else:
-                self.sign_up()
+            self._obtain_device_token()
         try:
             self.apply_auth(
                 self.api_request(
@@ -460,6 +457,36 @@ t5lYKfpe8k83ZA==
             self.sign_in()
         self.token_ready = True
         self.header = self.build_headers()
+
+    def _obtain_device_token(self):
+        """注册或登入设备换取 token
+
+        场景：设备可能已在本站注册过（例如上一次注册的响应丢了，本地没拿到 token），
+        此时再 signUp 服务端会返回「注册失败，用户已经存在，请以设备号登入」。
+        因此 signUp 失败要回退到 signIn；两者都失败则换新设备再注册一次。
+        """
+        if self.registered:
+            self.sign_in()
+            return
+        try:
+            self.sign_up()
+        except Exception as e:
+            print(f"signUp 失败({e})，改用 signIn")
+            try:
+                self.sign_in()
+            except Exception as e2:
+                print(f"signIn 也失败({e2})，更换设备后重试注册")
+                self._reset_device()
+                self.sign_up()
+        self.registered = True
+        self.save_auth()
+
+    def _reset_device(self):
+        self.device_id = str(864150060000000 + random.randint(0, 9999))
+        self.device_key = os.urandom(20).hex().upper()
+        self.token = ""
+        self.token_id = ""
+        self.registered = False
 
     def sign_up(self):
         result = self.api_request(
