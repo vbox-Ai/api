@@ -481,18 +481,6 @@
         "timeout": 20
       },
       {
-        "key": "js_君君盘搜",
-        "name": "网盘 | 君君盘搜[js]",
-        "type": 3,
-        "api": "./js/junso.js",
-        "searchable": 1,
-        "quickSearch": 1,
-        "changeable": 1,
-        "ext": "",
-        "timeout": 20,
-        "group": "cloud"
-      },
-      {
         "key": "js_盘搜",
         "name": "网盘 | 盘搜[js]",
         "type": 3,
@@ -1140,7 +1128,7 @@
         "engineType": "node"
       }
     ],
-    "siteCount": 60
+    "siteCount": 59
   },
   "domainOverrides": {
     "overrides": []
