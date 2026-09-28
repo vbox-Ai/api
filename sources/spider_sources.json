@@ -116,15 +116,28 @@
       "timeout": 20
     },
     {
-      "key": "js_PanSou盘搜",
-      "name": "网盘 | PanSou盘搜[js]",
+      "key": "js_君君盘搜",
+      "name": "网盘 | 君君盘搜[js]",
       "type": 3,
-      "api": "./js/pansou.js",
+      "api": "./js/junso.js",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1,
       "ext": "",
-      "timeout": 15
+      "timeout": 20,
+      "group": "cloud"
+    },
+    {
+      "key": "js_盘搜",
+      "name": "网盘 | 盘搜[js]",
+      "type": 3,
+      "api": "./js/pansou_top.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "ext": "",
+      "timeout": 20,
+      "group": "cloud"
     },
     {
       "key": "js_无名小站",
