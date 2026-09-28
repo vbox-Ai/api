@@ -227,19 +227,6 @@
         "group": "cloud"
       },
       {
-        "name": "PanSou盘搜",
-        "type": "spa",
-        "searchurl": "https://so.252035.xyz",
-        "detailBase": "https://so.252035.xyz",
-        "apiSearch": "https://so.252035.xyz/api/search?kw={kw}",
-        "resultField": "data.merged_by_type",
-        "titleField": "note",
-        "urlField": "url",
-        "enabled": true,
-        "priority": 1014,
-        "group": "cloud"
-      },
-      {
         "name": "奕搜资源",
         "type": "binhd",
         "searchurl": "https://binhd.com/resources/?q=",
@@ -1086,20 +1073,6 @@
       {
         "key": "nodejs_SoAiQuPanShe",
         "name": "网盘 | 搜索·百度[node]",
-        "type": 3,
-        "api": "",
-        "searchable": 1,
-        "quickSearch": 1,
-        "filterable": 1,
-        "changeable": 0,
-        "ext": "",
-        "timeout": 30,
-        "group": "cloud",
-        "engineType": "node"
-      },
-      {
-        "key": "nodejs_SoAiHaiYin",
-        "name": "网盘 | 搜索·盘搜[node]",
         "type": 3,
         "api": "",
         "searchable": 1,
