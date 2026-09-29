@@ -15,8 +15,8 @@
       "One平台（独立 Service，使用旧路由，本期不迁移）",
       "麻豆平台（独立 Service，使用旧路由，本期不迁移）"
     ],
-    "version": "2026.09.28.17",
-    "updatedAt": "2026-09-28T13:11:59Z",
+    "version": "2026.09.29.1",
+    "updatedAt": "2026-09-29T00:31:29Z",
     "stage2CleanupAt": "2026-08-13T23:00:00Z",
     "stage2RemovedKeys": [
       "mystery_movie",
@@ -58,7 +58,7 @@
       "zangjige_py"
     ],
     "stage3Notes": "阶段3 更新：移除「糖心Vlog」（tangxinvlog_py），新增「狂飙短剧」（kuangbiao_py）、「avgood」（avgood_py）、「一抖阁」（yidouge_py）三个 Python 蜘蛛福利源。 新增 8 个 Python 蜘蛛福利源：小红薯/香蕉视频/蜜桃视频/迷妹网/黑料网/爆片库/2048核基地/采集聚合。",
-    "lastUpdated": "2026-09-28",
+    "lastUpdated": "2026-09-29T00:31:29Z",
     "stage5AddedKeys": [
       "sise_image_py",
       "fuli74p_py",
@@ -135,7 +135,11 @@
     "stage18AddedKeys": [
       "aituitu_py"
     ],
-    "stage18Notes": "阶段18 新增：爱推图（aituitu_py），写真美图套图站，归入漫画栏目。详情页正文内嵌 tu.aituitu.com CDN 图片直取，pics:// 协议浏览，9个写真分类 + 搜索。"
+    "stage18Notes": "阶段18 新增：爱推图（aituitu_py），写真美图套图站，归入漫画栏目。详情页正文内嵌 tu.aituitu.com CDN 图片直取，pics:// 协议浏览，9个写真分类 + 搜索。",
+    "stage19AddedKeys": [
+      "huangdou_new_py"
+    ],
+    "stage19Notes": "阶段19（2026-09-29）：重建黄豆短剧 huangdou_new_py。原站 xqjzvcvt.top 已挂，改指新站 lzlukvca.cc（Flutter 同构，9 分类）。脚本 sources/welfare-js/huangdou.py 已加域名池 + _vbox_effective_hosts 注入 + super().init()，端到端实测可播（签名 m3u8）。"
   },
   "_meta_version_override": {
     "version": "2026.09.28.17",
@@ -2123,6 +2127,29 @@
       "engine": "python",
       "sslBypass": true,
       "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "huangdou_new_py",
+      "name": "黄豆短剧",
+      "category": "video",
+      "icon": "play.square.fill",
+      "desc": "短剧聚合（新站加密接口版）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://lzlukvca.cc"
+      ],
+      "sortOrder": 237,
+      "defaultProxy": false,
+      "notes": "黄豆短剧。AES-CBC 加密 + GZIP 压缩接口（Flutter Web platformKey）。域名注入 base_url 会覆盖 BASE_URL；本轮已补 _vbox_effective_hosts（远端源 defaultHosts）优先 + 域名池探测 + super().init()。原样保留 _AESCBC 兼容层（Crypto→cryptography 兜底）。【2026-09-29 重建】原站 xqjzvcvt.top 已挂，改指新站 lzlukvca.cc（同构，9 分类：全部/黄豆原创/魔改/擦边/真人/动漫/影院/贤者/黑料），端到端实测首页/分类/详情/播放(签名 m3u8) 全部可用。",
+      "api": "./sources/welfare-js/huangdou.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "imageSSLBypass": false,
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
