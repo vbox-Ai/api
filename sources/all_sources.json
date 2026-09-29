@@ -3118,6 +3118,29 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "huangdou_new_py",
+        "name": "黄豆短剧",
+        "category": "video",
+        "icon": "play.square.fill",
+        "desc": "短剧聚合（新站加密接口版）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://lzlukvca.cc"
+        ],
+        "sortOrder": 237,
+        "defaultProxy": false,
+        "notes": "黄豆短剧。AES-CBC 加密 + GZIP 压缩接口（Flutter Web platformKey）。域名注入 base_url 会覆盖 BASE_URL；本轮已补 _vbox_effective_hosts（远端源 defaultHosts）优先 + 域名池探测 + super().init()。原样保留 _AESCBC 兼容层（Crypto→cryptography 兜底）。【2026-09-29 重建】原站 xqjzvcvt.top 已挂，改指新站 lzlukvca.cc（同构，9 分类：全部/黄豆原创/魔改/擦边/真人/动漫/影院/贤者/黑料），端到端实测首页/分类/详情/播放(签名 m3u8) 全部可用。",
+        "api": "./sources/welfare-js/huangdou.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "imageSSLBypass": false,
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ]
   }
