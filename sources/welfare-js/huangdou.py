@@ -108,6 +108,10 @@ class Spider(BaseSpider):
             super().init(extend)
         except Exception:
             pass
+        # 重置缓存：避免上一次（可能因网络抖动而失败的）结果残留，
+        # 常驻引擎下 _class_cache/_nav_filter_cache 一旦被失败结果污染会一直错。
+        self._class_cache = None
+        self._nav_filter_cache = {}
         try:
             cfg = {}
             if extend:
@@ -166,7 +170,7 @@ class Spider(BaseSpider):
         try:
             result["class"] = self._classes()
             result["filters"] = self._filters(result["class"])
-            data = self._api("/drama/list", {"page": "1", "page_size": "18"})
+            data = self._api_soft("/drama/list", {"page": "1", "page_size": "18"})
             for item in self._list_from_data(data):
                 result["list"].append(self._parse_vod(item))
         except Exception as e:
@@ -210,7 +214,7 @@ class Spider(BaseSpider):
                     tag_id = flt.get("tag_id", "")
                     if tag_id:
                         req["tag_id"] = tag_id
-                    data = self._api("/drama/list", req)
+                    data = self._api_soft("/drama/list", req)
                     items = self._list_from_data(data)
             else:
                 req = {"page": str(pg), "page_size": "18"}
@@ -220,7 +224,7 @@ class Spider(BaseSpider):
                 update_status = extend.get("update_status")
                 if update_status:
                     req["update_status"] = update_status
-                data = self._api("/drama/list", req)
+                data = self._api_soft("/drama/list", req)
                 items = self._list_from_data(data)
             result["list"] = [self._parse_vod(x) for x in items]
             if len(items) < 18:
@@ -290,7 +294,7 @@ class Spider(BaseSpider):
         }
         try:
             # /drama/searchResult 在部分环境会返回非加密兜底内容；/drama/list 的 keywords 更稳定。
-            data = self._api("/drama/list", {
+            data = self._api_soft("/drama/list", {
                 "page": str(pg),
                 "page_size": "18",
                 "keywords": str(key),
@@ -342,6 +346,15 @@ class Spider(BaseSpider):
 
     # ==================== 加密 API ====================
 
+    def _api_soft(self, path, data=None, tries=2):
+        """带轻量重试的 _api：空结果时重试，抗瞬时抖动。
+        单次超时已压到 9s，2 次最坏 18s，仍低于 App 引擎 20s 上限。"""
+        for _ in range(max(1, tries)):
+            obj = self._api(path, data)
+            if obj:
+                return obj
+        return {}
+
     def _api(self, path, data=None, silent=False):
         path = "/" + path.lstrip("/")
         request_id = str(uuid.uuid4())
@@ -373,7 +386,7 @@ class Spider(BaseSpider):
         })
 
         try:
-            r = self.session.post(self.API_BASE + path, data=body, headers=headers, timeout=20, verify=False)
+            r = self.session.post(self.API_BASE + path, data=body, headers=headers, timeout=9, verify=False)
             r.raise_for_status()
             return self._decrypt_response(r.content, request_id)
         except Exception as e:
@@ -404,30 +417,42 @@ class Spider(BaseSpider):
         if self._class_cache:
             return self._class_cache
         classes = [{"type_id": "all", "type_name": "全部短剧"}]
-        try:
-            obj = self._api("/drama/navList", {})
-            data = obj.get("data", obj) if isinstance(obj, dict) else {}
-            for item in self._list_from_data(data):
-                tid = str(item.get("code") or item.get("id") or item.get("cat_id") or "")
-                name = item.get("name") or item.get("title") or item.get("code") or ""
-                if tid and name:
-                    classes.append({"type_id": tid, "type_name": name})
-        except Exception as e:
-            print(e)
-        self._class_cache = classes
+        ok = False
+        # navList 抽风时最多重试 2 次；只有真正拿到分类才写缓存，
+        # 避免把"只剩 1 个分类"的兜底结果永久缓存（常驻引擎会一直错）。
+        for _attempt in range(2):
+            try:
+                obj = self._api("/drama/navList", {})
+                data = obj.get("data", obj) if isinstance(obj, dict) else {}
+                items = self._list_from_data(data)
+                if items:
+                    for item in items:
+                        tid = str(item.get("code") or item.get("id") or item.get("cat_id") or "")
+                        name = item.get("name") or item.get("title") or item.get("code") or ""
+                        if tid and name:
+                            classes.append({"type_id": tid, "type_name": name})
+                    if len(classes) > 1:
+                        ok = True
+                        break
+            except Exception as e:
+                print(e)
+        if ok:
+            self._class_cache = classes
         return classes
 
     def _get_nav_filter(self, code):
-        """获取指定 code 的 navFilter 子标签列表，带缓存。"""
-        if code not in self._nav_filter_cache:
-            try:
-                obj = self._api("/drama/navFilter", {"code": str(code)})
-                data = obj.get("data", obj) if isinstance(obj, dict) else {}
-                self._nav_filter_cache[code] = self._list_from_data(data)
-            except Exception as e:
-                print(e)
-                self._nav_filter_cache[code] = []
-        return self._nav_filter_cache.get(code, [])
+        """获取指定 code 的 navFilter 子标签列表。仅在成功时缓存，失败不落缓存。"""
+        if code in self._nav_filter_cache:
+            return self._nav_filter_cache[code]
+        try:
+            obj = self._api("/drama/navFilter", {"code": str(code)})
+            data = obj.get("data", obj) if isinstance(obj, dict) else {}
+            result = self._list_from_data(data)
+            self._nav_filter_cache[code] = result
+            return result
+        except Exception as e:
+            print(e)
+            return []
 
     def _filters(self, classes):
         filters = {}
