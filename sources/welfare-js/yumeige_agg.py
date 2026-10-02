@@ -800,23 +800,27 @@ class Spider(_Spider):
         return {'parse': 0, 'playUrl': '', 'url': u, 'header': {'User-Agent': UA}}
 
     def localProxy(self, param):
-        """壳走 localProxy 取图时直接用（不依赖本机 http 口）"""
+        """壳走 localProxy 取图时直接用（不依赖本机 http 口）
+        返回格式必须与基类一致：[status_code, content_type, body_bytes]"""
         try:
             u = ''
             if isinstance(param, dict):
-                u = str(param.get('u') or param.get('url') or '')
+                u = str(param.get('u') or param.get('url') or param.get('pic') or '')
             if not u and isinstance(param, str):
                 qs = urllib.parse.parse_qs(urllib.parse.urlparse(param).query)
                 u = (qs.get('u') or [''])[0]
             if not u.startswith('http'):
-                return {'code': 404, 'content': ''}
-            mime, img = _unbundle(self.fetch_bytes(u) or b'')
+                return [404, 'text/plain', b'']
+            raw = self.fetch_bytes(u)
+            if not raw:
+                return [502, 'text/plain', b'']
+            mime, img = _unbundle(raw)
             if img is None:
-                return {'code': 502, 'content': ''}
-            return {'code': 200, 'content-type': mime, 'content': base64.b64encode(img).decode('ascii')}
+                return [502, 'text/plain', b'']
+            return [200, mime or 'image/jpeg', img]
         except Exception as e:
             self._log('localProxy %s' % str(e)[:70])
-            return {'code': 500, 'content': ''}
+            return [500, 'text/plain', b'']
 
     # ---------------- 自检 ----------------
     def check(self):
