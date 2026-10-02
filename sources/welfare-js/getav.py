@@ -117,12 +117,14 @@ class Spider(SpiderBase):
         except Exception:
             pass
         self.navSite = "https://getav.info/zh/"
+        # getav.live 已实测 200 + API + 封面/m3u8 均可达, 优先;
+        # getav.me 实测 302 到 huangguo.wulii.de5.net(野果封面服务, 非GetAV) 放最后
         self.hosts = [
-            "https://getav.net",
-            "https://getav.me",
             "https://getav.live",
+            "https://getav.net",
             "https://getav.co",
-            "https://getav.top"
+            "https://getav.top",
+            "https://getav.me"
         ]
         self._host_idx = 0
         self.baseHost = self.hosts[0]
@@ -364,37 +366,58 @@ class Spider(SpiderBase):
         return u
 
     def _serve_img(self, url, referer=None):
+        # 多候选主机回退: 主URL取图失败后, 依次试 static CDN + 各 API 主机的同一路径, 抗单点不可达
+        cands = [url]
         try:
-            headers = {"User-Agent": self._ua}
-            if referer:
-                headers["Referer"] = referer
-                headers["Origin"] = referer.rstrip("/")
-            req = urllib.request.Request(url, headers=headers)
-            with self.opener.open(req, timeout=15) as resp:
-                raw = resp.read()
-                ct = (resp.headers.get("Content-Type") or "image/jpeg").split(";")[0].strip()
-            if raw[:4] == b"\x89PNG":
-                ct = "image/png"
-            elif raw[:3] == b"GIF":
-                ct = "image/gif"
-            elif raw[:2] == b"\xff\xd8":
-                ct = "image/jpeg"
-            elif raw[:4] == b"RIFF":
-                ct = "image/webp"
-            return [200, ct, raw]
+            p = urlparse(url).path
+            if p:
+                for base in [self.staticHost, self.baseHost] + list(getattr(self, "hosts", []) or []):
+                    if not base:
+                        continue
+                    cand = base + p
+                    if cand not in cands:
+                        cands.append(cand)
+                    if len(cands) >= 5:
+                        break
         except Exception:
-            return [502, "text/plain", b"proxy fetch failed"]
+            pass
+        last = [502, "text/plain", b"proxy fetch failed"]
+        for u in cands:
+            try:
+                headers = {"User-Agent": self._ua}
+                if referer:
+                    headers["Referer"] = referer
+                    headers["Origin"] = referer.rstrip("/")
+                req = urllib.request.Request(u, headers=headers)
+                with self.opener.open(req, timeout=15) as resp:
+                    raw = resp.read()
+                    ct = (resp.headers.get("Content-Type") or "image/jpeg").split(";")[0].strip()
+                if raw[:4] == b"\x89PNG":
+                    ct = "image/png"
+                elif raw[:3] == b"GIF":
+                    ct = "image/gif"
+                elif raw[:2] == b"\xff\xd8":
+                    ct = "image/jpeg"
+                elif raw[:4] == b"RIFF":
+                    ct = "image/webp"
+                elif raw[:4] == b"\x00\x01\x00\x00":
+                    ct = "image/avif"
+                return [200, ct, raw]
+            except Exception:
+                continue
+        return last
 
     def _format_poster(self, raw_url):
-        """封面图: 静态 CDN 直链或本站路径, 包本地代理 URL"""
+        """封面图: 相对路径优先拼已证明可达的 API 主机(baseHost, 竞速胜者), 绝对URL直用; 包本地代理URL
+        baseHost 是刚响应过 API 的主机, 供图可达性最高; static CDN 作为 _serve_img 的回退候选"""
         if not raw_url:
             return ""
         pic = raw_url.strip()
         if pic.startswith("//"):
             pic = "https:" + pic
         elif pic.startswith("/"):
-            pic = self.staticHost + pic
-        referer_url = self.baseHost + "/"
+            pic = (self.baseHost or self.staticHost) + pic
+        referer_url = (self.baseHost or self.staticHost) + "/"
         return self._proxy_img_url(pic, referer=referer_url)
 
     # ================= 标准接口 =================
@@ -515,10 +538,13 @@ class Spider(SpiderBase):
             if not cid or cid.isdigit():
                 continue
             dur = format_seconds(m.get("videoLength", 0))
+            pic = self._format_poster(m.get("localImg") or m.get("img"))
+            if not pic:
+                pic = generate_color_card((m.get("title") or cid.upper())[:12])
             v_list.append({
                 "vod_id": cid,
                 "vod_name": m.get("title") or cid.upper(),
-                "vod_pic": self._format_poster(m.get("localImg") or m.get("img")),
+                "vod_pic": pic,
                 "vod_remarks": "蝴蝶影视 | %s" % dur if dur else "蝴蝶影视",
                 "style": {"type": "rect", "ratio": 1.42}
             })
@@ -817,19 +843,26 @@ class Spider(SpiderBase):
         ) % (self.tgGroup, code.upper(), title, dur_str, str(data.get("date", ""))[:10], desc)
 
         video_sources = data.get("videoSources") or []
-        play_lines = []
         label_map = {
-            "raw_1080p": "正片 1080P",
-            "raw_720p": "高清 720P",
-            "raw_480p": "标清 480P",
-            "raw_240p": "流畅 240P"
+            "raw_1080p": "正片 1080P", "raw_720p": "高清 720P",
+            "raw_480p": "标清 480P", "raw_240p": "流畅 240P",
+            "uc_1080p": "无码 1080P", "uc_720p": "无码 720P",
+            "uc_480p": "无码 480P", "uc_240p": "无码 240P"
         }
+        q_rank = {"1080p": 4, "720p": 3, "480p": 2, "240p": 1}
 
-        for vs in video_sources:
+        def _rank(v):
+            t = str(v.get("type", ""))
+            for k in ("uc_", "raw_"):
+                if t.startswith(k):
+                    return q_rank.get(t[3:], 0)
+            return 0
+
+        play_lines = []
+        for vs in sorted(video_sources, key=_rank, reverse=True):
             s_url = vs.get("url", "")
-            s_type = vs.get("type", "")
             if s_url:
-                t_label = label_map.get(s_type, s_type or "默认线路")
+                t_label = label_map.get(vs.get("type", ""), vs.get("type", "") or "默认线路")
                 play_lines.append("%s$%s" % (t_label, s_url))
 
         if not play_lines:
@@ -872,12 +905,15 @@ class Spider(SpiderBase):
             sep = "&" if "?" in play_url else "?"
             play_url = play_url + sep + "format=.m3u8"
 
+        referer = (self.baseHost or self.staticHost) + "/"
         return {
             "parse": 0,
             "jx": 0,
             "url": play_url,
             "header": {
-                "User-Agent": self._ua
+                "User-Agent": self._ua,
+                "Referer": referer,
+                "Origin": (self.baseHost or self.staticHost)
             }
         }
 

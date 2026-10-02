@@ -9,6 +9,7 @@ TVBox影视壳插件 - 三年高考五年模拟 - vbox 远程源适配版
 import sys
 sys.path.append('..')
 import json
+import gzip
 import random
 import time
 import re
@@ -95,6 +96,7 @@ class Spider(SpiderBase):
             pass
         self.token = None
         self.last_reg = 0.0
+        self._reg_dead = False
         self.cache = {}
         self.domains = []
         self._base_winner = None
@@ -218,6 +220,17 @@ class Spider(SpiderBase):
             pass
 
     # ========== HTTP 工具 (stdlib urllib) ==========
+    def _maybe_decompress(self, raw):
+        """响应体可能是 gzip(请求头含 Accept-Encoding: gzip), 检测魔数解压"""
+        if raw is None:
+            return b''
+        if raw[:2] == b'\x1f\x8b':
+            try:
+                return gzip.decompress(raw)
+            except Exception:
+                return raw
+        return raw
+
     def _http_get(self, url, timeout=15, data=None, headers=None):
         """GET/POST 请求, 返回 (text, status_code)"""
         hdrs = self._headers()
@@ -234,10 +247,10 @@ class Spider(SpiderBase):
                     body = data
             req = urllib.request.Request(url, data=body, headers=hdrs)
             with urllib.request.urlopen(req, timeout=timeout, context=_SSL_CTX) as resp:
-                return resp.read().decode('utf-8', 'ignore'), resp.getcode()
+                return self._maybe_decompress(resp.read()).decode('utf-8', 'ignore'), resp.getcode()
         except urllib.error.HTTPError as e:
             try:
-                return e.read().decode('utf-8', 'ignore'), e.code
+                return self._maybe_decompress(e.read()).decode('utf-8', 'ignore'), e.code
             except Exception:
                 return None, e.code
         except Exception:
@@ -250,10 +263,10 @@ class Spider(SpiderBase):
             body = urllib.parse.urlencode(data).encode('utf-8') if isinstance(data, dict) else data.encode('utf-8')
             req = urllib.request.Request(url, data=body, headers=hdrs)
             with urllib.request.urlopen(req, timeout=timeout, context=_SSL_CTX) as resp:
-                return resp.read().decode('utf-8', 'ignore'), resp.getcode()
+                return self._maybe_decompress(resp.read()).decode('utf-8', 'ignore'), resp.getcode()
         except urllib.error.HTTPError as e:
             try:
-                return e.read().decode('utf-8', 'ignore'), e.code
+                return self._maybe_decompress(e.read()).decode('utf-8', 'ignore'), e.code
             except Exception:
                 return None, e.code
         except Exception:
@@ -550,6 +563,14 @@ class Spider(SpiderBase):
         if body is None:
             return None, False
 
+        # 注册渠道已关闭 (403 该渠道暂停注册 等) -> 标记死, 后续不再重试
+        if isinstance(body, dict):
+            bcode = str(body.get("code", ""))
+            bmsg = str(body.get("msg", ""))
+            if bcode == "403" or ("暂停" in bmsg) or ("禁止" in bmsg) or ("关闭" in bmsg):
+                self._reg_dead = True
+                return None, True
+
         if self._rate_limited(body):
             return None, True
 
@@ -563,6 +584,8 @@ class Spider(SpiderBase):
         return t, False
 
     def _refresh_token(self):
+        if self._reg_dead:
+            return ""
         for i in range(self.REG_TRY):
             gap = self.REG_GAP - (time.time() - self.last_reg)
             if gap > 0:
@@ -572,6 +595,8 @@ class Spider(SpiderBase):
                 self.token = t
                 self.last_reg = time.time()
                 return t
+            if self._reg_dead:
+                return ""
             if limited:
                 wait = min(30.0, 2.0 * (2**i) + random.uniform(0.2, 1.0))
                 time.sleep(wait)
@@ -617,9 +642,7 @@ class Spider(SpiderBase):
 
     def categoryContent(self, tid, pg, filter, extend):
         try:
-            tok = self._get_token()
-            if not tok:
-                return {"list": []}
+            tok = self._get_token() or ""
 
             page_num = int(pg) if str(pg).isdigit() else 1
             offset = (page_num - 1) * 30
@@ -658,9 +681,7 @@ class Spider(SpiderBase):
             return {"list": [self.cache[cache_key]]}
 
         try:
-            tok = self._get_token()
-            if not tok:
-                return {"list": []}
+            tok = self._get_token() or ""
 
             text = self._api_detail(vid, tok)
             body = self._parse_json(text)
@@ -695,9 +716,7 @@ class Spider(SpiderBase):
 
         def _search_class(cls):
             try:
-                t = self._get_token()
-                if not t:
-                    return []
+                t = self._get_token() or ""
                 text = self._api_vlist(cls, 0)
                 body = self._parse_json(text)
                 if body is None:

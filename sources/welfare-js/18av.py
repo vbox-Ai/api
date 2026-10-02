@@ -12,9 +12,16 @@ sys.path.append('..')
 import re
 import json
 import html as html_lib
+import ssl
+import gzip
+import time
+import threading
 import urllib.request
 import urllib.parse
 from urllib.parse import quote, unquote
+
+_SSL_CTX = ssl._create_unverified_context()
+_HOST_TTL = 600  # 竞速胜者缓存10分钟
 
 try:
     from base.spider import Spider as SpiderBase
@@ -30,7 +37,26 @@ except ImportError:
 class Spider(SpiderBase):
     PLATFORM_KEY = "18av_py"
 
-    HOST = "https://mjv012.com"
+    # 多域竞速池: 免翻墙域优先 (mjv011 已实测 200+卡片), 翻墙域兜底
+    # 官方发布页 mm18vd.com 定期公布, 失效时刷新本列表
+    HOSTS = [
+        "https://mjv015.com",
+        "https://mjv011.com",
+        "https://mjv008.com",
+        "https://mjv006.com",
+        "https://mjv005.com",
+        "https://mjv014.com",
+        "https://mjv013.com",
+        "https://mjv012.com",
+        "https://mjv010.com",
+        "https://mjv009.com",
+        "https://mjv007.com",
+        "https://mjv004.com",
+        "https://mjv003.com",
+        "https://mjv002.com",
+        "https://mjv001.com",
+    ]
+    HOST = "https://mjv011.com"
     HOME_URL = "/zh/"
     UA = ("Mozilla/5.0 (iPhone; CPU iPhone OS 15_4_1 like Mac OS X) "
           "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4.1 Mobile/15E148 Safari/604.1")
@@ -59,22 +85,70 @@ class Spider(SpiderBase):
             "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
             "Cookie": self.COOKIE,
         }
+        self._host_winner = None
+        self._host_winner_ts = 0.0
+        self._race_lock = threading.Lock()
 
     def init(self, extend=""):
         try:
             super().init(extend)
         except AttributeError:
             pass
+        # vbox 注入主机池合并 (完整URL, 优先竞速候选)
+        injected = getattr(self, "_vbox_effective_hosts", None) or []
+        inj = [str(h).rstrip("/") for h in injected if str(h).startswith("http")]
+        if inj:
+            for h in reversed(inj):
+                if h not in self.HOSTS:
+                    self.HOSTS.insert(0, h)
         # 支持 extend 覆盖 host
+        h = ""
         if isinstance(extend, dict):
-            h = str(extend.get("host") or "").strip()
-            if h.startswith("http"):
-                self.HOST = h.rstrip("/")
+            h = str(extend.get("host") or extend.get("siteUrl") or "").strip()
         elif extend:
             h = str(extend).strip()
-            if h.startswith("http"):
-                self.HOST = h.rstrip("/")
+        if h.startswith("http"):
+            h = h.rstrip("/")
+            if h not in self.HOSTS:
+                self.HOSTS.insert(0, h)
+            self.HOST = h
+        else:
+            cached = self.getCache("18av_live_host")
+            if cached and str(cached).startswith("http"):
+                self.HOST = str(cached).rstrip("/")
         return True
+
+    def _race_hosts(self, marker="/zh/chinese_list/all/1.html"):
+        """多域并发竞速: 首个返回含 .post 卡片的域名胜出, 缓存10分钟"""
+        now = time.time()
+        if self._host_winner and (now - self._host_winner_ts) < _HOST_TTL:
+            self.HOST = self._host_winner
+            return self._host_winner
+        winner = {}
+
+        def _try(host):
+            if winner.get("host"):
+                return
+            text = self._fetch(marker, timeout=10, host=host)
+            if text and 'class="post"' in text:
+                with self._race_lock:
+                    if not winner.get("host"):
+                        winner["host"] = host
+
+        threads = [threading.Thread(target=_try, args=(h,), daemon=True) for h in self.HOSTS]
+        for t in threads:
+            t.start()
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            if winner.get("host"):
+                break
+            time.sleep(0.2)
+        if winner.get("host"):
+            self.HOST = winner["host"]
+            self._host_winner = winner["host"]
+            self._host_winner_ts = time.time()
+            self.setCache("18av_live_host", self.HOST)
+        return self.HOST
 
     def getName(self):
         return "18av"
@@ -90,12 +164,15 @@ class Spider(SpiderBase):
         pass
 
     # ================= HTTP =================
-    def _fetch(self, path, timeout=15):
-        url = self.HOST + path if path.startswith("/") else path
+    def _fetch(self, path, timeout=15, host=None):
+        base = (host or self.HOST)
+        url = base + path if path.startswith("/") else path
         req = urllib.request.Request(url, headers=self.headers)
         try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
+            with urllib.request.urlopen(req, timeout=timeout, context=_SSL_CTX) as resp:
                 raw = resp.read()
+                if raw[:2] == b"\x1f\x8b":
+                    raw = gzip.decompress(raw)
                 try:
                     return raw.decode("utf-8")
                 except Exception:
@@ -130,8 +207,9 @@ class Spider(SpiderBase):
             headers = dict(self.headers)
             if referer:
                 headers["Referer"] = referer
+                headers["Origin"] = referer.rstrip("/")
             req = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(req, timeout=15) as resp:
+            with urllib.request.urlopen(req, timeout=15, context=_SSL_CTX) as resp:
                 raw = resp.read()
                 ct = (resp.headers.get("Content-Type") or "image/jpeg").split(";")[0].strip()
             if raw[:4] == b"\x89PNG":
@@ -206,10 +284,12 @@ class Spider(SpiderBase):
         return result
 
     def homeVideoContent(self):
+        self._race_hosts()
         html_text = self._fetch(self.HOME_URL + "chinese_list/all/1.html")
         return {"list": self._parse_posts(html_text)[:24]}
 
     def categoryContent(self, tid, pg, filter, extend):
+        self._race_hosts()
         page = int(pg) if str(pg).isdigit() else 1
         slug = str(tid).strip()
         # 校验 slug 在分类表内, 未知 slug 回落到第一个
@@ -228,9 +308,15 @@ class Spider(SpiderBase):
         }
 
     def detailContent(self, ids):
+        self._race_hosts()
         vid = ids[0] if isinstance(ids, (list, tuple)) else str(ids)
         url = vid if vid.startswith("http") else self.HOST + vid
         html_text = self._fetch(url, timeout=15)
+        if not html_text and url.startswith("http"):
+            # 视频链接携带的旧域已死 -> 换成当前竞速胜者域重试
+            p = urllib.parse.urlparse(url)
+            path = (p.path or "/") + (("?" + p.query) if p.query else "")
+            html_text = self._fetch(path, timeout=15, host=self.HOST)
 
         # 标题
         title_m = re.search(r'<title>([^<]+)</title>', html_text or "", re.S)
@@ -250,18 +336,33 @@ class Spider(SpiderBase):
         desc_m = re.search(r'<meta[^>]+name="description"[^>]+content="([^"]+)"', html_text or "", re.I)
         desc = html_lib.unescape(desc_m.group(1)).strip() if desc_m else ""
 
-        # 预览视频 video[data-src]
+        # 播放器 iframe (play.php?id=xxx) -> 内含 m3u8 直链
         play_urls = []
         play_froms = []
-        for i, m in enumerate(re.finditer(r'<video[^>]+data-src="([^"]+)"', html_text or "")):
-            src = m.group(1).strip()
-            if src.startswith("//"):
-                src = "https:" + src
-            elif src.startswith("/"):
-                src = self.HOST + src
-            if src.startswith("http"):
-                play_urls.append(src)
-                play_froms.append("预览%d" % (i + 1))
+        for i, m in enumerate(re.finditer(r'<iframe[^>]+src="([^"]+play\.php[^"]*)"', html_text or "")):
+            p_url = m.group(1).strip()
+            if p_url.startswith("//"):
+                p_url = "https:" + p_url
+            elif p_url.startswith("/"):
+                p_url = self.HOST + p_url
+            if not p_url.startswith("http"):
+                continue
+            ph = self._fetch(p_url, timeout=15)
+            found = re.findall(r'https?://[^\s"\'<>\\]+\.m3u8', ph or "")
+            if found:
+                # 多分辨率去重, 保留至多3条线路
+                uniq = list(dict.fromkeys(found))[:3]
+                for u in uniq:
+                    play_urls.append(u)
+                    play_froms.append("720P专线%d" % (len(play_urls)))
+                break
+        # 兜底: 页面内直链 m3u8
+        if not play_urls:
+            found = re.findall(r'https?://[^\s"\'<>\\]+\.m3u8', html_text or "")
+            uniq = list(dict.fromkeys(found))[:3]
+            for u in uniq:
+                play_urls.append(u)
+                play_froms.append("默认线路%d" % (len(play_urls)))
 
         vod = {
             "vod_id": vid,
@@ -275,6 +376,7 @@ class Spider(SpiderBase):
         return {"list": [vod]}
 
     def searchContent(self, key, quick, pg="1"):
+        self._race_hosts()
         page = int(pg) if str(pg).isdigit() else 1
         kw = quote(str(key or "").strip())
         path = "/zh/fc_search/all/%s/%d.html" % (kw, page)

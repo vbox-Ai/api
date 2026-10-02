@@ -48,6 +48,15 @@ class Spider(SpiderBase):
         except Exception:
             pass
         self.siteUrl = "https://y5b1.tllp166.xyz"
+        # 多域池: 站点会轮换域名 (2026-10-03 实测 v3s6 活, y5b1 已连不上)
+        # 并发竞速取首个真页域名, 缓存 600s
+        self._pool = [
+            "https://v3s6.tllp169.xyz",
+            "https://y5b1.tllp166.xyz",
+        ]
+        self._live_host = None
+        self._live_ts = 0.0
+        self._home_cache = {}
         self.tgGroup = "https://t.me/tvshare23"
         self.brandActor = "🦋 TG群: @tvshare23"
         self.brandDirector = "🦋 蝴蝶影视"
@@ -76,7 +85,90 @@ class Spider(SpiderBase):
                 self.options = json.loads(extend)
             except Exception:
                 self.options = {}
+        # 域池合并: extend 自定义 > vbox 注入 _vbox_effective_hosts > 内置池
+        custom = []
+        if isinstance(self.options, dict):
+            hs = self.options.get("hosts")
+            if isinstance(hs, list):
+                custom = [str(h).rstrip("/") for h in hs if str(h).startswith("http")]
+            if self.options.get("site"):
+                custom.insert(0, str(self.options.get("site")).rstrip("/"))
+        injected = [str(h).rstrip("/") for h in (getattr(self, "_vbox_effective_hosts", None) or []) if str(h).startswith("http")]
+        merged = []
+        for u in custom + injected + self._pool:
+            if u and u not in merged:
+                merged.append(u)
+        self._pool = merged
         return True
+
+    # ================= 多域并发竞速 =================
+    def _probe_host(self, host):
+        """轻量探测: 分类页9 真页判定 (脱壳后含 play 链接且长度达标)"""
+        try:
+            url = host + "/index.php/vod/type/id/9.html"
+            req = urllib.request.Request(url, headers={
+                "User-Agent": self._ua,
+                "Referer": host + "/",
+                "Accept-Encoding": "gzip",
+            })
+            with self.opener.open(req, timeout=12) as resp:
+                raw = resp.read()
+            if raw.startswith(b"\x1f\x8b"):
+                raw = gzip.decompress(raw)
+            t = raw.decode("utf-8", "ignore")
+            m = re.search(r'decodeURIComponent\s*\(\s*atob\s*\(\s*["\']([A-Za-z0-9+/=]+)["\']\s*\)\s*\)', t)
+            if m:
+                try:
+                    t = urllib.parse.unquote(base64.b64decode(m.group(1)).decode("latin1"))
+                except Exception:
+                    pass
+            return len(t) > 100000 and "/index.php/vod/play" in t
+        except Exception:
+            return False
+
+    def _race_live(self):
+        """全候选并发探测, 按池内优先级取首个成功者"""
+        import threading
+        pool = list(self._pool)
+        results = {}
+        barrier = threading.Barrier(len(pool))
+        def worker(idx, host):
+            try:
+                results[idx] = self._probe_host(host)
+            finally:
+                barrier.wait()
+        threads = [threading.Thread(target=worker, args=(i, h), daemon=True) for i, h in enumerate(pool)]
+        for t in threads:
+            t.start()
+        for i in range(len(pool)):
+            threads[i].join(timeout=20)
+        for i, h in enumerate(pool):
+            if results.get(i):
+                return h
+        return None
+
+    def _resolve_live(self):
+        """活域解析: 缓存 600s, 过期则重新竞速; 全死时回退 siteUrl"""
+        import time as _time
+        now = _time.time()
+        if self._live_host and now - self._live_ts < 600:
+            return self._live_host
+        winner = self._race_live()
+        if winner:
+            self._live_host = winner
+            self._live_ts = now
+            return winner
+        return self.siteUrl
+
+    def _rewrap_host(self, url):
+        """把池内旧域 host 重写到当前活域 (封面/播放地址用)"""
+        if not url:
+            return url
+        live = self._live_host or self.siteUrl
+        for h in self._pool:
+            if url.startswith(h):
+                return live + url[len(h):]
+        return url
 
     def getName(self):
         return "蝴蝶影视·小荷塘"
@@ -87,6 +179,8 @@ class Spider(SpiderBase):
         low = url.lower()
         if any(bad in low for bad in ("preview.mp4", "sample.mp4", "trailer.mp4", "loading", "stat")):
             return False
+        if "/proxy?" in low or "type=stream" in low:
+            return True
         return any(k in low for k in (".m3u8", ".mp4", ".flv", ".mkv", ".avi", ".ts", ".mpd", "index.png"))
 
     def manualVideoCheck(self):
@@ -135,13 +229,159 @@ class Spider(SpiderBase):
         except Exception:
             return [502, "text/plain", b"proxy fetch failed"]
 
+    # ============ HLS 流代理 (播放修复) ============
+    def _unshell(self, text):
+        """脱壳: decodeURIComponent(atob(b64)) -> 真 HTML"""
+        m = re.search(r'decodeURIComponent\s*\(\s*atob\s*\(\s*["\']([A-Za-z0-9+/=]+)["\']\s*\)\s*\)', text)
+        if m:
+            try:
+                return urllib.parse.unquote(base64.b64decode(m.group(1)).decode("latin1"))
+            except Exception:
+                return text
+        return text
+
+    def _parse_player_aaaa(self, text):
+        """解析脱壳后页面的 player_aaaa JS 对象 -> dict, 无则 {}"""
+        m = re.search(r'\bplayer_aaaa\s*[:=]\s*\{', text)
+        if not m:
+            return {}
+        i = m.end() - 1
+        depth = 0
+        while i < len(text):
+            c = text[i]
+            if c == '{':
+                depth += 1
+            elif c == '}':
+                depth -= 1
+                if depth == 0:
+                    brace = text[m.end() - 1:i + 1]
+                    try:
+                        return json.loads(brace)
+                    except Exception:
+                        return {}
+                    break
+            i += 1
+        return {}
+
+    def _absolutize(self, u):
+        u = (u or "").replace("\\/", "/").strip()
+        if not u:
+            return ""
+        live = self._resolve_live()
+        if u.startswith("http"):
+            return u
+        if u.startswith("//"):
+            return "https:" + u
+        if u.startswith("/"):
+            return live + u
+        return live + "/" + u
+
+    def _m3u8_from_page(self, text):
+        """当前页 player_aaaa.url"""
+        return self._absolutize((self._parse_player_aaaa(text) or {}).get("url", ""))
+
+    def _m3u8_by_link(self, text):
+        """player_aaaa.link -> 跟到 sid 子页 -> 取其 player_aaaa.url"""
+        link = self._absolutize((self._parse_player_aaaa(text) or {}).get("link", ""))
+        if not link:
+            return ""
+        res = self._fetch(link, referer=self._resolve_live() + "/")
+        return self._m3u8_from_page(self._unshell(res.get("text", "")))
+
+    def _m3u8_by_regex(self, text):
+        """兜底: 页内字面 .m3u8 (兼容 JSON 反斜杠转义)"""
+        for x in re.findall(r'["\']((?:https?:)?\\?/\\?/?[^"\'\s]*?\.m3u8[^"\'\s]*)["\']', text):
+            u = urllib.parse.unquote(x.replace("\\", ""))
+            if u:
+                return self._absolutize(u)
+        return ""
+
+    def _extract_m3u8(self, page_url):
+        """抓播放页 -> 脱壳 -> 优先 player_aaaa.url(可跟 link) -> 正则兜底 -> 解 master 变体"""
+        live = self._resolve_live() + "/"
+        res = self._fetch(page_url, referer=live)
+        text = self._unshell(res.get("text", ""))
+        m3u8 = self._m3u8_from_page(text) or self._m3u8_by_link(text) or self._m3u8_by_regex(text)
+        if not m3u8:
+            return ""
+        # master 播放列表 -> 取首个变体
+        res2 = self._fetch(m3u8, referer=live)
+        raw2 = res2.get("text", "")
+        if "#EXT-X-STREAM-INF" in raw2:
+            vm = re.search(r'#EXT-X-STREAM-INF[^\n]*\n\s*([^\s#][^\n]*)', raw2)
+            if vm:
+                u = vm.group(1).strip()
+                m3u8 = u if u.startswith("http") else urllib.parse.urljoin(m3u8, u)
+        return m3u8
+
+    def _discover_play_lines(self, main_url):
+        """从主播放页发现播放线路: 返回 [(label, target_page_url), ...]
+        仅取与当前视频同 id 的 sid 线路(排除侧栏推荐视频); 单 sid 标"专线", 多 sid 标"线路N"; 无则兜底主播放页"""
+        try:
+            res = self._fetch(main_url, referer=self._resolve_live() + "/")
+            text = self._unshell(res.get("text", ""))
+        except Exception:
+            return [("小荷塘专线", main_url)]
+        # 当前视频 id (从 main_url 提取), 用于过滤同 id 的线路
+        idm = re.search(r'/vod/play/id/(\d+)', main_url)
+        target_id = idm.group(1) if idm else None
+        links = sorted(set(re.findall(r'href=["\'](/index\.php/vod/play/id/\d+/sid/\d+/nid/\d+\.html)["\']', text)))
+        if target_id:
+            filtered = [l for l in links if ("/id/%s/" % target_id) in l]
+            if filtered:
+                links = filtered
+        seen_sids = []
+        for ln in links:
+            sm = re.search(r'/sid/(\d+)/', ln)
+            if sm and sm.group(1) not in seen_sids:
+                seen_sids.append(sm.group(1))
+        lines = []
+        if seen_sids:
+            multi = len(seen_sids) > 1
+            for idx, sid in enumerate(seen_sids[:3], 1):
+                tgt = next((l for l in links if ("/sid/%s/" % sid) in l), main_url)
+                lab = "小荷塘专线" if not multi else ("小荷塘线路%d" % idx)
+                lines.append((lab, self._resolve_live() + tgt))
+        if not lines:
+            lines.append(("小荷塘专线", main_url))
+        return lines
+
+    def _stream_proxy_url(self, m3u8_url):
+        base = self._proxy_base()
+        enc = base64.b64encode(m3u8_url.encode("utf-8")).decode("ascii")
+        sep = "&" if "?" in base else "?"
+        return base + sep + "type=stream&url=" + quote(enc, safe="")
+
+    def _serve_stream(self, m3u8_url, referer=None):
+        """抓 m3u8, 分片绝对化, 返回播放列表"""
+        try:
+            res = self._fetch(m3u8_url, referer=(referer or self._resolve_live() + "/"))
+            raw = res.get("text", "")
+            base = m3u8_url.rsplit("/", 1)[0] + "/"
+            out_lines = []
+            for l in raw.splitlines():
+                s = l.strip()
+                if s and not s.startswith("#"):
+                    out_lines.append(s if s.startswith("http") else urllib.parse.urljoin(base, s))
+                else:
+                    out_lines.append(l)
+            body = ("\n".join(out_lines) + "\n").encode("utf-8")
+            return [200, "application/vnd.apple.mpegurl", body]
+        except Exception:
+            return [502, "text/plain", b"stream fetch failed"]
+
     def _fetch(self, target_url, data=None, referer="", headers_custom=None):
         if not target_url:
             return {"code": 0, "text": "", "bytes": b"", "err": "", "final_url": ""}
+        live = self._resolve_live()
         if target_url.startswith("//"):
             target_url = "https:" + target_url
         elif target_url.startswith("/"):
-            target_url = self.siteUrl + target_url
+            target_url = live + target_url
+        else:
+            target_url = self._rewrap_host(target_url)
+        if not referer:
+            referer = live + "/"
 
         headers = {
             "User-Agent": self._ua,
@@ -272,8 +512,9 @@ class Spider(SpiderBase):
         if pic.startswith("//"):
             pic = "https:" + pic
         elif pic.startswith("/"):
-            pic = self.siteUrl + pic
-        return self._proxy_img_url(pic, referer=self.siteUrl + "/") if pic else ""
+            pic = self._resolve_live() + pic
+        pic = self._rewrap_host(pic)
+        return self._proxy_img_url(pic, referer=self._resolve_live() + "/") if pic else ""
 
     def categoryContent(self, tid, pg, filter, extend):
         del filter
@@ -360,22 +601,45 @@ class Spider(SpiderBase):
         raw_title = title_m.group(1).strip() if title_m else "精彩影视"
         clean_title = raw_title.split("-")[0].split("_")[0].strip()
 
-        pic_m = re.search(r'<img[^>]+(?:data-original|src)=["\'](https?://[^"\']+\.(?:jpg|jpeg|png|webp))["\']', html_text, re.I)
-        pic = ""
+        # 封面: 绝对/相对都取, 再重映射到活域
+        pic_src = ""
+        pic_m = re.search(r'<img[^>]+(?:data-original|data-src|src)=["\']([^"\']+\.(?:jpg|jpeg|png|webp))["\']', html_text, re.I)
         if pic_m:
-            pic = self._proxy_img_url(pic_m.group(1), referer=detail_path)
+            pic_src = pic_m.group(1)
+        if pic_src.startswith("//"):
+            pic_src = "https:" + pic_src
+        elif pic_src.startswith("/"):
+            pic_src = self._resolve_live() + pic_src
+        pic_src = self._rewrap_host(pic_src)
+        pic = self._proxy_img_url(pic_src, referer=self._resolve_live() + "/") if pic_src else ""
+
+        # 播放地址: 存活域绝对 URL, 客户端"已有地址"可直接播放
+        if raw_id.startswith("http"):
+            _p = urlparse(raw_id)
+            _play_path = _p.path + (_p.query if _p.query else "")
+        else:
+            _play_path = raw_id if raw_id.startswith("/") else "/" + raw_id
+        live_play_url = self._resolve_live() + _play_path
+
+        # 多线路发现: 免费单线(专线) / 付费多线(线路1/线路2), 每条指向 playerContent 可解析的页面
+        try:
+            play_lines = self._discover_play_lines(live_play_url)
+        except Exception:
+            play_lines = [("小荷塘专线", live_play_url)]
 
         desc_lines = [
             "【🔥 官方交流群: %s】" % self.tgGroup,
             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
             "• 影片名称: %s" % clean_title,
-            "• 活跃节点: %s" % self.siteUrl,
+            "• 活跃节点: %s" % self._resolve_live(),
             "• 播放模式: 蝴蝶影视专属动态极速硬解",
             "• 本接口已启用页面脱壳与动态鉴权防护。"
         ]
         escaped_desc = "\n".join(desc_lines).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
         safe_title = clean_title.replace("$", "＄").replace("#", "＃")
+        segs = ["%s$%s" % (lab, url) for lab, url in play_lines]
+        vod_play_url = safe_title + "$" + "#".join(segs) if segs else ("%s$%s" % (safe_title, live_play_url))
 
         return {
             "list": [{
@@ -387,19 +651,44 @@ class Spider(SpiderBase):
                 "vod_remarks": format_remarks("蝴蝶影视", "正片"),
                 "vod_content": escaped_desc,
                 "vod_play_from": "🦋蝴蝶极速专线",
-                "vod_play_url": "%s$%s" % (safe_title, raw_id)
+                "vod_play_url": vod_play_url
             }]
         }
 
     def playerContent(self, flag, id, vipFlags):
         raw_id = str(id).strip()
-        play_url = raw_id if raw_id.startswith("http") else self.siteUrl + raw_id
+        # 已是可直接播放的 m3u8(http 且 .m3u8) -> 直接包流代理, 不重映射到活域
+        if raw_id.startswith("http") and ".m3u8" in raw_id.lower():
+            _h = {"User-Agent": self._ua, "Referer": self._resolve_live() + "/"}
+            return {"parse": 0, "jx": 0, "url": self._stream_proxy_url(raw_id), "header": _h}
+        # 归一化: 完整 URL(可能含旧域) / 相对路径 -> 活域播放页路径
+        if raw_id.startswith("http"):
+            p = urlparse(raw_id)
+            path = p.path + (p.query if p.query else "")
+        else:
+            path = raw_id if raw_id.startswith("/") else "/" + raw_id
+        play_url = self._resolve_live() + path
+
+        # 抓播放页脱壳取 m3u8, 包成本地代理流地址 (修复播放)
+        m3u8 = ""
+        try:
+            m3u8 = self._extract_m3u8(play_url)
+        except Exception:
+            m3u8 = ""
 
         headers = {
             "User-Agent": self._ua,
-            "Referer": self.siteUrl + "/"
+            "Referer": self._resolve_live() + "/"
         }
 
+        if m3u8:
+            return {
+                "parse": 0,
+                "jx": 0,
+                "url": self._stream_proxy_url(m3u8),
+                "header": headers
+            }
+        # 兜底: 旧逻辑 (交给内置解析器)
         return {
             "parse": 1,
             "jx": 0,
@@ -488,8 +777,19 @@ class Spider(SpiderBase):
         t = str(p.get("type") or "")
         u = unquote(str(p.get("u") or p.get("url") or ""))
         r = unquote(str(p.get("r") or "")) or None
+        if t == "stream":
+            # url 参数可能是 b64(m3u8) 或明文字符串
+            cand = u
+            if "://" not in cand:
+                try:
+                    cand = base64.b64decode(cand).decode("utf-8")
+                except Exception:
+                    cand = ""
+            if cand:
+                return self._serve_stream(cand, referer=r)
+            return [404, "text/plain", b"no stream url"]
         if t == "img" and u:
-            return self._serve_img(u, referer=r)
+            return self._serve_img(self._rewrap_host(u), referer=r)
         return [404, "text/plain", b""]
 
     def destroy(self):
