@@ -2200,7 +2200,30 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "jinguo_py",
+      "name": "禁果短剧",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "短剧 REST API 站(device token 鉴权), 8 分类, 题材/集数筛选",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://jinguoduanju.app"
+      ],
+      "sortOrder": 628,
+      "defaultProxy": false,
+      "notes": "jinguoduanju.app /api/v1 短剧平台: 最新/热度/精选/全部/原创/单体/动漫改编/影视改编 8 分类, 排序+集数+题材标签筛选。device token(随机 deviceId, 401 自动刷新)。剧集播放 /episodes/{id}/play。封面 localProxy 包装。",
+      "api": "./sources/welfare-js/jinguo.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
-  "updatedAt": "2026-10-02T15:57:54Z"
+  "updatedAt": "2026-10-02T15:57:56Z"
 }
