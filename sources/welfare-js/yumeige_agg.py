@@ -318,6 +318,11 @@ class Spider(_Spider):
 
     # ---------------- 基础 ----------------
     def init(self, extend=''):
+        # 先走 base.spider，应用 _vbox_effective_hosts 域名注入（vbox 注入 defaultHosts）
+        try:
+            super().init(extend)
+        except Exception:
+            pass
         ext = {}
         if extend:
             try:
@@ -337,10 +342,14 @@ class Spider(_Spider):
         off = str(ext.get('off') or '').strip()
         if on:
             want = set(x.strip() for x in on.split(',') if x.strip())
-            self.sites = [s for s in self.sites if s['key'] in want]
+            filtered = [s for s in self.sites if s['key'] in want]
+            if filtered:  # 过滤后为空则保留全部，避免 vbox 传参导致分类全空
+                self.sites = filtered
         if off:
             bad = set(x.strip() for x in off.split(',') if x.strip())
-            self.sites = [s for s in self.sites if s['key'] not in bad]
+            filtered = [s for s in self.sites if s['key'] not in bad]
+            if filtered:
+                self.sites = filtered
         # 网关族：有钥匙才进站表
         if self.gwkey:
             for g in GW_SITES:
@@ -518,6 +527,14 @@ class Spider(_Spider):
                 for t in tags[:40]:
                     vals.append({'n': str(t.get('name') or ''), 'v': 't%s' % t['id']})
                 flt[tid] = [{'key': 'tag', 'name': '分类', 'value': vals}]
+        # 兜底：tag_group 全部失败时，至少返回站点级分类（避免「未能解析到分类」）
+        if not cls:
+            for st in self.sites:
+                if st.get('family') != 'wieuc':
+                    continue
+                cf = self.cfg_of(st)
+                cls.append({'type_name': ('🟢' if cf.get('ok') else '🟡') + st['name'],
+                            'type_id': st['key']})
         # 聚合位
         if cls:
             cls.insert(0, {'type_name': '🔥全站聚合·最新', 'type_id': 'all'})

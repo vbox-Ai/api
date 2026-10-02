@@ -2162,13 +2162,12 @@
       "desc": "阅姝阁/阅妹阁 APK 站群聚合（3站+9网关族）",
       "serviceType": "python_spider",
       "defaultHosts": [
-        "https://asdon.417712.xyz:8283",
         "https://traxks.894402.xyz:8283",
         "https://ygfsop.964870.xyz:8283"
       ],
       "sortOrder": 626,
       "defaultProxy": false,
-      "notes": "阅妹阁聚合。APISIX+Fernet 加密 SPA 跳转链（3入口→atob→/home?channel=→Fernet CONFIG→sm-api.wieuc.com）。3站（41/89/96看片）共库 106019 条。纯标准库 AES-128-CBC + HMAC-SHA256 + Fernet 解密。localProxy 图片代理（Fernet 二次封装解裸图）。9 个加密采集网关族待 gwkey 点亮。",
+      "notes": "阅妹阁聚合。APISIX+Fernet 加密 SPA 跳转链（入口→atob→/home?channel=→Fernet CONFIG→sm-api.wieuc.com）。3站（41/89/96看片）共库 106019 条，分类平铺（51组+2聚合=53个一级分类）。纯标准库 AES-128-CBC + HMAC-SHA256 + Fernet 解密。localProxy 图片代理（Fernet 二次封装解裸图）。9 个加密采集网关族待 gwkey 点亮。注：41看片入口 asdon.417712.xyz 已下线（TCP 超时），defaultHosts 仅保留 89/96 两个可用入口。",
       "api": "./sources/welfare-js/yumeige_agg.py",
       "scriptType": "python",
       "engine": "python",
@@ -2180,5 +2179,5 @@
       "visibleInHome": false
     }
   ],
-  "updatedAt": "2026-10-02T07:38:00Z"
+  "updatedAt": "2026-10-02T11:26:21Z"
 }
