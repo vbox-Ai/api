@@ -2340,6 +2340,31 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "rou_py",
+      "name": "肉视频",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "多主机并发竞速 + 公开页域名池, TSR blob/DOM 双解析, PNG 封装 m3u8 代理链",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://rou.video",
+        "https://rouvb1.xyz",
+        "https://rouva8.xyz"
+      ],
+      "sortOrder": 634,
+      "defaultProxy": false,
+      "notes": "rou.video/rouvb1.xyz/rouva8.xyz 多主机 + rdz3.xyz/dizhi 公开页域名刷新。列表 self.$R blob(ev XOR base64 解密) 与 DOM /v/ 双解析。详情页 videoUrl PNG 封装 m3u8(roUd chunk+zlib), localProxy rou_hls 代理链(分段回包)。主机竞速: 首个响应缓存 10 分钟。封面 localProxy 包装。",
+      "api": "./sources/welfare-js/rou.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
   "updatedAt": "2026-10-02T15:58:01Z"
