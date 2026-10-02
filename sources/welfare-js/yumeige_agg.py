@@ -496,8 +496,7 @@ class Spider(_Spider):
                 continue
             k = st['key']
             cf = self.cfg_of(st)
-            cls.append({'type_name': ('🟢' if cf.get('ok') else '🟡') + st['name'], 'type_id': k})
-            vals = [{'n': '全部', 'v': ''}]
+            ok = cf.get('ok')
             try:
                 items = self._items(self.api_get('/api/vod/tag_group?site_id=%d' % cf['site']))
             except Exception:
@@ -512,12 +511,13 @@ class Spider(_Spider):
                 if not nm or not tags:
                     continue
                 gid = 'g%s' % o.get('id')
-                grp[(k, gid)] = ','.join(str(t['id']) for t in tags)
-                vals.append({'n': '%s · 全部' % nm, 'v': gid})
+                tid = '%s|%s' % (k, gid)
+                cls.append({'type_name': ('🟢' if ok else '🟡') + nm, 'type_id': tid})
+                grp[tid] = (k, ','.join(str(t['id']) for t in tags))
+                vals = [{'n': '全部', 'v': ''}]
                 for t in tags[:40]:
-                    vals.append({'n': '%s · %s' % (nm, t.get('name') or ''), 'v': 't%s' % t['id']})
-            if len(vals) > 1:
-                flt[k] = [{'key': 'tag', 'name': '分类', 'value': vals}]
+                    vals.append({'n': str(t.get('name') or ''), 'v': 't%s' % t['id']})
+                flt[tid] = [{'key': 'tag', 'name': '分类', 'value': vals}]
         # 聚合位
         if cls:
             cls.insert(0, {'type_name': '🔥全站聚合·最新', 'type_id': 'all'})
@@ -571,6 +571,20 @@ class Spider(_Spider):
             return self._cards(st, self.api_get(q), cf)
         return []
 
+    def _list_group(self, group_tid, page, tag):
+        """按一级分类（站点|组id）取数"""
+        if group_tid not in self._grp:
+            return []
+        k, gtag = self._grp[group_tid]
+        st = self.site_of(k)
+        if not st:
+            return []
+        cf = self.cfg_of(st)
+        q = '/api/vod/video?page=%d&per_page=%d&site_id=%d&tag=%s' % (page, PER, cf['site'], gtag)
+        if tag:
+            q += '&tag=' + urllib.parse.quote(str(tag))
+        return self._cards(st, self.api_get(q), cf)
+
     def homeContent(self, filter=False):
         self._ensure_classes()
         root = {'class': list(self._cls)}
@@ -622,6 +636,10 @@ class Spider(_Spider):
             n = len([s for s in self.sites if s.get('family') == 'wieuc'])
             return {'page': page, 'pagecount': 9999 if len(out) >= n * PER else page,
                     'limit': len(out), 'total': 106019 * max(n, 1), 'list': out}
+        if '|' in tid:
+            lst = self._list_group(tid, page, tag)
+            return {'page': page, 'pagecount': page + 1 if len(lst) >= PER else page,
+                    'limit': len(lst), 'total': len(lst), 'list': lst}
         st = self.site_of(tid)
         if not st:
             return {'page': page, 'pagecount': page, 'limit': 0, 'total': 0, 'list': []}
