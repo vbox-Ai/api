@@ -3280,6 +3280,29 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "2048_py",
+        "name": "麻豆传媒·成人短剧",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "REST API 站: 长视频全分类 + AI短剧专区(逐集独立播放流)",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://mdcmai4.xyz"
+        ],
+        "sortOrder": 632,
+        "defaultProxy": false,
+        "notes": "mdcmai4.xyz /api/v1: 动态分类 + AI 短剧(productId=1, 逐集 videoUrl 精准选集) + m3u8/image proxy 端点。vod_id @@ 编码(drama/video+id+url+title+cover)。封面经站点 image proxy + localProxy 包装。",
+        "api": "./sources/welfare-js/2048.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "imageSSLBypass": true,
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ],
     "updatedAt": "2026-10-02T11:26:21Z"
