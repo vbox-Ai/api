@@ -15,6 +15,7 @@ import base64
 import html as _html
 import urllib.request
 import urllib.parse
+import ssl
 
 
 class _SpiderBase(object):
@@ -47,6 +48,9 @@ class Spider(SpiderBase):
             'Referer': self.host + '/',
             'Accept-Language': 'zh-CN,zh;q=0.9',
         }
+        self.ctx = ssl.create_default_context()
+        self.ctx.check_hostname = False
+        self.ctx.verify_mode = ssl.CERT_NONE
         self.classes = [
             ('熟母少妇', '20'), ('网红直播', '21'), ('自拍偷拍', '22'),
             ('强奸乱伦', '23'), ('高清国产', '24'), ('韩国专区', '25'),
@@ -57,7 +61,7 @@ class Spider(SpiderBase):
     # ================= 内部工具 =================
     def _fetch(self, url, timeout=20):
         req = urllib.request.Request(url, headers=self.headers)
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
+        with urllib.request.urlopen(req, timeout=timeout, context=self.ctx) as resp:
             data = resp.read()
         for enc in ('utf-8', 'gbk', 'gb18030'):
             try:
@@ -161,7 +165,7 @@ class Spider(SpiderBase):
             if referer:
                 headers['Referer'] = referer
             req = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(req, timeout=15) as resp:
+            with urllib.request.urlopen(req, timeout=15, context=self.ctx) as resp:
                 raw = resp.read()
                 ct = (resp.headers.get('Content-Type') or 'image/jpeg').split(';')[0].strip()
             if raw[:4] == b'\x89PNG':
