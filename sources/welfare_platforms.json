@@ -2317,7 +2317,30 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "gaokao_py",
+      "name": "三年高考五年模拟",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "动态域名池(备用9+API发现) + 注册 token, 52 分类, 52 路并发搜索",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://lwncnss3api.cc"
+      ],
+      "sortOrder": 633,
+      "defaultProxy": false,
+      "notes": "lwncnss3api.cc 等 9 备用域名 + /api/getapi.php 动态发现。newreg 注册 token(限频退避), /api/vlist.php 分类列表(52 分类), /api/Get_vod_list.php 详情。域名并发竞速(https+http 探测 /api/setapp.php), 首个 200 胜出缓存 10 分钟。搜索 12 并发分类抓取。封面 localProxy 包装。",
+      "api": "./sources/welfare-js/gaokao.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
-  "updatedAt": "2026-10-02T15:58:00Z"
+  "updatedAt": "2026-10-02T15:58:01Z"
 }
