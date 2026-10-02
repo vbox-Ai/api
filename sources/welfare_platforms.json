@@ -2246,6 +2246,29 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "jingxian_py",
+      "name": "精仙阁",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "macCMS 模板站, 11 分类, 双线路(HLS 去广告清洗 localProxy + 原画直链)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://fuwtrv.jxg2.buzz"
+      ],
+      "sortOrder": 630,
+      "defaultProxy": false,
+      "notes": "fuwtrv.jxg2.buzz/jxg/: 服务端直渲染, 无反爬。11 分类单集直链(详情页内联 JS const rawUrl m3u8)。HLS 广告深度清洗(异目录分片组+METHOD=NONE+DISCONTINUITY)经 localProxy do=py&type=stream 或 do=local&key=hls/ 双协议。homeContent 10 分钟缓存+时间预算。",
+      "api": "./sources/welfare-js/jingxian.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
   "updatedAt": "2026-10-02T15:57:57Z"
