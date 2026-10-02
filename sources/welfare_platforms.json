@@ -2411,6 +2411,29 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "18av_py",
+      "name": "18av",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "18av 镜像站, 7 分类 .post 卡片解析, 详情预览直链",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://mjv012.com"
+      ],
+      "sortOrder": 637,
+      "defaultProxy": false,
+      "notes": "mjv012.com/zh/ 18av 镜像: 7 分类(chinese_list/censored_list/uncensored_list/amateurjav_list/reducing-mosaic_list/animation_list/dt_list), /zh/{slug}/all/{page}.html .post 卡片解析。详情 video[data-src] 预览 mp4 多线路。Cookie YES_Eighteen(PHPSESSID 可失效重发)。封面 localProxy 包装。由 TVBox JS 规则重写为 Python Spider。",
+      "api": "./sources/welfare-js/18av.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
   "updatedAt": "2026-10-02T15:58:03Z"
