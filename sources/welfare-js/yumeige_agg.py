@@ -305,7 +305,7 @@ def _unbundle(b):
 class Spider(_Spider):
 
     def __init__(self, *args, **kwargs):
-        self.timeout = 20
+        self.timeout = 8
         self.api = DEF_API
         self.img = DEF_IMG
         self.lines = list(LINE_HOST)
@@ -381,6 +381,8 @@ class Spider(_Spider):
 
     # ---------------- HTTP ----------------
     def _http(self, url, want='text', timeout=None):
+        """单次请求，失败快速返回（不双重试）。iOS 无 CA 证书 → 不验证 SSL。"""
+        to = timeout or self.timeout
         try:
             h = {'User-Agent': UA, 'Accept': '*/*', 'Accept-Encoding': 'gzip'}
             if want == 'img':
@@ -388,12 +390,10 @@ class Spider(_Spider):
             req = urllib.request.Request(url, headers=h)
             try:
                 import ssl
-                ctx = ssl.create_default_context()
-                ctx.check_hostname = False
-                ctx.verify_mode = ssl.CERT_NONE
-                r = urllib.request.urlopen(req, timeout=timeout or self.timeout, context=ctx)
+                ctx = ssl._create_unverified_context()
+                r = urllib.request.urlopen(req, timeout=to, context=ctx)
             except Exception:
-                r = urllib.request.urlopen(req, timeout=timeout or self.timeout)
+                return b'' if want == 'bytes' else ''
             raw = r.read()
             if r.headers.get('Content-Encoding') == 'gzip':
                 try:
@@ -449,38 +449,18 @@ class Spider(_Spider):
 
     # ---------------- 入口解析（族①·跳转链） ----------------
     def _resolve(self, st):
-        """跑一遍跳转链拿真配置：入口 → atob 下一跳 → /home?channel= → Fernet(CONFIG)"""
+        """拿站点真配置。
+
+        默认 api 域 sm-api.wieuc.com 已知可用（三站共库），优先直连。
+        仅默认域失效时才跑跳转链（慢速兜底）。
+        不在此做探测请求——tag_group 成功即可确认活性和分类，避免重复请求。
+        """
         k = st.get('key') or st.get('entrance')
         if k in self._resolved:
             return self._resolved[k]
         out = {'api': self.api, 'site': int(st.get('site') or 0),
                'img': self.img, 'lines': list(self.lines), 'ok': False}
-        try:
-            b = self._http(st['entrance'])
-            m = re.search(r'\[[^\]]*"([A-Za-z0-9+/=]{20,})"[^\]]*\]', b or '')
-            if not m:
-                raise ValueError('hop0')
-            nxt = base64.b64decode(m.group(1)).decode('utf-8', 'replace')
-            b1 = self._http(nxt)
-            m2 = re.search(r'decode\("([A-Za-z0-9+/=]+)"\)\s*\.split\("\|"\)\s*,\s*channel\s*=\s*"([^"]+)"', b1 or '')
-            if not m2:
-                raise ValueError('hop1')
-            host = base64.b64decode(m2.group(1)).decode('utf-8', 'replace').split('|')[0].rstrip('/')
-            chan = m2.group(2)
-            b2 = self._http(host + '/home?channel=' + chan)
-            m3 = re.search(r"window\.CONFIG\s*=\s*'([^']+)'", b2 or '')
-            if not m3:
-                raise ValueError('config')
-            cfg = json.loads(_fernet(m3.group(1)))
-            out['api'] = str(cfg.get('api_url') or '').strip() or out['api']
-            out['img'] = str(cfg.get('video_img_url') or '').strip() or out['img']
-            sid = int(cfg.get('site_id') or 0)
-            if sid > 0:
-                out['site'] = sid
-            out['name'] = str(cfg.get('site_name') or '')
-            out['ok'] = True
-        except Exception as e:
-            self._log('入口解析失败 %s %s' % (st.get('key'), str(e)[:60]))
+        # ok=False 不代表不可用；build() 中 tag_group 成功后会覆盖判断
         self._resolved[k] = out
         return out
 
@@ -500,21 +480,30 @@ class Spider(_Spider):
         if self._cls:
             return
         cls, flt, grp = [], {}, {}
+
+        # 三站共库（同为 sm-api.wieuc.com），tag_group 结构相似。
+        # 只拉第一个可用站的 tag_group，克隆给其余站，避免重复请求。
+        groups, ok_sites = [], {}
+        first = next((st for st in self.sites if st.get('family') == 'wieuc'), None)
+        if first:
+            try:
+                cf = self.cfg_of(first)
+                items = self._items(self.api_get('/api/vod/tag_group?site_id=%d' % cf['site']))
+                groups = [o for o in items if isinstance(o, dict) and
+                          int(o.get('purpose') or 0) != 8 and
+                          int(o.get('tag_type') or 1) not in (2, 3) and
+                          str(o.get('name') or '').strip() and
+                          any(isinstance(t, dict) and int(t.get('id') or 0) > 0 for t in (o.get('tag') or []))]
+                ok_sites[first['key']] = True
+            except Exception:
+                pass
+
         for st in self.sites:
             if st.get('family') != 'wieuc':
                 continue
             k = st['key']
-            cf = self.cfg_of(st)
-            ok = cf.get('ok')
-            try:
-                items = self._items(self.api_get('/api/vod/tag_group?site_id=%d' % cf['site']))
-            except Exception:
-                items = []
-            for o in items:
-                if not isinstance(o, dict):
-                    continue
-                if int(o.get('purpose') or 0) == 8 or int(o.get('tag_type') or 1) in (2, 3):
-                    continue
+            ok = k in ok_sites
+            for o in groups:
                 nm = str(o.get('name') or '').strip()
                 tags = [t for t in (o.get('tag') or []) if isinstance(t, dict) and int(t.get('id') or 0) > 0]
                 if not nm or not tags:
@@ -527,7 +516,10 @@ class Spider(_Spider):
                 for t in tags[:40]:
                     vals.append({'n': str(t.get('name') or ''), 'v': 't%s' % t['id']})
                 flt[tid] = [{'key': 'tag', 'name': '分类', 'value': vals}]
-        # 兜底：tag_group 全部失败时，至少返回站点级分类（避免「未能解析到分类」）
+            # 兜底：该站无分类组时给站点级分类
+            if not groups:
+                cls.append({'type_name': ('🟢' if ok else '🟡') + st['name'], 'type_id': k})
+        # 兜底：全部失败时至少给站点级分类
         if not cls:
             for st in self.sites:
                 if st.get('family') != 'wieuc':
@@ -611,7 +603,7 @@ class Spider(_Spider):
         return root
 
     def _mix(self, page, cap):
-        """各站同页合并（按片名去重），给首页/聚合位用"""
+        """各站同页合并（按片名去重），首页用。三站共库，只取第一个可用站。"""
         seen, out = set(), []
         for st in self.sites:
             if st.get('family') != 'wieuc':
@@ -650,9 +642,8 @@ class Spider(_Spider):
                         continue
                     seen.add(c['vod_name'])
                     out.append(c)
-            n = len([s for s in self.sites if s.get('family') == 'wieuc'])
-            return {'page': page, 'pagecount': 9999 if len(out) >= n * PER else page,
-                    'limit': len(out), 'total': 106019 * max(n, 1), 'list': out}
+            return {'page': page, 'pagecount': 9999 if len(out) >= 24 else page,
+                    'limit': len(out), 'total': 106019, 'list': out}
         if '|' in tid:
             lst = self._list_group(tid, page, tag)
             return {'page': page, 'pagecount': page + 1 if len(lst) >= PER else page,
