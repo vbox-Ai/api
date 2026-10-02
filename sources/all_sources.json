@@ -170,8 +170,8 @@
       {
         "name": "木偶资源",
         "type": "cms",
-        "searchurl": "https://www.muou.site/index.php/vod/search.html?wd=",
-        "detailBase": "https://www.muou.site",
+        "searchurl": "https://123.666291.xyz/index.php/vod/search.html?wd=",
+        "detailBase": "https://123.666291.xyz",
         "enabled": true,
         "priority": 1003,
         "group": "cloud"
@@ -179,8 +179,8 @@
       {
         "name": "多多资源",
         "type": "cms",
-        "searchurl": "https://yydsys.de5.net/index.php/vod/search.html?wd=",
-        "detailBase": "https://yydsys.de5.net",
+        "searchurl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
+        "detailBase": "https://tv.yydsys.cc",
         "ua": "pc",
         "enabled": true,
         "priority": 1004,
@@ -262,8 +262,8 @@
       {
         "name": "闪电优汐",
         "type": "cms",
-        "searchurl": "http://shandian.blog/index.php/vod/search.html?wd=",
-        "detailBase": "http://shandian.blog",
+        "searchurl": "http://sd.sduc.site/index.php/vod/search.html?wd=",
+        "detailBase": "http://sd.sduc.site",
         "enabled": true,
         "priority": 1022,
         "group": "cloud"
@@ -3141,7 +3141,33 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "yumeige_agg_py",
+        "name": "阅妹阁聚合",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "阅姝阁/阅妹阁 APK 站群聚合（3站+9网关族）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://asdon.417712.xyz:8283",
+          "https://traxks.894402.xyz:8283",
+          "https://ygfsop.964870.xyz:8283"
+        ],
+        "sortOrder": 626,
+        "defaultProxy": false,
+        "notes": "阅妹阁聚合。APISIX+Fernet 加密 SPA 跳转链（3入口→atob→/home?channel=→Fernet CONFIG→sm-api.wieuc.com）。3站（41/89/96看片）共库 106019 条。纯标准库 AES-128-CBC + HMAC-SHA256 + Fernet 解密。localProxy 图片代理（Fernet 二次封装解裸图）。9 个加密采集网关族待 gwkey 点亮。",
+        "api": "./sources/welfare-js/yumeige_agg.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "imageSSLBypass": true,
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
-    ]
+    ],
+    "updatedAt": "2026-10-02T07:38:00Z"
   }
 }
