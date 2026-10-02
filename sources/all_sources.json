@@ -3376,6 +3376,29 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "xx9_py",
+        "name": "xx9",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "AES-128-ECB 加密网关, 3 网关并发竞速 10 分钟缓存, 20 专题分类, 5 播放线路",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://pl5kjl.jas49cht5sqrwet.xyz"
+        ],
+        "sortOrder": 636,
+        "defaultProxy": false,
+        "notes": "xx9.com 加密 API 网关(fast-endecode): 请求体 JSON AES-128-ECB 加密(time%10 选钥, REM=2), pycryptodome 优先, 纯 Python AES 兜底(FIPS-197 验证)。3 网关并发竞速, 首个可达网关缓存 10 分钟。jwt-token + free-register accessToken。20 专题分类, 5 播放线路域名(vodFullPlayUrl 映射)。封面 qv1tx2.shoupingxz.com + localProxy。",
+        "api": "./sources/welfare-js/xx9.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "imageSSLBypass": true,
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ],
     "updatedAt": "2026-10-02T11:26:21Z"
