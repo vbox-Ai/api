@@ -2269,7 +2269,30 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "yinhua_py",
+      "name": "淫花宫",
+      "category": "video",
+      "icon": "film.fill",
+      "desc": "苹果CMS模板站, 11 分类, 单集 m3u8 直链",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://breplc.yhg5.help"
+      ],
+      "sortOrder": 631,
+      "defaultProxy": false,
+      "notes": "breplc.yhg5.help/yhg/ macCMS 模板: 11 分类, /{vid}.html 直链, 页面提取 m3u8, 搜索 /s/{key}.html。封面 localProxy 包装。",
+      "api": "./sources/welfare-js/yinhua.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "imageSSLBypass": true,
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
-  "updatedAt": "2026-10-02T15:57:57Z"
+  "updatedAt": "2026-10-02T15:57:58Z"
 }
