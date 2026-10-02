@@ -3215,29 +3215,6 @@
         "visibleInHome": false
       },
       {
-        "platformKey": "yeguo_py",
-        "name": "野果短剧",
-        "category": "video",
-        "icon": "film.fill",
-        "desc": "短剧 API 站(AES-CBC 加密响应, 纯 Python AES 兜底), 13 分类",
-        "serviceType": "python_spider",
-        "defaultHosts": [
-          "https://www.yeguodj.com"
-        ],
-        "sortOrder": 629,
-        "defaultProxy": false,
-        "notes": "www.yeguodj.com/api.php: 数据 base64+AES-CBC 加密(API_KEY/IV 内置), pycryptodome 优先, PureAES 纯 Python 兜底。13 分类(发现/排行榜/6 背景题材/5 设定)。封面外部代理 huangguo.wulii.de5.net + localProxy 二次包装。",
-        "api": "./sources/welfare-js/yeguo.py",
-        "scriptType": "python",
-        "engine": "python",
-        "sslBypass": true,
-        "contentType": "video",
-        "imageSSLBypass": true,
-        "visibleInNormalSpider": false,
-        "visibleInGlobalSearch": false,
-        "visibleInHome": false
-      },
-      {
         "platformKey": "jingxian_py",
         "name": "精仙阁",
         "category": "video",
@@ -3251,52 +3228,6 @@
         "defaultProxy": false,
         "notes": "fuwtrv.jxg2.buzz/jxg/: 服务端直渲染, 无反爬。11 分类单集直链(详情页内联 JS const rawUrl m3u8)。HLS 广告深度清洗(异目录分片组+METHOD=NONE+DISCONTINUITY)经 localProxy do=py&type=stream 或 do=local&key=hls/ 双协议。homeContent 10 分钟缓存+时间预算。",
         "api": "./sources/welfare-js/jingxian.py",
-        "scriptType": "python",
-        "engine": "python",
-        "sslBypass": true,
-        "contentType": "video",
-        "imageSSLBypass": true,
-        "visibleInNormalSpider": false,
-        "visibleInGlobalSearch": false,
-        "visibleInHome": false
-      },
-      {
-        "platformKey": "yinhua_py",
-        "name": "淫花宫",
-        "category": "video",
-        "icon": "film.fill",
-        "desc": "苹果CMS模板站, 11 分类, 单集 m3u8 直链",
-        "serviceType": "python_spider",
-        "defaultHosts": [
-          "https://breplc.yhg5.help"
-        ],
-        "sortOrder": 631,
-        "defaultProxy": false,
-        "notes": "breplc.yhg5.help/yhg/ macCMS 模板: 11 分类, /{vid}.html 直链, 页面提取 m3u8, 搜索 /s/{key}.html。封面 localProxy 包装。",
-        "api": "./sources/welfare-js/yinhua.py",
-        "scriptType": "python",
-        "engine": "python",
-        "sslBypass": true,
-        "contentType": "video",
-        "imageSSLBypass": true,
-        "visibleInNormalSpider": false,
-        "visibleInGlobalSearch": false,
-        "visibleInHome": false
-      },
-      {
-        "platformKey": "2048_py",
-        "name": "麻豆传媒·成人短剧",
-        "category": "video",
-        "icon": "film.fill",
-        "desc": "REST API 站: 长视频全分类 + AI短剧专区(逐集独立播放流)",
-        "serviceType": "python_spider",
-        "defaultHosts": [
-          "https://mdcmai4.xyz"
-        ],
-        "sortOrder": 632,
-        "defaultProxy": false,
-        "notes": "mdcmai4.xyz /api/v1: 动态分类 + AI 短剧(productId=1, 逐集 videoUrl 精准选集) + m3u8/image proxy 端点。vod_id @@ 编码(drama/video+id+url+title+cover)。封面经站点 image proxy + localProxy 包装。",
-        "api": "./sources/welfare-js/2048.py",
         "scriptType": "python",
         "engine": "python",
         "sslBypass": true,
@@ -3330,31 +3261,6 @@
         "visibleInHome": false
       },
       {
-        "platformKey": "rou_py",
-        "name": "肉视频",
-        "category": "video",
-        "icon": "film.fill",
-        "desc": "多主机并发竞速 + 公开页域名池, TSR blob/DOM 双解析, PNG 封装 m3u8 代理链",
-        "serviceType": "python_spider",
-        "defaultHosts": [
-          "https://rou.video",
-          "https://rouvb1.xyz",
-          "https://rouva8.xyz"
-        ],
-        "sortOrder": 634,
-        "defaultProxy": false,
-        "notes": "rou.video/rouvb1.xyz/rouva8.xyz 多主机 + rdz3.xyz/dizhi 公开页域名刷新。列表 self.$R blob(ev XOR base64 解密) 与 DOM /v/ 双解析。详情页 videoUrl PNG 封装 m3u8(roUd chunk+zlib), localProxy rou_hls 代理链(分段回包)。主机竞速: 首个响应缓存 10 分钟。封面 localProxy 包装。",
-        "api": "./sources/welfare-js/rou.py",
-        "scriptType": "python",
-        "engine": "python",
-        "sslBypass": true,
-        "contentType": "video",
-        "imageSSLBypass": true,
-        "visibleInNormalSpider": false,
-        "visibleInGlobalSearch": false,
-        "visibleInHome": false
-      },
-      {
         "platformKey": "getav_py",
         "name": "GetAV",
         "category": "video",
@@ -3368,29 +3274,6 @@
         "defaultProxy": false,
         "notes": "getav.net/me/live/co/top 多主机 + getav.info/zh 动态域名发现。/api/movies 多分类(latest/hot/new-releases/uncensored/censored/subtitle/4k) + 演员/类型/片商/番号文件夹(排序/字幕/画质点击切换)。静态图 CDN static.worldstatic.com。API 并发竞速: 首个 JSON 成功胜出缓存 10 分钟。封面 localProxy 包装(data-URI 色卡兜底)。",
         "api": "./sources/welfare-js/getav.py",
-        "scriptType": "python",
-        "engine": "python",
-        "sslBypass": true,
-        "contentType": "video",
-        "imageSSLBypass": true,
-        "visibleInNormalSpider": false,
-        "visibleInGlobalSearch": false,
-        "visibleInHome": false
-      },
-      {
-        "platformKey": "xx9_py",
-        "name": "xx9",
-        "category": "video",
-        "icon": "film.fill",
-        "desc": "AES-128-ECB 加密网关, 3 网关并发竞速 10 分钟缓存, 20 专题分类, 5 播放线路",
-        "serviceType": "python_spider",
-        "defaultHosts": [
-          "https://pl5kjl.jas49cht5sqrwet.xyz"
-        ],
-        "sortOrder": 636,
-        "defaultProxy": false,
-        "notes": "xx9.com 加密 API 网关(fast-endecode): 请求体 JSON AES-128-ECB 加密(time%10 选钥, REM=2), pycryptodome 优先, 纯 Python AES 兜底(FIPS-197 验证)。3 网关并发竞速, 首个可达网关缓存 10 分钟。jwt-token + free-register accessToken。20 专题分类, 5 播放线路域名(vodFullPlayUrl 映射)。封面 qv1tx2.shoupingxz.com + localProxy。",
-        "api": "./sources/welfare-js/xx9.py",
         "scriptType": "python",
         "engine": "python",
         "sslBypass": true,
@@ -3424,6 +3307,6 @@
         "visibleInHome": false
       }
     ],
-    "updatedAt": "2026-10-02T11:26:21Z"
+    "updatedAt": "2026-10-02T19:38:17Z"
   }
 }
