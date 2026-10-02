@@ -315,6 +315,9 @@ class Spider(_Spider):
         self._grp = {}
         self._lock = threading.Lock()
         self._resolved = {}
+        self._cls_ts = 0        # 分类 10 分钟缓存时间戳
+        self._list_cache = {}   # 首页列表缓存 {page: [items]}
+        self._list_ts = 0       # 列表 10 分钟缓存时间戳
 
     # ---------------- 基础 ----------------
     def init(self, extend=''):
@@ -477,64 +480,72 @@ class Spider(_Spider):
 
     # ---------------- 分类 ----------------
     def _ensure_classes(self):
-        if self._cls:
+        # 10 分钟缓存：vbox 引擎常驻单例，同 session 内多次 homeContent 命中缓存 → 瞬时返回
+        now = time.time()
+        if self._cls and (now - self._cls_ts) < 600:
             return
         cls, flt, grp = [], {}, {}
+        lock = threading.Lock()
 
-        # 三站共库（同为 sm-api.wieuc.com），tag_group 结构相似。
-        # 只拉第一个可用站的 tag_group，克隆给其余站，避免重复请求。
-        groups, ok_sites = [], {}
-        first = next((st for st in self.sites if st.get('family') == 'wieuc'), None)
-        if first:
-            try:
-                cf = self.cfg_of(first)
-                items = self._items(self.api_get('/api/vod/tag_group?site_id=%d' % cf['site']))
-                groups = [o for o in items if isinstance(o, dict) and
-                          int(o.get('purpose') or 0) != 8 and
-                          int(o.get('tag_type') or 1) not in (2, 3) and
-                          str(o.get('name') or '').strip() and
-                          any(isinstance(t, dict) and int(t.get('id') or 0) > 0 for t in (o.get('tag') or []))]
-                ok_sites[first['key']] = True
-            except Exception:
-                pass
-
-        for st in self.sites:
+        def build(st):
+            """单站并发：拉自己的 tag_group，生成 站点|组id 形式的一级分类"""
             if st.get('family') != 'wieuc':
-                continue
+                return
             k = st['key']
-            ok = k in ok_sites
-            for o in groups:
+            try:
+                cf = self.cfg_of(st)
+                items = self._items(self.api_get('/api/vod/tag_group?site_id=%d' % cf['site']))
+                ok = bool(items)
+            except Exception:
+                cf, ok, items = {}, False, []
+            local_cls, local_flt, local_grp = [], {}, {}
+            for o in items:
+                if not isinstance(o, dict):
+                    continue
+                if int(o.get('purpose') or 0) == 8 or int(o.get('tag_type') or 1) in (2, 3):
+                    continue
                 nm = str(o.get('name') or '').strip()
                 tags = [t for t in (o.get('tag') or []) if isinstance(t, dict) and int(t.get('id') or 0) > 0]
                 if not nm or not tags:
                     continue
                 gid = 'g%s' % o.get('id')
                 tid = '%s|%s' % (k, gid)
-                cls.append({'type_name': ('🟢' if ok else '🟡') + nm, 'type_id': tid})
-                grp[tid] = (k, ','.join(str(t['id']) for t in tags))
+                local_cls.append({'type_name': ('🟢' if ok else '🟡') + nm, 'type_id': tid})
+                local_grp[tid] = (k, ','.join(str(t['id']) for t in tags))
                 vals = [{'n': '全部', 'v': ''}]
                 for t in tags[:40]:
                     vals.append({'n': str(t.get('name') or ''), 'v': 't%s' % t['id']})
-                flt[tid] = [{'key': 'tag', 'name': '分类', 'value': vals}]
-            # 兜底：该站无分类组时给站点级分类
-            if not groups:
-                cls.append({'type_name': ('🟢' if ok else '🟡') + st['name'], 'type_id': k})
-        # 兜底：全部失败时至少给站点级分类
-        if not cls:
+                local_flt[tid] = [{'key': 'tag', 'name': '分类', 'value': vals}]
+            if not local_cls:  # 该站无分类组 → 站点级兜底
+                local_cls.append({'type_name': ('🟢' if ok else '🟡') + st['name'], 'type_id': k})
+            with lock:
+                cls.extend(local_cls)
+                flt.update(local_flt)
+                grp.update(local_grp)
+
+        # 3 站并发（各站独立 tag_group，数据准确）；12s 保底，给 _mix 留余量（vbox 上限 20s）
+        ths = [threading.Thread(target=build, args=(st,)) for st in self.sites]
+        for t in ths:
+            t.daemon = True
+            t.start()
+        for t in ths:
+            t.join(timeout=12)
+
+        if not cls:  # 全失败 → 站点级兜底
             for st in self.sites:
                 if st.get('family') != 'wieuc':
                     continue
                 cf = self.cfg_of(st)
                 cls.append({'type_name': ('🟢' if cf.get('ok') else '🟡') + st['name'],
                             'type_id': st['key']})
-        # 聚合位
-        if cls:
+        if cls:  # 聚合位
             cls.insert(0, {'type_name': '🔥全站聚合·最新', 'type_id': 'all'})
             cls.insert(1, {'type_name': '💥全站聚合·热门', 'type_id': 'hots'})
         with self._lock:
             self._cls = cls
             self._grp = grp
             self._flt = flt
+            self._cls_ts = now
 
     # ---------------- 卡片 ----------------
     def _card(self, st, it, cf):
@@ -547,6 +558,8 @@ class Spider(_Spider):
         pic = str(it.get('pic') or '')
         if pic and not pic.startswith('http'):
             pic = 'https://' + (cf.get('img') or self.img) + pic
+        if pic:
+            pic = self._img_proxy_url(pic)   # Fernet 封装图 → 本地代理 URL
         parts = []
         dur = int(it.get('duration') or 0)
         if dur > 0:
@@ -594,31 +607,57 @@ class Spider(_Spider):
             q += '&tag=' + urllib.parse.quote(str(tag))
         return self._cards(st, self.api_get(q), cf)
 
+    def _mix_bounded(self, page, cap, deadline):
+        """线程跑 _mix + 剩余时间预算。超 deadline 秒就返回空（后台线程继续填充 10 分钟缓存）。
+        命中缓存则瞬时返回。保证 homeContent 总耗时可控（< 18s，vbox 上限 20s）。"""
+        now = time.time()
+        if page in self._list_cache and (now - self._list_ts) < 600:
+            return self._list_cache[page][:cap]
+        if deadline <= 1:
+            return []
+        holder = {'list': None}
+        th = threading.Thread(target=lambda: holder.update({'list': self._mix(page, cap)}))
+        th.daemon = True
+        th.start()
+        th.join(timeout=deadline)
+        return (holder['list'] or [])
+
     def homeContent(self, filter=False):
+        _t0 = time.time()
         self._ensure_classes()
         root = {'class': list(self._cls)}
         if filter:
             root['filters'] = dict(getattr(self, '_flt', {}) or {})
-        root['list'] = self._mix(1, 30)
+        remaining = 18 - (time.time() - _t0)   # 剩余时间预算
+        root['list'] = self._mix_bounded(1, 30, max(0, remaining))
         return root
 
     def _mix(self, page, cap):
-        """各站同页合并（按片名去重），首页用。三站共库，只取第一个可用站。"""
-        seen, out = set(), []
+        """各站同页合并（按片名去重）。10 分钟缓存：命中则瞬时返回。"""
+        now = time.time()
+        if page in self._list_cache and (now - self._list_ts) < 600:
+            return self._list_cache[page][:cap]
+        out = []
         for st in self.sites:
             if st.get('family') != 'wieuc':
                 continue
             for c in self._list(st, 'new', page, ''):
-                if c['vod_name'] in seen:
+                if c['vod_name'] in {x['vod_name'] for x in out}:
                     continue
-                seen.add(c['vod_name'])
                 out.append(c)
                 if len(out) >= cap:
-                    return out
-        return out
+                    break
+            if len(out) >= cap:
+                break
+        self._list_cache[page] = out
+        self._list_ts = now
+        return out[:cap]
 
     def homeVideoContent(self):
-        return {'list': self._mix(1, 30)}
+        _t0 = time.time()
+        self._ensure_classes()
+        remaining = 18 - (time.time() - _t0)
+        return {'list': self._mix_bounded(1, 30, max(0, remaining))}
 
     def categoryContent(self, tid, pg, filter, extend):
         self._ensure_classes()
@@ -689,6 +728,8 @@ class Spider(_Spider):
         pic = str(d.get('pic') or '')
         if pic and not pic.startswith('http'):
             pic = 'https://' + (cf.get('img') or self.img) + pic
+        if pic:
+            pic = self._img_proxy_url(pic)
         tags = ' '.join('#' + str((t or {}).get('name') or '') for t in (d.get('tag') or [])
                         if isinstance(t, dict) and t.get('name'))
         dur = int(d.get('duration') or 0)
@@ -790,16 +831,45 @@ class Spider(_Spider):
                             'header': {'User-Agent': UA, 'Referer': 'https://' + cf['img'] + '/'}}
         return {'parse': 0, 'playUrl': '', 'url': u, 'header': {'User-Agent': UA}}
 
-    def localProxy(self, param):
-        """壳走 localProxy 取图时直接用（不依赖本机 http 口）
-        返回格式必须与基类一致：[status_code, content_type, body_bytes]"""
+    def _img_proxy_url(self, raw_url):
+        """把 Fernet 封装的原始图片 URL 包成本地代理 URL，让 vbox 走 localProxy 解封装。
+        参考 fulao2.py 的 _build_proxy_url 约定。拿不到 getProxyUrl 时原样返回。"""
+        if not raw_url:
+            return raw_url or ''
         try:
-            u = ''
-            if isinstance(param, dict):
-                u = str(param.get('u') or param.get('url') or param.get('pic') or '')
-            if not u and isinstance(param, str):
-                qs = urllib.parse.parse_qs(urllib.parse.urlparse(param).query)
-                u = (qs.get('u') or [''])[0]
+            base = self.getProxyUrl()
+            if '?' not in base:
+                base += '?do=py'
+            return base + '&type=img&u=' + urllib.parse.quote(raw_url, safe='')
+        except Exception:
+            return raw_url
+
+    def _parse_proxy_params(self, param):
+        """把 localProxy 的入参统一成 dict（兼容 dict / JSON 串 / URL 串）"""
+        if isinstance(param, dict):
+            return param
+        if isinstance(param, str):
+            try:
+                d = json.loads(param)
+                if isinstance(d, dict):
+                    return d
+            except Exception:
+                pass
+            result = {}
+            qs = param.split('?', 1)[1] if '?' in param else param
+            for pair in qs.split('&'):
+                if '=' in pair:
+                    k, v = pair.split('=', 1)
+                    result[k] = urllib.parse.unquote(v)
+            return result
+        return {}
+
+    def localProxy(self, param):
+        """vbox 图片代理：取图 → 解 Fernet 封装 → 返回裸图字节。
+        与 fulao2 约定一致：查询串带 type=img&u=<原图URL>；返回 [code, mime, bytes]。"""
+        try:
+            p = self._parse_proxy_params(param)
+            u = str(p.get('u') or p.get('url') or p.get('pic') or p.get('key') or '')
             if not u.startswith('http'):
                 return [404, 'text/plain', b'']
             raw = self.fetch_bytes(u)
