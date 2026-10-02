@@ -3165,6 +3165,29 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "xiaohetang_py",
+        "name": "蝴蝶影视·小荷塘",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "macCMS 风格页面爬取站(页面脱壳+动态鉴权), 6 分类, 封面走 localProxy",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://y5b1.tllp166.xyz"
+        ],
+        "sortOrder": 627,
+        "defaultProxy": false,
+        "notes": "蝴蝶影视·小荷塘。y5b1.tllp166.xyz macCMS 页面爬取: 6 个一级分类(国内/系列全集/国外精选/猎奇/次元萝莉/欧美口舌)+排序筛选(time/hits_week/up)。页面脱壳(atob+decodeURIComponent), 403/429/451 双重重试。详情即播放页直链, playerContent parse=1 页面直投。封面 localProxy 包装(do=py&type=img), referer 防盗链。vbox 适配: 继承 SpiderBase + super().init(extend) 保护调用 + localProxy [code,mime,bytes] 三元组。",
+        "api": "./sources/welfare-js/xiaohetang.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "imageSSLBypass": true,
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ],
     "updatedAt": "2026-10-02T11:26:21Z"
