@@ -3353,6 +3353,29 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "getav_py",
+        "name": "GetAV",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "多主机 + getav.info 动态发现, API 并发竞速 10 分钟缓存, 11 大分类",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://getav.net"
+        ],
+        "sortOrder": 635,
+        "defaultProxy": false,
+        "notes": "getav.net/me/live/co/top 多主机 + getav.info/zh 动态域名发现。/api/movies 多分类(latest/hot/new-releases/uncensored/censored/subtitle/4k) + 演员/类型/片商/番号文件夹(排序/字幕/画质点击切换)。静态图 CDN static.worldstatic.com。API 并发竞速: 首个 JSON 成功胜出缓存 10 分钟。封面 localProxy 包装(data-URI 色卡兜底)。",
+        "api": "./sources/welfare-js/getav.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "imageSSLBypass": true,
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ],
     "updatedAt": "2026-10-02T11:26:21Z"
