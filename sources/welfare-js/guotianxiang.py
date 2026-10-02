@@ -1,43 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-国色天香 / 我草视频 - PyramidStore 插件 (修复版 v2)
-目标: https://9njecqnvzcai.wckz803.vip:8801
-特性:
-  - 动态域名抓取(防域名更换)
-  - 标题/分类名解密
-  - 首页/分类/搜索/详情 API
-  - 多播放源提取(m3u8直链)
-
-修复内容 (2026-08-14):
-  1. 更新主域名为 https://9njecqnvzcai.wckz803.vip:8801
-  2. 修复 searchContent 返回格式 (TVBox标准 {"list": [...]})
-  3. 修复 detailContent 中 vod_play_url 被重复覆盖的问题
-  4. 修复 categoryContent 中 extend 过滤参数未使用的问题
-  5. 修复 _get_json URL构建双问号隐患
-  6. 修复 refresh_domains 失败后的空domain降级处理
-  7. 修复 localProxy cover 返回的 Content-Type (webp)
-  8. 增强 init 支持通过 extend 传入自定义域名
-  9. 增加完善的错误处理和日志输出
-  10. 修复 homeContent filters 在API失败时的保底逻辑
+国色天香 / 我草视频 - vbox 远程源适配版 (替换仓库旧版 v2, 域更至 wckz813.vip)
+目标: 动态域名自适应 + 多域名并发竞速(首个响应域名缓存10分钟)
+修复: 2026-08-16 更新域名至 wckz813.vip, 修复881响应解析, 修复data.json解析
+适配: 继承 SpiderBase + super().init(extend) + localProxy三元组 + 封面走本地代理(XOR解密)
 """
-
-import requests
+import sys
+sys.path.append('..')
 import json
 import html as html_module
 import re
-import sys
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import threading
+import ssl
+import urllib.request
+import urllib.parse
+from urllib.parse import quote, urljoin, unquote
 
-# 兼容本地调试与 PyramidStore 环境
-sys.path.append('../../')
 try:
-    from base.spider import Spider
+    from base.spider import Spider as SpiderBase
 except ImportError:
-    class Spider:
-        def init(self, extend=""):
-            pass
+    class SpiderBase(object):
+        def __init__(self):
+            self._vbox_effective_hosts = []
+        def getCache(self, key): return None
+        def setCache(self, key, value): return "fail"
+        def delCache(self, key): return "fail"
 
 
 # ========== 解密映射表 (来自 public.min.js) ==========
@@ -53,117 +42,18 @@ _DECRYPT_MAP = {
     '|':'T','A':'V','D':'w',';':'O'
 }
 
-# 默认基础域名(当前有效域名 + 历史备用)
+# 默认基础域名(多域名并发竞速候选池)
 _BACKUP_BASE_URLS = [
-    "https://9njecqnvzcai.wckz803.vip:8801",
-    "https://cvx48e9nvzcai.wckk793.vip:8801",
-    "https://www.wocao03.com",
+    "https://VwLYxvSnvzcai.wckz813.vip:8801",
+    "https://2tcW6DEkfnvzcai.wckz813.vip:8801",
+    "https://QXxadAnnvzcai.wckz813.vip:8801",
+    "https://iin.wckk799.vip:8801",
 ]
 
-# 域名缓存: (timestamp, siteUrl, css_domain, pic_domain, novel_domain, csstime, channel_id)
-_DOMAIN_CACHE = (0, "", "", "", "", "", "")
-_CACHE_TTL = 600  # 10 分钟缓存
+# 封面远程代理 (XOR 0x88 加密 webp)
+_COVER_PROXY = "http://xg3.mingapi.top/tvbox/php/国色天香_pic.php"
 
-
-def _try_fetch_domain(candidate: str, timeout: int):
-    """尝试从单个域名抓取数据，返回 (success, data_dict)"""
-    try:
-        resp = requests.get(f"{candidate}/data.json", timeout=timeout)
-        resp.raise_for_status()
-        content = resp.text
-
-        start = content.find("var Group=")
-        if start == -1:
-            start = content.find("var Group =")
-        end = content.find("var Token=", start)
-        if end == -1:
-            end = content.find("var Token =", start)
-
-        if start == -1 or end == -1:
-            return False, None
-
-        json_str = content[start:end].strip()
-        json_str = re.sub(r"var\s+Group\s*=\s*", "", json_str).rstrip(";").strip()
-
-        group = json.loads(json_str)
-        return True, {
-            "siteUrl": candidate,
-            "css_domain": group.get("css_domain", ""),
-            "pic_domain": group.get("pic_domain", ""),
-            "novel_domain": group.get("novel_domain", ""),
-            "csstime": str(group.get("csstime", "")),
-            "channel_id": str(group.get("channel_id", "")),
-        }
-    except Exception:
-        return False, None
-
-
-def refresh_domains_concurrent(timeout: int = 8) -> bool:
-    """并发抓取所有候选域名，取最快响应者，10分钟缓存"""
-    global _DOMAIN_CACHE
-
-    now = time.time()
-    # 检查缓存是否有效
-    if now - _DOMAIN_CACHE[0] < _CACHE_TTL and _DOMAIN_CACHE[1]:
-        return True
-
-    candidates = list(_BACKUP_BASE_URLS)
-    # 去重
-    seen = set()
-    unique_candidates = []
-    for c in candidates:
-        if c not in seen:
-            seen.add(c)
-            unique_candidates.append(c)
-
-    best_result = None
-    with ThreadPoolExecutor(max_workers=len(unique_candidates)) as executor:
-        futures = {
-            executor.submit(_try_fetch_domain, c, timeout): c
-            for c in unique_candidates
-        }
-        for future in as_completed(futures):
-            candidate = futures[future]
-            try:
-                ok, data = future.result()
-                if ok and data:
-                    best_result = data
-                    print(f"[INFO] 域名刷新成功(并发): {candidate} -> {data['siteUrl']}")
-                    break  # 第一个成功的就是最快的
-            except Exception:
-                continue
-
-    if best_result:
-        _DOMAIN_CACHE = (
-            now,
-            best_result["siteUrl"],
-            best_result["css_domain"],
-            best_result["pic_domain"],
-            best_result["novel_domain"],
-            best_result["csstime"],
-            best_result["channel_id"],
-        )
-        return True
-
-    # 缓存过期但网络失败时，如果旧缓存还在，降级使用旧缓存
-    if _DOMAIN_CACHE[1]:
-        print("[WARN] 并发刷新失败，降级使用旧缓存域名")
-        return True
-
-    print("[ERROR] 所有域名均无法访问，且无旧缓存可用")
-    return False
-
-
-def get_cached_domain():
-    """获取缓存的域名信息，返回 dict"""
-    return {
-        "siteUrl": _DOMAIN_CACHE[1],
-        "css_domain": _DOMAIN_CACHE[2],
-        "pic_domain": _DOMAIN_CACHE[3],
-        "novel_domain": _DOMAIN_CACHE[4],
-        "csstime": _DOMAIN_CACHE[5],
-        "channel_id": _DOMAIN_CACHE[6],
-    }
+DOMAIN_CACHE_TTL = 600  # 域名缓存 10 分钟
 
 
 def decrypt_text(text: str) -> str:
@@ -174,23 +64,78 @@ def decrypt_text(text: str) -> str:
     return html_module.unescape(result)
 
 
-class Spider(Spider):
-    """PyramidStore 标准爬虫插件 (修复版)"""
+def _extract_redirect_url_from_881(html_text: str) -> str:
+    """从 HTTP 881 响应的 HTML 中提取跳转目标 URL。"""
+    if not html_text:
+        return ""
+
+    # 格式1: document.write(decodeURIComponent("..."))
+    m = re.search(r'document\.write\(decodeURIComponent\("([^"]+)"\)\)', html_text)
+    if m:
+        decoded = html_module.unescape(m.group(1))
+        decoded2 = unquote(decoded)
+        m2 = re.search(r'var\s+url\s*=\s*["\x27](https?://[^"\x27]+)["\x27]', decoded2)
+        if m2:
+            redirect = m2.group(1)
+            if redirect.endswith('/index.htm'):
+                redirect = redirect[:-len('/index.htm')]
+            return redirect
+        m3 = re.search(r'window\.location\.replace\(["\x27](https?://[^"\x27]+)["\x27]\)', decoded2)
+        if m3:
+            redirect = m3.group(1)
+            if redirect.endswith('/index.htm'):
+                redirect = redirect[:-len('/index.htm')]
+            return redirect
+
+    # 格式2: 直接的 var url
+    m = re.search(r'var\s+url\s*=\s*["\x27](https?://[^"\x27]+)["\x27]', html_text)
+    if m:
+        redirect = m.group(1)
+        if redirect.endswith('/index.htm'):
+            redirect = redirect[:-len('/index.htm')]
+        return redirect
+
+    # 格式3: window.location.replace
+    m2 = re.search(r'window\.location\.replace\(["\x27](https?://[^"\x27]+)["\x27]\)', html_text)
+    if m2:
+        redirect = m2.group(1)
+        if redirect.endswith('/index.htm'):
+            redirect = redirect[:-len('/index.htm')]
+        return redirect
+
+    # 格式4: location.href
+    m3 = re.search(r'location\.href\s*=\s*["\x27](https?://[^"\x27]+)["\x27]', html_text)
+    if m3:
+        redirect = m3.group(1)
+        if redirect.endswith('/index.htm'):
+            redirect = redirect[:-len('/index.htm')]
+        return redirect
+
+    return ""
+
+
+_SSL_CTX = None
+def _ssl_ctx():
+    global _SSL_CTX
+    if _SSL_CTX is None:
+        _SSL_CTX = ssl.create_default_context()
+        _SSL_CTX.check_hostname = False
+        _SSL_CTX.verify_mode = ssl.CERT_NONE
+    return _SSL_CTX
+
+
+class Spider(SpiderBase):
+    PLATFORM_KEY = "guotianxiang_py"
+    _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+    _TIMEOUT = 15
 
     def __init__(self):
+        try:
+            super(Spider, self).__init__()
+        except Exception:
+            pass
         self.siteUrl = _BACKUP_BASE_URLS[0]
-        self.userAgent = (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/120.0.0.0 Safari/537.36"
-        )
-        self.timeout = 15
-        self.session = requests.Session()
-        self.session.headers.update({
-            "User-Agent": self.userAgent,
-            "Accept": "application/json, text/plain, */*",
-            "Accept-Language": "zh-CN,zh;q=0.9",
-        })
+        self.userAgent = self._UA
 
         # 动态域名信息
         self.css_domain = ""
@@ -199,105 +144,248 @@ class Spider(Spider):
         self.csstime = ""
         self.channel_id = ""
 
-    def _sync_from_cache(self):
-        """从全局缓存同步域名到实例变量"""
-        cached = get_cached_domain()
-        self.siteUrl = cached["siteUrl"]
-        self.css_domain = cached["css_domain"]
-        self.pic_domain = cached["pic_domain"]
-        self.novel_domain = cached["novel_domain"]
-        self.csstime = cached["csstime"]
-        self.channel_id = cached["channel_id"]
+        # 域名竞速缓存 (10分钟)
+        self._domain_winner = None
+        self._domain_winner_ts = 0.0
+        self._domain_lock = threading.Lock()
+        self._candidates = list(_BACKUP_BASE_URLS)
 
-        # 降级处理
+        # 分类 10 分钟缓存
+        self._class_cache = None
+        self._class_cache_ts = 0.0
+
+    # ==================== 多域名并发竞速 ====================
+    def _probe_domain(self, domain: str) -> bool:
+        """探测单个域名: /data.json 返回 200 或可提取跳转的 881 即视为可用"""
+        if not domain:
+            return False
+        try:
+            req = urllib.request.Request(domain + "/data.json", headers={"User-Agent": self.userAgent})
+            with urllib.request.urlopen(req, timeout=8, context=_ssl_ctx()) as resp:
+                code = resp.getcode()
+                if code == 200:
+                    return True
+                body = resp.read().decode("utf-8", "ignore")
+                if code == 881:
+                    return bool(_extract_redirect_url_from_881(body))
+                return False
+        except urllib.error.HTTPError as e:
+            if e.code == 881:
+                try:
+                    body = e.read().decode("utf-8", "ignore")
+                except Exception:
+                    body = ""
+                if body:
+                    redirect = _extract_redirect_url_from_881(body)
+                    if redirect and redirect not in self._candidates:
+                        self._candidates.append(redirect)
+                    return bool(redirect)
+            return False
+        except Exception:
+            return False
+
+    def _resolve_site_url(self, default_url: str = None) -> str:
+        """并发竞速获取最快可用域名, 胜者缓存 10 分钟"""
+        default_url = default_url or self.siteUrl
+        now = time.time()
+
+        if self._domain_winner and (now - self._domain_winner_ts) < DOMAIN_CACHE_TTL:
+            self.siteUrl = self._domain_winner
+            return self.siteUrl
+
+        # 候选: 当前 siteUrl + default + 备用池
+        candidates = [default_url] + [d for d in self._candidates if d and d not in [default_url]]
+        seen = set()
+        unique = []
+        for c in candidates:
+            if c not in seen:
+                seen.add(c)
+                unique.append(c)
+        candidates = unique
+
+        winner = None
+        def _race(d):
+            nonlocal winner
+            if self._probe_domain(d):
+                with self._domain_lock:
+                    if winner is None:
+                        winner = d
+
+        threads = [threading.Thread(target=_race, args=(d,), daemon=True) for d in candidates]
+        for t in threads:
+            t.start()
+        deadline = time.time() + 10
+        while time.time() < deadline:
+            with self._domain_lock:
+                if winner is not None:
+                    break
+            time.sleep(0.2)
+
+        if winner:
+            self._domain_winner = winner
+            self._domain_winner_ts = time.time()
+            final_url = winner
+        else:
+            final_url = default_url
+
+        # 881 跳转链追踪 (胜者若需跳转则跟随)
+        final_url = self._chase_881(final_url)
+
+        self.siteUrl = final_url.rstrip("/")
+        return self.siteUrl
+
+    def _chase_881(self, url: str, max_hops: int = 2) -> str:
+        try:
+            req = urllib.request.Request(url + "/data.json", headers={"User-Agent": self.userAgent})
+            with urllib.request.urlopen(req, timeout=8, context=_ssl_ctx()) as resp:
+                if resp.getcode() == 200:
+                    return url
+                body = resp.read().decode("utf-8", "ignore")
+        except urllib.error.HTTPError as e:
+            body = e.read().decode("utf-8", "ignore") if e.code == 881 else ""
+            if e.code != 881:
+                return url
+        except Exception:
+            return url
+
+        redirect = _extract_redirect_url_from_881(body)
+        if redirect:
+            return self._chase_881(redirect, max_hops - 1)
+        return url
+
+    def refresh_domains(self) -> bool:
+        """从 /data.json 抓取动态域名信息, 支持备用域名切换 (并发竞速首个成功)"""
+        now = time.time()
+        if self._domain_winner and (now - self._domain_winner_ts) < DOMAIN_CACHE_TTL:
+            candidate = self._domain_winner
+        else:
+            candidate = self.siteUrl
+
+        candidates = [candidate] + [c for c in self._candidates if c != candidate]
+        seen = set()
+        unique = []
+        for c in candidates:
+            if c and c not in seen:
+                seen.add(c)
+                unique.append(c)
+
+        # 并发: 每个候选独立尝试解析 data.json, 首个成功者胜出
+        result = {"ok": False, "candidate": None}
+        def _try(c):
+            if result["ok"]:
+                return
+            try:
+                content = self._http_get_text(c + "/data.json")
+                if content is None:
+                    return
+                parsed = self._parse_group(content)
+                if not parsed:
+                    # 881 内嵌跳转
+                    redirect = _extract_redirect_url_from_881(content)
+                    if redirect and redirect not in self._candidates:
+                        self._candidates.append(redirect)
+                    return
+                with self._domain_lock:
+                    if not result["ok"]:
+                        result["ok"] = True
+                        result["candidate"] = c
+                        result["group"] = parsed
+            except Exception:
+                pass
+
+        threads = [threading.Thread(target=_try, args=(c,), daemon=True) for c in unique]
+        for t in threads:
+            t.start()
+        deadline = time.time() + 10
+        while time.time() < deadline:
+            if result["ok"]:
+                break
+            time.sleep(0.2)
+
+        if not result["ok"]:
+            return False
+
+        group = result["group"]
+        self.siteUrl = result["candidate"]
+        self._domain_winner = result["candidate"]
+        self._domain_winner_ts = time.time()
+        self.css_domain = group.get("css_domain", "")
+        self.pic_domain = group.get("pic_domain", "")
+        self.novel_domain = group.get("novel_domain", "")
+        self.csstime = str(group.get("csstime", ""))
+        self.channel_id = str(group.get("channel_id", ""))
+
         if not self.pic_domain:
             self.pic_domain = self.siteUrl
         if not self.novel_domain:
             self.novel_domain = self.siteUrl
         if not self.css_domain:
             self.css_domain = self.siteUrl
+        return True
 
-    def init(self, extend=""):
-        """插件初始化(框架回调)
-
-        extend 支持传入自定义域名，格式:
-          - 单域名: "https://xxx.com"
-          - 多域名: "https://aaa.com,https://bbb.com"
-        """
-        global _BACKUP_BASE_URLS
-        if extend and isinstance(extend, str):
-            custom_urls = [u.strip() for u in extend.split(",") if u.strip().startswith("http")]
-            if custom_urls:
-                _BACKUP_BASE_URLS = custom_urls + [u for u in _BACKUP_BASE_URLS if u not in custom_urls]
-                self.siteUrl = custom_urls[0]
-                print(f"[INFO] 使用自定义域名: {self.siteUrl}")
-
-        # 并发刷新域名（取最快响应，10分钟缓存）
-        ok = refresh_domains_concurrent(timeout=8)
-        if ok:
-            self._sync_from_cache()
-        else:
-            print("[WARN] 所有域名均无法访问，请检查网络或配置新域名")
-
-    def getName(self):
-        return "国色天香"
-
-    def refresh_domains(self) -> bool:
-        """并发刷新域名（取最快响应），10分钟缓存，支持旧缓存降级"""
-        ok = refresh_domains_concurrent(timeout=self.timeout)
-        if ok:
-            self._sync_from_cache()
-        return ok
-
-    def fetch(self, url, headers=None):
-        """统一请求方法"""
-        if headers is None:
-            headers = {
-                "User-Agent": self.userAgent,
-                "Referer": self.siteUrl,
-            }
+    # ==================== HTTP 工具 ====================
+    def _http_get_text(self, url: str, timeout: int = None) -> str:
+        """GET 请求返回 text; 网络错误返回 None; 881 返回响应体"""
         try:
-            resp = self.session.get(url, headers=headers, timeout=self.timeout)
-            resp.raise_for_status()
-            return resp
-        except Exception as e:
-            print(f"[ERROR] fetch {url} failed: {e}")
+            req = urllib.request.Request(url, headers={"User-Agent": self.userAgent})
+            with urllib.request.urlopen(req, timeout=timeout or self._TIMEOUT, context=_ssl_ctx()) as resp:
+                return resp.read().decode("utf-8", "ignore")
+        except urllib.error.HTTPError as e:
+            if e.code == 881:
+                try:
+                    return e.read().decode("utf-8", "ignore")
+                except Exception:
+                    return None
+            return None
+        except Exception:
+            return None
+
+    def _parse_group(self, content: str):
+        """data.json 返回的是 JS 变量格式, 不是纯 JSON"""
+        if not content:
+            return None
+        start = content.find("var Group=")
+        if start == -1:
+            start = content.find("var Group =")
+        end = content.find("var Token=", start if start != -1 else 0)
+        if end == -1:
+            end = content.find("var Token =", start if start != -1 else 0)
+        if start == -1 or end == -1 or end <= start:
+            return None
+        json_str = content[start:end].strip()
+        json_str = re.sub(r"var\s+Group\s*=\s*", "", json_str).rstrip(";").strip()
+        try:
+            return json.loads(json_str)
+        except Exception:
             return None
 
     def _get_json(self, path: str, params: dict = None):
-        """请求JSON接口"""
-        # 分离 path 和 query string
-        if "?" in path:
-            base_path, existing_query = path.split("?", 1)
-            url = f"{self.siteUrl}{base_path}?{existing_query}"
+        """请求JSON接口 (相对 self.siteUrl)"""
+        if path.startswith("http"):
+            url = path
         else:
-            url = f"{self.siteUrl}{path}"
-
+            url = self.siteUrl + path
         if params:
-            query = "&".join(f"{k}={requests.utils.quote(str(v))}" for k, v in params.items())
-            url += ("&" if "?" in url else "?") + query
-
-        resp = self.fetch(url)
-        if not resp:
+            query = "&".join("%s=%s" % (quote(str(k)), quote(str(v))) for k, v in params.items())
+            sep = "&" if "?" in url else "?"
+            url = url + sep + query
+        text = self._http_get_text(url)
+        if not text:
             return None
         try:
-            return resp.json()
-        except Exception as e:
-            print(f"[ERROR] JSON解析失败: {e}")
+            return json.loads(text)
+        except Exception:
             return None
 
+    # ==================== 封面/播放地址 ====================
     def cover_url(self, serial_number: str) -> str:
-        """封面 URL — 通过 localProxy 代理解密 XOR 加密的图片
-
-        网站封面存储为 .css 文件, 内容是 XOR(0x88) 加密的 WebP 图片。
-        TVBox 无法直接加载加密文件, 需要通过 localProxy 解密后返回。
-        """
+        """封面 URL — 通过远程代理 XOR 解密的图片, 再包本地代理供 localProxy 取图解密"""
         if not serial_number:
             return ""
         pic_base = self.pic_domain if self.pic_domain else self.siteUrl
         css_url = f"{pic_base}/pic/{serial_number}/thumbnail.css"
-        # 使用 localProxy 代理解密, 端口 9978 为 FongMi/TV 默认值
-        return f"http://127.0.0.1:9978/proxy?action=proxy&type=cover&url={requests.utils.quote(css_url)}"
+        remote = f"{_COVER_PROXY}?url={quote(css_url)}"
+        return self._proxy_img_url(remote, referer=self.siteUrl)
 
     def m3u8_url(self, serial_number: str) -> str:
         if not serial_number:
@@ -306,7 +394,6 @@ class Spider(Spider):
         return f"{novel_base}/m3u8/{serial_number}/index_domain.m3u8?{self.csstime}"
 
     def _format_vod(self, item: dict) -> dict:
-        """统一格式化为TVBox标准视频条目"""
         serial = item.get("serial_number", "")
         return {
             "vod_id": str(item.get("id", "")),
@@ -315,16 +402,97 @@ class Spider(Spider):
             "vod_remarks": str(item.get("read_number", "")),
         }
 
-    # ==================== TVBox 标准接口 ====================
+    # ==================== 本地代理 ====================
+    def _proxy_base(self):
+        fn = getattr(self, "getProxyUrl", None)
+        if callable(fn):
+            try:
+                u = fn(True)
+                if u:
+                    return str(u)
+            except Exception:
+                pass
+        return "http://127.0.0.1:18080/proxy?do=py&key=%s" % self.PLATFORM_KEY
 
+    def _proxy_img_url(self, url, referer=None):
+        if not url:
+            return ""
+        base = self._proxy_base()
+        sep = "&" if "?" in base else "?"
+        u = base + sep + "type=img&u=" + quote(str(url), safe="")
+        if referer:
+            u += "&r=" + quote(referer, safe="")
+        return u
+
+    def _serve_cover(self, url, referer=None):
+        """取封面 (xg3 远程代理返回 XOR 0x88 加密 webp)"""
+        try:
+            headers = {"User-Agent": self.userAgent}
+            if referer:
+                headers["Referer"] = referer
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=15, context=_ssl_ctx()) as resp:
+                raw = resp.read()
+            # XOR 0x88 解密
+            try:
+                decrypted = bytes(b ^ 0x88 for b in raw)
+                if decrypted[:4] in (b"\x89PNG", b"RIFF") or decrypted[:2] == b"\xff\xd8" or decrypted[:3] == b"GIF":
+                    raw = decrypted
+            except Exception:
+                pass
+            ct = "image/webp"
+            if raw[:4] == b"\x89PNG":
+                ct = "image/png"
+            elif raw[:3] == b"GIF":
+                ct = "image/gif"
+            elif raw[:2] == b"\xff\xd8":
+                ct = "image/jpeg"
+            return [200, ct, raw]
+        except Exception:
+            return [502, "text/plain", b"cover fetch failed"]
+
+    # ==================== 初始化 ====================
+    def init(self, extend=""):
+        try:
+            super().init(extend)
+        except AttributeError:
+            pass
+
+        # 域名池合并: extend 自定义 > vbox 注入 _vbox_effective_hosts > 硬编码备用池
+        custom_urls = []
+        if isinstance(extend, dict):
+            custom_urls = extend.get("hosts") if isinstance(extend.get("hosts"), list) else []
+            if extend.get("site"):
+                custom_urls.insert(0, str(extend.get("site")))
+        elif extend:
+            custom_urls = [u.strip() for u in str(extend).split(",") if u.strip().startswith("http")]
+
+        injected = getattr(self, "_vbox_effective_hosts", None) or []
+        inj = [str(h).rstrip("/") for h in injected if str(h).startswith("http")]
+
+        merged = []
+        for u in custom_urls + inj + self._candidates:
+            if u and u not in merged:
+                merged.append(u)
+        self._candidates = merged
+        if custom_urls:
+            self.siteUrl = custom_urls[0]
+        elif inj:
+            self.siteUrl = inj[0]
+
+        # 动态解析网址 (并发竞速 + 10分钟缓存)
+        self._resolve_site_url()
+
+        # 刷新子域名信息
+        if not self.refresh_domains():
+            pass
+
+    def getName(self):
+        return "国色天香"
+
+    # ==================== TVBox/vbox 标准接口 ====================
     def homeContent(self, filter):
-        """
-        获取首页分类及筛选
-        返回: {"class": [...], "filters": {...}}
-        """
         result = {"class": [], "filters": {}}
-
-        # 保底默认分类
         default_classes = [
             {"type_id": "1", "type_name": "国产"},
             {"type_id": "2", "type_name": "日本"},
@@ -332,7 +500,15 @@ class Spider(Spider):
             {"type_id": "4", "type_name": "欧美"},
         ]
 
-        # 动态获取分类
+        # 10 分钟分类缓存
+        now = time.time()
+        if self._class_cache and (now - self._class_cache_ts) < 600:
+            classes, filters_map = self._class_cache
+            result["class"] = classes
+            if filter:
+                result["filters"] = filters_map
+            return result
+
         data = self._get_json(f"/index.json?{self.csstime}")
         classes = []
         filters_map = {}
@@ -343,53 +519,42 @@ class Spider(Spider):
                 cat_name = decrypt_text(cat.get("name", ""))
                 if not cat_name:
                     continue
-                classes.append({
-                    "type_id": cat_id,
-                    "type_name": cat_name,
-                })
+                classes.append({"type_id": cat_id, "type_name": cat_name})
 
-                # 子流派作为该分类的筛选器
                 genre_filter = {
                     "key": "genre",
                     "name": "流派",
                     "value": [{"n": "全部", "v": ""}]
                 }
-                for g in cat.get("genres", []):
+                for g in (cat.get("genres") or []):
                     g_name = decrypt_text(g.get("name", ""))
                     if g_name:
                         genre_filter["value"].append({"n": g_name, "v": str(g.get("id", ""))})
 
-                # 标签筛选器
                 label_filter = {
                     "key": "label",
                     "name": "标签",
                     "value": [{"n": "全部", "v": ""}]
                 }
-                for l in cat.get("labels", []):
-                    l_name = html_module.unescape(l.get("name", ""))
+                for l in (cat.get("labels") or []):
+                    l_name = html_module.unescape(str(l.get("name", "")))
                     if l_name:
                         label_filter["value"].append({"n": l_name, "v": str(l.get("id", ""))})
 
                 filters_map[cat_id] = [genre_filter, label_filter]
 
-        # 保底: 如果API失败,使用默认分类
         if not classes:
             classes = default_classes
-            # 为保底分类也提供空的filters结构
-            if filter:
-                for c in classes:
-                    filters_map[c["type_id"]] = []
 
-        result['class'] = classes
+        self._class_cache = (classes, filters_map)
+        self._class_cache_ts = now
+
+        result["class"] = classes
         if filter:
-            result['filters'] = filters_map
+            result["filters"] = filters_map
         return result
 
     def homeVideoContent(self):
-        """
-        获取首页推荐视频
-        返回: {"list": [...]}
-        """
         result = {"list": []}
         data = self._get_json(f"/index.json?{self.csstime}")
         if not data or "index_videos" not in data:
@@ -398,7 +563,7 @@ class Spider(Spider):
         videos = []
         seen_ids = set()
         for _, cat in data["index_videos"].items():
-            for v in cat.get("videos", [])[:6]:  # 每个分类取6条
+            for v in (cat.get("videos") or [])[:6]:
                 vid = str(v.get("id", ""))
                 if vid and vid not in seen_ids:
                     seen_ids.add(vid)
@@ -407,17 +572,9 @@ class Spider(Spider):
         return result
 
     def categoryContent(self, tid, pg, filter, extend):
-        """
-        获取分类内容
-        返回: {"list": [...], "page": pg, "pagecount": N, "limit": 20, "total": N}
-        """
         result = {"list": [], "page": pg, "pagecount": 0, "limit": 20, "total": 0}
-
-        # 构造分类API: /type/{cat_id}_{page}.json?{csstime}
-        # 支持 extend 中的流派(genre)和标签(label)筛选
         api_path = f"/type/{tid}_{pg}.json?{self.csstime}"
 
-        # 如果有筛选参数，通过 params 传递
         params = {}
         if extend and isinstance(extend, dict):
             if extend.get("genre"):
@@ -430,26 +587,23 @@ class Spider(Spider):
             return result
 
         videos = []
-        for v in data.get("data", {}).get("videos", []):
+        for v in (data.get("data", {}) or {}).get("videos", []) or []:
             videos.append(self._format_vod(v))
 
-        page_count = data.get("data", {}).get("page_count", 1)
+        page_count = (data.get("data", {}) or {}).get("page_count", 1)
         result.update({
             "list": videos,
             "page": pg,
             "pagecount": page_count,
             "limit": 20,
-            "total": page_count * 20,
+            "total": int(page_count or 0) * 20,
         })
         return result
 
     def detailContent(self, ids):
-        """
-        获取详情页内容
-        ids: [video_id]
-        返回: {"list": [vod]}
-        """
         result = {"list": []}
+        if not ids:
+            return result
         video_id = ids[0] if isinstance(ids, list) else ids
 
         data = self._get_json(f"/video/{video_id}.json?{self.csstime}")
@@ -459,7 +613,6 @@ class Spider(Spider):
         video = data["video"]
         serial = video.get("serial_number", "")
 
-        # 构建标准化详情
         vod = {
             "vod_id": str(video_id),
             "vod_name": decrypt_text(video.get("title", "")),
@@ -469,32 +622,26 @@ class Spider(Spider):
             "vod_area": "",
             "vod_actor": str(video.get("actresses", "")),
             "vod_director": "",
-            "vod_content": html_module.unescape(video.get("description", "")),
+            "vod_content": html_module.unescape(str(video.get("description", ""))),
             "vod_play_from": "默认",
             "vod_play_url": "",
         }
 
-        # 如果有m3u8直链,直接提供
         if serial:
             m3u8 = self.m3u8_url(serial)
-            # TVBox标准格式: "集名$链接"，单集用 "播放$链接"
             vod["vod_play_url"] = f"播放${m3u8}"
 
         result["list"] = [vod]
         return result
 
     def searchContent(self, key, quick, pg=1):
-        """
-        搜索功能
-        返回: {"list": [...]}  (TVBox标准格式)
-        """
         result = {"list": []}
         data = self._get_json("/search.json", params={"search": key})
         if not data:
             return result
 
         videos = []
-        for v in data.get("videos", []):
+        for v in data.get("videos", []) or []:
             videos.append(self._format_vod(v))
         result["list"] = videos
         return result
@@ -503,13 +650,9 @@ class Spider(Spider):
         return self.searchContent(key, quick, pg)
 
     def playerContent(self, flag, id, vipFlags):
-        """
-        获取播放内容
-        flag: 播放源名称
-        id: 播放地址(如果是直链就是m3u8 URL,否则是播放页路径)
-        返回: {"parse": 0/1, "url": ..., "header": {...}}
-        """
         result = {}
+        if not id:
+            return result
         headers = {
             "User-Agent": self.userAgent,
             "Referer": self.siteUrl,
@@ -520,21 +663,13 @@ class Spider(Spider):
             result["url"] = id
             result["header"] = headers
         else:
-            # 如果不是直链,需要解析播放页
             play_url = f"{self.siteUrl}{id}" if not id.startswith("http") else id
-            resp = self.fetch(play_url)
-            if resp:
-                html = resp.text
-                # 尝试提取m3u8
-                m = re.search(r'https?://[^\s"\']+\.m3u8[^\s"\']*', html)
-                if m:
-                    result["parse"] = 0
-                    result["url"] = m.group(0)
-                    result["header"] = headers
-                else:
-                    result["parse"] = 1
-                    result["url"] = play_url
-                    result["header"] = headers
+            text = self._http_get_text(play_url)
+            m = re.search(r'https?://[^\s"\']+\.m3u8[^\s"\']*', text or "")
+            if m:
+                result["parse"] = 0
+                result["url"] = m.group(0)
+                result["header"] = headers
             else:
                 result["parse"] = 1
                 result["url"] = play_url
@@ -542,112 +677,42 @@ class Spider(Spider):
         return result
 
     def isVideoFormat(self, url):
-        """判断是否为视频直链格式"""
         if not url or not isinstance(url, str):
             return False
         if not url.startswith("http"):
             return False
         fmt = ['.mp4', '.m3u8', '.ts', '.mkv', '.avi', '.webm', '.flv']
-        for f in fmt:
-            if url.lower().find(f) > -1:
-                return True
-        return False
+        low = url.lower()
+        return any(f in low for f in fmt)
 
     def manualVideoCheck(self):
         return False
 
     def localProxy(self, param):
-        """本地代理(处理m3u8/key/封面解密等)"""
-        action = param.get('action')
-        if action == 'proxy':
-            url = param.get('url')
-            headers = {
-                "User-Agent": self.userAgent,
-                "Referer": self.siteUrl,
-            }
-            try:
-                if param.get('type') == 'cover':
-                    # 封面解密: .css 文件是 XOR(0x88) 加密的 WebP 图片
-                    r = self.fetch(url, headers=headers)
-                    if r and r.status_code == 200 and r.content:
-                        decrypted = bytes(b ^ 0x88 for b in r.content)
-                        return [200, "image/webp", decrypted]
-                    return [404, "text/plain", "cover not found"]
-                elif param.get('type') == 'm3u8':
-                    r = self.fetch(url, headers=headers)
-                    if r:
-                        return [200, "application/vnd.apple.mpegurl", r.text]
-                    return [500, "text/plain", "m3u8 fetch failed"]
-                elif param.get('type') == 'media':
-                    r = self.fetch(url, headers=headers)
-                    if r:
-                        return [206, "application/octet-stream", r.content]
-                    return [500, "text/plain", "media fetch failed"]
-                else:
-                    r = self.fetch(url, headers=headers)
-                    if r:
-                        return [200, "text/plain", r.text]
-                    return [500, "text/plain", "fetch failed"]
-            except Exception as e:
-                print(f"[ERROR] localProxy failed: {e}")
-                return [500, "text/plain", str(e)]
-        return None
+        """本地代理: 封面取图 + XOR 0x88 解密 → [code, mime, bytes] 三元组"""
+        p = {}
+        if isinstance(param, dict):
+            p = param
+        elif isinstance(param, str):
+            s = param.strip()
+            if s.startswith("{"):
+                try:
+                    p = json.loads(s)
+                except Exception:
+                    p = {}
+            elif "=" in s:
+                try:
+                    qs = urllib.parse.parse_qs(s.lstrip("?"))
+                    p = {k: v[0] for k, v in qs.items()}
+                except Exception:
+                    p = {}
+        t = str(p.get("type") or p.get("action") or "")
+        u = unquote(str(p.get("u") or p.get("url") or ""))
+        r = unquote(str(p.get("r") or "")) or None
+        if t in ("img", "cover", "proxy") and u:
+            return self._serve_cover(u, referer=r)
+        return [404, "text/plain", b""]
 
-
-# ==================== 本地调试入口 ====================
-if __name__ == "__main__":
-    spider = Spider()
-    spider.init()
-
-    print("=" * 60)
-    print(f"爬虫名称: {spider.getName()}")
-    print(f"站点URL: {spider.siteUrl}")
-    print(f"pic_domain: {spider.pic_domain}")
-    print(f"novel_domain: {spider.novel_domain}")
-    print(f"csstime: {spider.csstime}")
-    print("=" * 60)
-
-    print("\n【测试1】homeContent")
-    home = spider.homeContent(filter=True)
-    print(f"  分类数: {len(home.get('class', []))}")
-    for c in home.get('class', [])[:3]:
-        print(f"    [{c['type_id']}] {c['type_name']}")
-
-    print("\n【测试2】homeVideoContent")
-    home_videos = spider.homeVideoContent()
-    print(f"  推荐视频: {len(home_videos.get('list', []))}")
-    for v in home_videos.get('list', [])[:2]:
-        print(f"    {v['vod_id']} | {v['vod_name'][:20]} | {v['vod_pic'][:50]}...")
-
-    if home.get('class'):
-        tid = home['class'][0]['type_id']
-        print(f"\n【测试3】categoryContent(tid={tid}, pg=1)")
-        cat = spider.categoryContent(tid, 1, False, {})
-        print(f"  视频数: {len(cat.get('list', []))}, 总页数: {cat.get('pagecount', 0)}")
-        for v in cat.get('list', [])[:2]:
-            print(f"    {v['vod_id']} | {v['vod_name'][:20]}")
-
-        if cat.get('list'):
-            vid = cat['list'][0]['vod_id']
-            print(f"\n【测试4】detailContent([{vid}])")
-            detail = spider.detailContent([vid])
-            if detail.get('list'):
-                vod = detail['list'][0]
-                print(f"  名称: {vod['vod_name']}")
-                print(f"  封面: {vod['vod_pic'][:60]}...")
-                print(f"  播放源: {vod['vod_play_from']}")
-                print(f"  播放地址: {vod['vod_play_url'][:80]}...")
-
-    print("\n【测试5】searchContent('国产')")
-    search_res = spider.searchContent("国产", False)
-    print(f"  搜索结果: {len(search_res.get('list', []))}")
-    for v in search_res.get('list', [])[:2]:
-        print(f"    {v['vod_id']} | {v['vod_name'][:20]}")
-
-    print("\n【测试6】playerContent(默认, m3u8_url, '')")
-    sample_m3u8 = f"{spider.novel_domain}/m3u8/yl_8cef914fff77f784effa50bb2b1aeafe/index_domain.m3u8?{spider.csstime}"
-    play = spider.playerContent("默认", sample_m3u8, "")
-    print(f"  parse={play.get('parse')}, url={play.get('url', '')[:80]}...")
-
-    print("\n" + "=" * 60)
-    print("所有测试完成")
+    def destroy(self):
+        self._class_cache = None
+        self._domain_winner = None
