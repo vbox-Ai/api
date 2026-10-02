@@ -3211,6 +3211,29 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "yeguo_py",
+        "name": "野果短剧",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "短剧 API 站(AES-CBC 加密响应, 纯 Python AES 兜底), 13 分类",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://www.yeguodj.com"
+        ],
+        "sortOrder": 629,
+        "defaultProxy": false,
+        "notes": "www.yeguodj.com/api.php: 数据 base64+AES-CBC 加密(API_KEY/IV 内置), pycryptodome 优先, PureAES 纯 Python 兜底。13 分类(发现/排行榜/6 背景题材/5 设定)。封面外部代理 huangguo.wulii.de5.net + localProxy 二次包装。",
+        "api": "./sources/welfare-js/yeguo.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "imageSSLBypass": true,
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ],
     "updatedAt": "2026-10-02T11:26:21Z"
