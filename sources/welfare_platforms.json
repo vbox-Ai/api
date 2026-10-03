@@ -2339,7 +2339,29 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "cartoonporno_py",
+      "name": "成人卡通",
+      "category": "video",
+      "icon": "theater.masks.fill",
+      "desc": "CartoonPorno 746 分类成人动画 (域名自动竞速)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://www.cartoonporno.ws"
+      ],
+      "sortOrder": 638,
+      "defaultProxy": false,
+      "notes": "CartoonPorno 动漫/卡通成人视频。脚本内置 746 分类表 + 导航页(x99dh.*) b64 域名表自动竞速最快域(12h缓存)。详情页签名 jmpres mp4 直链, playerContent parse=0。iSH 实测 .ws 全链路可用(.cc/.art 不通), 导航页 500 也读 body 解析。",
+      "api": "./sources/welfare-js/cartoonporno.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
-  "updatedAt": "2026-10-03T01:05:00Z"
+  "updatedAt": "2026-10-03T01:35:00Z"
 }
