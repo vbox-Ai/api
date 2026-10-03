@@ -2423,6 +2423,28 @@
         "visibleInHome": false
       },
       {
+        "platformKey": "tiktok_lianbo_py",
+        "name": "TikTok连播",
+        "category": "live",
+        "icon": "antenna.radiowaves.left.and.right",
+        "desc": "PornTok 短视频连播 (R2 直链, 连播池)",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://porntok.io"
+        ],
+        "sortOrder": 513,
+        "defaultProxy": false,
+        "notes": "PornTok 短视频连播流。抓页内嵌 JSON 的 R2 mp4 直链, detailContent 拼连播池(# 分隔), playerContent 直链 parse=0。12 tag 分类。",
+        "api": "./sources/welfare-js/tiktok_lianbo.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "live",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
         "platformKey": "51papaya_py",
         "name": "51木瓜",
         "category": "video",
@@ -3307,6 +3329,6 @@
         "visibleInHome": false
       }
     ],
-    "updatedAt": "2026-10-02T19:38:17Z"
+    "updatedAt": "2026-10-03T01:05:00Z"
   }
 }
