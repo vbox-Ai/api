@@ -36,6 +36,14 @@ except ImportError:
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
+# 抓页用浏览器级请求头 (Cloudflare 按 TLS 指纹 + 请求头拦截非浏览器客户端)
+BROWSER_HEADERS = {
+    "User-Agent": ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
+                   "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 "
+                   "Mobile/15E148 Safari/604.1"),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
 
 BASE = "https://porntok.io"
 R2_HOST = "pub-9e425fd7f7a04b7aa301eafe26f84f84.r2.dev"
@@ -90,12 +98,41 @@ class Spider(BaseSpider):
         return True
 
     def _http(self, url):
-        """GET, 返回 (status, text). 失败返回 (0, '')."""
-        req = Request(url, headers={"User-Agent": UA})
+        """抓页面. 返回 (status, text), 失败 (0, '').
+
+        1) 优先 base.spider.fetch — 设备端 app 级 HTTP (浏览器 TLS 指纹,
+           可过 Cloudflare; urllib 会被 CF 按 JA3 秒断, 见 iSH 实测)
+        2) urllib 兜底 (本地调试/iSH)
+        """
+        fetch_fn = getattr(self, "fetch", None)
+        if callable(fetch_fn):
+            for kwargs in ({"headers": BROWSER_HEADERS, "timeout": self._timeout},
+                           {"timeout": self._timeout}, {}):
+                try:
+                    r = fetch_fn(url, **kwargs)
+                except TypeError:
+                    try:
+                        r = fetch_fn(url)
+                    except Exception:
+                        r = None
+                except Exception:
+                    r = None
+                if not r:
+                    continue
+                text = r
+                if hasattr(r, "text"):
+                    text = r.text
+                elif hasattr(r, "content"):
+                    c = r.content
+                    text = c.decode("utf-8", "ignore") if isinstance(c, (bytes, bytearray)) else str(c)
+                if isinstance(text, str) and text and \
+                        ("initialVideos" in text or "ld+json" in text or ".mp4" in text):
+                    return 200, text
+        # urllib 兜底
+        req = Request(url, headers=dict(BROWSER_HEADERS))
         try:
             resp = urlopen(req, timeout=self._timeout, context=self._ctx)
-            raw = resp.read()
-            return resp.status, raw.decode("utf-8", "ignore")
+            return resp.status, resp.read().decode("utf-8", "ignore")
         except Exception:
             return 0, ""
 
@@ -250,11 +287,7 @@ class Spider(BaseSpider):
                 return i
         return 0
 
-    def categoryContent(self, tid, pg, filter, extend):
-        idx = self._cat_index(tid)
-        slug, name = CATS[idx]
-        page_url = BASE + "/" if slug is None else BASE + "/category/" + slug
-        videos = self._scrape_page(page_url)
+    def _build_items(self, videos, name, slug, page_url):
         items = []
         for v in videos:
             pool = [x["mp4"] for x in videos if x["mp4"] != v["mp4"]]
@@ -277,6 +310,19 @@ class Spider(BaseSpider):
                 "vod_class": name,
                 "vod_content": "PornTok 连播池 %d 条" % (len(pool) + 1),
             })
+        return items
+
+    def homeVideoContent(self):
+        """客户端首页栏目视频位: 首页精选 feed (与「全部」分类同源)"""
+        videos = self._scrape_page(BASE + "/")
+        return {"list": self._build_items(videos, "全部", None, BASE + "/")}
+
+    def categoryContent(self, tid, pg, filter, extend):
+        idx = self._cat_index(tid)
+        slug, name = CATS[idx]
+        page_url = BASE + "/" if slug is None else BASE + "/category/" + slug
+        videos = self._scrape_page(page_url)
+        items = self._build_items(videos, name, slug, page_url)
         return {
             "page": 1,
             "pagecount": 1,
