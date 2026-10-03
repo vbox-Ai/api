@@ -2,8 +2,12 @@
 """
 TikTok连播 — vbox 福利专区「直播」栏目适配版
 数据源: porntok.io (PornTok 短视频连播流)
-  - 抓页内嵌 JSON 的 mp4 直链 (R2 存储桶 pub-9e425fd7f7a04b7aa301eafe26f84f84.r2.dev)
-  - detailContent 把相关视频池拼成一条 # 分隔的连播 vod_play_url
+  - 真实页面为 Next.js RSC: 视频对象内嵌于 __next_f 推流的 initialVideos
+    字段: id/path(R2 mp4 直链)/hls_url/thumbnail_url/preview_url/title/
+          category/post_id/view_count/author/profile_picture_url/...
+    R2 桶: pub-9e425fd7f7a04b7aa301eafe26f84f84.r2.dev/videos/<cat>/<id>.mp4
+  - 分类真实路径: /category/{slug} (不是 /tag/{slug})
+  - detailContent 把同分类视频池拼成一条 # 分隔的连播 vod_play_url
   - playerContent 直回 mp4 直链 (parse=0, header 为 dict)
   - vod_id = "ptok@@" + base64(JSON payload)
 
@@ -11,9 +15,11 @@ vbox 契约修复:
   1. playerContent header → dict (不能 json.dumps 字符串)
   2. localProxy 返回 → bytes (b"Proxy inactive", 不能 str)
   3. __init__ 的 super().__init__() 包 try/except (iSH 无 base.spider 时兜底)
-  4. init() 先调 super().init(extend) 再返回 (vbox 需拿域名注入)
+  4. init() 先调 super().init(extend) 再返回 True (对齐 getav/18av/xiaohetang)
+  5. homeContent 的 class 必须是 [{"type_name","type_id"}] dict 列表
+     (纯字符串列表会导致设备端「未能解析到分类」)
 """
-import sys, re, json, base64, ssl, time, warnings
+import sys, re, json, base64, ssl, warnings
 from urllib.request import Request, urlopen
 from urllib.parse import quote
 
@@ -33,14 +39,31 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 
 BASE = "https://porntok.io"
 R2_HOST = "pub-9e425fd7f7a04b7aa301eafe26f84f84.r2.dev"
-MP4_RE = re.compile(r'(https?://[^"\\\s\x00-\x1f]*?\.mp4)', re.I)
+MP4_RE = re.compile(r'(https?://[^"\\\s\x00-\x1f]+?\.mp4)', re.I)
 
-# 12 个硬编码 tag (第 0 个走首页, 其余走 /tag/{tag})
-CLASSES = [
-    "全部", "Girls", "Boys", "Girls & Boys", "POV", "Solo Girl",
-    "Solo Boy", "Couple", "Threesome", "MILF", "Blowjob", "Anal",
+# 真实分类 (slug, 显示名) — 第 0 个走首页, 其余走 /category/{slug}
+CATS = [
+    (None, "全部"),
+    ("amateur", "Amateur"),
+    ("trans", "Trans"),
+    ("indian", "Indian"),
+    ("teen-18plus", "Teen 18+"),
+    ("milf", "MILF"),
+    ("big-tits", "Big Tits"),
+    ("latina", "Latina"),
+    ("public-outdoor", "Public Outdoor"),
+    ("porn-for-women", "Porn for Women"),
+    ("fetish", "Fetish"),
+    ("asian", "Asian"),
+    ("bbw", "BBW"),
+    ("teen", "Teen"),
+    ("anal", "Anal"),
+    ("ebony", "Ebony"),
+    ("blonde", "Blonde"),
+    ("gay", "Gay"),
+    ("hentai-animated", "Hentai Animated"),
 ]
-POOL_LIMIT = 20  # 连播池上限
+POOL_LIMIT = 19  # 连播池上限 (含自身)
 
 
 class Spider(BaseSpider):
@@ -64,7 +87,6 @@ class Spider(BaseSpider):
             super().init(extend)
         except Exception:
             pass
-        # 对齐仓库主流源 (getav/18av/xiaohetang): init 返回 True
         return True
 
     def _http(self, url):
@@ -99,95 +121,167 @@ class Spider(BaseSpider):
                 return {}
         return {}
 
-    def _is_video_url(self, u):
+    @staticmethod
+    def _is_video_url(u):
         u = (u or "").lower()
         return u.endswith(".mp4") or u.endswith(".m4v") or ".mp4?" in u
 
+    @staticmethod
+    def _unesc(val):
+        """JSON 字符串值去转义 (unicode 转义序列等), 失败原样返回"""
+        try:
+            return json.loads('"%s"' % val)
+        except Exception:
+            return val
+
+    def _parse_rsc(self, html):
+        """解析 RSC flight 数据中 initialVideos 的视频对象 (转义形态).
+
+        原始 HTML 中对象形如:
+        {\\"id\\":6127,\\"path\\":\\"https://...r2.dev/videos/gay/x.mp4\\",
+         \\"hls_url\\":null,\\"thumbnail_url\\":\\"...\\",\\"title\\":\\"..\\",
+         \\"category\\":\\"..\\",\\"post_id\\":\\"..\\",\\"view_count\\":204,
+         \\"author\\":\\"..\\",...}
+        """
+        vids = []
+        for chunk in html.split('{\\"id\\":')[1:]:
+            head = re.match(r'(\d+),\\"path\\"', chunk)
+            if not head:
+                continue
+            d = {"id": head.group(1), "mp4": "", "thumb": "", "title": "",
+                 "author": "", "cat": "", "views": ""}
+            pats = {
+                "mp4": r'\\"path\\":\\"(https://[^"\\]+?\.mp4)',
+                "thumb": r'\\"thumbnail_url\\":\\"([^"\\]+?)\\"',
+                "title": r'\\"title\\":\\"((?:[^"\\]|\\.)*?)\\"',
+                "cat": r'\\"category\\":\\"([^"\\]+?)\\"',
+                "author": r'\\"author\\":\\"([^"\\]+?)\\"',
+                "views": r'\\"view_count\\":(\d+)',
+            }
+            for k, pat in pats.items():
+                mm = re.search(pat, chunk)
+                if mm:
+                    v = mm.group(1)
+                    if k != "views":
+                        v = self._unesc(v)
+                    if v:
+                        d[k] = v
+            if d["mp4"] and len(vids) < POOL_LIMIT:
+                vids.append(d)
+            if len(vids) >= POOL_LIMIT:
+                break
+        return vids
+
+    def _parse_ld(self, html):
+        """JSON-LD ItemList 兜底 (contentUrl 可能为 null, 取 mp4 才有效)"""
+        vids = []
+        for block in re.findall(r'<script type="application/ld\+json">([\s\S]*?)</script>', html):
+            try:
+                data = json.loads(block)
+            except Exception:
+                continue
+            if data.get("@type") != "ItemList":
+                continue
+            for it in data.get("itemListElement", []):
+                item = (it or {}).get("item") or {}
+                mp4 = item.get("contentUrl") or ""
+                m = re.search(r'/videos/([^/]+)/([^.]+)\.mp4', mp4)
+                if not mp4 or not self._is_video_url(mp4):
+                    continue
+                d = {
+                    "id": (re.search(r'/video/(\d+)$', item.get("@id", "")) or [None, ""])[1],
+                    "mp4": mp4,
+                    "thumb": item.get("thumbnailUrl") or "",
+                    "title": item.get("name") or "",
+                    "author": "",
+                    "cat": item.get("category", "") or (m.group(1) if m else ""),
+                    "views": "",
+                }
+                if len(vids) < POOL_LIMIT:
+                    vids.append(d)
+            if vids:
+                break
+        return vids
+
     def _scrape_page(self, page_url):
-        """抓页内嵌 JSON / 全页文本里的 mp4 直链与标题"""
+        """抓页 → 视频对象列表. 优先 RSC initialVideos, 其次 JSON-LD, 最后全页扫 mp4."""
         status, text = self._http(page_url)
         if not text:
             return []
-        found = []
-        # 优先解析 JSON 结构: {"url": "...mp4", "title": ...} 形式
-        for m in re.finditer(r'\{[^{}]*?"(?:url|file|src|video)[^{}]*\}', text):
-            blob = m.group(0)
-            urls = MP4_RE.findall(blob)
-            if urls:
-                title = ""
-                tm = re.search(r'"title"\s*:\s*"([^"]*)"', blob)
-                if tm:
-                    title = tm.group(1)
-                am = re.search(r'"(?:author|username|user)"\s*:\s*"([^"]*)"', blob)
-                author = am.group(1) if am else ""
-                um = re.search(r'"(?:id|uuid)"\s*:\s*"?([0-9a-fA-F-]{6,})"?', blob)
-                vid = um.group(1) if um else ""
-                for u in urls:
-                    found.append({
-                        "url": u, "title": title or u.rsplit("/", 1)[-1],
-                        "author": author, "vid": vid,
-                        "page": page_url,
-                    })
-        # 兜底: 全页扫 mp4
-        if not found:
+        vids = self._parse_rsc(text)
+        if not vids:
+            vids = self._parse_ld(text)
+        if not vids:
             for u in MP4_RE.findall(text):
-                found.append({"url": u, "title": u.rsplit("/", 1)[-1],
-                              "author": "", "vid": "", "page": page_url})
+                vids.append({"id": "", "mp4": u, "thumb": "",
+                             "title": u.rsplit("/", 1)[-1], "author": "",
+                             "cat": "", "views": ""})
+                if len(vids) >= POOL_LIMIT:
+                    break
         # 去重保序
         seen, out = set(), []
-        for it in found:
-            if it["url"] not in seen:
-                seen.add(it["url"])
-                out.append(it)
+        for d in vids:
+            if d["mp4"] and d["mp4"] not in seen:
+                seen.add(d["mp4"])
+                out.append(d)
         return out[:POOL_LIMIT]
 
     # ---------------- TVBox 标准接口 ----------------
     def homeContent(self, filter):
         # class 必须为 dict 列表 (type_name/type_id), 设备端按 dict 解析分类
         return {
-            "class": [{"type_name": c, "type_id": str(i)} for i, c in enumerate(CLASSES)],
+            "class": [{"type_name": name, "type_id": str(i)}
+                      for i, (_slug, name) in enumerate(CATS)],
             "list": [],
             "filters": {},
         }
 
-    def categoryContent(self, tid, pg, filter, extend):
-        items = []
-        # tid 兼容: "0".."11" (homeContent 的 type_id) 或 tag 名本身
+    def _cat_index(self, tid):
+        """tid 兼容: "0".."18" (homeContent 的 type_id) 或 slug/tag 名"""
         try:
-            tid = int(tid)
+            idx = int(tid)
+            if 0 <= idx < len(CATS):
+                return idx
         except Exception:
-            name = str(tid).strip()
-            tid = CLASSES.index(name) if name in CLASSES else 0
-        if tid >= len(CLASSES) or tid < 0:
-            tid = 0
-        page_url = BASE + "/" if tid == 0 else BASE + "/tag/" + quote(CLASSES[tid].lower())
+            pass
+        name = str(tid).strip()
+        for i, (slug, nm) in enumerate(CATS):
+            if name.lower() in (slug or "", nm.lower(), nm.lower().replace(" ", "-")):
+                return i
+        return 0
+
+    def categoryContent(self, tid, pg, filter, extend):
+        idx = self._cat_index(tid)
+        slug, name = CATS[idx]
+        page_url = BASE + "/" if slug is None else BASE + "/category/" + slug
         videos = self._scrape_page(page_url)
+        items = []
         for v in videos:
-            pic = ""
+            pool = [x["mp4"] for x in videos if x["mp4"] != v["mp4"]]
             payload = {
-                "url": v["url"], "title": v["title"], "author": v["author"],
-                "vid": v["vid"], "page": page_url, "tag": CLASSES[tid],
-                "pool": [x["url"] for x in videos if x["url"] != v["url"]][:POOL_LIMIT],
+                "id": v["id"], "url": v["mp4"], "title": v["title"],
+                "author": v["author"], "cat": name, "slug": slug,
+                "views": v["views"], "thumb": v["thumb"],
+                "page": page_url, "pool": pool,
             }
+            remarks = []
+            if v["author"]:
+                remarks.append(v["author"])
+            if v["views"]:
+                remarks.append("%s次观看" % v["views"])
             items.append({
                 "vod_id": self._pack(payload),
-                "vod_name": v["title"],
-                "vod_pic": pic,
-                "vod_remarks": (v["author"] or "mp4 直链"),
-                "vod_class": CLASSES[tid],
-                "vod_content": "PornTok 连播池: %d 条" % (len(payload["pool"]) + 1),
-                "vod_year": "",
-                "vod_area": "",
-                "vod_from": "",
-                "vod_actor": "",
-                "vod_blurb": "",
+                "vod_name": v["title"] or ("视频 " + v["id"] if v["id"] else name),
+                "vod_pic": v["thumb"],
+                "vod_remarks": " · ".join(remarks),
+                "vod_class": name,
+                "vod_content": "PornTok 连播池 %d 条" % (len(pool) + 1),
             })
-        total = max(len(items), 1)
         return {
-            "page": pg,
+            "page": 1,
             "pagecount": 1,
             "limit": len(items),
-            "total": total,
+            "total": len(items),
             "list": items,
         }
 
@@ -205,18 +299,19 @@ class Spider(BaseSpider):
                 for u in p["pool"]:
                     if u not in pool_urls:
                         pool_urls.append(u)
-            # 若池为空且 payload 有 page, 现场再抓一次连播池
+            # 池为空且有页面 → 现场再抓一次 (兜底)
             if len(pool_urls) <= 1 and p.get("page"):
-                fresh = [x["url"] for x in self._scrape_page(p["page"])]
-                for u in fresh:
-                    if u not in pool_urls:
-                        pool_urls.append(u)
+                for x in self._scrape_page(p["page"]):
+                    if x["mp4"] not in pool_urls:
+                        pool_urls.append(x["mp4"])
+                    if len(pool_urls) >= POOL_LIMIT:
+                        break
             detail = {
                 "vod_id": vod_id if isinstance(vod_id, str) else str(vod_id),
-                "vod_name": p.get("title", "") or "TikTok连播",
-                "vod_pic": "",
+                "vod_name": p.get("title") or "TikTok连播",
+                "vod_pic": p.get("thumb") or "",
                 "vod_remarks": "连播 %d 条" % max(len(pool_urls), 1),
-                "vod_class": p.get("tag", ""),
+                "vod_class": p.get("cat") or "",
                 "vod_content": ("作者: " + p["author"]) if p.get("author") else "",
                 "vod_play_from": "m4direct",
                 "vod_play_url": "#".join(pool_urls[:POOL_LIMIT]),
@@ -246,7 +341,6 @@ class Spider(BaseSpider):
             "play_url": [play_url],
             "header": {"User-Agent": UA},
             "support_mime": "video/mp4",
-            "play解析": 0,
             "url": play_url,
         }
         return json.dumps(body, ensure_ascii=False)
