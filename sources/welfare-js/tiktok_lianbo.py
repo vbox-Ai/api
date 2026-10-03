@@ -64,7 +64,8 @@ class Spider(BaseSpider):
             super().init(extend)
         except Exception:
             pass
-        return None
+        # 对齐仓库主流源 (getav/18av/xiaohetang): init 返回 True
+        return True
 
     def _http(self, url):
         """GET, 返回 (status, text). 失败返回 (0, '')."""
@@ -141,16 +142,23 @@ class Spider(BaseSpider):
         return out[:POOL_LIMIT]
 
     # ---------------- TVBox 标准接口 ----------------
-    def homeContent(self, filter=False):
-        return {"class": CLASSES, "list": [], "filters": {}}
+    def homeContent(self, filter):
+        # class 必须为 dict 列表 (type_name/type_id), 设备端按 dict 解析分类
+        return {
+            "class": [{"type_name": c, "type_id": str(i)} for i, c in enumerate(CLASSES)],
+            "list": [],
+            "filters": {},
+        }
 
-    def categoryContent(self, tid, pg=1, filter=False, extend=None):
+    def categoryContent(self, tid, pg, filter, extend):
         items = []
+        # tid 兼容: "0".."11" (homeContent 的 type_id) 或 tag 名本身
         try:
             tid = int(tid)
         except Exception:
-            tid = 0
-        if tid >= len(CLASSES):
+            name = str(tid).strip()
+            tid = CLASSES.index(name) if name in CLASSES else 0
+        if tid >= len(CLASSES) or tid < 0:
             tid = 0
         page_url = BASE + "/" if tid == 0 else BASE + "/tag/" + quote(CLASSES[tid].lower())
         videos = self._scrape_page(page_url)
