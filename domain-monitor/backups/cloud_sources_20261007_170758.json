@@ -10,11 +10,11 @@
     {
       "name": "玩偶资源",
       "type": "cms",
-      "searchurl": "https://www.wogg.net/vodsearch/-------------.html?wd=",
+      "searchurl": "https://woggpan.888484.xyz/vodsearch/-------------.html?wd=",
       "searchurls": [
         "https://wogg.xxooo.cf/vodsearch/-------------.html?wd="
       ],
-      "detailBase": "https://www.wogg.net",
+      "detailBase": "https://woggpan.888484.xyz",
       "detailPattern": "<h3[^>]*>\\s*<a[^>]*href=\"((/voddetail/\\d+\\.html))\"[^>]*>(.+?)</a>\\s*</h3>",
       "ua": "pc",
       "enabled": true,
@@ -24,8 +24,8 @@
     {
       "name": "木偶资源",
       "type": "cms",
-      "searchurl": "https://333.333291.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://333.333291.xyz",
+      "searchurl": "https://www.muoua.top/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.muoua.top",
       "enabled": true,
       "priority": 1003,
       "group": "cloud"
