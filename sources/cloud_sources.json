@@ -24,8 +24,8 @@
     {
       "name": "木偶资源",
       "type": "cms",
-      "searchurl": "https://123.666291.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://123.666291.xyz",
+      "searchurl": "https://333.333291.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://333.333291.xyz",
       "enabled": true,
       "priority": 1003,
       "group": "cloud"
@@ -33,8 +33,8 @@
     {
       "name": "多多资源",
       "type": "cms",
-      "searchurl": "https://pan.yydsys.de/index.php/vod/search.html?wd=",
-      "detailBase": "https://pan.yydsys.de",
+      "searchurl": "https://tv.214521.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://tv.214521.xyz",
       "ua": "pc",
       "enabled": true,
       "priority": 1004,
@@ -43,8 +43,8 @@
     {
       "name": "欧歌资源",
       "type": "cms",
-      "searchurl": "https://woog.nxog.eu.org/index.php/vod/search.html?wd=",
-      "detailBase": "https://woog.nxog.eu.org",
+      "searchurl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://woog.430520.xyz",
       "ua": "pc",
       "enabled": true,
       "priority": 1006,
@@ -116,8 +116,8 @@
     {
       "name": "闪电优汐",
       "type": "cms",
-      "searchurl": "http://shandian.blog/index.php/vod/search.html?wd=",
-      "detailBase": "http://shandian.blog",
+      "searchurl": "http://sd.sduc.site/index.php/vod/search.html?wd=",
+      "detailBase": "http://sd.sduc.site",
       "enabled": true,
       "priority": 1022,
       "group": "cloud"
