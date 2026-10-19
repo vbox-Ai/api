@@ -10,11 +10,11 @@
     {
       "name": "玩偶资源",
       "type": "cms",
-      "searchurl": "https://www.wogg.net/vodsearch/-------------.html?wd=",
+      "searchurl": "https://woggpan.888484.xyz/vodsearch/-------------.html?wd=",
       "searchurls": [
         "https://wogg.xxooo.cf/vodsearch/-------------.html?wd="
       ],
-      "detailBase": "https://www.wogg.net",
+      "detailBase": "https://woggpan.888484.xyz",
       "detailPattern": "<h3[^>]*>\\s*<a[^>]*href=\"((/voddetail/\\d+\\.html))\"[^>]*>(.+?)</a>\\s*</h3>",
       "ua": "pc",
       "enabled": true,
@@ -33,8 +33,8 @@
     {
       "name": "多多资源",
       "type": "cms",
-      "searchurl": "https://pan.yydsys.de/index.php/vod/search.html?wd=",
-      "detailBase": "https://pan.yydsys.de",
+      "searchurl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
+      "detailBase": "https://tv.yydsys.cc",
       "ua": "pc",
       "enabled": true,
       "priority": 1004,
@@ -116,8 +116,8 @@
     {
       "name": "闪电优汐",
       "type": "cms",
-      "searchurl": "http://sd.sduc.site/index.php/vod/search.html?wd=",
-      "detailBase": "http://sd.sduc.site",
+      "searchurl": "http://shandian.blog/index.php/vod/search.html?wd=",
+      "detailBase": "http://shandian.blog",
       "enabled": true,
       "priority": 1022,
       "group": "cloud"
