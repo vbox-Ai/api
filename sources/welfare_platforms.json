@@ -2361,6 +2361,28 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "muse_live_box_py",
+      "name": "暮色直播盒子",
+      "category": "live",
+      "icon": "antenna.radiowaves.left.and.right",
+      "desc": "暮色直播盒子聚合源 (Python, flv直链)",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "http://api.hclyz.com:81"
+      ],
+      "sortOrder": 520,
+      "defaultProxy": false,
+      "notes": "暮色直播盒子。数据源 api.hclyz.com:81/mf/ 明文gzip JSON。平台列表json.txt(pingtai)→直播间json{平台}.txt(zhubo)→flv直链(parse=0, UA=fsplayer)。实测136平台可显示、flv可播。",
+      "api": "./sources/welfare-js/muse_live_box.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "live",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
   "updatedAt": "2026-10-03T01:35:00Z"
