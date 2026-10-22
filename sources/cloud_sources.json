@@ -24,8 +24,8 @@
     {
       "name": "木偶资源",
       "type": "cms",
-      "searchurl": "https://333.333291.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://333.333291.xyz",
+      "searchurl": "https://666.666291.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://666.666291.xyz",
       "enabled": true,
       "priority": 1003,
       "group": "cloud"
@@ -33,8 +33,8 @@
     {
       "name": "多多资源",
       "type": "cms",
-      "searchurl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
-      "detailBase": "https://tv.yydsys.cc",
+      "searchurl": "https://tv.214521.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://tv.214521.xyz",
       "ua": "pc",
       "enabled": true,
       "priority": 1004,
@@ -43,8 +43,8 @@
     {
       "name": "欧歌资源",
       "type": "cms",
-      "searchurl": "https://woog.nxog.eu.org/index.php/vod/search.html?wd=",
-      "detailBase": "https://woog.nxog.eu.org",
+      "searchurl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://woog.430520.xyz",
       "ua": "pc",
       "enabled": true,
       "priority": 1006,
