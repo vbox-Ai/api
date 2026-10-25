@@ -10,11 +10,11 @@
     {
       "name": "玩偶资源",
       "type": "cms",
-      "searchurl": "https://woggpan.888484.xyz/vodsearch/-------------.html?wd=",
+      "searchurl": "https://www.wogg.net/vodsearch/-------------.html?wd=",
       "searchurls": [
         "https://wogg.xxooo.cf/vodsearch/-------------.html?wd="
       ],
-      "detailBase": "https://woggpan.888484.xyz",
+      "detailBase": "https://www.wogg.net",
       "detailPattern": "<h3[^>]*>\\s*<a[^>]*href=\"((/voddetail/\\d+\\.html))\"[^>]*>(.+?)</a>\\s*</h3>",
       "ua": "pc",
       "enabled": true,
@@ -24,8 +24,8 @@
     {
       "name": "木偶资源",
       "type": "cms",
-      "searchurl": "https://666.666291.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://666.666291.xyz",
+      "searchurl": "https://333.333291.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://333.333291.xyz",
       "enabled": true,
       "priority": 1003,
       "group": "cloud"
@@ -33,8 +33,8 @@
     {
       "name": "多多资源",
       "type": "cms",
-      "searchurl": "https://tv.214521.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://tv.214521.xyz",
+      "searchurl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
+      "detailBase": "https://tv.yydsys.cc",
       "ua": "pc",
       "enabled": true,
       "priority": 1004,
@@ -43,8 +43,8 @@
     {
       "name": "欧歌资源",
       "type": "cms",
-      "searchurl": "https://woog.430520.xyz/index.php/vod/search.html?wd=",
-      "detailBase": "https://woog.430520.xyz",
+      "searchurl": "https://woog.nxog.eu.org/index.php/vod/search.html?wd=",
+      "detailBase": "https://woog.nxog.eu.org",
       "ua": "pc",
       "enabled": true,
       "priority": 1006,
@@ -116,8 +116,8 @@
     {
       "name": "闪电优汐",
       "type": "cms",
-      "searchurl": "http://shandian.blog/index.php/vod/search.html?wd=",
-      "detailBase": "http://shandian.blog",
+      "searchurl": "http://sd.sduc.site/index.php/vod/search.html?wd=",
+      "detailBase": "http://sd.sduc.site",
       "enabled": true,
       "priority": 1022,
       "group": "cloud"
