@@ -2,32 +2,48 @@
 """
 暮色（com.look.avbox / avbox）后端聚合 Spider — vbox 福利区适配版
 ================================================================
-来源：逆向 app-暮色-1.0.1(开发模式安装).ipa
-  · Payload/Runner.app 为 Flutter AOT（libapp 内嵌 37 个资源模块）
-  · App 为薄客户端，所有平台数据统一走自建 Swoft 后端 api.* 域
-  · 鉴权：X-Auth-Key / X-Auth-TimeStamp / X-Auth-Nonce / X-Auth-Sign 四件套
-  · 后端错误统一返回 {"code":500,"message":"系统繁忙，请稍后重试","data":null}
+证据来源：
+  · IPA 逆向：app-暮色-1.0.1(开发模式安装).ipa
+      BundleID com.look.avbox / Flutter AOT / 37 个 module 包
+  · 真机抓包：Stream 抓包 2026-10-28（用户提供）
+      明文请求头只有 5 行：
+        GET /box/api/home?versionCode=101 HTTP/1.1
+        user-agent: Dart/3.12 (dart:io)
+        time: <13 位毫秒时间戳>
+        accept-encoding: gzip
+        uuid: <32 位 hex 设备号>
+        host: 38.46.10.6:6868
+      响应：HTTP/1.1 200 + chunked + JSON 字符串 "'<base64>'"（AES 密文）
+  · 探针实测：
+      /box/api/ping          → 200 明文，固定 44 字符 base64（32 字节）
+      /box/api/home 及所有业务路径 → 200 {"code":400,"msg":"违规请求"}
+      缺 time  → {"code":400,"msg":"缺少请求头:time"}
+      缺 uuid  → {"code":400,"msg":"缺少请求头:uuid"}
+      time 过旧 → {"code":400,"msg":"请求已过期"}
 
-本脚本做三件事：
-  1) 内置 IPA 里提取到的后端域名池 + 37 模块 → 接口路由表
-  2) 用四件套签名访问后端，把返回映射成 vbox 的 分类/列表/详情/播放 结构
-  3) 签名算法/密钥可通过 extend 注入，不写死在代码里
+本脚本实现：
+  1) 双通道：6868 明文通道（真实）+ api.* 四件套通道（兼容旧版本）
+  2) 真实鉴权头 time/uuid，uuid 可由 extend 注入
+  3) 响应自动识别：明文 JSON / base64 JSON 字符串 / base64+AES 密文
+  4) 37 模块 → 分类映射，封面/详情/播放统一映射成 vbox 结构
 
 extend 示例：
-  {"host": "https://api.3459381.com", "key": "368480924a6c78e2e8681551a7cf4c21",
-   "secret": "", "signMode": "md5_k_t_n", "timeout": 15}
+  {"host": "http://38.46.10.6:6868",
+   "uuid": "78f92bcb27bdc20181ff7642c55c60e5",
+   "versionCode": "101",
+   "aesKey": "", "aesIv": "", "timeout": 15}
 """
 import sys
+import os
 import json
 import time
 import ssl
 import base64
 import hashlib
-import hmac
+import random
 import urllib.parse
 import urllib.request
 import urllib.error
-import random
 
 sys.path.append('..')
 try:
@@ -37,142 +53,102 @@ except Exception:
         pass
 
 # ============================================================ 常量
-UA = ('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 '
-      '(KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1')
+UA_DART = "Dart/3.12 (dart:io)"
+UA_H5 = ('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) '
+         'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1')
 
-APP_KEY = "368480924a6c78e2e8681551a7cf4c21"      # IPA 内 &X-Auth-Key= 常量
-DEFAULT_HOSTS = [
+# 真实后端（抓包实证：明文 HTTP / 6868）
+HOSTS_BOX = [
+    "http://38.46.10.6:6868",
+    "http://38.46.10.2:6868",
+    "http://38.46.10.3:6868",
+    "http://38.46.10.4:6868",
+    "http://38.46.10.5:6868",
+    "http://202.95.22.200:6868",
+    "http://202.95.22.201:6868",
+    "http://202.95.22.202:6868",
+    "http://202.95.22.203:6868",
+    "http://202.95.22.204:6868",
+    "http://198.44.248.101:6868",
+    "http://198.44.248.102:6868",
+    "http://122.10.20.249:6868",
+]
+
+# 旧通道（IPA 内 api.* 域名，X-Auth 四件套，留作兼容）
+HOSTS_API = [
     "https://api.3459381.com",
     "https://api.c6dd5cc.com",
     "https://api.61c76a0.com",
     "https://api.87735d5.com",
     "https://api.em1oifd0.com",
-    "https://api.6b18726.com",
-    "https://api.7d87e17.com",
-    "https://api.b3d530f.com",
-    "https://api.b7f3192.com",
-    "https://api.c9wgdr.com",
-    "https://api.he0jys.com",
 ]
+APP_KEY = "368480924a6c78e2e8681551a7cf4c21"
 
 # 37 个资源模块（IPA: package:avbox/module/<key>/...）
 MODULES = [
-    {"key": "av91",   "name": "91AV",       "cat": "video", "icon": "play.rectangle.fill"},
-    {"key": "pron91", "name": "91Pron",     "cat": "video", "icon": "play.rectangle.fill"},
-    {"key": "sp91",   "name": "91视频",      "cat": "video", "icon": "play.rectangle.fill"},
-    {"key": "4hu",    "name": "四虎影库",     "cat": "video", "icon": "film.fill"},
-    {"key": "cg51",   "name": "51吃瓜",      "cat": "video", "icon": "eye.fill"},
-    {"key": "missav", "name": "MissAV",     "cat": "video", "icon": "film.fill"},
-    {"key": "javdb",  "name": "JavDB",      "cat": "video", "icon": "film.fill"},
-    {"key": "aijav",  "name": "AIJAV",      "cat": "video", "icon": "sparkles"},
-    {"key": "mmav",   "name": "猫咪AV",      "cat": "video", "icon": "film.fill"},
-    {"key": "one",    "name": "One",        "cat": "video", "icon": "play.circle.fill"},
-    {"key": "box",    "name": "资源盒",       "cat": "video", "icon": "shippingbox.fill"},
-    {"key": "hjsq",   "name": "海角社区",     "cat": "video", "icon": "bubble.left.and.bubble.right.fill"},
-    {"key": "cgw",    "name": "吃瓜网",       "cat": "video", "icon": "eye.fill"},
-    {"key": "hxsp",   "name": "红杏视频",     "cat": "video", "icon": "flame.fill"},
-    {"key": "hgsp",   "name": "黄瓜视频",     "cat": "video", "icon": "leaf.fill"},
-    {"key": "hsck",   "name": "黄色仓库",     "cat": "video", "icon": "archivebox.fill"},
-    {"key": "qysq",   "name": "青衣社区",     "cat": "video", "icon": "person.3.fill"},
-    {"key": "hdb",    "name": "红豆包",       "cat": "video", "icon": "film.fill"},
-    {"key": "kpsp",   "name": "快片视频",     "cat": "video", "icon": "play.rectangle.fill"},
-    {"key": "lclf",   "name": "楼风",         "cat": "video", "icon": "location.fill"},
-    {"key": "ltb",    "name": "Ltb",         "cat": "video", "icon": "film.fill"},
-    {"key": "lxs",    "name": "撸先生",       "cat": "video", "icon": "flame.fill"},
-    {"key": "mdtv",   "name": "美杜莎TV",     "cat": "video", "icon": "tv.fill"},
-    {"key": "rryy",   "name": "日日影院",     "cat": "video", "icon": "film.fill"},
-    {"key": "zlt",    "name": "Zlt",         "cat": "video", "icon": "film.fill"},
-    {"key": "insav",  "name": "InSav",       "cat": "video", "icon": "photo.fill"},
-    {"key": "djr",    "name": "DJR",         "cat": "video", "icon": "music.note"},
-    {"key": "fl2",    "name": "FL2",         "cat": "video", "icon": "film.fill"},
-    {"key": "txvlog", "name": "糖心Vlog",     "cat": "video", "icon": "video.fill"},
-    {"key": "km",     "name": "看美",         "cat": "video", "icon": "eye.fill"},
-    {"key": "live",   "name": "直播",         "cat": "live",  "icon": "antenna.radiowaves.left.and.right"},
-    {"key": "mmmh",   "name": "猫咪漫画",     "cat": "comic", "icon": "books.vertical.fill"},
-    {"key": "akmh",   "name": "爱看漫画",     "cat": "comic", "icon": "books.vertical.fill"},
-    {"key": "hhlz",   "name": "黄鹤楼",       "cat": "comic", "icon": "books.vertical.fill"},
-    {"key": "jmtt",   "name": "姐妹图",       "cat": "comic", "icon": "photo.stack.fill"},
-    {"key": "mw",     "name": "美图",         "cat": "comic", "icon": "photo.fill"},
+    {"key": "av91",   "name": "91AV",     "cat": "video"},
+    {"key": "pron91", "name": "91Pron",   "cat": "video"},
+    {"key": "sp91",   "name": "91视频",    "cat": "video"},
+    {"key": "4hu",    "name": "四虎影库",   "cat": "video"},
+    {"key": "cg51",   "name": "51吃瓜",    "cat": "video"},
+    {"key": "missav", "name": "MissAV",   "cat": "video"},
+    {"key": "javdb",  "name": "JavDB",    "cat": "video"},
+    {"key": "aijav",  "name": "AIJAV",    "cat": "video"},
+    {"key": "mmav",   "name": "猫咪AV",    "cat": "video"},
+    {"key": "one",    "name": "One",      "cat": "video"},
+    {"key": "box",    "name": "资源盒",     "cat": "video"},
+    {"key": "hjsq",   "name": "海角社区",   "cat": "video"},
+    {"key": "cgw",    "name": "吃瓜网",     "cat": "video"},
+    {"key": "hxsp",   "name": "红杏视频",   "cat": "video"},
+    {"key": "hgsp",   "name": "黄瓜视频",   "cat": "video"},
+    {"key": "hsck",   "name": "黄色仓库",   "cat": "video"},
+    {"key": "qysq",   "name": "青衣社区",   "cat": "video"},
+    {"key": "hdb",    "name": "红豆包",     "cat": "video"},
+    {"key": "kpsp",   "name": "快片视频",   "cat": "video"},
+    {"key": "lclf",   "name": "楼风",       "cat": "video"},
+    {"key": "ltb",    "name": "Ltb",      "cat": "video"},
+    {"key": "lxs",    "name": "撸先生",     "cat": "video"},
+    {"key": "mdtv",   "name": "美杜莎TV",   "cat": "video"},
+    {"key": "rryy",   "name": "日日影院",   "cat": "video"},
+    {"key": "zlt",    "name": "Zlt",      "cat": "video"},
+    {"key": "insav",  "name": "InSav",    "cat": "video"},
+    {"key": "djr",    "name": "DJR",      "cat": "video"},
+    {"key": "fl2",    "name": "FL2",      "cat": "video"},
+    {"key": "txvlog", "name": "糖心Vlog",   "cat": "video"},
+    {"key": "km",     "name": "看美",       "cat": "video"},
+    {"key": "live",   "name": "直播",       "cat": "live"},
+    {"key": "mmmh",   "name": "猫咪漫画",   "cat": "comic"},
+    {"key": "akmh",   "name": "爱看漫画",   "cat": "comic"},
+    {"key": "hhlz",   "name": "黄鹤楼",     "cat": "comic"},
+    {"key": "jmtt",   "name": "姐妹图",     "cat": "comic"},
+    {"key": "mw",     "name": "美图",       "cat": "comic"},
 ]
 
-# 模块 → 后端相对路径（来自 IPA 字符串池，如 /api/v1/video、api.php/api/videos/list_contents）
+# 模块 → 后端路径（IPA 字符串池实证）
 MODULE_PATHS = {
-    "av91":   ["/api/v1/video", "/api/v2/index_items"],
-    "pron91": ["/api/v1/video", "/api/v2/index_items"],
-    "sp91":   ["/api/v1/video", "/api/v2/index_items"],
-    "4hu":    ["/api/v2/index_items", "/api/v1/video"],
-    "cg51":   ["/api/v2/index_items", "/api/v1/video"],
-    "missav": ["/api/v2/index_items", "/api/v1/video"],
-    "javdb":  ["/api/v1/movies/", "/api/v2/query/result"],
-    "aijav":  ["/api/v1/video", "/api/v1/movies/"],
-    "mmav":   ["/api/v1/video"],
-    "one":    ["/api/v2/index_items"],
-    "box":    ["/box/api/home", "/box/api/ping"],
-    "hjsq":   ["/api/v2/index_items", "/api/v2/query/result"],
-    "cgw":    ["/api/v2/index_items"],
-    "hxsp":   ["/api/v2/index_items"],
-    "hgsp":   ["/api/v2/index_items"],
-    "hsck":   ["/api/v2/index_items"],
-    "qysq":   ["/api/v2/index_items"],
-    "hdb":    ["/api/v2/index_items"],
-    "kpsp":   ["/api/v2/index_items"],
-    "lclf":   ["/api/v2/index_items"],
-    "ltb":    ["/api/v2/index_items"],
-    "lxs":    ["/api/v2/index_items"],
-    "mdtv":   ["/api/v2/index_items"],
-    "rryy":   ["/api/v2/index_items"],
-    "zlt":    ["/api/v2/index_items"],
-    "insav":  ["/api/v2/index_items"],
-    "djr":    ["/api/v2/index_items"],
-    "fl2":    ["/api/v2/index_items"],
-    "txvlog": ["/api/v2/index_items"],
-    "km":     ["/api/v2/index_items"],
-    "live":   ["/api/app/live/home", "/api/v2/index_items"],
-    "mmmh":   ["/api/v2/index_items"],
-    "akmh":   ["/api/v2/index_items"],
-    "hhlz":   ["/api/v2/index_items"],
-    "jmtt":   ["/api/v2/index_items"],
-    "mw":     ["/api/v2/index_items"],
+    "javdb": ["/api/v1/movies/", "/api/v2/query/result"],
+    "box":   ["/box/api/home"],
+    "live":  ["/api/app/live/home", "/api/v2/index_items"],
 }
-
-SIGN_MODES = ["md5_k_t_n", "md5_k_n_t", "md5_k_s_t_n", "md5_t_n_k",
-              "hmac_md5_s_ktn", "hmac_sha256_s_ktn"]
-
-
-# ============================================================ 签名
-def sign_payload(mode, key, secret, ts, nonce, path):
-    base = {
-        "md5_k_t_n":     (key + ts + nonce),
-        "md5_k_n_t":     (key + nonce + ts),
-        "md5_k_s_t_n":   (key + secret + ts + nonce),
-        "md5_t_n_k":     (ts + nonce + key),
-        "md5_k_p_t_n":   (key + path + ts + nonce),
-        "md5_s_k_t_n":   (secret + key + ts + nonce),
-    }.get(mode)
-    if base is not None:
-        return hashlib.md5(base.encode()).hexdigest()
-    if mode == "hmac_md5_s_ktn":
-        return hmac.new(secret.encode(), (key + ts + nonce).encode(), hashlib.md5).hexdigest()
-    if mode == "hmac_sha256_s_ktn":
-        return hmac.new(secret.encode(), (key + ts + nonce).encode(), hashlib.sha256).hexdigest()
-    raise ValueError("unknown sign mode: %s" % mode)
+DEFAULT_PATHS = ["/api/v2/index_items", "/api/v1/video"]
 
 
 class Spider(_B):
-    headers = {"User-Agent": UA, "Accept": "application/json"}
-
     def __init__(self):
         super(Spider, self).__init__()
-        self.hosts = list(DEFAULT_HOSTS)
-        self.host = DEFAULT_HOSTS[0]
-        self.key = APP_KEY
-        self.secret = ""
-        self.sign_mode = "md5_k_t_n"
+        self.hosts_box = list(HOSTS_BOX)
+        self.hosts_api = list(HOSTS_API)
+        self.host = HOSTS_BOX[0]
+        self.uuid = ""
+        self.version_code = "101"
+        self.aes_key = b""
+        self.aes_iv = b""
         self.timeout = 15
         self.ctx = ssl.create_default_context()
         self.ctx.check_hostname = False
         self.ctx.verify_mode = ssl.CERT_NONE
-        self._alive = None
+        self._legacy = False
+        self._ping_key = ""
 
     # ---------------- 基类接口 ----------------
     def getName(self):
@@ -189,17 +165,22 @@ class Spider(_B):
             except Exception:
                 ext = {}
         if ext.get("host"):
-            self.host = str(ext["host"]).rstrip("/")
-            if self.host not in self.hosts:
-                self.hosts.insert(0, self.host)
-        if ext.get("key"):
-            self.key = str(ext["key"])
-        if ext.get("secret"):
-            self.secret = str(ext["secret"])
-        if ext.get("signMode"):
-            self.sign_mode = str(ext["signMode"])
+            h = str(ext["host"]).rstrip("/")
+            self.host = h
+            if h not in self.hosts_box:
+                self.hosts_box.insert(0, h)
+        if ext.get("uuid"):
+            self.uuid = str(ext["uuid"]).strip()
+        if ext.get("versionCode"):
+            self.version_code = str(ext["versionCode"])
+        if ext.get("aesKey"):
+            self.aes_key = self._to_key(ext["aesKey"])
+        if ext.get("aesIv"):
+            self.aes_iv = self._to_key(ext["aesIv"])
         if ext.get("timeout"):
             self.timeout = int(ext["timeout"])
+        if not self.uuid:
+            self.uuid = self._gen_uuid()
         return None
 
     def isVideoFormat(self, url):
@@ -215,84 +196,174 @@ class Spider(_B):
     def action(self, action):
         pass
 
+    # ---------------- 工具 ----------------
+    @staticmethod
+    def _to_key(v):
+        if isinstance(v, bytes):
+            return v
+        s = str(v)
+        try:
+            return base64.b64decode(s, validate=True)
+        except Exception:
+            return s.encode()
+
+    @staticmethod
+    def _gen_uuid():
+        return "%032x" % random.getrandbits(128)
+
+    @staticmethod
+    def _pick(d, *keys, **kw):
+        for k in keys:
+            if isinstance(d, dict) and d.get(k) not in (None, "", [], {}):
+                return d[k]
+        return kw.get("default", "")
+
+    # ---------------- 响应解码 ----------------
+    def _decode_body(self, raw, content_encoding=""):
+        if content_encoding and "gzip" in content_encoding.lower():
+            try:
+                import gzip
+                raw = gzip.decompress(raw)
+            except Exception:
+                pass
+        text = raw.decode("utf-8", "replace").strip()
+        # 1) 明文 JSON
+        if text[:1] in ("{", "["):
+            try:
+                return json.loads(text)
+            except Exception:
+                pass
+        # 2) JSON 字符串包裹的 base64
+        s = text.strip('"').strip("'").strip()
+        if len(s) > 16 and all(c in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=" for c in s):
+            try:
+                dec = base64.b64decode(s + "=" * (-len(s) % 4))
+            except Exception:
+                return None
+            # 2a) 直接是 JSON
+            try:
+                return json.loads(dec.decode("utf-8"))
+            except Exception:
+                pass
+            # 2b) AES 解密（配置了 key 才做）
+            if self.aes_key:
+                pt = self._aes_decrypt(dec)
+                if pt:
+                    try:
+                        return json.loads(pt.decode("utf-8", "replace"))
+                    except Exception:
+                        pass
+            return {"_cipher": True, "len": len(dec)}
+        return None
+
+    def _aes_decrypt(self, data):
+        try:
+            from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+        except Exception:
+            return None
+        key = self.aes_key
+        if len(key) not in (16, 24, 32):
+            return None
+        iv = self.aes_iv or bytes(16)
+        if len(iv) != 16:
+            return None
+        body = data
+        if len(body) % 16:
+            return None
+        try:
+            c = Cipher(algorithms.AES(key), modes.CBC(iv))
+            d = c.decryptor()
+            out = d.update(body) + d.finalize()
+            pad = out[-1] if out else 0
+            if 1 <= pad <= 16 and out[-pad:] == bytes([pad]) * pad:
+                out = out[:-pad]
+            return out
+        except Exception:
+            return None
+
     # ---------------- 网络 ----------------
-    def _now(self):
-        return str(int(time.time()))
+    def _http_get(self, url, headers):
+        req = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(req, timeout=self.timeout, context=self.ctx) as r:
+                return r.status, r.read(), dict(r.headers)
+        except urllib.error.HTTPError as e:
+            return e.code, e.read(), dict(e.headers or {})
+        except Exception as e:
+            return "ERR", str(e).encode(), {}
 
-    def _nonce(self):
-        return "%016x" % random.getrandbits(64)
+    def _box_headers(self):
+        return {
+            "user-agent": UA_DART,
+            "time": str(int(time.time() * 1000)),
+            "accept-encoding": "gzip",
+            "uuid": self.uuid,
+        }
 
-    def _auth_query(self, path, extra=None):
-        ts = self._now()
-        nonce = self._nonce()
-        sign = sign_payload(self.sign_mode, self.key, self.secret, ts, nonce, path)
+    def _box_get(self, path, params=None):
+        """6868 明文通道：time + uuid 鉴权"""
+        q = dict(params or {})
+        if "versionCode" not in q:
+            q["versionCode"] = self.version_code
+        qs = urllib.parse.urlencode(q)
+        url = "%s%s%s" % (self.host.rstrip("/"), path, ("?" + qs) if qs else "")
+        st, raw, hdr = self._http_get(url, self._box_headers())
+        if st != 200:
+            return False, None
+        obj = self._decode_body(raw, hdr.get("Content-Encoding", ""))
+        if isinstance(obj, dict) and obj.get("code") in (0, 200):
+            return True, obj.get("data", obj)
+        return False, obj
+
+    def _api_get(self, path, params=None):
+        """api.* 通道：X-Auth 四件套（兼容旧版）"""
+        ts = str(int(time.time()))
+        nonce = self._gen_uuid()[:16]
+        sign = hashlib.md5((APP_KEY + ts + nonce).encode()).hexdigest()
         q = {
-            "X-Auth-Key": self.key,
+            "X-Auth-Key": APP_KEY,
             "X-Auth-TimeStamp": ts,
             "X-Auth-Nonce": nonce,
             "X-Auth-Sign": sign,
         }
-        if extra:
-            q.update({k: v for k, v in extra.items() if v is not None})
-        return urllib.parse.urlencode(q)
-
-    def _raw_get(self, url):
-        req = urllib.request.Request(url, headers=self.headers)
-        try:
-            with urllib.request.urlopen(req, timeout=self.timeout, context=self.ctx) as r:
-                return r.status, r.read()
-        except urllib.error.HTTPError as e:
-            return e.code, e.read()
-        except Exception as e:
-            return "ERR", str(e).encode()
-
-    def _api(self, path, params=None):
-        """带签名请求，返回 (ok, data)。自动在域名池 + 签名模式间回退。"""
-        order = [self.host] + [h for h in self.hosts if h != self.host]
-        for host in order:
-            for mode in [self.sign_mode] + [m for m in SIGN_MODES if m != self.sign_mode]:
-                qs = self._auth_query(path, params)
-                status, body = self._raw_get("%s%s?%s" % (host, path, qs))
-                if status != 200:
-                    continue
-                try:
-                    obj = json.loads(body.decode("utf-8", "replace"))
-                except Exception:
-                    continue
-                if isinstance(obj, dict) and obj.get("code") in (0, 200):
-                    self.host = host
-                    self.sign_mode = mode
-                    return True, obj.get("data")
-            # 该域名全部签名模式失败 → 换下一个域名
+        q.update({k: v for k, v in (params or {}).items() if v is not None})
+        qs = urllib.parse.urlencode(q)
+        for h in self.hosts_api:
+            st, raw, hdr = self._http_get(h + path + "?" + qs,
+                                          {"user-agent": UA_H5, "Accept": "application/json"})
+            if st != 200:
+                continue
+            obj = self._decode_body(raw, hdr.get("Content-Encoding", ""))
+            if isinstance(obj, dict) and obj.get("code") in (0, 200):
+                self._legacy = True
+                return True, obj.get("data", obj)
         return False, None
 
-    # ---------------- 数据映射 ----------------
-    @staticmethod
-    def _pick(d, *keys, **kw):
-        for k in keys:
-            if isinstance(d, dict) and d.get(k) not in (None, "", []):
-                return d[k]
-        return kw.get("default", "")
+    def _ping(self):
+        if self._ping_key:
+            return self._ping_key
+        st, raw, _ = self._http_get(self.host + "/box/api/ping", self._box_headers())
+        if st == 200:
+            self._ping_key = raw.decode("utf-8", "replace").strip()
+        return self._ping_key
 
-    def _to_vod(self, item):
-        vod_id = self._pick(item, "vod_id", "id", "video_id", "vid")
-        return {
-            "vod_id": str(vod_id),
-            "vod_name": self._pick(item, "vod_name", "title", "name", "caption"),
-            "vod_pic": self._pick(item, "vod_pic", "cover", "pic", "image", "img"),
-            "vod_remarks": self._pick(item, "vod_remarks", "remarks", "duration", "time", "updated"),
-            "vod_play_from": self._pick(item, "vod_play_from", "source", "platform", default="muse"),
-        }
+    def _get(self, path, params=None):
+        if self._legacy:
+            return self._api_get(path, params)
+        ok, data = self._box_get(path, params)
+        if ok:
+            return True, data
+        return self._api_get(path, params)
 
+    # ---------------- 映射 ----------------
     def _list_of(self, data):
         if isinstance(data, list):
             return data
         if isinstance(data, dict):
-            for k in ("list", "items", "data", "rows", "videos", "records", "result"):
+            for k in ("list", "items", "data", "rows", "videos", "records", "result", "menus"):
                 v = data.get(k)
                 if isinstance(v, list):
                     return v
-            # 一层嵌套
             for v in data.values():
                 if isinstance(v, dict):
                     got = self._list_of(v)
@@ -300,18 +371,32 @@ class Spider(_B):
                         return got
         return []
 
+    def _to_vod(self, item, module=""):
+        v = {
+            "vod_id": str(self._pick(item, "vod_id", "id", "video_id", "vid", "contentId")),
+            "vod_name": self._pick(item, "vod_name", "title", "name", "caption", "contentTitle"),
+            "vod_pic": self._pick(item, "vod_pic", "cover", "pic", "image", "img", "coverUrl"),
+            "vod_remarks": self._pick(item, "vod_remarks", "remarks", "duration", "time", "updated"),
+            "vod_play_from": module or self._pick(item, "source", "platform", default="muse"),
+        }
+        if module:
+            v["vod_id"] = "%s@%s" % (v["vod_id"], module)
+        return v
+
     # ---------------- 基类方法 ----------------
     def homeContent(self, filter):
         classes = [{"type_id": m["key"], "type_name": m["name"]} for m in MODULES]
         result = {"class": classes}
         if filter:
             result["filters"] = {m["key"]: [] for m in MODULES}
-        try:
-            ok, data = self._api(MODULE_PATHS["one"][0], {"page": 1, "size": 24})
-            result["list"] = [self._to_vod(x) for x in self._list_of(data)] if ok else []
-        except Exception as e:
-            print("[暮色] homeContent err: %s" % e)
-            result["list"] = []
+        for path in ("/box/api/home", "/api/v2/index_items"):
+            ok, data = self._get(path, {"versionCode": self.version_code} if "box" in path else {"page": 1, "size": 24})
+            if ok:
+                items = [self._to_vod(x) for x in self._list_of(data)]
+                if items:
+                    result["list"] = items
+                    break
+        result.setdefault("list", [])
         return result
 
     def homeVideoContent(self):
@@ -319,37 +404,34 @@ class Spider(_B):
 
     def categoryContent(self, tid, pg, filter, extend):
         page = int(pg or 1)
-        ex = {"page": page, "size": 24, "module": tid, "type": tid}
+        q = {"page": page, "size": 24, "module": tid, "type": tid}
         if extend:
-            for k, v in extend.items():
-                if v not in (None, ""):
-                    ex[k] = v
-        paths = MODULE_PATHS.get(tid, ["/api/v2/index_items"])
-        for path in paths:
-            ok, data = self._api(path, ex)
+            q.update({k: v for k, v in extend.items() if v not in (None, "")})
+        for path in MODULE_PATHS.get(tid, DEFAULT_PATHS):
+            ok, data = self._get(path, q)
             if ok:
-                items = [self._to_vod(x) for x in self._list_of(data)]
-                total = self._pick(data, "total", "count", default=0) if isinstance(data, dict) else 0
+                items = [self._to_vod(x, tid) for x in self._list_of(data)]
                 if items:
+                    total = self._pick(data, "total", "count", default=0) if isinstance(data, dict) else 0
                     return {"list": items, "page": page, "pagecount": page + 1,
                             "limit": 24, "total": total or 9999}
         return {"list": [], "page": page, "pagecount": page + 1, "limit": 24, "total": 0}
 
     def detailContent(self, array):
-        vod_id = array[0] if array else ""
-        parts = str(vod_id).split("@")
+        raw_id = array[0] if array else ""
+        parts = str(raw_id).split("@")
+        vid = parts[0]
         module = parts[1] if len(parts) > 1 else "one"
-        real_id = parts[0]
-        paths = MODULE_PATHS.get(module, ["/api/v2/index_items"])
-        detail_paths = []
-        for p in paths:
-            detail_paths.append(p)
-            detail_paths.append(p.rstrip("/") + "/" + urllib.parse.quote(str(real_id)))
-        for path in detail_paths:
-            ok, data = self._api(path, {"id": real_id, "module": module})
-            if not ok or not isinstance(data, dict):
+        cands = []
+        for p in MODULE_PATHS.get(module, DEFAULT_PATHS):
+            cands.append(p)
+            cands.append(p.rstrip("/") + "/" + urllib.parse.quote(vid))
+        cands.append("/api/v2/video/details/" + urllib.parse.quote(vid))
+        for path in cands:
+            ok, data = self._get(path, {"id": vid, "module": module})
+            if not ok:
                 continue
-            item = data.get("detail") or data.get("video") or data
+            item = data.get("detail") or data.get("video") or data if isinstance(data, dict) else None
             if not isinstance(item, dict):
                 continue
             play = self._pick(item, "play_url", "url", "m3u8", "video_url", "playUrl")
@@ -360,22 +442,20 @@ class Spider(_B):
             if not play:
                 continue
             name = self._pick(item, "vod_name", "title", "name")
-            return {
-                "list": [{
-                    "vod_id": str(vod_id),
-                    "vod_name": name,
-                    "vod_pic": self._pick(item, "vod_pic", "cover", "pic", "image"),
-                    "vod_content": self._pick(item, "vod_content", "description", "desc", "intro"),
-                    "vod_play_from": module,
-                    "vod_play_url": "%s$%s" % (name or "播放", play),
-                }]
-            }
+            return {"list": [{
+                "vod_id": str(raw_id),
+                "vod_name": name,
+                "vod_pic": self._pick(item, "vod_pic", "cover", "pic", "image"),
+                "vod_content": self._pick(item, "vod_content", "description", "desc", "intro"),
+                "vod_play_from": module,
+                "vod_play_url": "%s$%s" % (name or "播放", play),
+            }]}
         return {"list": []}
 
     def searchContent(self, key, quick, pg="1"):
         page = int(pg or 1)
-        for path in ["/api/v2/query/result", "/api/v2/search", "/api/v1/video"]:
-            ok, data = self._api(path, {"keyword": key, "wd": key, "q": key, "page": page})
+        for path in ("/api/v2/query/result", "/api/v2/search", "/api/v1/video"):
+            ok, data = self._get(path, {"keyword": key, "wd": key, "q": key, "page": page})
             if ok:
                 items = [self._to_vod(x) for x in self._list_of(data)]
                 if items:
@@ -384,7 +464,7 @@ class Spider(_B):
         return {"list": [], "page": page, "pagecount": page + 1, "limit": 24, "total": 0}
 
     def playerContent(self, flag, id, vipFlags):
-        url = id
-        if isinstance(url, str) and url.startswith("http"):
-            return {"parse": 0, "url": url, "header": {"User-Agent": UA}}
-        return {"parse": 1, "url": url, "header": {"User-Agent": UA}, "jx": 1}
+        url = str(id)
+        if url.startswith("http"):
+            return {"parse": 0, "url": url, "header": {"User-Agent": UA_H5}}
+        return {"parse": 1, "url": url, "header": {"User-Agent": UA_H5}, "jx": 1}

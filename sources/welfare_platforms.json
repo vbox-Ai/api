@@ -2392,11 +2392,11 @@
       "desc": "Python蜘蛛版 — 暮色 37 模块聚合（分类/封面/播放）",
       "serviceType": "python_spider",
       "defaultHosts": [
-        "https://api.3459381.com"
+        "http://38.46.10.6:6868"
       ],
       "sortOrder": 530,
       "defaultProxy": false,
-      "notes": "暮色(com.look.avbox) 1.0.1 IPA 逆向：Flutter AOT 薄客户端 + 37 资源模块 + 自建 Swoft 后端。后端鉴权为 X-Auth-Key/TimeStamp/Nonce/Sign 四件套，App 内置 X-Auth-Key=368480924a6c78e2e8681551a7cf4c21。脚本内置 IPA 域名池(11 个)与模块→接口路由表，支持 extend 注入 host/key/secret/signMode。分类=模块，封面/播放取后端 detail 的 play_url。若后端签名变体不匹配，用 extend.signMode 切算法或补 secret。",
+      "notes": "暮色(com.look.avbox) 1.0.1 IPA 逆向 + 真机抓包实证。真实后端为明文 HTTP 6868 端口（38.46.10.x / 202.95.22.x / 198.44.248.x / 122.10.20.249），鉴权只有两个头：time(13位毫秒时间戳) + uuid(32位hex设备号)，非 X-Auth 四件套。GET /box/api/home?versionCode=101 返回 HTTP 200 + chunked + JSON 字符串包裹的 base64（AES 密文）。/box/api/ping 无鉴权，固定返回 44 字符 base64（32字节）密钥。缺头报'缺少请求头:xxx'，时间过旧报'请求已过期'，其余业务路径当前返回'违规请求'（服务端来源风控）。extend 可注入 host/uuid/versionCode/aesKey/aesIv/timeout。分类=37模块，封面/详情/播放走上游 detail 的 play_url。",
       "api": "./sources/welfare-js/muse_avbox.py",
       "scriptType": "python",
       "engine": "python",
