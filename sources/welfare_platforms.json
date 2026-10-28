@@ -2405,7 +2405,29 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "muse_mw_py",
+      "name": "漫蛙漫画",
+      "category": "comic",
+      "icon": "books.vertical.fill",
+      "desc": "Python蜘蛛版 — 暮色漫蛙漫画（漫画栏目）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://manwaqr.cc"
+      ],
+      "sortOrder": 540,
+      "defaultProxy": false,
+      "notes": "暮色 plist 导出 flutter.mw=manwaqr.cc（漫蛙漫画），纯 HTML 明文站，无需解密。链路实测：首页 / → 漫画列表(a href=/book/{id} title + img data-home-src封面)；分类 /booklist?tag={tag}；详情 /book/{id} → 章节 /chapter/{chapterId}；章节页正文图 data-r-src=.../upload3/book/id/{bookId}/{chapterId}/xxx.webp。图片用 manga:// 协议返回，vbox WelfareResultMapper 自动解析。图片域 mwfimsvfast40.cc。",
+      "api": "./sources/welfare-js/muse_mw.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "comic",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
-  "updatedAt": "2026-10-03T01:35:00Z"
+  "updatedAt": "2026-10-29T00:00:00Z"
 }
