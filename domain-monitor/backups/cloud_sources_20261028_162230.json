@@ -1,0 +1,212 @@
+{
+  "_meta": {
+    "name": "网盘搜索源配置",
+    "type": "cloud_sources",
+    "description": "由 vbox-ios 的 video_sources.json 迁移生成"
+  },
+  "dyname": "网盘资源聚合",
+  "dyzuozhe": "vbox-ios",
+  "cloudSites": [
+    {
+      "name": "玩偶资源",
+      "type": "cms",
+      "searchurl": "https://www.wogg.net/vodsearch/-------------.html?wd=",
+      "searchurls": [
+        "https://wogg.xxooo.cf/vodsearch/-------------.html?wd="
+      ],
+      "detailBase": "https://www.wogg.net",
+      "detailPattern": "<h3[^>]*>\\s*<a[^>]*href=\"((/voddetail/\\d+\\.html))\"[^>]*>(.+?)</a>\\s*</h3>",
+      "ua": "pc",
+      "enabled": true,
+      "priority": 1002,
+      "group": "cloud"
+    },
+    {
+      "name": "木偶资源",
+      "type": "cms",
+      "searchurl": "https://333.333291.xyz/index.php/vod/search.html?wd=",
+      "detailBase": "https://333.333291.xyz",
+      "enabled": true,
+      "priority": 1003,
+      "group": "cloud"
+    },
+    {
+      "name": "多多资源",
+      "type": "cms",
+      "searchurl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
+      "detailBase": "https://tv.yydsys.cc",
+      "ua": "pc",
+      "enabled": true,
+      "priority": 1004,
+      "group": "cloud"
+    },
+    {
+      "name": "欧歌资源",
+      "type": "cms",
+      "searchurl": "https://woog.nxog.eu.org/index.php/vod/search.html?wd=",
+      "detailBase": "https://woog.nxog.eu.org",
+      "ua": "pc",
+      "enabled": true,
+      "priority": 1006,
+      "group": "cloud"
+    },
+    {
+      "name": "至臻影视",
+      "type": "cms",
+      "searchurl": "https://www.mihdr.top/index.php/vod/search.html?wd=",
+      "detailBase": "https://www.mihdr.top",
+      "enabled": true,
+      "priority": 1008,
+      "group": "cloud"
+    },
+    {
+      "name": "小斑资源",
+      "type": "cms",
+      "searchurl": "http://43.248.128.118:12512/index.php/vod/search.html?wd=",
+      "detailBase": "http://43.248.128.118:12512",
+      "enabled": true,
+      "priority": 1010,
+      "group": "cloud"
+    },
+    {
+      "name": "奕搜资源",
+      "type": "binhd",
+      "searchurl": "https://binhd.com/resources/?q=",
+      "detailBase": "https://binhd.com",
+      "enabled": true,
+      "priority": 1015,
+      "group": "cloud"
+    },
+    {
+      "name": "123分享",
+      "type": "forum",
+      "searchurl": "https://pan1.me/?search.htm&keyword=",
+      "detailBase": "https://pan1.me",
+      "threadPattern": "\\?thread-(\\d+)\\.htm",
+      "threadURL": "https://pan1.me/?thread-{id}.htm",
+      "enabled": true,
+      "priority": 1016,
+      "group": "cloud"
+    },
+    {
+      "name": "人人电影",
+      "type": "dedecms",
+      "searchurl": "https://www.rrdynb.com/plus/search.php?q=",
+      "detailBase": "https://www.rrdynb.com",
+      "detailPattern": "<a[^>]*href=\"((?:/movie/|/dianshiju/|/zongyi/|/dongman/)\\d{4}/\\d{4}/\\d+\\.html)\"[^>]*>(.*?)</a>",
+      "categoryURL": "/{id}_{page}.html",
+      "categoryIdMap": {
+        "movie": "movie/list_2",
+        "dianshiju": "dianshiju/list_6",
+        "zongyi": "zongyi/list_10",
+        "dongman": "dongman/list_13"
+      },
+      "categoryRegex": "<a[^>]*href=\"/(movie|dianshiju|zongyi|dongman)/\"[^>]*>\\s*([^<]{2,6})\\s*</a>",
+      "ua": "pc",
+      "extraPanHosts": [
+        "pan.xunlei.com/s/"
+      ],
+      "extraPanNames": {
+        "pan.xunlei.com": "迅雷云盘"
+      },
+      "enabled": true,
+      "priority": 1019,
+      "group": "cloud"
+    },
+    {
+      "name": "闪电优汐",
+      "type": "cms",
+      "searchurl": "http://sd.sduc.site/index.php/vod/search.html?wd=",
+      "detailBase": "http://sd.sduc.site",
+      "enabled": true,
+      "priority": 1022,
+      "group": "cloud"
+    },
+    {
+      "name": "虎斑资源",
+      "type": "cms",
+      "searchurl": "http://43.248.128.118:16969/index.php/vod/search.html?wd=",
+      "detailBase": "http://43.248.128.118:16969",
+      "enabled": true,
+      "priority": 1023,
+      "group": "cloud"
+    },
+    {
+      "name": "4KTOP",
+      "type": "cms",
+      "searchurl": "https://4ktop.com/vodsearch/-------------.html?wd=",
+      "detailBase": "https://4ktop.com",
+      "detailPattern": "<a[^>]*href=\"(/voddetail/(\\d+)/)\"[^>]*>(.+?)</a>",
+      "extraPanHosts": [
+        "115.com/s/"
+      ],
+      "extraPanNames": {
+        "115.com": "115网盘"
+      },
+      "enabled": true,
+      "priority": 1030,
+      "group": "cloud"
+    },
+    {
+      "name": "LIBVIO",
+      "type": "cms",
+      "searchurl": "https://libvio.host/search/-------------.html?wd=",
+      "detailBase": "https://libvio.host",
+      "searchurls": [
+        "https://libvio.host/search/-------------.html?wd=",
+        "https://libviobd.com/search/-------------.html?wd=",
+        "https://www.libvio.in/search/-------------.html?wd="
+      ],
+      "enabled": true,
+      "priority": 1035,
+      "group": "cloud"
+    },
+    {
+      "name": "原盘4K",
+      "type": "cms",
+      "searchurl": "https://4kzn.cc/?post_type=book&s=",
+      "searchurls": [
+        "https://www.4kzn.cc/?post_type=book&s="
+      ],
+      "detailBase": "https://4kzn.cc",
+      "detailPattern": "<a[^>]*href=\"(?:https?://[^/]+)?(/book/(\\d+)\\.html)\"[^>]*>(.+?)</a>",
+      "categoryURL": "/books/{id}/page/{page}",
+      "categoryRegex": "<a(?![^>]*btn-more)[^>]*href=\"(?:https?://[^/]+)?/books/([^/\"]+)\"[^>]*>(?:<[^>]*>)*([^<]{2,12})(?:<[^>]*>)*</a>",
+      "ua": "pc",
+      "enabled": true,
+      "priority": 1037,
+      "group": "cloud"
+    },
+    {
+      "name": "剧透4K",
+      "type": "cms",
+      "searchurl": "https://1.star2.cn/search/?keyword=",
+      "detailBase": "https://1.star2.cn",
+      "detailPattern": "<a[^>]*href=\"((?:/ju/|/mv/|/zy/|/rh/|/ym/|/wj/|/dm/|/qt/|/dj/|/xg/)[^\"]*?(\\d+)\\.html)\"[^>]*>(.+?)</a>",
+      "categoryURL": "/{id}_{page}/",
+      "categoryRegex": "<a[^>]*href=\"/([a-z]+)/\"[^>]*>([^<]{2,8})</a>",
+      "ua": "pc",
+      "enabled": true,
+      "priority": 1038,
+      "group": "cloud"
+    },
+    {
+      "name": "七味4K",
+      "type": "spa",
+      "searchurl": "https://www.qwmkv.com",
+      "detailBase": "https://www.qwmkv.com",
+      "apiSearch": "https://www.qwmkv.com/index.php/ajax/suggest?mid=1&limit=20&wd={kw}",
+      "resultField": "list",
+      "titleField": "name",
+      "urlField": "id",
+      "urlTemplate": "/mv/{id}.html",
+      "detailPattern": "<a[^>]*href=\"(/mv/(\\d+)\\.html)\"[^>]*(?:title=\"([^\"]{2,60})\")?[^>]*>(?:<[^>]*>)*([^<]{2,40})(?:<[^>]*>)*</a>",
+      "categoryURL": "/vt/{id}-{page}.html",
+      "categoryRegex": "<a[^>]*href=\"/vt/(\\d+)\\.html\"[^>]*>([^<]{2,8})</a>",
+      "ua": "pc",
+      "enabled": true,
+      "priority": 1039,
+      "group": "cloud"
+    }
+  ]
+}
