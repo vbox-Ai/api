@@ -2383,6 +2383,28 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "muse_avbox_agg_py",
+      "name": "暮色聚合",
+      "category": "video",
+      "icon": "moon.stars.fill",
+      "desc": "Python蜘蛛版 — 暮色 37 模块聚合（分类/封面/播放）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://api.3459381.com"
+      ],
+      "sortOrder": 530,
+      "defaultProxy": false,
+      "notes": "暮色(com.look.avbox) 1.0.1 IPA 逆向：Flutter AOT 薄客户端 + 37 资源模块 + 自建 Swoft 后端。后端鉴权为 X-Auth-Key/TimeStamp/Nonce/Sign 四件套，App 内置 X-Auth-Key=368480924a6c78e2e8681551a7cf4c21。脚本内置 IPA 域名池(11 个)与模块→接口路由表，支持 extend 注入 host/key/secret/signMode。分类=模块，封面/播放取后端 detail 的 play_url。若后端签名变体不匹配，用 extend.signMode 切算法或补 secret。",
+      "api": "./sources/welfare-js/muse_avbox.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
   "updatedAt": "2026-10-03T01:35:00Z"
