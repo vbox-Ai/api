@@ -84,6 +84,12 @@ HOSTS_API = [
 ]
 APP_KEY = "368480924a6c78e2e8681551a7cf4c21"
 
+# 响应解密密钥（Blutter 反编译 libapp.so 实证，2026-10-30）
+# 混淆真相：切罗基字母 XOR 0x1395 → 见 interceptor.dart onResponse
+# 数据流：base64 → AES-128-CBC 解密 → gzip 解压 → JSON
+AES_KEY = b"8992d27bceae2962"   # 16 字节 = AES-128
+AES_IV = b"62233532ac9029c6"    # 16 字节
+
 # 37 个资源模块（IPA: package:avbox/module/<key>/...）
 MODULES = [
     {"key": "av91",   "name": "91AV",     "cat": "video"},
@@ -141,8 +147,8 @@ class Spider(_B):
         self.host = HOSTS_BOX[0]
         self.uuid = ""
         self.version_code = "101"
-        self.aes_key = b""
-        self.aes_iv = b""
+        self.aes_key = AES_KEY
+        self.aes_iv = AES_IV
         self.timeout = 15
         self.ctx = ssl.create_default_context()
         self.ctx.check_hostname = False
@@ -257,10 +263,10 @@ class Spider(_B):
         return None
 
     def _aes_decrypt(self, data):
-        try:
-            from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-        except Exception:
-            return None
+        """AES-128-CBC 解密 + PKCS7 unpad + gzip 解压，返回明文字节。
+
+        数据流（Blutter 实证）：base64 → AES-128-CBC → gzip → JSON
+        """
         key = self.aes_key
         if len(key) not in (16, 24, 32):
             return None
@@ -270,14 +276,33 @@ class Spider(_B):
         body = data
         if len(body) % 16:
             return None
+        out = self._aes_cbc_raw(key, iv, body)
+        if out is None:
+            return None
+        # PKCS7 unpad
+        pad = out[-1] if out else 0
+        if 1 <= pad <= 16 and out[-pad:] == bytes([pad]) * pad:
+            out = out[:-pad]
+        # gzip 解压（响应明文是 gzip(JSON)）
         try:
+            import gzip
+            return gzip.decompress(out)
+        except Exception:
+            return out
+
+    @staticmethod
+    def _aes_cbc_raw(key, iv, body):
+        """优先 vbox 内置 Crypto（pyaes），fallback cryptography"""
+        try:
+            from Crypto.Cipher import AES as _AES
+            return _AES.new(key, _AES.MODE_CBC, iv).decrypt(body)
+        except Exception:
+            pass
+        try:
+            from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
             c = Cipher(algorithms.AES(key), modes.CBC(iv))
             d = c.decryptor()
-            out = d.update(body) + d.finalize()
-            pad = out[-1] if out else 0
-            if 1 <= pad <= 16 and out[-pad:] == bytes([pad]) * pad:
-                out = out[:-pad]
-            return out
+            return d.update(body) + d.finalize()
         except Exception:
             return None
 

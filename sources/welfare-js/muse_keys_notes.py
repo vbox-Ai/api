@@ -2,20 +2,22 @@
 """
 暮色 6868 协议分析 + 存储键清单（只读工具，不做网络请求）
 ================================================================
-结论（2026-10-29 抓包实证）：
+结论（2026-10-30 已破解 AES）：
   1) 鉴权 = time(13位毫秒) + uuid(32位hex, 每次请求随机, 不是设备号)
   2) /box/api/ping 免鉴权, 固定返回 32 字节 base64
   3) /collect/api/status 额外带 token 头（登录态, 154 字符, 多次请求复用）
-  4) 响应体 = base64(AES 密文), 16 字节对齐, 确定性（同请求同密文）
+  4) 响应体 = base64(AES 密文), 16 字节对齐
   5) 服务端有来源校验：非手机网络一律返回 {"code":400,"msg":"违规请求"}
-     —— 用真 token + 真 body 从 PC 重放同样被拒，说明按来源 IP 拦截
 
-密钥不在二进制里：
-  · 341,124 个 ASCII 子串（16/24/32）→ 全部失败
-  · 7,995 个 base64 串（解码后 16/24/32）→ 全部失败
-  · 3,045,688 个 4 字节对齐原始窗口 → 全部失败
-  · 27,266 条 ASCII 串的 md5/sha256 派生 → 全部失败
-  · AES-ECB/CBC/CTR/CFB/OFB/GCM + ChaCha20/ChaCha20-Poly1305 → 全部失败
+AES 密钥已破解（Blutter 反编译 libapp.so，2026-10-30）：
+  算法 = AES-128-CBC
+  Key  = 8992d27bceae2962
+  IV   = 62233532ac9029c6
+  数据流 = base64 → AES-128-CBC 解密 → gzip 解压 → JSON
+  混淆真相 = 切罗基字母 XOR 0x1395（StringExtension.s() 实现）
+  位置 = avbox/module/box/network/interceptor.dart onResponse
+  请求加密 = AES-256-CBC(Key=MD5("/"+path+盐), IV="${time}arp")
+  盐 = 1f2b2cd0f9503f960c2ad3f0194b4175
 
 真实密钥在设备本地存储（SharedPreferences 键名已从二进制取出）：
   encrypt_key            主加密密钥
@@ -33,7 +35,7 @@
 读取方法（越狱机, Filza）：
   /var/mobile/Containers/Data/Application/<UUID>/Library/Preferences/com.look.avbox.plist
 
-拿到 encrypt_key 后，用 decrypt.py 的 decrypt() 解任意响应体。
+AES_KEY / AES_IV 已内置到 muse_avbox.py，蜘蛛自动解密响应。
 """
 
 STORAGE_KEYS = {

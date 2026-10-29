@@ -2396,7 +2396,7 @@
       ],
       "sortOrder": 530,
       "defaultProxy": false,
-      "notes": "暮色(com.look.avbox) 1.0.1 IPA 逆向 + 真机抓包实证。真实后端为明文 HTTP 6868 端口（38.46.10.x / 202.95.22.x / 198.44.248.x / 122.10.20.249），鉴权只有两个头：time(13位毫秒时间戳) + uuid(32位hex设备号)，非 X-Auth 四件套。GET /box/api/home?versionCode=101 返回 HTTP 200 + chunked + JSON 字符串包裹的 base64（AES 密文）。/box/api/ping 无鉴权，固定返回 44 字符 base64（32字节）密钥。缺头报'缺少请求头:xxx'，时间过旧报'请求已过期'，其余业务路径当前返回'违规请求'（服务端来源风控）。extend 可注入 host/uuid/versionCode/aesKey/aesIv/timeout。分类=37模块，封面/详情/播放走上游 detail 的 play_url。",
+      "notes": "暮色(com.look.avbox) 1.0.1 逆向 + 真机抓包实证。真实后端为明文 HTTP 6868 端口（38.46.10.x / 202.95.22.x / 198.44.248.x / 122.10.20.249），鉴权只有两个头：time(13位毫秒) + uuid(32位hex随机)。响应体 = JSON字符串包裹的 base64(AES密文)，数据流：base64 → AES-128-CBC解密 → gzip解压 → JSON。AES密钥已通过 Blutter 反编译 libapp.so 破解并内置：Key=8992d27bceae2962 / IV=62233532ac9029c6（原被切罗基字母 XOR 0x1395 混淆）。/box/api/ping 免鉴权返回 32B base64。业务路径当前 PC 重放返回'违规请求'（服务端按来源 IP 风控，需在客户端/vbox 环境跑）。extend 可注入 host/uuid/versionCode/aesKey/aesIv/timeout（后三项已内置默认值）。分类=37模块，封面/详情/播放走上游 detail 的 play_url。",
       "api": "./sources/welfare-js/muse_avbox.py",
       "scriptType": "python",
       "engine": "python",
