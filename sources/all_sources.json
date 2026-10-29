@@ -170,8 +170,8 @@
       {
         "name": "木偶资源",
         "type": "cms",
-        "searchurl": "https://333.333291.xyz/index.php/vod/search.html?wd=",
-        "detailBase": "https://333.333291.xyz",
+        "searchurl": "https://www.muoua.top/index.php/vod/search.html?wd=",
+        "detailBase": "https://www.muoua.top",
         "enabled": true,
         "priority": 1003,
         "group": "cloud"
@@ -179,8 +179,8 @@
       {
         "name": "多多资源",
         "type": "cms",
-        "searchurl": "https://tv.yydsys.cc/index.php/vod/search.html?wd=",
-        "detailBase": "https://tv.yydsys.cc",
+        "searchurl": "https://pan.yydsys.de/index.php/vod/search.html?wd=",
+        "detailBase": "https://pan.yydsys.de",
         "ua": "pc",
         "enabled": true,
         "priority": 1004,
@@ -262,8 +262,8 @@
       {
         "name": "闪电优汐",
         "type": "cms",
-        "searchurl": "http://shandian.blog/index.php/vod/search.html?wd=",
-        "detailBase": "http://shandian.blog",
+        "searchurl": "http://sd.sduc.site/index.php/vod/search.html?wd=",
+        "detailBase": "http://sd.sduc.site",
         "enabled": true,
         "priority": 1022,
         "group": "cloud"
@@ -3371,8 +3371,52 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "muse_avbox_agg_py",
+        "name": "暮色聚合",
+        "category": "video",
+        "icon": "moon.stars.fill",
+        "desc": "Python蜘蛛版 — 暮色 37 模块聚合（分类/封面/播放）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "http://38.46.10.6:6868"
+        ],
+        "sortOrder": 530,
+        "defaultProxy": false,
+        "notes": "暮色(com.look.avbox) 1.0.1 逆向 + 真机抓包实证。真实后端为明文 HTTP 6868 端口（38.46.10.x / 202.95.22.x / 198.44.248.x / 122.10.20.249），鉴权只有两个头：time(13位毫秒) + uuid(32位hex随机)。响应体 = JSON字符串包裹的 base64(AES密文)，数据流：base64 → AES-128-CBC解密 → gzip解压 → JSON。AES密钥已通过 Blutter 反编译 libapp.so 破解并内置：Key=8992d27bceae2962 / IV=62233532ac9029c6（原被切罗基字母 XOR 0x1395 混淆）。/box/api/ping 免鉴权返回 32B base64。业务路径当前 PC 重放返回'违规请求'（服务端按来源 IP 风控，需在客户端/vbox 环境跑）。extend 可注入 host/uuid/versionCode/aesKey/aesIv/timeout（后三项已内置默认值）。分类=37模块，封面/详情/播放走上游 detail 的 play_url。",
+        "api": "./sources/welfare-js/muse_avbox.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "muse_mw_py",
+        "name": "漫蛙漫画",
+        "category": "comic",
+        "icon": "books.vertical.fill",
+        "desc": "Python蜘蛛版 — 暮色漫蛙漫画（漫画栏目）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://manwaqr.cc"
+        ],
+        "sortOrder": 540,
+        "defaultProxy": false,
+        "notes": "暮色 plist 导出 flutter.mw=manwaqr.cc（漫蛙漫画），纯 HTML 明文站，无需解密。链路实测：首页 / → 漫画列表(a href=/book/{id} title + img data-home-src封面)；分类 /booklist?tag={tag}；详情 /book/{id} → 章节 /chapter/{chapterId}；章节页正文图 data-r-src=.../upload3/book/id/{bookId}/{chapterId}/xxx.webp。图片用 manga:// 协议返回，vbox WelfareResultMapper 自动解析。图片域 mwfimsvfast40.cc。",
+        "api": "./sources/welfare-js/muse_mw.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "comic",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ],
-    "updatedAt": "2026-10-03T01:35:00Z"
+    "updatedAt": "2026-10-29T00:00:00Z"
   }
 }
