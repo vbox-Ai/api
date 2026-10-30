@@ -44,6 +44,7 @@ import random
 import urllib.parse
 import urllib.request
 import urllib.error
+import threading
 
 sys.path.append('..')
 try:
@@ -138,6 +139,40 @@ MODULE_PATHS = {
 }
 DEFAULT_PATHS = ["/api/v2/index_items", "/api/v1/video"]
 
+# 模块 → 探测地址（连通性探测用，来自 muse_endpoints.json hosts 的"主域名"）
+# 仅覆盖能明确映射到平台主 API 的模块；未列出的模块默认显示（不探测）
+MODULE_HOSTS = {
+    "av91":   "https://api3.lmqtqhiho.cc/",
+    "pron91": "https://we.killcovid2020.com/",
+    "4hu":    "https://portal.instruno.com/",
+    "missav": "https://missav.ws/",
+    "javdb":  "https://jdforrepam.com/",
+    "aijav":  "https://newavapi.9xyrp3kg4b86.com/",
+    "mmav":   "https://bvbvbvssu.a63qv1sy.com/",
+    "one":    "https://api.3459381.com/",
+    "hjsq":   "http://23.225.145.74/",
+    "hxsp":   "https://hxapi.ruueyek.com/",
+    "hgsp":   "https://api55.nmrgqb.com/",
+    "hsck":   "https://hsck3.u0u0.cc/",
+    "qysq":   "https://d1kmvkv4iwtiup.cloudfront.net/",
+    "hdb":    "https://api.b7f3192.com/",
+    "kpsp":   "https://sm-api.wieuc.com/",
+    "lclf":   "https://lclf.lol/",
+    "lxs":    "https://api.hichatapi.info/",
+    "mdtv":   "https://spi.d5c4a712.com/",
+    "rryy":   "https://yy.swgongshui.com/",
+    "zlt":    "https://apjk85sd.q2ngx58.com/",
+    "insav":  "https://snen24.com/",
+    "djr":    "https://tokyohot-api-bo92ps.mtqztc.com/",
+    "fl2":    "https://prja.website/v1/host",
+    "txvlog": "https://api.0yhxyky2v099lb9.com/",
+    "km":     "https://icef4vn.xyz/",
+    "live":   "https://17s.bj-steel.com.cn/",
+    "mmmh":   "https://public.mino02.live/host_pwa.txt",
+    "akmh":   "https://www.18akmanhua.com/",
+    "mw":     "https://manwaqr.cc/",
+}
+
 
 class Spider(_B):
     def __init__(self):
@@ -149,7 +184,7 @@ class Spider(_B):
         self.version_code = "101"
         self.aes_key = AES_KEY
         self.aes_iv = AES_IV
-        self.timeout = 15
+        self.timeout = 3
         self.ctx = ssl.create_default_context()
         self.ctx.check_hostname = False
         self.ctx.verify_mode = ssl.CERT_NONE
@@ -373,12 +408,36 @@ class Spider(_B):
         return self._ping_key
 
     def _get(self, path, params=None):
-        if self._legacy:
-            return self._api_get(path, params)
-        ok, data = self._box_get(path, params)
-        if ok:
-            return True, data
-        return self._api_get(path, params)
+        # 只走 6868 主通道；api.* 旧通道已废弃(全 500/404)，不再 fallback 拖 75s
+        return self._box_get(path, params)
+
+    def _probe_modules(self):
+        """并发探测各平台主域名连通性，返回存活模块 key 集合。
+
+        目的：动态自适应分类——只有能连通的平台才显示为分类，
+        域名失效/被墙/反爬的平台自动隐藏，不再硬编码一屏死链接。
+        """
+        alive = set()
+        lock = threading.Lock()
+
+        def worker(key, url):
+            st, _, _ = self._http_get(url, {"user-agent": UA_H5})
+            if st == 200:
+                with lock:
+                    alive.add(key)
+
+        threads = []
+        for m in MODULES:
+            url = MODULE_HOSTS.get(m["key"])
+            if not url:
+                continue
+            t = threading.Thread(target=worker, args=(m["key"], url))
+            t.daemon = True
+            threads.append(t)
+            t.start()
+        for t in threads:
+            t.join(timeout=self.timeout + 2)
+        return alive
 
     # ---------------- 映射 ----------------
     def _list_of(self, data):
@@ -410,7 +469,17 @@ class Spider(_B):
 
     # ---------------- 基类方法 ----------------
     def homeContent(self, filter):
-        classes = [{"type_id": m["key"], "type_name": m["name"]} for m in MODULES]
+        # 动态自适应分类：并发探测各平台连通性，只显示"活着"的平台；
+        # 无探测地址的模块默认保留；探测全灭(疑似网络异常)时回退全量
+        alive = self._probe_modules()
+        classes = []
+        for m in MODULES:
+            key = m["key"]
+            if key in MODULE_HOSTS and key not in alive:
+                continue
+            classes.append({"type_id": key, "type_name": m["name"]})
+        if not classes:
+            classes = [{"type_id": m["key"], "type_name": m["name"]} for m in MODULES]
         result = {"class": classes}
         if filter:
             result["filters"] = {m["key"]: [] for m in MODULES}
