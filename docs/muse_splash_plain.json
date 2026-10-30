@@ -1,0 +1,279 @@
+{
+  "code": 200,
+  "msg": "操作成功",
+  "data": {
+    "host": [
+      {
+        "id": 1,
+        "name": "aijav",
+        "host": "https://newavapi.9xyrp3kg4b86.com/"
+      },
+      {
+        "id": 2,
+        "name": "mdtv",
+        "host": "https://spi.d5c4a712.com/"
+      },
+      {
+        "id": 3,
+        "name": "rryy",
+        "host": "https://yy.swgongshui.com/"
+      },
+      {
+        "id": 4,
+        "name": "91pron",
+        "host": "https://we.killcovid2020.com/"
+      },
+      {
+        "id": 5,
+        "name": "akmh",
+        "host": "https://www.18akmanhua.com/"
+      },
+      {
+        "id": 6,
+        "name": "mmav",
+        "host": "https://bvbvbvssu.a63qv1sy.com/"
+      },
+      {
+        "id": 7,
+        "name": "kpsp",
+        "host": "https://sm-api.wieuc.com/"
+      },
+      {
+        "id": 8,
+        "name": "kpsp_media",
+        "host": "https://hm-img.hdstfb.com"
+      },
+      {
+        "id": 9,
+        "name": "km",
+        "host": "https://icef4vn.xyz/"
+      },
+      {
+        "id": 10,
+        "name": "djr",
+        "host": "https://tokyohot-api-bo92ps.mtqztc.com/"
+      },
+      {
+        "id": 11,
+        "name": "hgsp",
+        "host": "https://api55.nmrgqb.com/"
+      },
+      {
+        "id": 12,
+        "name": "hjsq",
+        "host": "http://23.225.145.74/"
+      },
+      {
+        "id": 13,
+        "name": "hxsp",
+        "host": "https://hxapi.ruueyek.com/"
+      },
+      {
+        "id": 14,
+        "name": "one_img",
+        "host": "https://q3vp74ws02jp.gdliren123.com"
+      },
+      {
+        "id": 15,
+        "name": "javdb",
+        "host": "https://jdforrepam.com/"
+      },
+      {
+        "id": 16,
+        "name": "zlt",
+        "host": "https://apjk85sd.q2ngx58.com/"
+      },
+      {
+        "id": 18,
+        "name": "mw",
+        "host": "https://manwaqr.cc/"
+      },
+      {
+        "id": 19,
+        "name": "mmmh",
+        "host": "https://public.mino02.live/host_pwa.txt"
+      },
+      {
+        "id": 20,
+        "name": "91av",
+        "host": "https://api3.lmqtqhiho.cc/"
+      },
+      {
+        "id": 21,
+        "name": "hdb",
+        "host": "https://api.b7f3192.com/"
+      },
+      {
+        "id": 22,
+        "name": "hdb_img",
+        "host": "https://gjwspicacrlvz.gdpcdz.com"
+      },
+      {
+        "id": 23,
+        "name": "qysq",
+        "host": "https://d1kmvkv4iwtiup.cloudfront.net/"
+      },
+      {
+        "id": 24,
+        "name": "asgj",
+        "host": "https://qiyouimage.arpuum.cn/"
+      },
+      {
+        "id": 25,
+        "name": "hsck",
+        "host": "https://hsck3.u0u0.cc/"
+      },
+      {
+        "id": 26,
+        "name": "4hu",
+        "host": "https://h96h69.com/"
+      },
+      {
+        "id": 27,
+        "name": "lxs",
+        "host": "https://api.hichatapi.info/"
+      },
+      {
+        "id": 28,
+        "name": "missav",
+        "host": "https://missav.ws/"
+      },
+      {
+        "id": 30,
+        "name": "insav_img",
+        "host": "https://yik.yanyunhome.com"
+      },
+      {
+        "id": 31,
+        "name": "live1",
+        "host": "https://17s.bj-steel.com.cn/"
+      },
+      {
+        "id": 32,
+        "name": "live2",
+        "host": "http://api.hclyz.com:81/"
+      },
+      {
+        "id": 33,
+        "name": "one_video",
+        "host": "https://z4bey8.bx7qxb.com"
+      },
+      {
+        "id": 34,
+        "name": "4hu_video",
+        "host": "https://m3u8.73cdn.com"
+      },
+      {
+        "id": 35,
+        "name": "lclf",
+        "host": "https://lclf.lol/"
+      },
+      {
+        "id": 36,
+        "name": "insav",
+        "host": "https://rpmm83.com/"
+      },
+      {
+        "id": 37,
+        "name": "4hu_api",
+        "host": "https://portal.instruno.com/"
+      },
+      {
+        "id": 38,
+        "name": "adsterra",
+        "host": "https://nolatec.org/4/d50d3e961f583ddd88470be5c20c7e53"
+      },
+      {
+        "id": 39,
+        "name": "fl2",
+        "host": "https://prja.website/v1/host"
+      },
+      {
+        "id": 40,
+        "name": "jpys_img",
+        "host": "https://img.ypfbj.com"
+      }
+    ],
+    "splash": [
+      {
+        "id": 10000,
+        "title": "九游娱乐",
+        "cover": "https://picture.xx6658244.one/591x1280-%E4%B9%9D%E6%B8%B8.gif",
+        "jump": "https://www.q5nxgz.vip/entry/register10588/?i_code=15615522",
+        "hide": 0
+      }
+    ],
+    "token": [
+      {
+        "id": 1,
+        "name": "token_one",
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjgwNTA0NzcsImlzX3Zpc2l0b3IiOjAsInV1aWQiOiJkYTIzYTMwMC1jZWJmLTExZjEtOWJlMC0yYjg0NDU2OWFmMzkiLCJuaWNrbmFtZSI6IjE1NioqKioqOTU2IiwiaXAiOiIzOC40Ni4xMC4yIiwiaWF0IjoxNzkyOTY1NjAwLCJleHAiOjE3OTM1NzQwMDAsIm5iZiI6MTc5Mjk2NTYwMCwic3ViIjoiYXBpLmVtMW9pZmQwLmNvbSIsImp0aSI6IjdmOGQzZWZjNWU3ZWM1NmFmM2M4Y2FmZDQ2YzExYTFmIn0.ynDjIcs74g7uRB84mnr98rU7trsInlK0pjXzCIr6xMI"
+      },
+      {
+        "id": 2,
+        "name": "token_akmh",
+        "token": "3b79fc5c258136f4a9cec2d804fb01ec_613842638"
+      },
+      {
+        "id": 3,
+        "name": "token_djr",
+        "token": "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjM5ODE0NTIzMTYxMTQ5OTU3LTY1OTkyYjBkMDUxNDU2ZGUiLCJzaXRlIjoibWVtYmVyIiwicm9sZSI6MCwidmVyc2lvbiI6IjguNzgiLCJzb3VyY2UiOiJhbmRyb2lkIiwiaXAiOiIzOC40Ni4xMC4yIiwic2hvd19pZCI6IkNLWi04NzgyODUyIiwiZXhwIjoxNzkzMjAxNDM0LCJpYXQiOjE3OTMxOTQyMzQsImlzcyI6Ik5vdmEiLCJuYmYiOjE3OTMxOTQyMzQsInN1YiI6IjIzOTgxNDUyMzE2MTE0OTk1Ny02NTk5MmIwZDA1MTQ1NmRlIn0.2zV6xksLyKK_RjVGURhhmU8Tsl93oJfsbaUmmbKqJTFeXhZ31XGbO47PuPPqPlarjnOv-MKs_6o-YgEm1yx4Ag"
+      },
+      {
+        "id": 4,
+        "name": "token_hjsq",
+        "token": "b2dc730bf54441f18492061ce80659b3"
+      },
+      {
+        "id": 5,
+        "name": "token_hxsp",
+        "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMDIzMTIwNjQ2NzQ5NzE5IiwiZXhwIjoyMzA2NjY0Nzc1LCJpYXQiOjE3MDE4NjQ3NzUsIm1hdGNoSWQiOiI1NTIxZTVhMTcwNTk0OGY0In0.UP5S-7Kyxr1DVjBSxO0fIvPAjOUqfRbdz_dOo-8MuXZ4cfcGIShrBMn-OS_0988Nw2QdiUGkg31U9jSCG0v3bw"
+      },
+      {
+        "id": 6,
+        "name": "token_zlt",
+        "token": "LzF2SHp6NldrVmVBaHFobmVMVys3Q3l3S096MG95bUNhdDFpKzhMZFlKMVpUckRqdWl4cTJvc2E4ZXVLL1dSZDIwbG1QcHBiYkJOMHJoSWthK01iOFhKbmMwR3RWZisyc3E0dXBwOGxleXdFMk9tQUVIVGJrOG03T3lMQVMyd0dkYlBacnJCME1ma2JPaHZ5VVBZYk55TzFXS3dvTUJsenlUSGZkRTlpSmpiUkhFelFXT3hISHhaaDlTQnN2RlFB"
+      },
+      {
+        "id": 7,
+        "name": "token_mmmh",
+        "token": "eyJ1c2VyX2lkIjozMDQ1OTg4NjEsImxhc3Rsb2dpbiI6MTc2Mjg3MTA1MH0.a568a4b03a8d6c08c14494d85c40a9f1.7c6579106b5199d2177be390fc8c608b73bfc0cf63a2d853da78afab"
+      },
+      {
+        "id": 8,
+        "name": "token_hdb",
+        "token": "eyJ1c2VyX3V1aWQiOiJlZTg5MTNkYi05ZDc2LTQyMDUtODA5MC1hNDM3MzU4ZTIxYjMiLCJ1cGRhdGVkX2F0IjoxNzkyODQzNzQ1LCJ2aXNpdG9yIjowfQ=="
+      },
+      {
+        "id": 9,
+        "name": "token_qysq",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJwdWJsaWMiLCJleHAiOjE3OTM4NTgxNjIsImlzc3VlciI6ImNvbS5idXR0ZXJmbHkiLCJzdWIiOiJhc2lnbiIsInVzZXJJZCI6NTY3NzU4MX0.yjzuUUUK1hlQBzlTQ703ZYemCvfL97EYsQNUCyEVET4"
+      },
+      {
+        "id": 10,
+        "name": "token_txvlog",
+        "token": "U_50eb2030ab70780bab541a08b180f962_87185097"
+      },
+      {
+        "id": 11,
+        "name": "token_insav",
+        "token": "0bd7ef19fa609f9fc7fa151cb10bef09"
+      },
+      {
+        "id": 12,
+        "name": "token_cgw",
+        "token": "bcb877f0f4404b0aaa5ec9760916a05b.ZG3f8W4uPRAdtDa7o3+C268Kj5kzQ9qYrcN2w8Qi8uVd7jmpTnX6cGc2l1DxGn7fuaeNut2fR09xmzQlwPznsnmatSjS+WZT8SWlvLAAqJ9k6NATOGgWNFEP/fXrgM8BoFwxXGwoEgE87gLgS/ywdtP0Xa1CXHYR.5baa8d01b3d9a45ef91877982b9cfd0d"
+      },
+      {
+        "id": 13,
+        "name": "token_rryy",
+        "token": "TRJBX1wWCEYDAglQCldRG0kWQ0NRRFZVXwEVDRIZQQJWDV0MFBwWRUxVRgEVDRJSG01BVgtRRlFHRRoOEAVRUwYGC1BRWwEGUAUDVABQAFEEAAJXDFlVC1UDUgNRFEU%3D"
+      },
+      {
+        "id": 14,
+        "name": "token_one_visitor",
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjUwODE5NTY0LCJpc192aXNpdG9yIjoxLCJ1dWlkIjoiOWIxYTI5ZjAtY2Y4MS0xMWYxLTkyYzQtMTE0YThlYWZlYzRiIiwibmlja25hbWUiOiJcdTUxYWNcdTZjZjNcdTYwMmFcdTllM2Q1MTU0MjcxIiwiaXAiOiI1Ni43MC4yLjI0NiIsImlhdCI6MTc5Mjg2ODkxMCwiZXhwIjoxNzkzNDc3MzEwLCJuYmYiOjE3OTI4Njg5MTAsInN1YiI6ImFwaS40M2I4NDc3LmNvbSIsImp0aSI6IjZkNTU1N2QyYTMyNzFhZDU4ZmMyZTUxN2MyODk5M2UwIn0.FY51Jq0ZXozjkDCOAPi2O1FW-IluL4TxSlLwtZguKPI"
+      }
+    ]
+  }
+}
