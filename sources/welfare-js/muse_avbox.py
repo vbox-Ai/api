@@ -36,6 +36,7 @@ import json
 import time
 import re
 import ssl
+import base64
 import html as _html
 import urllib.parse
 import urllib.request
@@ -252,9 +253,205 @@ class RryyAdapter(BaseAdapter):
         return {"parse": 1, "url": self.HOST + "/play/%s.html" % urllib.parse.quote(str(vid))}
 
 
+# ============================================================ AES 工具（纯 Python，兼容 vbox 运行时）
+def _aes_cbc(key, iv, data, encrypt):
+    """AES-128-CBC。优先 Crypto，其次 cryptography，最后 pyaes（vbox 内置）。"""
+    try:
+        from Crypto.Cipher import AES as _A
+        c = _A.new(key, _A.MODE_CBC, iv)
+        return c.encrypt(data) if encrypt else c.decrypt(data)
+    except Exception:
+        pass
+    try:
+        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+        c = Cipher(algorithms.AES(key), modes.CBC(iv))
+        d = c.encryptor() if encrypt else c.decryptor()
+        return d.update(data) + d.finalize()
+    except Exception:
+        pass
+    try:
+        import pyaes
+        if encrypt:
+            m = pyaes.AESModeOfOperationCBC(key, iv=iv)
+            pad = 16 - len(data) % 16
+            data = data + bytes([pad]) * pad
+            out = b""
+            for i in range(0, len(data), 16):
+                out += m.encrypt(data[i:i + 16])
+            return out
+        else:
+            m = pyaes.AESModeOfOperationCBC(key, iv=iv)
+            return m.decrypt(data)
+    except Exception:
+        raise RuntimeError("no AES backend (Crypto/cryptography/pyaes)")
+
+
+def _pkcs7(data):
+    n = 16 - len(data) % 16
+    return data + bytes([n]) * n
+
+
+def _unpkcs7(data):
+    if not data:
+        return data
+    n = data[-1]
+    if 1 <= n <= 16 and data[-n:] == bytes([n]) * n:
+        return data[:-n]
+    return data
+
+
+# ============================================================ one / api.3459381.com
+class OneAdapter(BaseAdapter):
+    """one 平台 —— 请求/响应均 AES-128-CBC 加密。
+
+    密钥（Blutter 反编译 OneInterceptor 实证）：
+      Key = l*bv%Ziq000Biaog   IV = 8597506002939249
+    签名（OneInterceptor::onRequest 反推）：
+      sign = MD5( MD5("0.0.0.0.3." + timestamp + ".." + uuid) + "m4n2hjPeYWkD6tFpqKF^3HO^h24P@idT" )
+    链路：
+      分类  POST /v2.5/navigation/getDemandTagList   body 空
+      列表  POST /v2.5/article/discovery             body 表单加密
+      详情  POST /v2.5/article/detail                body id=xxx 加密
+    响应：gzip(http) → 去引号 → base64 → AES 解密 → JSON
+    """
+
+    content_type = "video"
+    HOST = "https://api.3459381.com"
+    IMG_HOST = "https://q3vp74ws02jp.gdliren123.com"
+    VIDEO_HOST = "https://z4bey8.bx7qxb.com"
+    KEY = b"l*bv%Ziq000Biaog"
+    IV = b"8597506002939249"
+    SIGN_SALT = "m4n2hjPeYWkD6tFpqKF^3HO^h24P@idT"
+    # 访客态（muse_endpoints.json tokens.one_visitor + 对应 uuid）
+    TOKEN = ("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjUwODE5NTY0LCJpc192aXNpdG9yIjoxLCJ"
+             "1dWlkIjoiOWIxYTI5ZjAtY2Y4MS0xMWYxLTkyYzQtMTE0YThlYWZlYzRiIiwibmlja25hbWUiOiJcdTUx"
+             "YWNcdTZjZjNcdTYwMmFcdTllM2Q1MTU0MjcxIiwiaXAiOiI1Ni43MC4yLjI0NiIsImlhdCI6MTc5Mjg2"
+             "ODkxMCwiZXhwIjoxNzkzNDc3MzEwLCJuYmYiOjE3OTI4Njg5MTAsInN1YiI6ImFwaS40M2I4NDc3LmNv"
+             "bSIsImp0aSI6IjZkNTU1N2QyYTMyNzFhZDU4ZmMyZTUxN2MyODk5M2UwIn0.FY51Jq0ZXozjkDCOAPi2"
+             "O1FW-IluL4TxSlLwtZguKPI")
+    UUID = "9b1a29f0-cf81-11f1-92c4-114a8eafec4b"
+
+    def __init__(self, spider):
+        super(OneAdapter, self).__init__(spider)
+        self.token = OneAdapter.TOKEN
+        self.uuid = OneAdapter.UUID
+        self._cats = None
+
+    @staticmethod
+    def _sign(ts, uuid):
+        import hashlib
+        inner = hashlib.md5(("0.0.0.0.3." + ts + ".." + uuid).encode()).hexdigest()
+        return hashlib.md5((inner + OneAdapter.SIGN_SALT).encode()).hexdigest()
+
+    def _call(self, path, form=""):
+        ts = str(int(time.time()))
+        headers = {
+            "User-Agent": UA_DART,
+            "ip": "0.0.0.0",
+            "uuid": self.uuid,
+            "Content-Type": "application/x-www-form-urlencoded",
+            "timestamp": ts,
+            "platform": "3",
+            "token": self.token,
+            "sign": self._sign(ts, self.uuid),
+            "user-key": "",
+            "app-version": "2.6.4",
+        }
+        body = b""
+        if form:
+            ct = _aes_cbc(self.KEY, self.IV, _pkcs7(form.encode()), True)
+            body = base64.b64encode(ct)
+        raw = self.sp.fetch_bytes(self.HOST + path, headers=headers, data=body)
+        if not raw:
+            return None
+        return self._dec(raw)
+
+    def _dec(self, raw):
+        try:
+            p = raw.decode("utf-8", "replace").strip()
+            # 服务端错误/明文直接返回 JSON
+            if p[:1] in ("{", "["):
+                return json.loads(p)
+            if p[:1] == '"':
+                p = json.loads(p)
+            ct = base64.b64decode(p + "=" * (-len(p) % 4))
+            pt = _unpkcs7(_aes_cbc(self.KEY, self.IV, ct, False))
+            return json.loads(pt.decode("utf-8", "replace"))
+        except Exception:
+            return None
+
+    def _abs(self, path, host):
+        if not path:
+            return ""
+        if path.startswith("http"):
+            return path
+        return host + path
+
+    def categories(self):
+        if self._cats is not None:
+            return self._cats
+        d = self._call("//v2.5/navigation/getDemandTagList", "")
+        cats = []
+        if d and d.get("code") == 200:
+            for t in d.get("data") or []:
+                cats.append({"type_id": str(t.get("id")), "type_name": t.get("title", "")})
+        if not cats:
+            cats = [{"type_id": "0", "type_name": "全部"}]
+        self._cats = cats
+        return cats
+
+    def list(self, tid, page):
+        page = int(page or 1)
+        ym = time.strftime("%Y-%m")
+        form = ("demand_tag_id=%s&model_id=6&page=%d&published_at=%s&size=24&sort=published_at"
+                % (tid or 0, page, ym))
+        d = self._call("//v2.5/article/discovery", form)
+        out = []
+        if d and d.get("code") == 200:
+            for it in d.get("data") or []:
+                if not isinstance(it, dict):
+                    continue
+                out.append({
+                    "vod_id": str(it.get("id")),
+                    "vod_name": it.get("title") or it.get("description") or it.get("actor") or str(it.get("id")),
+                    "vod_pic": self._abs(it.get("thumb"), self.IMG_HOST),
+                    "vod_remarks": it.get("length") or it.get("quality") or "",
+                })
+        return out
+
+    def detail(self, vid):
+        d = self._call("//v2.5/article/detail", "id=%s" % vid)
+        if not d or d.get("code") != 200:
+            return {}
+        it = d.get("data") or {}
+        pics = it.get("multiple_pic") or it.get("multi_pic_thumbnail") or []
+        video = it.get("video_file") or it.get("video") or it.get("preview_video") or ""
+        play_url = self._abs(video, self.VIDEO_HOST) if video else ""
+        content = it.get("description") or it.get("title") or ""
+        return {
+            "vod_id": str(vid),
+            "vod_name": it.get("title") or it.get("video_name") or str(vid),
+            "vod_pic": self._abs(it.get("thumb"), self.IMG_HOST),
+            "vod_content": content,
+            "vod_play_url": play_url,
+            "images": [self._abs(p, self.IMG_HOST) for p in pics if p],
+        }
+
+    def play(self, vid):
+        d = self.detail(vid)
+        url = d.get("vod_play_url") or ""
+        if url:
+            return {"parse": 0, "url": url, "header": {"User-Agent": UA_IOS}}
+        imgs = d.get("images") or []
+        if imgs:
+            return {"parse": 0, "url": "manga://" + "&&".join(imgs)}
+        return None
+
+
 # ============================================================ 注册表
 ADAPTERS = {
     "rryy": RryyAdapter,
+    "one": OneAdapter,
 }
 
 
@@ -322,6 +519,36 @@ class Spider(_B):
         pass
 
     # ---------------- 网络 ----------------
+    def fetch_bytes(self, url, headers=None, data=None):
+        """返回原始字节（POST 用 data 为 bytes；响应已自动 gzip 解压）。"""
+        h = {"User-Agent": UA_IOS, "Accept": "*/*", "Accept-Encoding": "gzip"}
+        if headers:
+            h.update(headers)
+        req = urllib.request.Request(url, data=data, headers=h,
+                                     method="POST" if data is not None else "GET")
+        try:
+            with self._opener.open(req, timeout=self.timeout) as r:
+                raw = r.read()
+                enc = (r.headers.get("Content-Encoding") or "").lower()
+                if "gzip" in enc:
+                    import gzip
+                    try:
+                        raw = gzip.decompress(raw)
+                    except Exception:
+                        pass
+                return raw
+        except urllib.error.HTTPError as e:
+            raw = e.read()
+            try:
+                import gzip
+                if raw[:2] == b"\x1f\x8b":
+                    return gzip.decompress(raw)
+            except Exception:
+                pass
+            return raw
+        except Exception:
+            return b""
+
     def fetch_text(self, url, headers=None, data=None):
         h = {
             "User-Agent": UA_IOS,
@@ -422,14 +649,18 @@ class Spider(_B):
         if not d:
             return {"list": []}
         name = d.get("vod_name") or vid
-        return {"list": [{
+        play_url = d.get("vod_play_url") or "%s$%s" % (name, vid)
+        item = {
             "vod_id": vid,
             "vod_name": name,
             "vod_pic": d.get("vod_pic", ""),
             "vod_content": d.get("vod_content", ""),
             "vod_play_from": self.getName(),
-            "vod_play_url": "%s$%s" % (name, vid),
-        }]}
+            "vod_play_url": play_url,
+        }
+        if d.get("images"):
+            item["vod_play_url"] = "#".join(["%s$%s" % (name, u) for u in d["images"]]) or play_url
+        return {"list": [item]}
 
     def playerContent(self, flag, id, vipFlags):
         adapter = self._get_adapter()
