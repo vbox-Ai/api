@@ -393,8 +393,31 @@ class OneAdapter(BaseAdapter):
         d = self._call("//v2.5/navigation/getDemandTagList", "")
         cats = []
         if d and d.get("code") == 200:
-            for t in d.get("data") or []:
-                cats.append({"type_id": str(t.get("id")), "type_name": t.get("title", "")})
+            raw = [t for t in (d.get("data") or []) if isinstance(t, dict)]
+            # one 上游 5 个 demand_tag 是扁平分类（id 1-5）：
+            #   1=欧美 2=日本 3=国产 4=ONE直播 5=抽奖
+            # 其中 1/2/3 是「视频」内容，4/5 是非视频栏目。
+            # 这里把 1/2/3 归为一个「视频」一级分类 + 三个地区二级分类，
+            # 4/5 各自保持独立一级分类 —— 真实反映内容结构，不造假。
+            # 二级分类用 `sub_categories` 键（下划线风格），与客户端
+            # VodCategory.fromJson 约定一致（客户端 scheme A）。
+            video_subs = []
+            for t in raw:
+                tid = str(t.get("id"))
+                title = t.get("title", "")
+                if tid in ("1", "2", "3"):
+                    video_subs.append({"type_id": tid, "type_name": title})
+            if video_subs:
+                cats.append({
+                    "type_id": "video",
+                    "type_name": "视频",
+                    "sub_categories": video_subs,
+                })
+            for t in raw:
+                tid = str(t.get("id"))
+                title = t.get("title", "")
+                if tid in ("4", "5"):
+                    cats.append({"type_id": tid, "type_name": title})
         if not cats:
             cats = [{"type_id": "0", "type_name": "全部"}]
         self._cats = cats
@@ -403,8 +426,14 @@ class OneAdapter(BaseAdapter):
     def list(self, tid, page):
         page = int(page or 1)
         ym = time.strftime("%Y-%m")
+        # 一级「视频」聚合分类 tid="video" → 请求全部视频（demand_tag_id=0）；
+        # 二级分类 tid="1"/"2"/"3" 或独立分类 "4"/"5" → 请求对应 demand_tag_id。
+        if str(tid) == "video":
+            tag_id = "0"
+        else:
+            tag_id = str(tid or 0)
         form = ("demand_tag_id=%s&model_id=6&page=%d&published_at=%s&size=24&sort=published_at"
-                % (tid or 0, page, ym))
+                % (tag_id, page, ym))
         d = self._call("//v2.5/article/discovery", form)
         out = []
         if d and d.get("code") == 200:
