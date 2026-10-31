@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 暮色（com.look.avbox）资源平台 Spider — vbox 福利区适配版 v2
 ================================================================
@@ -222,19 +222,13 @@ class RryyAdapter(BaseAdapter):
         if tid not in cats:
             tid = "1"
         page = int(page or 1)
-        candidates = ["/home/%s.html" % tid] if page <= 1 else [
-            "/home/%s_%d.html" % (tid, page),
-            "/home/%s-%d.html" % (tid, page),
-            "/home/%s/%d.html" % (tid, page),
-        ]
-        for path in candidates:
-            html = self._page(path)
-            if not html or len(html) < 5000:
-                continue
-            cards = self._cards(html)
-            if cards:
-                return cards
-        return []
+        # 分页实测（2026-10-31）：
+        #   /home/{cid}.html?p={页}  → 分类正确且分页生效（24 张/页）
+        #   /?cid={cid}&filter=news&p={页} → 忽略 cid，只按偏移翻全站，分类场景不可用
+        html = self._page("/home/%s.html?p=%d" % (tid, page))
+        if not html or len(html) < 5000:
+            return []
+        return self._cards(html)
 
     def detail(self, vid):
         html = self._page("/play/%s.html" % urllib.parse.quote(str(vid)))
