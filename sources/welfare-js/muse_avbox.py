@@ -526,10 +526,291 @@ class OneAdapter(BaseAdapter):
         return None
 
 
+# ============================================================ hdb / 黄豆瓣
+class HdbAdapter(BaseAdapter):
+    """黄豆瓣（key=hdb）—— RSA-2048 + AES-128-CBC 双向加密信封。
+
+    协议（逆向 libapp.so，实测通过）：
+      请求  encrypt_data = base64(AES-128-CBC(业务JSON))
+            encrypt_key  = base64(RSA(服务端公钥, {"key":b64,"iv":b64}))
+      响应  encrypt_key  → RSA 客户端私钥解密 → AES key/iv
+            encrypt_data → AES-128-CBC 解密 → JSON（可能 gzip）
+    接口：pwa/v2_0/dailyList / filmDetails / searchV21List
+    注意：国内直连可用，无需翻墙。
+    """
+
+    content_type = "video"
+
+    DOMAINS = [
+        "https://api.b7f3192.com/",
+        "https://api.b3d530f.com/",
+        "https://api.6b18726.com/",
+        "https://api.7d87e17.com/",
+    ]
+
+    SERVER_PUB_PEM = """-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtHXnr6i9DxHl1xEJoczX
+QvOGUrROLWn89QedCY2JeljOOqj/CHa+rqnzyy9qylx8WUQE7BYFhtLi8erOgZ4X
+ezbJLRfWoccSMHjAW0KkS9o2MXKdmrFWllRVw7uMEUXNWVTJU3u+YWZcUMxI6z93
+B5MZqJoiOlneI8icw11thOEguo3wgPpJGDILrXIsCBdOepOyk3ajYHfnWnbm725E
+28UNuegydULxIAtKs0MuOxoGHhKlEm5Cfn1WY5PMH169T+AD01lCVNjs2MUnDf26
+iO+7vijvY0/Y93jnjT/n3MVmKfGM4ggOKHU3qKamPf5kwlZipJ6CQwR8JLotkxP+
+kQIDAQAB
+-----END PUBLIC KEY-----"""
+
+    CLIENT_PRIV_PEM = """-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDM3SKlwhVilftp
+FodFBn4isxrSm9NxG/K3Ux6qQoH77vs7pJkGBr8Yhr1Wom2s2dpXzzXq17Iz0Hx1
+wooDSKWlQO6Ask9uyw13lTcLYt3TCad3lIIea/BQf75LxTlGyLN0QD9kgY0U+aqh
+nKxXrSiQ0frjtD11vF8h/KPZydkng7vAsAZAObonjxKoqzU+Nz4UzUdd42xV9kru
+Q7eUlcz6Fphn6/+Zxc2WdCr/cgVShjShcbH8I4MUPHl16ZuJFs3DM0TgIpL6CD0k
+LuzvuU/aVgl6eNrwyDq4NL811d+fRX2T6nfiO74TUXZ/3vlbrrrBl5Zy9x2ymP+o
+L6WP7nYfAgMBAAECggEAOBt0astuCfMjyRNHdushTqWY+gd9cGQEJJtaMa1HZlV8
+b0hUNKdSXQhCAOE5gnaj6xqwHKJ4huJZw/LE08Nowoq3B35ObPylspOmYLLyJ+Nj
+/0coH+bWCWYDG0NnvXAoXfVep0sn9Y+vYNXFCbo9+vPXb9ekYYN21psX0QUMOVrI
+b5tdJ1OY739bvydAotjkIcsQcThL04u1mF+6FNBms7pTiR6Sp+7ZvuDBV1wFZ6Oj
+AIed9aIcSJQqSFVjxwgyHcT6RmzUFCvbVFyoHW/9cJ6Iqw17clQ4RlfXbh1vfhNr
+FgTiBiMcPKW90ikkpVPYCLajELo2RMtUhIzZ+KULyQKBgQDp/AzPHk5/XW4WcLcz
+CJRsHiRjbSadSH2sSB0r9lq/Ju5hHzOHzXZPXqhWf4A/okuYve33QXe3Eem4TJK3
+MR+dyUcV99SDqdSRfubyQHQ9vBaR99+wXZA3yGvqnsQQAjROD7wnBkDJ6THi7ulQ
+kS7ewdzpU6HffZtJnACQKzdmgwKBgQDgI6h3qTtla1IoyDDxDNZdmWTBIrBiqKtk
+hxFUkiSydOF0jMtpdPkjK08r6fBrrof11z1oW+FwmrLmovYpRNb68sLruYWiVR+U
+4Rz00kTQ1/nusdHaaFJRQk5yLbaitR198LhSCvWg43PKZKkOuCaVmtqy81t5z3mx
+Ff3I0xQ/NQKBgFKP+qEWy5ILkK3gZfRfAahI1oQy3p4/FwE0jP6XNhwfC5w/mzo/
+GJEXEIU9Bi7uAIjL8+z8L9bsPjEm69oyPjq57BhnU5iF05jnU2yFq76g4MHu2gJs
+cVgNo26tSPdxH62vxa9reG8GlvDBZphkMkqt01qNhR/MPYAyyMwWQ70rAoGBALXA
+VIDL6w0fjJzjUMR2y3FUzJ3MWkl2Sp0W5Ze1dip7msKe1Odr4gaBvQ54AevfuAJD
+ClmQf+uGlmFtbb0jREx0BFmPs+xhqF1aedeQlhrft5y19txrUazw3pm5teqUgRi5
+1U0589oF9sP9AhWcgDU6P/NyYRASjLRrh8KMX1OtAoGAPQpoII/1154GATbMWCUe
+RNCawhUDpmPI4hPomc9dmY7AeaB5LbcweuQ5kyHGOtn5ZMQcc0BIWpNP5j8QuCzB
+VIOZSYBhwQnf2mDvVFo2vQc5Zty1TSNLyTtzkhncuW7FQHoAynBp+pctvKRJkaq9
+piQStzEEfes94FMWEOaBHDA=
+-----END PRIVATE KEY-----"""
+
+    COMMON = {
+        "channelcode": "pwa_254_0714",
+        "nettype": "wifi",
+        "deviceid": "9471361b-b296-4aa4-b4ee-7ad9ee4b7de2",
+        "model": "Win32",
+        "platform": 6,
+        "version": "2.5.4",
+        "sysversion": ("5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) "
+                       "AppleWebKit/605.1.15 (KHTML, like Gecko) "
+                       "Version/18.5 Mobile/15E148 Safari/604.1"),
+    }
+
+    UA = ("5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) "
+          "AppleWebKit/605.1.15 (KHTML, like Gecko) "
+          "Version/18.5 Mobile/15E148 Safari/604.1")
+
+    USER_TOKEN = ("eyJ1c2VyX3V1aWQiOiJlZTg5MTNkYi05ZDc2LTQyMDUtODA5MC1hNDM3MzU4"
+                  "ZTIxYjMiLCJ1cGRhdGVkX2F0IjoxNzkyODQzNzQ1LCJ2aXNpdG9yIjowfQ==")
+
+    IMG_HOST = "https://gjwspicacrlvz.gdpcdz.com"
+
+    def __init__(self, spider):
+        super(HdbAdapter, self).__init__(spider)
+        self.host = HdbAdapter.DOMAINS[0]
+        self.timeout = 25
+        self._belong_map = {}  # vod_id -> belong(ltype)
+        self._ctx = ssl.create_default_context()
+        self._ctx.check_hostname = False
+        self._ctx.verify_mode = ssl.CERT_NONE
+        try:
+            from cryptography.hazmat.primitives import serialization
+            from cryptography.hazmat.primitives.asymmetric import padding as _rsa_pad
+            from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+            self._server_pub = serialization.load_pem_public_key(
+                HdbAdapter.SERVER_PUB_PEM.encode())
+            self._client_priv = serialization.load_pem_private_key(
+                HdbAdapter.CLIENT_PRIV_PEM.encode(), password=None)
+            self._rsa_pad = _rsa_pad
+            self._cipher = Cipher
+            self._algorithms = algorithms
+            self._modes = modes
+            self._has_crypto = True
+        except Exception:
+            self._has_crypto = False
+
+    def _rsa_encrypt(self, data):
+        return self._server_pub.encrypt(data, self._rsa_pad.PKCS1v15())
+
+    def _rsa_decrypt(self, data):
+        return self._client_priv.decrypt(data, self._rsa_pad.PKCS1v15())
+
+    def _aes_cbc(self, key, iv, data, encrypt=True):
+        c = self._cipher(self._algorithms.AES(key), self._modes.CBC(iv))
+        x = c.encryptor() if encrypt else c.decryptor()
+        return x.update(data) + x.finalize()
+
+    @staticmethod
+    def _pkcs7_pad(data):
+        n = 16 - (len(data) % 16)
+        return data + bytes([n]) * n
+
+    @staticmethod
+    def _pkcs7_unpad(data):
+        if not data:
+            return data
+        n = data[-1]
+        if 1 <= n <= 16 and data[-n:] == bytes([n]) * n:
+            return data[:-n]
+        return data
+
+    def _build_body(self, params):
+        import os as _os
+        key = _os.urandom(16)
+        iv = _os.urandom(16)
+        meta = json.dumps({
+            "key": base64.b64encode(key).decode(),
+            "iv": base64.b64encode(iv).decode(),
+        }, separators=(",", ":")).encode("utf-8")
+        encrypt_key = base64.b64encode(self._rsa_encrypt(meta)).decode()
+        raw = json.dumps(params, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        ct = self._aes_cbc(key, iv, self._pkcs7_pad(raw), encrypt=True)
+        encrypt_data = base64.b64encode(ct).decode()
+        return {"encrypt_data": encrypt_data, "encrypt_key": encrypt_key}
+
+    def _decrypt_body(self, resp):
+        ek = base64.b64decode(resp["encrypt_key"])
+        ed = base64.b64decode(resp["encrypt_data"])
+        meta = json.loads(self._rsa_decrypt(ek).decode("utf-8"))
+        aes_key = base64.b64decode(meta["key"])
+        iv = base64.b64decode(meta["iv"])
+        pt = self._pkcs7_unpad(self._aes_cbc(aes_key, iv, ed, encrypt=False))
+        if pt[:2] == b"\x1f\x8b":
+            import gzip
+            pt = gzip.decompress(pt)
+        return json.loads(pt.decode("utf-8"))
+
+    def _post(self, path, params):
+        body = self._build_body(params)
+        data = json.dumps(body, separators=(",", ":")).encode("utf-8")
+        headers = {
+            "User-Agent": HdbAdapter.UA,
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+        opener = urllib.request.build_opener(
+            urllib.request.HTTPSHandler(context=self._ctx))
+        # 域名轮换：当前域名失败时切换下一个
+        for domain in HdbAdapter.DOMAINS:
+            url = domain.rstrip("/") + "/" + path.lstrip("/")
+            for _ in range(2):
+                try:
+                    req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+                    with opener.open(req, timeout=self.timeout) as r:
+                        raw = r.read()
+                    resp = json.loads(raw.decode("utf-8"))
+                    if not isinstance(resp, dict) or "encrypt_data" not in resp:
+                        return resp
+                    result = self._decrypt_body(resp)
+                    if result is not None:
+                        return result
+                except urllib.error.HTTPError as e:
+                    try:
+                        resp = json.loads(e.read().decode("utf-8"))
+                        if not isinstance(resp, dict) or "encrypt_data" not in resp:
+                            return resp
+                        result = self._decrypt_body(resp)
+                        if result is not None:
+                            return result
+                    except Exception:
+                        pass
+                except Exception:
+                    pass
+        return None
+
+    @staticmethod
+    def _abs_img(path):
+        if not path:
+            return ""
+        if path.startswith("http"):
+            return path
+        return HdbAdapter.IMG_HOST + path
+
+    def categories(self):
+        return [
+            {
+                "type_id": "video",
+                "type_name": "视频",
+                "sub_categories": [
+                    {"type_id": "4", "type_name": "最新"},
+                    {"type_id": "3", "type_name": "国产"},
+                    {"type_id": "2", "type_name": "日本"},
+                    {"type_id": "1", "type_name": "欧美"},
+                ],
+            }
+        ]
+
+    def list(self, tid, page):
+        page = int(page or 1)
+        params = dict(HdbAdapter.COMMON)
+        params.update({
+            "page": page,
+            "length": 20,
+            "country": -2,
+            "censorship_type": 0,
+            "date": time.strftime("%Y-%m-%d"),
+        })
+        resp = self._post("pwa/v2_0/dailyList", params)
+        out = []
+        if not resp or not isinstance(resp, dict):
+            return out
+        data = resp.get("data", resp)
+        items = data.get("list") if isinstance(data, dict) else None
+        if not isinstance(items, list):
+            items = []
+        for it in items:
+            if not isinstance(it, dict):
+                continue
+            vid = str(it.get("id", ""))
+            belong = it.get("belong", 1)
+            self._belong_map[vid] = belong
+            out.append({
+                "vod_id": vid,
+                "vod_name": it.get("title") or vid,
+                "vod_pic": self._abs_img(it.get("img_url") or ""),
+                "vod_remarks": it.get("love_number") or "",
+            })
+        return out
+
+    def detail(self, vid):
+        belong = self._belong_map.get(str(vid), 1)
+        params = dict(HdbAdapter.COMMON)
+        params.update({
+            "film_id": str(vid),
+            "ltype": belong,
+            "userToken": HdbAdapter.USER_TOKEN,
+        })
+        resp = self._post("pwa/v2_0/filmDetails", params)
+        if not resp or not isinstance(resp, dict):
+            return {}
+        data = resp.get("data", resp)
+        items = data if isinstance(data, list) else (data.get("list") if isinstance(data, dict) else None)
+        item = items[0] if isinstance(items, list) and items else {}
+        if not isinstance(item, dict):
+            return {}
+        return {
+            "vod_id": str(vid),
+            "vod_name": item.get("title") or str(vid),
+            "vod_pic": self._abs_img(item.get("img_url") or ""),
+            "vod_play_url": item.get("url") or "",
+        }
+
+    def play(self, vid):
+        d = self.detail(vid)
+        url = d.get("vod_play_url") or ""
+        if url:
+            return {"parse": 0, "url": url, "header": {"User-Agent": HdbAdapter.UA}}
+        return None
+
+
 # ============================================================ 注册表
 ADAPTERS = {
     "rryy": RryyAdapter,
     "one": OneAdapter,
+    "hdb": HdbAdapter,
 }
 
 
