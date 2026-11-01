@@ -486,11 +486,12 @@ class OneAdapter(BaseAdapter):
     SIGN_SALT = "m4n2hjPeYWkD6tFpqKF^3HO^h24P@idT"
     # 正式态 token（muse_endpoints.json tokens.one + 对应 uuid）
     # 注意：正式态 token exp=2026-11-02 07:00，过期后需刷新（后续补动态刷新机制）
-    TOKEN = ("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjgwNTA0NzcsImlzX3Zpc2l0b3IiOjAsInV1"
-             "aWQiOiJkYTIzYTMwMC1jZWJmLTExZjEtOWJlMC0yYjg0NDU2OWFmMzkiLCJuaWNrbmFtZSI6IjE1Nioq"
-             "KioqOTU2IiwiaXAiOiIzOC40Ni4xMC4yIiwiaWF0IjoxNzkyOTY1NjAwLCJleHAiOjE3OTM1NzQwMDAs"
-             "Im5iZiI6MTc5Mjk2NTYwMCwic3ViIjoiYXBpLmVtMW9pZmQwLmNvbSIsImp0aSI6IjdmOGQzZWZjNWU3"
-             "ZWM1NmFmM2M4Y2FmZDQ2YzExYTFmIn0.ynDjIcs74g7uRB84mnr98rU7trsInlK0pjXzCIr6xMI")
+    TOKEN = ("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjgwNTA0NzcsImlzX3Zpc2l0b3IiOjA"
+             "sInV1aWQiOiJkYTIzYTMwMC1jZWJmLTExZjEtOWJlMC0yYjg0NDU2OWFmMzkiLCJuaWNrbmFtZSI"
+             "6IjE1NioqKioqOTU2IiwiaXAiOiIzOC40Ni4xMC4yIiwiaWF0IjoxNzkyOTY1NjAwLCJleHAiOjE"
+             "3OTM1NzQwMDAsIm5iZiI6MTc5Mjk2NTYwMCwic3ViIjoiYXBpLmVtMW9pZmQwLmNvbSIsImp0aSI"
+             "6IjdmOGQzZWZjNWU3ZWM1NmFmM2M4Y2FmZDQ2YzExYTFmIn0.ynDjIcs74g7uRB84mnr98rU7trs"
+             "InlK0pjXzCIr6xMI")
     UUID = "da23a300-cebf-11f1-9be0-2b844569af39"
 
     def __init__(self, spider):
@@ -499,24 +500,50 @@ class OneAdapter(BaseAdapter):
         self.uuid = OneAdapter.UUID
         self._cats = None
         self._token_warned = False
+        self._token_checked = False
 
-    # ---------------- token 有效期 ----------------
-    @staticmethod
-    def token_exp(tok):
-        """从 JWT 取出 exp（秒级时间戳）。非 JWT 返回 None。"""
+    # ---------------- token 管理 ----------------
+    # token 唯一来源 = 6868 /box/api/splash 下发（客户端内无登录/注册接口）。
+    # 6868 splash 目前被服务端加固（返回"违规请求"），无法自动拉取。
+    # 因此策略为：
+    #   1) extend 注入优先（{"one_token": "...", "one_uuid": "..."}）
+    #   2) 进程环境变量兜底（ONE_TOKEN / ONE_UUID）
+    #   3) 都没有则用内置 TOKEN
+    #   首次请求时用真实调用探活；失效则一次性告警，不反复骚扰日志。
+    @classmethod
+    def apply_token(cls, token, uuid=None):
+        """外部注入 token。uuid 为空时自动从 JWT payload 提取。"""
+        if not token:
+            return False
+        cls.TOKEN = str(token)
+        if uuid:
+            cls.UUID = str(uuid)
+        else:
+            pl = cls._payload(token)
+            if pl and pl.get("uuid"):
+                cls.UUID = pl["uuid"]
+        return True
+
+    @classmethod
+    def _payload(cls, tok):
         try:
             parts = str(tok).split(".")
             if len(parts) < 2:
                 return None
             seg = parts[1]
             seg += "=" * (-len(seg) % 4)
-            payload = json.loads(base64.urlsafe_b64decode(seg))
-            return payload.get("exp")
+            return json.loads(base64.urlsafe_b64decode(seg))
         except Exception:
             return None
 
+    @staticmethod
+    def token_exp(tok):
+        """从 JWT 取出 exp（秒级时间戳）。非 JWT 返回 None。"""
+        pl = OneAdapter._payload(tok)
+        return pl.get("exp") if pl else None
+
     def token_status(self):
-        """返回 (是否有效, 剩余秒数)。无 exp 视为未知但放行。"""
+        """返回 (是否未过期, 剩余秒数)。无 exp 视为未知但放行。"""
         exp = self.token_exp(self.token)
         if exp is None:
             return True, None
@@ -544,6 +571,7 @@ class OneAdapter(BaseAdapter):
 
     def _call(self, path, form=""):
         self._check_token()
+        self.ensure_token(probe_path=path)
         ts = str(int(time.time()))
         headers = {
             "User-Agent": UA_DART,
@@ -579,6 +607,43 @@ class OneAdapter(BaseAdapter):
             return json.loads(pt.decode("utf-8", "replace"))
         except Exception:
             return None
+
+    # ---------------- token 探活 ----------------
+    # 重要：one 接口必须带 `user-key` 头，即使是空值也必须发送。
+    # urllib 会发送 "user-key: "（服务端接受），curl 会丢弃空值头（服务端 401）。
+    def token_alive(self, probe_path="v2.5/navigation/getDemandTagList"):
+        """用一次真实调用判断 token 是否仍可用。返回 True/False。"""
+        try:
+            self._probing = True
+            try:
+                r = self._call(probe_path)
+            finally:
+                self._probing = False
+            if isinstance(r, dict):
+                code = r.get("code")
+                if code == 200:
+                    return True
+                if code == 401:
+                    return False
+            # 解密失败或结构异常，按不可用处理但不误报
+            return bool(r)
+        except Exception:
+            self._probing = False
+            return False
+
+    def ensure_token(self, probe_path=None):
+        """首次使用时执行一次探活；失效则明确告警，避免静默空数据。"""
+        if self._token_checked or getattr(self, "_probing", False):
+            return
+        self._token_checked = True
+        ok, left = self.token_status()
+        if ok and self.token_alive(probe_path or "v2.5/navigation/getDemandTagList"):
+            return
+        _LOG.error(
+            "one: token 不可用（本地判断 %s，剩余 %s）。"
+            "请更新 OneAdapter.TOKEN 或在 extend 中传 one_token。",
+            "未过期" if ok else "已过期",
+            ("%.1f 小时" % (left / 3600.0)) if left is not None else "未知")
 
     def _abs(self, path, host):
         if not path:
@@ -1055,6 +1120,23 @@ class Spider(_B):
                 ADAPTERS[self.MODULE].HOST = str(host).rstrip("/")
             except Exception:
                 pass
+
+        # one token 注入（优先级：extend > 环境变量 > 内置常量）
+        # 6868 splash 已加固，无法自动拉取，只能外部喂入。
+        tok = ext.get("one_token") or os.environ.get("ONE_TOKEN")
+        uid = ext.get("one_uuid") or os.environ.get("ONE_UUID")
+        if tok:
+            try:
+                OneAdapter.apply_token(tok, uid)
+            except Exception:
+                pass
+
+        # 其它平台 host 覆盖：extend 里形如 {"hosts": {"hgsp": "https://..."}}
+        hosts = ext.get("hosts")
+        if isinstance(hosts, dict):
+            for k, v in hosts.items():
+                if v:
+                    PLATFORM_HOSTS[str(k)] = str(v).rstrip("/")
         return None
 
     def isVideoFormat(self, url):
