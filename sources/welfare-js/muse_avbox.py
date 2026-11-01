@@ -697,10 +697,15 @@ class Spider(_B):
         # 已适配平台（rryy/one）附加 sub_categories（二级分类），
         # type_id 用「平台key_分类id」复合格式保证全局唯一，便于
         # categoryContent 解析出平台 + 分类。
+        # 注意：mw（漫蛙）/ live（直播盒子）已独立平铺，不在此列出。
         if not self.MODULE:
+            # 独立平铺、不应出现在聚合目录里的 key
+            excluded = {"mw", "live"}
             classes = []
             for m in CATALOG:
                 key = m["key"]
+                if key in excluded:
+                    continue
                 item = {"type_id": key, "type_name": m["name"]}
                 cls = ADAPTERS.get(key)
                 if cls is not None:
