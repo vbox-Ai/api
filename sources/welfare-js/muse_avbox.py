@@ -37,6 +37,8 @@ import time
 import re
 import ssl
 import base64
+import datetime
+import logging
 import html as _html
 import urllib.parse
 import urllib.request
@@ -49,6 +51,11 @@ try:
 except Exception:
     class _B(object):
         pass
+
+# 模块级日志器（token 过期等运行期告警用）
+_LOG = logging.getLogger("muse_avbox")
+if not _LOG.handlers:
+    _LOG.addHandler(logging.NullHandler())
 
 # ============================================================ 常量
 UA_IOS = ('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) '
@@ -94,38 +101,74 @@ CATALOG = [
 CATALOG_BY_KEY = {m["key"]: m for m in CATALOG}
 
 # 平台 key → 后端主域名（用于占位/降级提示；数据请求走各 ADAPTER）
+#
+# 数据来源：真机 6868 主后端 /box/api/splash 解密明文（2026-11-02，共 38 条 host）
+#           资产见 tools/_dec/box_api_splash.json
+# 可达性标注（2026-11-02 实测：29 直连 / 7 仅代理 / 2 真不可达）
+#   ✓  直连    国内网络直接可达
+#   ⚑  代理    被墙，走代理可达（客户端侧无障碍）
+#   ✗  失效    DNS 无记录或服务已下线
 PLATFORM_HOSTS = {
-    "one": "https://api.3459381.com",
-    "insav": "https://snen24.com",
-    "aijav": "https://newavapi.9xyrp3kg4b86.com",
-    "mdtv": "https://spi.d5c4a712.com",
-    "rryy": "https://yy.swgongshui.com",
-    "91pron": "https://we.killcovid2020.com",
-    "km": "https://icef4vn.xyz",
-    "fl2": "https://prja.website",
-    "jmtt": "https://jdforrepam.com",
-    "akmh": "https://www.18akmanhua.com",
-    "mmav": "https://bvbvbvssu.a63qv1sy.com",
-    "kpsp": "https://sm-api.wieuc.com",
-    "djr": "https://tokyohot-api-bo92ps.mtqztc.com",
-    "hgsp": "https://api55.nmrgqb.com",
-    "hxsp": "https://hxapi.ruueyek.com",
-    "javdb": "https://jdforrepam.com",
-    "zlt": "https://apjk85sd.q2ngx58.com",
-    "txvlog": "https://api.0yhxyky2v099lb9.com",
-    "mw": "https://manwaqr.cc",
-    "mmmh": "https://public.mino02.live",
-    "51cg": "https://h96h69.com",
-    "91av": "https://api3.lmqtqhiho.cc",
-    "hdb": "https://api.b7f3192.com",
-    "cgw": "https://h96h69.com",
-    "qysq": "https://d1kmvkv4iwtiup.cloudfront.net",
-    "4hu": "https://h96h69.com",
-    "hsck": "https://hsck3.u0u0.cc",
-    "lxs": "https://api.hichatapi.info",
-    "live": "http://api.hclyz.com:81",
-    "lclf": "https://lclf.lol",
-    "hhlz": "https://snen24.com",
+    # ---------------- 视频类 ----------------
+    "one": "https://api.3459381.com",                 # ✓（splash 未下发，沿用）
+    "hdb": "https://api.b7f3192.com",                 # ✓ 黄豆瓣
+    "rryy": "https://yy.swgongshui.com",              # ⚑ 2048
+    "hgsp": "https://api55.nmrgqb.com",               # ✓ 黄瓜视频（已确认真实 host）
+    "hxsp": "https://hxapi.ruueyek.com",              # ✓ 红杏视频（token exp=2043）
+    "zlt": "https://apjk85sd.q2ngx58.com",            # ✓ 糟老头
+    "lxs": "https://api.hichatapi.info",              # ⚑ 撸先生
+    "djr": "https://tokyohot-api-bo92ps.mtqztc.com",  # ✗ DNS 无记录，已下线
+    "91av": "https://api3.lmqtqhiho.cc",              # ✓ 91AV
+    "aijav": "https://newavapi.9xyrp3kg4b86.com",     # ✓ AiJav
+    "mdtv": "https://spi.d5c4a712.com",               # ✓ 麻豆TV
+    "mmav": "https://bvbvbvssu.a63qv1sy.com",         # ✓ 猫咪AV（根路径 403 属正常）
+    "kpsp": "https://sm-api.wieuc.com",               # ✓ 看片视频
+    "insav": "https://snen24.com",                    # ⚑ INSAV
+    "txvlog": "https://api.0yhxyky2v099lb9.com",      # ✓ 糖心（splash 未下发，沿用）
+    "km": "https://icef4vn.xyz",                      # ✓ 快猫
+    "91pron": "https://we.killcovid2020.com",         # ✓ 91Pron
+    "javdb": "https://jdforrepam.com",                # ✓ JavDb
+    "missav": "https://missav.ws",                    # ⚑ MissAV
+    "qysq": "https://d1kmvkv4iwtiup.cloudfront.net",  # ✓ 妻友社区
+    "hsck": "https://hsck3.u0u0.cc",                  # ✓ 黄色仓库（418 反爬挑战）
+    "hjsq": "http://23.225.145.74",                   # ✓ 海角社区
+    "lclf": "https://lclf.lol",                       # ⚑ 绿茶楼凤
+    # ---------------- 漫画/小说类 ----------------
+    "akmh": "https://www.18akmanhua.com",             # ⚑ 爱看漫画
+    "jmtt": "https://jdforrepam.com",                 # ✓ 禁漫天堂（splash 未下发，沿用）
+    "mw": "https://manwaqr.cc",                       # ✓ 漫蛙
+    "mmmh": "https://public.mino02.live",             # ✓ 迷妹漫画（配置另见 MMMH_HOST_TXT）
+    "hhlz": "https://snen24.com",                     # ✓ 嘿嘿连载（splash 未下发，沿用）
+    # ---------------- 其他 ----------------
+    "fl2": "https://prja.website",                    # ✓ fulao2（配置另见 FL2_HOST_API）
+    "4hu": "https://h96h69.com",                      # ✗ DNS 有记录但 TCP 不通
+    "51cg": "https://h96h69.com",                     # ✗ 同上（splash 未下发）
+    "cgw": "https://h96h69.com",                      # ✗ 同上（splash 未下发）
+    "live": "http://api.hclyz.com:81",                # ✓ 直播盒子
+}
+
+# ---------------------------------------------------------------------------
+# 配置下发型端点：返回"域名配置"，不是 API 根，不能直接拼接口路径
+# ---------------------------------------------------------------------------
+FL2_HOST_API = "https://prja.website/v1/host"                # fulao2 host 配置
+MMMH_HOST_TXT = "https://public.mino02.live/host_pwa.txt"    # 迷妹漫画 host 配置
+
+# ---------------------------------------------------------------------------
+# 媒体 / 资源域名（图片、m3u8、ts 切片）
+# splash 下发但旧脚本未收录；播放直链与封面拼接需用到
+# ---------------------------------------------------------------------------
+MEDIA_HOSTS = {
+    "hdb_img": "https://gjwspicacrlvz.gdpcdz.com",       # ✓ 黄豆瓣图片
+    "insav_img": "https://yik.yanyunhome.com",           # ✓
+    "kpsp_media": "https://hm-img.hdstfb.com",           # ✓
+    "one_img": "https://q3vp74ws02jp.gdliren123.com",    # ✓
+    "one_video": "https://z4bey8.bx7qxb.com",            # ✓
+    "4hu_api": "https://portal.instruno.com",            # ✓
+    "4hu_video": "https://m3u8.73cdn.com",               # ✓
+    "jpys_img": "https://img.ypfbj.com",                 # ⚑
+    "asgj": "https://qiyouimage.arpuum.cn",              # ✓
+    "live1": "https://17s.bj-steel.com.cn",              # ✓
+    "live2": "http://api.hclyz.com:81",                  # ✓
 }
 
 
@@ -151,6 +194,76 @@ class BaseAdapter(object):
 
     def play(self, vid):
         return None
+
+
+# ---------------------------------------------------------------- host 自适应
+class HostResolver(object):
+    """按平台 key 解析可用域名。
+
+    背景：暮色的域名会轮换，splash 下发的 PLATFORM_HOSTS 是「当前值」，
+    但网络环境不同（直连 / 代理 / 被墙）时未必可用。
+    本类提供：
+      1) 候选池：主域名 + 备选域名（同平台多域名时）
+      2) 记忆：本次进程内哪个域名成功过，后续优先复用
+      3) 归一化：去掉末尾斜杠，避免拼接出 `//path`
+    """
+
+    # 同平台的备选域名（已从 splash 与 plist 交叉确认）
+    ALTERNATES = {
+        "hdb": ["https://api.b3d530f.com", "https://api.6b18726.com", "https://api.7d87e17.com"],
+        "one": ["https://api.61c76a0.com", "https://api.87735d5.com", "https://api.c6dd5cc.com"],
+        "rryy": ["https://yy.swgongshui.com"],
+        "hgsp": ["https://api55.nmrgqb.com"],
+    }
+
+    def __init__(self):
+        self._ok = {}   # key -> 已验证可用的域名
+
+    def candidates(self, key, extra=None):
+        """返回该平台的候选域名列表（已归一化、去重）。"""
+        out = []
+        if key in self._ok:
+            out.append(self._ok[key])
+        base = PLATFORM_HOSTS.get(str(key))
+        if base:
+            out.append(base)
+        for alt in self.ALTERNATES.get(str(key), []):
+            out.append(alt)
+        for u in (extra or []):
+            out.append(u)
+        seen, res = set(), []
+        for u in out:
+            if not u:
+                continue
+            n = str(u).rstrip("/")
+            if n and n not in seen:
+                seen.add(n)
+                res.append(n)
+        return res
+
+    def mark_ok(self, key, host):
+        if host:
+            self._ok[str(key)] = str(host).rstrip("/")
+
+    def primary(self, key):
+        """取首选域名（不探测）。"""
+        c = self.candidates(key)
+        return c[0] if c else ""
+
+    def join(self, host, path):
+        """安全拼接：host 去尾斜杠，path 去头斜杠。"""
+        return str(host).rstrip("/") + "/" + str(path).lstrip("/")
+
+
+_HOST_RESOLVER = None
+
+
+def host_resolver():
+    """全局单例，跨 Adapter 共享探测结果。"""
+    global _HOST_RESOLVER
+    if _HOST_RESOLVER is None:
+        _HOST_RESOLVER = HostResolver()
+    return _HOST_RESOLVER
 
 
 # ============================================================ rryy / 2048
@@ -385,14 +498,52 @@ class OneAdapter(BaseAdapter):
         self.token = OneAdapter.TOKEN
         self.uuid = OneAdapter.UUID
         self._cats = None
+        self._token_warned = False
 
+    # ---------------- token 有效期 ----------------
     @staticmethod
-    def _sign(ts, uuid):
+    def token_exp(tok):
+        """从 JWT 取出 exp（秒级时间戳）。非 JWT 返回 None。"""
+        try:
+            parts = str(tok).split(".")
+            if len(parts) < 2:
+                return None
+            seg = parts[1]
+            seg += "=" * (-len(seg) % 4)
+            payload = json.loads(base64.urlsafe_b64decode(seg))
+            return payload.get("exp")
+        except Exception:
+            return None
+
+    def token_status(self):
+        """返回 (是否有效, 剩余秒数)。无 exp 视为未知但放行。"""
+        exp = self.token_exp(self.token)
+        if exp is None:
+            return True, None
+        left = int(exp) - int(time.time())
+        return left > 0, left
+
+    def _check_token(self):
+        """首次调用时检查 token 剩余寿命，过短则写日志（不影响返回结构）。"""
+        if self._token_warned:
+            return
+        self._token_warned = True
+        ok, left = self.token_status()
+        try:
+            if not ok:
+                _LOG.warning("one: token 已过期，需更新 OneAdapter.TOKEN")
+            elif left is not None and left < 86400:
+                _LOG.warning("one: token 将在 %.1f 小时后过期", left / 3600.0)
+        except Exception:
+            pass
+
+    def _sign(self, ts, uuid):
         import hashlib
         inner = hashlib.md5(("0.0.0.0.3." + ts + ".." + uuid).encode()).hexdigest()
         return hashlib.md5((inner + OneAdapter.SIGN_SALT).encode()).hexdigest()
 
     def _call(self, path, form=""):
+        self._check_token()
         ts = str(int(time.time()))
         headers = {
             "User-Agent": UA_DART,
@@ -743,24 +894,65 @@ piQStzEEfes94FMWEOaBHDA=
             }
         ]
 
-    def list(self, tid, page):
-        page = int(page or 1)
+    def _fetch_daily(self, date_str, page=1):
+        """取指定日期的一页数据。date 为必填参数（缺省会返回 code=41000 参数错误）。"""
         params = dict(HdbAdapter.COMMON)
         params.update({
             "page": page,
             "length": 20,
             "country": -2,
             "censorship_type": 0,
-            "date": time.strftime("%Y-%m-%d"),
+            "date": date_str,
         })
-        resp = self._post("pwa/v2_0/dailyList", params)
+        return self._post("pwa/v2_0/dailyList", params)
+
+    @staticmethod
+    def _items_of(resp):
+        if not resp or not isinstance(resp, dict):
+            return []
+        data = resp.get("data", resp)
+        if not isinstance(data, dict):
+            return []
+        items = data.get("list")
+        return items if isinstance(items, list) else []
+
+    def _latest_date(self):
+        """当天无更新时，回溯最多 7 天，找最近有数据的一天。
+
+        hdb 的 dailyList 按"更新时间"分组：今天还没更新时列表就是空的，
+        但这不代表平台挂了。回溯保证客户端不会看到空白页。
+        """
+        today = datetime.date.today()
+        for back in range(0, 8):
+            d = (today - datetime.timedelta(days=back)).isoformat()
+            if back == 0:
+                hit = self._fetch_daily(d, 1)
+                if self._items_of(hit):
+                    return d, hit
+                continue
+            time.sleep(0.8)          # 服务端有限流，请求间隔别太密
+            resp = self._fetch_daily(d, 1)
+            if self._items_of(resp):
+                return d, resp
+        return today.isoformat(), None
+
+    def list(self, tid, page):
+        page = int(page or 1)
+        today_str = time.strftime("%Y-%m-%d")
+
+        if page <= 1:
+            date_str, resp = self._latest_date()
+            self._current_date = date_str
+        else:
+            # 翻页沿用上一次选定的日期，避免同日多次回溯
+            date_str = getattr(self, "_current_date", today_str) or today_str
+            resp = self._fetch_daily(date_str, page)
+
         out = []
         if not resp or not isinstance(resp, dict):
             return out
         data = resp.get("data", resp)
-        items = data.get("list") if isinstance(data, dict) else None
-        if not isinstance(items, list):
-            items = []
+        items = self._items_of(resp)
         for it in items:
             if not isinstance(it, dict):
                 continue
