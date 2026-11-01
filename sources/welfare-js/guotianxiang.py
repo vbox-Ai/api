@@ -519,17 +519,28 @@ class Spider(SpiderBase):
                 cat_name = decrypt_text(cat.get("name", ""))
                 if not cat_name:
                     continue
-                classes.append({"type_id": cat_id, "type_name": cat_name})
+                # 一级分类条目（附加二级分类：流派 genre）
+                cat_item = {"type_id": cat_id, "type_name": cat_name}
 
                 genre_filter = {
                     "key": "genre",
                     "name": "流派",
                     "value": [{"n": "全部", "v": ""}]
                 }
+                # 二级分类：用「流派(genre)」作为 sub_categories
+                # type_id 用「分类id|流派id」复合格式，便于 categoryContent 解析
+                sub_cats = []
                 for g in (cat.get("genres") or []):
                     g_name = decrypt_text(g.get("name", ""))
+                    g_id = str(g.get("id", ""))
                     if g_name:
-                        genre_filter["value"].append({"n": g_name, "v": str(g.get("id", ""))})
+                        genre_filter["value"].append({"n": g_name, "v": g_id})
+                        sub_cats.append({
+                            "type_id": "%s|%s" % (cat_id, g_id),
+                            "type_name": g_name,
+                        })
+                if sub_cats:
+                    cat_item["sub_categories"] = sub_cats
 
                 label_filter = {
                     "key": "label",
@@ -541,6 +552,7 @@ class Spider(SpiderBase):
                     if l_name:
                         label_filter["value"].append({"n": l_name, "v": str(l.get("id", ""))})
 
+                classes.append(cat_item)
                 filters_map[cat_id] = [genre_filter, label_filter]
 
         if not classes:
@@ -573,9 +585,17 @@ class Spider(SpiderBase):
 
     def categoryContent(self, tid, pg, filter, extend):
         result = {"list": [], "page": pg, "pagecount": 0, "limit": 20, "total": 0}
+
+        # 二级分类复合格式「分类id|流派id」→ 拆出分类 id + genre 参数
+        genre_param = None
+        if tid and isinstance(tid, str) and "|" in tid:
+            tid, _, genre_param = tid.partition("|")
+
         api_path = f"/type/{tid}_{pg}.json?{self.csstime}"
 
         params = {}
+        if genre_param:
+            params["genre"] = genre_param
         if extend and isinstance(extend, dict):
             if extend.get("genre"):
                 params["genre"] = extend["genre"]
