@@ -371,14 +371,14 @@ class OneAdapter(BaseAdapter):
     KEY = b"l*bv%Ziq000Biaog"
     IV = b"8597506002939249"
     SIGN_SALT = "m4n2hjPeYWkD6tFpqKF^3HO^h24P@idT"
-    # 访客态（muse_endpoints.json tokens.one_visitor + 对应 uuid）
-    TOKEN = ("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjUwODE5NTY0LCJpc192aXNpdG9yIjoxLCJ"
-             "1dWlkIjoiOWIxYTI5ZjAtY2Y4MS0xMWYxLTkyYzQtMTE0YThlYWZlYzRiIiwibmlja25hbWUiOiJcdTUx"
-             "YWNcdTZjZjNcdTYwMmFcdTllM2Q1MTU0MjcxIiwiaXAiOiI1Ni43MC4yLjI0NiIsImlhdCI6MTc5Mjg2"
-             "ODkxMCwiZXhwIjoxNzkzNDc3MzEwLCJuYmYiOjE3OTI4Njg5MTAsInN1YiI6ImFwaS40M2I4NDc3LmNv"
-             "bSIsImp0aSI6IjZkNTU1N2QyYTMyNzFhZDU4ZmMyZTUxN2MyODk5M2UwIn0.FY51Jq0ZXozjkDCOAPi2"
-             "O1FW-IluL4TxSlLwtZguKPI")
-    UUID = "9b1a29f0-cf81-11f1-92c4-114a8eafec4b"
+    # 正式态 token（muse_endpoints.json tokens.one + 对应 uuid）
+    # 注意：正式态 token exp=2026-11-02 07:00，过期后需刷新（后续补动态刷新机制）
+    TOKEN = ("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOjgwNTA0NzcsImlzX3Zpc2l0b3IiOjAsInV1"
+             "aWQiOiJkYTIzYTMwMC1jZWJmLTExZjEtOWJlMC0yYjg0NDU2OWFmMzkiLCJuaWNrbmFtZSI6IjE1Nioq"
+             "KioqOTU2IiwiaXAiOiIzOC40Ni4xMC4yIiwiaWF0IjoxNzkyOTY1NjAwLCJleHAiOjE3OTM1NzQwMDAs"
+             "Im5iZiI6MTc5Mjk2NTYwMCwic3ViIjoiYXBpLmVtMW9pZmQwLmNvbSIsImp0aSI6IjdmOGQzZWZjNWU3"
+             "ZWM1NmFmM2M4Y2FmZDQ2YzExYTFmIn0.ynDjIcs74g7uRB84mnr98rU7trsInlK0pjXzCIr6xMI")
+    UUID = "da23a300-cebf-11f1-9be0-2b844569af39"
 
     def __init__(self, spider):
         super(OneAdapter, self).__init__(spider)
