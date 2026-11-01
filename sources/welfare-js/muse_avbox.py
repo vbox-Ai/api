@@ -548,6 +548,7 @@ class Spider(_B):
         self._opener = urllib.request.build_opener(
             urllib.request.HTTPCookieProcessor(self._jar))
         self._adapter = None
+        self._last_adapter = None  # 目录模式下记录最近一次 categoryContent 用到的 adapter
 
     # ---------------- 基类接口 ----------------
     def getName(self):
@@ -668,6 +669,21 @@ class Spider(_B):
             self._adapter = cls(self) if cls else None
         return self._adapter
 
+    def _adapter_for(self, key):
+        """按平台 key 动态取 adapter（目录模式用）。
+
+        目录模式（MODULE=""）下，客户端把 31 个平台当分类返回，
+        点某个平台 → categoryContent(tid=平台key) → 需要按 key 路由到
+        对应 Adapter（而非固定 MODULE）。未适配 key 返回 None。
+        """
+        cls = ADAPTERS.get(str(key))
+        if cls is None:
+            return None
+        try:
+            return cls(self)
+        except Exception:
+            return None
+
     # ---------------- vbox 方法 ----------------
     def homeContent(self, filter):
         adapter = self._get_adapter()
@@ -677,9 +693,29 @@ class Spider(_B):
                 classes = [{"type_id": "1", "type_name": "全部"}]
             return {"class": classes, "list": []}
 
-        # 目录模式：未设 MODULE 时把 31 个平台当分类（兼容旧入口）
+        # 目录模式：未设 MODULE 时把 31 个平台当一级分类返回，
+        # 已适配平台（rryy/one）附加 sub_categories（二级分类），
+        # type_id 用「平台key_分类id」复合格式保证全局唯一，便于
+        # categoryContent 解析出平台 + 分类。
         if not self.MODULE:
-            classes = [{"type_id": m["key"], "type_name": m["name"]} for m in CATALOG]
+            classes = []
+            for m in CATALOG:
+                key = m["key"]
+                item = {"type_id": key, "type_name": m["name"]}
+                cls = ADAPTERS.get(key)
+                if cls is not None:
+                    try:
+                        tmp = cls(self)
+                        subs = tmp.categories()
+                        if subs:
+                            item["sub_categories"] = [
+                                {"type_id": "%s_%s" % (key, s["type_id"]),
+                                 "type_name": s["type_name"]}
+                                for s in subs
+                            ]
+                    except Exception:
+                        pass
+                classes.append(item)
             return {"class": classes, "list": []}
 
         # 未适配平台：用内容类型做占位分类，明确降级
@@ -697,8 +733,22 @@ class Spider(_B):
         page = int(pg or 1)
         empty = {"list": [], "page": page, "pagecount": page + 1, "limit": 0, "total": 0}
         adapter = self._get_adapter()
+        # 目录模式：MODULE 为空 → 客户端把「平台 key」或「平台key_分类id」当 tid 传入
+        if adapter is None and not self.MODULE:
+            tid = str(tid)
+            # 复合格式 rryy_yuma → 平台 key=rryy，分类 id=yuma
+            if "_" in tid:
+                pkey, _, sub_id = tid.partition("_")
+                adapter = self._adapter_for(pkey)
+                if adapter is not None:
+                    # 把真实分类 id 传给 adapter
+                    tid = sub_id
+            else:
+                adapter = self._adapter_for(tid)
         if adapter is None:
             return empty
+        # 记录最近 adapter，供目录模式下 detailContent/playerContent 复用
+        self._last_adapter = adapter
         try:
             items = adapter.list(tid, page)
         except Exception:
@@ -718,6 +768,9 @@ class Spider(_B):
     def detailContent(self, array):
         vid = str(array[0]) if array else ""
         adapter = self._get_adapter()
+        # 目录模式：复用最近一次 categoryContent 路由到的 adapter
+        if adapter is None and not self.MODULE:
+            adapter = self._last_adapter
         if adapter is None or not vid:
             return {"list": []}
         try:
@@ -742,6 +795,9 @@ class Spider(_B):
 
     def playerContent(self, flag, id, vipFlags):
         adapter = self._get_adapter()
+        # 目录模式：复用最近一次 categoryContent 路由到的 adapter
+        if adapter is None and not self.MODULE:
+            adapter = self._last_adapter
         if adapter is not None and str(id) and not str(id).startswith("http"):
             try:
                 r = adapter.play(str(id))

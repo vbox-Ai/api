@@ -4031,6 +4031,28 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "muse_avbox_agg_py",
+        "name": "暮色聚合",
+        "category": "video",
+        "icon": "moon.stars.fill",
+        "desc": "Python蜘蛛版 — 暮色聚合入口（目录模式：31 平台作一级分类 + 二级分类）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://yy.swgongshui.com"
+        ],
+        "sortOrder": 525,
+        "defaultProxy": false,
+        "notes": "暮色聚合入口（目录模式）。MODULE 为空时 homeContent 把 31 个平台当一级分类返回，已适配平台（rryy/one）附加 sub_categories 二级分类（type_id 用「平台key_分类id」复合格式）。categoryContent 按 tid 解析平台前缀路由到对应 Adapter。api 指向自包含引擎 muse_avbox.py（不依赖 musep_*.py）。",
+        "api": "./sources/welfare-js/muse_avbox.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ],
     "updatedAt": "2026-10-31T04:30:00Z"
