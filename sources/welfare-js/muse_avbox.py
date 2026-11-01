@@ -192,8 +192,39 @@ class RryyAdapter(BaseAdapter):
             item = {"type_id": cid, "type_name": _html.unescape(name).strip()}
             if item not in seen:
                 seen.append(item)
-        self._cats = seen
-        return seen
+        # 把 11 个扁平分类重组成「带二级分类」的结构：
+        #   有码   → [日本有码, 中文有码]
+        #   无码   → [中文无码, 日本无码, 欧美无码]
+        #   地区   → [国产强片, 日韩强片, 欧美强片]
+        #   独立   → 三级强片 / 包罗万象 / VR专区
+        # 二级分类用 `sub_categories` 键（下划线风格），与客户端
+        # VodCategory.fromJson 约定一致（scheme A）。
+        flat = {c["type_id"]: c for c in seen}
+        groups = [
+            ("yuma",  "有码", ["6", "10"]),
+            ("wuma",  "无码", ["7", "8", "9"]),
+            ("diqu",  "地区", ["1", "4", "13"]),
+        ]
+        cats = []
+        used = set()
+        for gid, gname, members in groups:
+            subs = []
+            for mid in members:
+                if mid in flat:
+                    subs.append({"type_id": mid, "type_name": flat[mid]["type_name"]})
+                    used.add(mid)
+            if subs:
+                cats.append({
+                    "type_id": gid,
+                    "type_name": gname,
+                    "sub_categories": subs,
+                })
+        # 剩余分类作为独立一级分类
+        for c in seen:
+            if c["type_id"] not in used:
+                cats.append(c)
+        self._cats = cats
+        return cats
 
     @staticmethod
     def _cards(html):
@@ -219,13 +250,31 @@ class RryyAdapter(BaseAdapter):
         return out
 
     def list(self, tid, page):
+        page = int(page or 1)
+        # 聚合分类（yuma/wuma/diqu）→ 合并各子分类的第一页数据；
+        # 独立分类 → 请求对应 /home/{cid}.html?p={页}
+        tid = str(tid)
+        group_subs = {
+            "yuma": ["6", "10"],
+            "wuma": ["7", "8", "9"],
+            "diqu": ["1", "4", "13"],
+        }
+        if tid in group_subs:
+            merged = []
+            seen_ids = set()
+            for sub_id in group_subs[tid]:
+                html = self._page("/home/%s.html?p=%d" % (sub_id, page))
+                if not html or len(html) < 5000:
+                    continue
+                for card in self._cards(html):
+                    if card["vod_id"] not in seen_ids:
+                        seen_ids.add(card["vod_id"])
+                        merged.append(card)
+            return merged
+        # 独立分类
         cats = {c["type_id"] for c in self.categories()}
         if tid not in cats:
             tid = "1"
-        page = int(page or 1)
-        # 分页实测（2026-10-31）：
-        #   /home/{cid}.html?p={页}  → 分类正确且分页生效（24 张/页）
-        #   /?cid={cid}&filter=news&p={页} → 忽略 cid，只按偏移翻全站，分类场景不可用
         html = self._page("/home/%s.html?p=%d" % (tid, page))
         if not html or len(html) < 5000:
             return []
