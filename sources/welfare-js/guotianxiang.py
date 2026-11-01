@@ -591,11 +591,14 @@ class Spider(SpiderBase):
         if tid and isinstance(tid, str) and "|" in tid:
             tid, _, genre_param = tid.partition("|")
 
-        api_path = f"/type/{tid}_{pg}.json?{self.csstime}"
+        # 接口路径：有 genre（二级分类）→ /genre/{cat}_{genre}_{pg}.json；
+        # 否则（一级分类）→ /type/{cat}_{pg}.json
+        if genre_param:
+            api_path = f"/genre/{tid}_{genre_param}_{pg}.json?{self.csstime}"
+        else:
+            api_path = f"/type/{tid}_{pg}.json?{self.csstime}"
 
         params = {}
-        if genre_param:
-            params["genre"] = genre_param
         if extend and isinstance(extend, dict):
             if extend.get("genre"):
                 params["genre"] = extend["genre"]
