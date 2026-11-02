@@ -1,0 +1,106 @@
+{
+ "static_host": "https://dxj4su.e36cxt7p.com/public/1",
+ "img_host": "https://catsta.tingqian.top/public/1",
+ "image_url": "https://m3m.1vkx.cn",
+ "qr_host": "[\"223qt.com\",\"7da7b1e7ddd7.com\",\"bb28n.com\",\"eadd6eca51ab.com\",\"2b2m9.com\",\"95c97b88c90d.com\",\"2b3n9.com\",\"b2c3p.com\",\"fb956169a70a.com\",\"bb36b.com\",\"4e5e3bc48511.com\",\"223tf.com\",\"fc7f58378ae9.com\",\"2b2y3.com\",\"bb29y.com\",\"a2a7711b2bfb.com\",\"223pb.com\",\"8c44ab030023.com\",\"bb23n.com\",\"1c5dfa3ad9a8.com\"]",
+ "api_url": "https://mapsjbogs.hongtaitanghua.com/api",
+ "image_source_url": "https://m3m.qfbyjin6y1e3.com/maomi/mm_web_assets/build1",
+ "api_urls": [],
+ "box": "/plugins/utils/u_menu.json",
+ "mm": "/plugins/utils/u_mm.js",
+ "goods": "/plugins/utils/u_goods.json",
+ "banner": "/plugins/utils/u_banner.js",
+ "def_ins": "https://www.pbpp89.top",
+ "def_wuma_ins": "https://wuma.jkbm83.com",
+ "xte": "https://xtejrj.xyz",
+ "vip_domain": "https://www.2c6m3.com",
+ "dr_config": "{ \"jump\": false, \"url\": \"/\" }",
+ "jump_ins": "{\"jump\": true,\"url\": \"def_ins\",\"wuma_url\": \"def_wuma_ins\"}",
+ "download_img": "https://mj.pki.net.cn/img/maomi_app.gif",
+ "download_close": "1",
+ "spe_ext": "1",
+ "yq_ts": "{\"con\": true,\"url\": \"def_ins\"}",
+ "customer_service_url": "https://key.vsqe37.top/chat?project=maomi",
+ "app_customer_service_url": "https://key.vsqe37.top/chat?project=maomi",
+ "topic_customer_service_url": "https://key.vsqe37.top/chat?project=mmcg",
+ "pic_customer_service_url": "https://key.vsqe37.top/chat?project=mmtk",
+ "app_agent_service_url": "https://service.0ni7dcwr.com/client_chatpc?token=qquuyy",
+ "app_download_page": "https://adf98.top/",
+ "app_agent_module_enabled": "0",
+ "search_switch": "1",
+ "contact_telegram": "https://t.me/maom119",
+ "top_menu": [
+  {
+   "name": "中文字幕",
+   "channel": "shipin",
+   "jump_name": "zwzm"
+  },
+  {
+   "name": "国产精品",
+   "channel": "shipin",
+   "jump_name": "gcjp"
+  },
+  {
+   "name": "岛国无码",
+   "channel": "cili",
+   "jump_name": "dgwm"
+  },
+  {
+   "name": "特色专区",
+   "channel": "dropdown",
+   "part": "tesezhuanqu"
+  },
+  {
+   "name": "友情推荐",
+   "channel": "dropdown",
+   "part": "maomiqixia"
+  }
+ ],
+ "config": {
+  "vpn_url": "https://geminijsq.com/index/downtype/type/maomiweb.html",
+  "dns_url": "https://help.bancon.cc/mm/dns/",
+  "json_host": "https://tjqzku.ymz16835.com/",
+  "pic_json_host": "https://vezs4g.g4au6d8b.com/",
+  "peach_url": null
+ },
+ "site1": "88vy2y8knlx9.cc",
+ "site2": "a3mhb.cc",
+ "site_topic": "1",
+ "site_cili": "1",
+ "cili_url": "https://13t5r786.com/",
+ "pic_url": "https://7631irjm.com",
+ "get_domain_api": "http://mmdomain.2d61dcdafe6366ef.pw/maomi",
+ "promo_1": "240.00",
+ "promo_2": "210.00",
+ "bbs_domain": "https://maomibbs.com/bbs",
+ "bbs_path": "/main/view-post/",
+ "bbs_entry": "1",
+ "tongji_domain": "http://msta.moyicp.com/",
+ "topic_playdomain": "https://m3m.1vkx.cn/",
+ "topic_thumbdomain": "https://jnew.tlxxw.cc/",
+ "site_xiaoshuo": "1",
+ "xiaoshuo_domain": "https://maomixiaoshuo.com/",
+ "image_domain": "https://wzzqlm.erbaiwulaoge.com",
+ "encrypted_image_domain": "https://mcidownlitup.erbaiwulaoge.com",
+ "m3u8_host_encrypt": "https://cf-worker-r2.mtzionhub.com",
+ "m3u8_host_encrypt1": "https://cf-worker-r2.mtzionhub.com",
+ "m3u8_host_encrypt2": "https://cf-worker-r2.mtzionhub.com",
+ "player_comment_url": "https://forjson.46z02bj3.com/luntan/site_bbs/commentLists-{id}-1-5.js",
+ "player_luntan_url": "https://luntan.02becc43a275.com/bbs/main/view-post/{id}?c=home_post",
+ "mm_web_image_domain": "https://wzzqlm.erbaiwulaoge.com",
+ "mm_pic_image_domain": "https://wzzqlm.erbaiwulaoge.com",
+ "mm_app_image_domain": "https://wzzqlm.erbaiwulaoge.com",
+ "mm_sex_edu_domain": "https://nype28.top",
+ "footer": {
+  "mm_sex_education": "https://nype28.top"
+ },
+ "topic_is_free": "0",
+ "mm_topic_is_free": "0",
+ "post_exclusive_free": "0",
+ "post_chigua_free": "0",
+ "partner_platforms_enabled": 0,
+ "xai_banner": {
+  "url": "https://www.nmcr24.top",
+  "img": "/picture/ads/20260309/xai_banner_2.gif"
+ }
+}
