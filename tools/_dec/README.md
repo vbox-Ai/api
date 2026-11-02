@@ -12,8 +12,24 @@
 | `mmav_config.json` | mmav `data/config/base-1.js` | 4.2 KB | 域名分工、开关、客服链接等 60+ 字段 |
 | `mmav_category.json` | mmav `data/category/base-1.js` | 27 KB | 分类树，10 个一级菜单 × 8 子分类 |
 | `mmav_list_sample.json` | mmav `data/mediaVideo/list-7-1-50.js` | 51 KB | 列表样本，50 条完整字段 |
+| `4hu_search_sample.json` | 4hu `/api/v2/search` | 97 B | AES-256 解密样本（total=0，证算法可用） |
+| `4hu_challenge_sample.json` | 4hu `public2/json/category/` | 933 B | CDN 反爬 XOR 解密样本 + 算法说明 |
 
 ## 各文件的解密方式
+
+### 4hu（4hu_*）
+
+```
+业务响应：base64(- _ → + /) → AES-256-CBC → JSON
+  key = "22946bc50fd63164b79df55070a85a92"   # 32 字符 → 32 字节（不是 hex）
+  iv  = "kaixin1234567890"
+
+CDN 反爬 ap-d 块（纯 XOR）：
+  key[i]   = int(data_k_hex[2i:2i+2], 16) ^ 0xA5
+  plain[i] = base64decode(blob)[i] ^ key[i % len(key)]
+```
+
+解密器：`tools/4hu_client.py`
 
 ### 6868 主后端（box_* / collect_*）
 

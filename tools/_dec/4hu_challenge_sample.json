@@ -1,0 +1,8 @@
+{
+ "_note": "4hu CDN 反爬 ap-d 块解密样本。算法见 4hu攻坚进展.md",
+ "_host": "https://c8yeak.com",
+ "_kind": "challenge-decrypted",
+ "_algo": "key[i]=int(data_k_hex[2i:2i+2],16)^0xA5; plain[i]=b64(blob)[i]^key[i%len(key)]",
+ "_content_head": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><meta http-equiv=\"Cache-Control\" content=\"no-transform\"><meta http-equiv=\"Cache-Control\" content=\"no-siteapp\"><meta name=\"applicable-device\" content=\"pc,mobile\"><meta name=\"MobileOptimized\" content=\"width\"><meta name=\"HandheldFriendly\" content=\"true\"><meta name=\"browsermode\" content=\"application\"><meta name=\"layoutmode\" content=\"fitscreen\"><meta name=\"wap-font-scale\" content=\"no\"><meta ",
+ "_content_len": 3713
+}
