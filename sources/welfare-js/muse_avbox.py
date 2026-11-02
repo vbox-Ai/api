@@ -38,6 +38,7 @@ import re
 import ssl
 import base64
 import datetime
+import hashlib
 import logging
 import html as _html
 import urllib.parse
@@ -1063,11 +1064,272 @@ piQStzEEfes94FMWEOaBHDA=
         return None
 
 
+# ============================================================ mmav / 猫咪AV
+class MmavAdapter(BaseAdapter):
+    """猫咪AV —— 静态 js 数据 + AES-256-CBC 动态 IV + wsSecret 播放鉴权。
+
+    链路（2026-11-02 全链路实测打通）：
+      配置  GET data/config/base-1.js   → static_host / image_domain / m3u8_host_encrypt
+      分类  GET data/category/base-1.js → menus 树（10 个一级菜单，各 8 个子分类）
+      列表  GET data/mediaVideo/list-{cid}-{page}-50.js → 视频列表（50/页）
+      封面  image_domain + cover 路径 → 200 image/jpeg
+      播放  m3u8_host_encrypt + video_url + wsSecret 签名 → 200 application/vnd.apple.mpegurl
+
+    加密（avbox/module/mmav/network/interceptor.dart 反汇编还原）：
+      key = "IdTJq0HklpuI6mu8iB%OO@!vd^4K&uXW"   (32 字节 → AES-256)
+      iv  = "$0v@krH7V2" + response["suffix"]      (固定常量在前，动态 suffix 在后)
+      data = base64 → AES-256-CBC 解密 → JSON
+
+    播放鉴权（avbox/util/url_util.dart::mmAvVideo + str_util.dart::wsSecret）：
+      expire = now + 7200
+      wsSecret = md5( "D7hGKHnWThaECaQ3ji4XyAF3MfYKJ53M" + uri.path + expire )
+      → url?wsSecret=xxx&wsTime=xxx&ip=xxx
+
+    分页语义（实测纠正）：模板中间数字是「页码」不是偏移量。
+      list-7-1-50 → 第1页(首条54433)；list-7-2-50 → 第2页(首条50526)
+      误传偏移 51 会变成第 51 页并返回空。
+
+    遗留：
+      - data/list/base-* 是另一种 slug 型列表，当前返回空 cat_list（未使用）
+      - 专题频道（channel=topic）走 /page/topic/{id}，未接入
+    """
+
+    content_type = "video"
+    HOST = "https://bvbvbvssu.a63qv1sy.com"
+    KEY = b"IdTJq0HklpuI6mu8iB%OO@!vd^4K&uXW"
+    IV_PREFIX = "$0v@krH7V2"
+    IMG_FALLBACK = "https://wzzqlm.erbaiwulaoge.com"
+    VIDEO_FALLBACK = "https://cf-worker-r2.mtzionhub.com"
+    WS_SALT = "D7hGKHnWThaECaQ3ji4XyAF3MfYKJ53M"
+
+    def __init__(self, spider):
+        super(MmavAdapter, self).__init__(spider)
+        self._cfg = None
+        self._cats = None
+        self._cat_map = {}      # 分类 id -> 名称
+        self._vid_map = {}      # vod_id -> {video_url, cover, category_id}
+        self._have_crypto = True
+        try:
+            from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+            self._Cipher, self._algo, self._modes = Cipher, algorithms, modes
+        except Exception:
+            self._have_crypto = False
+
+    # ---------------- 传输与解密 ----------------
+    def _get(self, path):
+        txt = self.sp.fetch_text(self.HOST + "/" + path,
+                                 headers={"User-Agent": UA_IOS})
+        if not txt or not txt.lstrip().startswith("{"):
+            return None
+        try:
+            return json.loads(txt)
+        except Exception:
+            return None
+
+    def _dec(self, obj):
+        """解密响应：data + suffix → AES-256-CBC。"""
+        if not obj or not self._have_crypto:
+            return None
+        data = obj.get("data")
+        suffix = obj.get("suffix") or ""
+        if not data:
+            return None
+        iv = (MmavAdapter.IV_PREFIX + suffix).encode("utf-8")
+        if len(iv) != 16:
+            return None
+        try:
+            raw = base64.b64decode(data + "=" * (-len(data) % 4))
+            if len(raw) % 16:
+                return None
+            d = self._Cipher(self._algo.AES(MmavAdapter.KEY),
+                             self._modes.CBC(iv)).decryptor()
+            pt = d.update(raw) + d.finalize()
+            n = pt[-1] if pt else 0
+            if 1 <= n <= 16:
+                pt = pt[:-n]
+            return json.loads(pt.decode("utf-8", "replace"))
+        except Exception:
+            return None
+
+    def _fetch_dec(self, path):
+        obj = self._get(path)
+        if not obj or obj.get("code") != 0:
+            return None
+        return self._dec(obj)
+
+    # ---------------- 配置 / 分类 ----------------
+    def _config(self):
+        if self._cfg is None:
+            self._cfg = self._fetch_dec("data/config/base-1.js") or {}
+        return self._cfg
+
+    def _img_base(self):
+        """封面域名优先级（实测）：
+           catsta.tingqian.top 不可达(000)，wzzqlm 与 m3m 可用。
+           用 image_domain（服务端下发）优先，img_host 已失效作兜底。"""
+        cfg = self._config()
+        return ((cfg.get("image_domain") or cfg.get("mm_web_image_domain")
+                 or cfg.get("image_url") or MmavAdapter.IMG_FALLBACK)).rstrip("/")
+
+    def _video_base(self):
+        """播放域名（客户端 SpUtil 的 MmAvVideo ← config.m3u8_host_encrypt）。
+           实测只有 cf-worker-r2.mtzionhub.com 对 m3u8 返回 200，其余 403。"""
+        cfg = self._config()
+        return (cfg.get("m3u8_host_encrypt")
+                or cfg.get("m3u8_host_encrypt1")
+                or MmavAdapter.VIDEO_FALLBACK).rstrip("/")
+
+    # ---------------- wsSecret 播放签名 ----------------
+    # 反汇编还原（url_util.dart::mmAvVideo + str_util.dart::wsSecret）：
+    #   mmAvVideo(path) = wsSecret(SALT, host + path)
+    #   wsSecret(salt, url):
+    #       expire = now_seconds + 7200
+    #       secret = md5( salt + uri.path + expire )
+    #       → url?wsSecret=<secret>&wsTime=<expire>&ip=<ip>
+    @staticmethod
+    def _ws_sign(url, salt=None, ttl=7200, ip="0.0.0.0"):
+        salt = salt or MmavAdapter.WS_SALT
+        try:
+            expire = int(time.time()) + int(ttl)
+            path = urllib.parse.urlparse(url).path
+            secret = hashlib.md5(
+                ("%s%s%d" % (salt, path, expire)).encode()).hexdigest()
+            return "%s?wsSecret=%s&wsTime=%d&ip=%s" % (url, secret, expire, ip)
+        except Exception:
+            return url
+
+    def categories(self):
+        if self._cats is not None:
+            return self._cats
+        menus = self._fetch_dec("data/category/base-1.js")
+        cats = []
+        if isinstance(menus, dict):
+            tree = menus.get("menus") or {}
+            for gid, group in tree.items():
+                if not isinstance(group, dict):
+                    continue
+                subs = []
+                for it in group.get("data") or []:
+                    if not isinstance(it, dict):
+                        continue
+                    sid = it.get("id")
+                    sname = it.get("name") or it.get("jump_name")
+                    if sid is None or not sname:
+                        continue
+                    subs.append({"type_id": str(sid), "type_name": str(sname)})
+                    self._cat_map[str(sid)] = str(sname)
+                if subs:
+                    cats.append({
+                        "type_id": str(gid),
+                        "type_name": group.get("name") or ("分类" + str(gid)),
+                        "sub_categories": subs,
+                    })
+        # 兜底：media_video 频道已知有数据的分类
+        if not cats:
+            cats = [{"type_id": str(i), "type_name": n} for i, n in
+                    ((7, "国产传媒"), (9, "素人自拍"), (12, "日本AV"),
+                     (2, "麻豆"), (3, "直播"), (4, "动漫"), (5, "网黄"), (6, "绳艺"))]
+        self._cats = cats
+        return cats
+
+    def _norm_cid(self, tid):
+        """目录模式传 tid 可能是 'mmav_7' 复合格式，或纯 id。"""
+        t = str(tid)
+        if "_" in t:
+            parts = t.split("_", 1)
+            if parts[0] == "mmav":
+                return parts[1]
+        return t
+
+    def list(self, tid, page):
+        cid = self._norm_cid(tid)
+        page = max(1, int(page or 1))
+        # 模板：data/mediaVideo/list-{cid}-{page}-50.js
+        # 实测（2026-11-02）中间数字是「页码」不是偏移量：
+        #   page=1 -> current_page=1 首条 54433
+        #   page=2 -> current_page=2 首条 50526
+        #   page=3 -> current_page=3 首条 47571
+        #   若误传偏移(51/101)，会变成第 51/101 页并返回空
+        obj = self._fetch_dec(
+            "data/mediaVideo/list-%s-%d-50.js" % (cid, page))
+        out = []
+        if not obj:
+            return out
+        lst = obj.get("list") or {}
+        items = lst.get("data") if isinstance(lst, dict) else None
+        if not isinstance(items, list):
+            return out
+        base = self._img_base()
+        for it in items:
+            if not isinstance(it, dict):
+                continue
+            vid = it.get("id")
+            if vid is None:
+                continue
+            cover = it.get("cover") or it.get("thumb") or ""
+            pic = cover
+            if cover and not cover.startswith("http"):
+                pic = base + cover
+            self._vid_map[str(vid)] = {
+                "video_url": it.get("video_url") or "",
+                "cover": cover,
+                "title": it.get("title") or str(vid),
+                "category_id": it.get("category_id"),
+            }
+            out.append({
+                "vod_id": str(vid),
+                "vod_name": it.get("title") or str(vid),
+                "vod_pic": pic,
+                "vod_remarks": str(it.get("resolution") or "") + " / " +
+                              str(it.get("duration_seconds") or "") + "s",
+            })
+        return out
+
+    def detail(self, vid):
+        info = self._vid_map.get(str(vid))
+        if info:
+            base = self._img_base()
+            pic = info["cover"]
+            if pic and not pic.startswith("http"):
+                pic = base + pic
+            return {
+                "vod_id": str(vid),
+                "vod_name": info.get("title") or str(vid),
+                "vod_pic": pic,
+            }
+        return {"vod_id": str(vid), "vod_name": str(vid)}
+
+    def play(self, vid):
+        """播放：video_url 是相对路径，需拼播放域名 + wsSecret 签名。
+
+        实测（2026-11-02）：
+          域名 cf-worker-r2.mtzionhub.com + 正确签名 → 200 application/vnd.apple.mpegurl
+          该 m3u8 为 VOD 播放列表，内部分片 URL 已自带签名，播放器可直读。
+        """
+        info = self._vid_map.get(str(vid))
+        if not info:
+            return None
+        rel = info.get("video_url") or ""
+        if not rel:
+            return None
+        if rel.startswith("http"):
+            full = rel
+        else:
+            full = self._video_base() + rel
+        signed = self._ws_sign(full)
+        return {
+            "parse": 0,
+            "url": signed,
+            "header": {"User-Agent": UA_IOS},
+        }
+
+
 # ============================================================ 注册表
 ADAPTERS = {
     "rryy": RryyAdapter,
     "one": OneAdapter,
     "hdb": HdbAdapter,
+    "mmav": MmavAdapter,
 }
 
 
