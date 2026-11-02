@@ -1,0 +1,210 @@
+{
+ "detail_2305227": {
+  "status": 200,
+  "errorCode": 0,
+  "top_keys": [
+   "attachments",
+   "commentCount",
+   "commentCountStr",
+   "content",
+   "content_app",
+   "createTime",
+   "currentUserPurchased",
+   "doors",
+   "folderId",
+   "hasAudio",
+   "hasPic",
+   "hasVideo",
+   "is_cream",
+   "is_hot",
+   "is_original",
+   "is_subscribe",
+   "is_top",
+   "lastCommentTime",
+   "likeCount",
+   "liteContent",
+   "money_type",
+   "node",
+   "remarks",
+   "reward",
+   "sale",
+   "status",
+   "tags",
+   "title",
+   "topExpiresTime",
+   "topicId",
+   "type",
+   "user",
+   "viewCount",
+   "viewCountStr"
+  ]
+ },
+ "detail.attachments_count": 4,
+ "detail.attachment0": {
+  "id": 14394818,
+  "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261102/3b8756537400d11c9d4c38e5034feb5a.jpg.txt",
+  "category": "images",
+  "status": 1
+ },
+ "detail.attachment_fields": [
+  {
+   "id": 14394818,
+   "category": "images",
+   "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261102/3b8756537400d11c9d4c38e5034feb5a.jpg.txt",
+   "coverUrl": ""
+  },
+  {
+   "id": 14394817,
+   "category": "images",
+   "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261102/43fd160bea2de31d157aa4ca74ec6683.jpg.txt",
+   "coverUrl": ""
+  },
+  {
+   "id": 14394814,
+   "category": "images",
+   "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261102/ab7e983082150296c3b65aa922e6e1ca.jpg.txt",
+   "coverUrl": ""
+  },
+  {
+   "id": 14394813,
+   "category": "images",
+   "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261102/55eebf76e3b3b9485d17ed9b65260121.jpg.txt",
+   "coverUrl": ""
+  }
+ ],
+ "detail.hasVideo": false,
+ "detail.content_types": [
+  "2",
+  "2",
+  "2",
+  "2"
+ ],
+ "detail.doors": null,
+ "attachment_POST_rt1": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "attachment_POST_rt2": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "attachment_POST_rt0": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "video_node_list": {
+  "pageIndex=1&type=0&orderType=0": {
+   "status": 200,
+   "errorCode": 1,
+   "message": "请先登录",
+   "n": null
+  },
+  "pageIndex=1&type=1&orderType=0": {
+   "status": 200,
+   "errorCode": 1,
+   "message": "请先登录",
+   "n": null
+  },
+  "pageIndex=1&type=0&orderType=1": {
+   "status": 200,
+   "errorCode": 1,
+   "message": "请先登录",
+   "n": null
+  },
+  "pageIndex=1&type=2&orderType=2": {
+   "status": 200,
+   "errorCode": 1,
+   "message": "请先登录",
+   "n": null
+  },
+  "pageIndex=0&type=1&orderType=1": {
+   "status": 200,
+   "errorCode": 1,
+   "message": "请先登录",
+   "n": null
+  }
+ },
+ "node_list_candidates": {
+  "api2/topic/node/list": {
+   "status": 404,
+   "errorCode": null,
+   "message": "",
+   "has_data": false
+  },
+  "api2/node/list": {
+   "status": 404,
+   "errorCode": null,
+   "message": "",
+   "has_data": false
+  },
+  "api2/topic/nodes": {
+   "status": 200,
+   "errorCode": 0,
+   "message": "",
+   "has_data": true
+  },
+  "api2/node/nodeList": {
+   "status": 404,
+   "errorCode": null,
+   "message": "",
+   "has_data": false
+  },
+  "api2/topic/node/all": {
+   "status": 404,
+   "errorCode": null,
+   "message": "",
+   "has_data": false
+  },
+  "api2/topic/node/info": {
+   "status": 404,
+   "errorCode": null,
+   "message": "",
+   "has_data": false
+  },
+  "api2/topic/node/parent": {
+   "status": 404,
+   "errorCode": null,
+   "message": "",
+   "has_data": false
+  },
+  "api2/forum/node_list": {
+   "status": 404,
+   "errorCode": null,
+   "message": "",
+   "has_data": false
+  }
+ },
+ "topic_type_1": {
+  "errorCode": 0,
+  "page": {
+   "page": 1,
+   "limit": 20,
+   "total": 10000
+  },
+  "n": 20
+ },
+ "topic_type_3": {
+  "errorCode": 0,
+  "page": {
+   "page": 1,
+   "limit": 20,
+   "total": 5757
+  },
+  "n": 20
+ },
+ "topic_type_7": {
+  "errorCode": 0,
+  "page": {
+   "page": 1,
+   "limit": 20,
+   "total": 7555
+  },
+  "n": 20
+ }
+}

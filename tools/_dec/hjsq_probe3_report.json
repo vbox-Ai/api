@@ -1,0 +1,580 @@
+{
+ "nodes": {
+  "status": 200,
+  "errorCode": 0,
+  "type": "list",
+  "len": 137,
+  "": null,
+  "first": {
+   "nodeId": 900,
+   "parentId": 0,
+   "name": "短视频专区",
+   "icon": "https://pic.hj260302818.top/hjstore/system/node/nodeimg900.png?ver=1615788566",
+   "sortNo": 0,
+   "description": "<p>短视频专区</p>",
+   "display": 0,
+   "vipLimit": 0,
+   "external_url": ""
+  },
+  "count_top": 137,
+  "flat_count": 137,
+  "sample": [
+   {
+    "nodeId": 900,
+    "name": "短视频专区",
+    "parentId": 0,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 2020,
+    "name": "海角视频",
+    "parentId": 24,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 2010,
+    "name": "私教教学",
+    "parentId": 2000,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 1288,
+    "name": "伦理之爱",
+    "parentId": 888,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 972,
+    "name": "销魂视频",
+    "parentId": 999,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 888,
+    "name": "热门",
+    "parentId": 0,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 269,
+    "name": "成人短篇",
+    "parentId": 27,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 205,
+    "name": "讨论杂谈",
+    "parentId": 4,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 173,
+    "name": "文化交流",
+    "parentId": 25,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 115,
+    "name": "海角自拍",
+    "parentId": 31,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 111,
+    "name": "泡妞教程",
+    "parentId": 30,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 86,
+    "name": "香港楼凤.",
+    "parentId": 33,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 77,
+    "name": "神州楼凤",
+    "parentId": 36,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 75,
+    "name": "同志杂谈",
+    "parentId": 35,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 56,
+    "name": "渣女系列",
+    "parentId": 40,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 14,
+    "name": "海角公告",
+    "parentId": 6,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 2,
+    "name": "海角新闻",
+    "parentId": 1,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 16,
+    "name": "大事记",
+    "parentId": 0,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 2030,
+    "name": "渣男渣女",
+    "parentId": 2000,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 1001,
+    "name": "收费视频",
+    "parentId": 888,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 999,
+    "name": "福利姬",
+    "parentId": 0,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 971,
+    "name": "耳目盛宴",
+    "parentId": 999,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 270,
+    "name": "成人连载",
+    "parentId": 27,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 267,
+    "name": "国际观察",
+    "parentId": 24,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 214,
+    "name": "实战交流",
+    "parentId": 4,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 179,
+    "name": "海角杂谈",
+    "parentId": 24,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 174,
+    "name": "虐恋杂谈",
+    "parentId": 25,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 116,
+    "name": "异国风情",
+    "parentId": 31,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 112,
+    "name": "泡学书籍",
+    "parentId": 30,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 87,
+    "name": "香港娱乐",
+    "parentId": 33,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 78,
+    "name": "神州娱乐",
+    "parentId": 36,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 74,
+    "name": "同志交友",
+    "parentId": 35,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 57,
+    "name": "渣男系列",
+    "parentId": 40,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 15,
+    "name": "海角活动",
+    "parentId": 6,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 13,
+    "name": "海角视频 旧",
+    "parentId": 1,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 2034,
+    "name": "香港楼凤",
+    "parentId": 36,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 2031,
+    "name": "修车记录",
+    "parentId": 2000,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 973,
+    "name": "激情时刻",
+    "parentId": 999,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 300,
+    "name": "海角认证",
+    "parentId": 888,
+    "depth": 1,
+    "kids": 0
+   },
+   {
+    "nodeId": 283,
+    "name": "投诉建议",
+    "parentId": 6,
+    "depth": 1,
+    "kids": 0
+   }
+  ]
+ },
+ "video_topic_candidates": [
+  {
+   "topicId": 2304257,
+   "title": "（精品原创）答应大家的福利来了，广州高端海选，各个巨乳大长腿，感谢支持",
+   "nodeId": 1001,
+   "money_type": 2,
+   "src": "api2/topic/node/topics?page=1&nodeId=1001&type=0"
+  },
+  {
+   "topicId": 708315,
+   "title": "眼镜骚妇",
+   "nodeId": 1001,
+   "money_type": 1,
+   "src": "api2/topic/node/topics?page=1&nodeId=1001&type=0"
+  },
+  {
+   "topicId": 737372,
+   "title": "大白奶女朋友又来找我啦，还刮了毛毛！！",
+   "nodeId": 1001,
+   "money_type": 1,
+   "src": "api2/topic/node/topics?page=1&nodeId=1001&type=0"
+  },
+  {
+   "topicId": 564756,
+   "title": "极品身材戏曲学院美女的日常自拍（非原创）",
+   "nodeId": 1001,
+   "money_type": 1,
+   "src": "api2/topic/node/topics?page=1&nodeId=1001&type=0"
+  },
+  {
+   "topicId": 1931937,
+   "title": "反差萝莉骚逼自蔚",
+   "nodeId": 1001,
+   "money_type": 1,
+   "src": "api2/topic/node/topics?page=1&nodeId=1001&type=0"
+  }
+ ],
+ "video_detail": {
+  "topicId": 2304257,
+  "errorCode": 0,
+  "hasVideo": true,
+  "money_type": 0,
+  "content": [
+   {
+    "id": "1",
+    "type": "1",
+    "uid": "",
+    "nickName": "",
+    "imgUrl": "",
+    "videoUrl": "",
+    "audioUrl": "",
+    "emoId": "",
+    "topicId": "",
+    "bookId": "",
+    "text": "上次趁着难得的中秋国庆假期连着，就和兄弟商量了一下。决定好好放松一下。",
+    "attachmentsId": "",
+    "isSell": "",
+    "is_censored": false
+   },
+   {
+    "id": "2",
+    "type": "1",
+    "uid": "",
+    "nickName": "",
+    "imgUrl": "",
+    "videoUrl": "",
+    "audioUrl": "",
+    "emoId": "",
+    "topicId": "",
+    "bookId": "",
+    "text": "刚好看到以前去玩过的洗浴中心又开了，一番沟通后得知来了许多全国各地的高质量女模特。",
+    "attachmentsId": "",
+    "isSell": "",
+    "is_censored": false
+   },
+   {
+    "id": "3",
+    "type": "1",
+    "uid": "",
+    "nickName": "",
+    "imgUrl": "",
+    "videoUrl": "",
+    "audioUrl": "",
+    "emoId": "",
+    "topicId": "",
+    "bookId": "",
+    "text": "想着好久没给大家更新福利了，询问了一番价格就直奔而去。",
+    "attachmentsId": "",
+    "isSell": "",
+    "is_censored": false
+   },
+   {
+    "id": "4",
+    "type": "1",
+    "uid": "",
+    "nickName": "",
+    "imgUrl": "",
+    "videoUrl": "",
+    "audioUrl": "",
+    "emoId": "",
+    "topicId": "",
+    "bookId": "",
+    "text": "因为目的地有点远，开车要4个小时，然后我们就打算第二天出发，过去玩上个2天……",
+    "attachmentsId": "",
+    "isSell": "",
+    "is_censored": false
+   },
+   {
+    "id": "5",
+    "type": "1",
+    "uid": "",
+    "nickName": "",
+    "imgUrl": "",
+    "videoUrl": "",
+    "audioUrl": "",
+    "emoId": "",
+    "topicId": "",
+    "bookId": "",
+    "text": "第二天中午饭吃完我们就带上换洗衣物上路了，路上因为一些事情耽搁了，花了6个多小时才到。",
+    "attachmentsId": "",
+    "isSell": "",
+    "is_censored": false
+   },
+   {
+    "id": "6",
+    "type": "1",
+    "uid": "",
+    "nickName": "",
+    "imgUrl": "",
+    "videoUrl": "",
+    "audioUrl": "",
+    "emoId": "",
+    "topicId": "",
+    "bookId": "",
+    "text": "也顾不得晚饭了，直接就直奔而去。",
+    "attachmentsId": "",
+    "isSell": "",
+    "is_censored": false
+   }
+  ],
+  "attachments": [
+   {
+    "id": 14196153,
+    "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261004/e61f4db82ebf55c2830097afbd4a8d40.jpg.txt",
+    "category": "images",
+    "status": 1
+   },
+   {
+    "id": 14196154,
+    "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261004/d2db4f936e8b96e45511eb99b4ccb2d7.jpg.txt",
+    "category": "images",
+    "status": 1
+   },
+   {
+    "id": 14386565,
+    "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261101/a592fb0d011d723596ccd1c6e0ecbbbe.jpg.txt",
+    "category": "images",
+    "status": 1
+   },
+   {
+    "id": 14386564,
+    "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261101/e38b107c99ce94b488fabd468578b1f7.jpg.txt",
+    "category": "images",
+    "status": 1
+   },
+   {
+    "id": 14386723,
+    "remoteUrl": "https://0ts10.hj260302818.top/hjstore/video/20261101/b5cfbcae693d2b39d547397a4ae82bb9/571842_i_preview.m3u8",
+    "category": "video",
+    "status": 1,
+    "coverUrl": "https://pic.hj260302818.top/hjstore/video/20261101/b5cfbcae693d2b39d547397a4ae82bb9/571842.jpeg.txt",
+    "video_time_length": 697
+   }
+  ],
+  "doors": null
+ },
+ "POST_att14196153_rt1": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14196153_rt2": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14196153_rt3": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14196154_rt1": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14196154_rt2": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14196154_rt3": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14386565_rt1": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14386565_rt2": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14386565_rt3": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14386564_rt1": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14386564_rt2": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14386564_rt3": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14386723_rt1": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14386723_rt2": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "POST_att14386723_rt3": {
+  "status": 200,
+  "errorCode": 1,
+  "message": "",
+  "response": null
+ },
+ "img_probe": {
+  "38e5034feb5a.jpg.txt": {
+   "status": 200,
+   "ctype": "text/plain; charset=utf-8",
+   "head_hex": "2346457958536e6e"
+  },
+  "9d4c38e5034feb5a.jpg": {
+   "err": "HTTPError: HTTP Error 403: Forbidden"
+  }
+ }
+}

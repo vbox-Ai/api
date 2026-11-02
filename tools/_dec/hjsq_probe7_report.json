@@ -1,0 +1,49 @@
+{
+ "alph": "ABCD*EFGHIJKLMNOPQRSTUVWX#YZabcdefghijklmnopqrstuvwxyz1234567890",
+ "text_len": 138448,
+ "payload_len": 138445,
+ "len_mod4": 1,
+ "cands": [
+  {
+   "name": "asis",
+   "rot": 0,
+   "len": 103833,
+   "magic": null,
+   "hex": "d184e9a5b5859d94bda9c195"
+  },
+  {
+   "name": "rev",
+   "rot": 0,
+   "len": 103833,
+   "magic": null,
+   "hex": "2e7b165a4a7a626b42563e6a"
+  },
+  {
+   "name": "subst_*+_#/",
+   "len": 103833,
+   "magic": null,
+   "hex": "c974a79d954497f47ca1a154"
+  },
+  {
+   "name": "subst_*/_#+",
+   "len": 103833,
+   "magic": null,
+   "hex": "c974a79d954497e47ca1a154"
+  },
+  {
+   "name": "subst_#+_*/",
+   "len": 103833,
+   "magic": null,
+   "hex": "c974a79d954497e47ca1a154"
+  }
+ ],
+ "hit": [],
+ "asis_stats": {
+  "len": 103833,
+  "printable_ratio": 0.312,
+  "head_hex": "d184e9a5b5859d94bda9c1959ced8985cd94d8d0b0bce5a8bcc9dd0d1505059d",
+  "head_latin1": "Ñé¥µ½©ÁíÍØÐ°¼å¨¼ÉÝ\r\u0015\u0005\u0005\u001d\t\u001d\tE!\tÝ)\rE-\u0011\tE9\u0011\u0005Í1\u0011\t­M\u0015ÜáU!I½! Á!\tÝ)\fÑ"
+ },
+ "zeros_seg_count": 5,
+ "zeros_seg_dec_hex": "535a925e535a925e535a925e"
+}

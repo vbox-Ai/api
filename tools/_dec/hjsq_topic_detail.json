@@ -1,0 +1,158 @@
+{
+ "errorCode": 0,
+ "message": "",
+ "success": true,
+ "data": {
+  "topicId": 2305227,
+  "user": {
+   "id": 18345279,
+   "nickname": "海角_18345279",
+   "avatar": "34",
+   "vip": 0,
+   "certified": false,
+   "certVideo": false,
+   "certProfessor": false,
+   "famous": false,
+   "diamondConsume": 0,
+   "title": {
+    "id": 1,
+    "name": "青铜",
+    "consume": 5000,
+    "consumeEnd": 0,
+    "icon": "https://pic.hj260302818.top/hjstore/system/node/usertitle1.png?ver=1792629201"
+   }
+  },
+  "node": {
+   "nodeId": 179,
+   "parentId": 24,
+   "name": "海角杂谈",
+   "icon": "https://pic.hj260302818.top/hjstore/system/node/nodeimg_179_1632990669.png",
+   "sortNo": 20,
+   "description": "<p>海角杂谈是海角社区全部精彩内容的综合体现。杂谈意味着集百家杂乱为一体，不受限于任何固定分类主题。上至以天文地理，下至鸡毛蒜皮，灵异八卦，穿越古今，聊斋志异，大话三国。可发布灵异占卜、时事民生，职场感悟或者是人生哲理。</p>",
+   "display": 1,
+   "vipLimit": 0,
+   "external_url": ""
+  },
+  "tags": null,
+  "title": "喜欢母狗的骚奶子吗",
+  "type": 0,
+  "money_type": 0,
+  "content_app": null,
+  "liteContent": "",
+  "lastCommentTime": "2026-11-02 23:00:50",
+  "viewCount": 23,
+  "commentCount": 0,
+  "likeCount": 0,
+  "status": 0,
+  "createTime": "2026-11-02 23:00:50",
+  "attachments": [
+   {
+    "id": 14394818,
+    "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261102/3b8756537400d11c9d4c38e5034feb5a.jpg.txt",
+    "category": "images",
+    "status": 1
+   },
+   {
+    "id": 14394817,
+    "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261102/43fd160bea2de31d157aa4ca74ec6683.jpg.txt",
+    "category": "images",
+    "status": 1
+   },
+   {
+    "id": 14394814,
+    "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261102/ab7e983082150296c3b65aa922e6e1ca.jpg.txt",
+    "category": "images",
+    "status": 1
+   },
+   {
+    "id": 14394813,
+    "remoteUrl": "https://pic.hj260302818.top/hjstore/images/20261102/55eebf76e3b3b9485d17ed9b65260121.jpg.txt",
+    "category": "images",
+    "status": 1
+   }
+  ],
+  "is_cream": false,
+  "is_top": false,
+  "is_subscribe": false,
+  "is_hot": false,
+  "is_original": false,
+  "remarks": "",
+  "topExpiresTime": "0001-01-01 00:00:00",
+  "hasVideo": false,
+  "hasPic": true,
+  "hasAudio": false,
+  "currentUserPurchased": false,
+  "content": [
+   {
+    "id": "1",
+    "type": "2",
+    "uid": "",
+    "nickName": "",
+    "imgUrl": "https://pic.hj260302818.top/hjstore/images/20261102/3b8756537400d11c9d4c38e5034feb5a.jpg.txt",
+    "videoUrl": "",
+    "audioUrl": "",
+    "emoId": "",
+    "topicId": "",
+    "bookId": "",
+    "text": "",
+    "attachmentsId": "14394818",
+    "isSell": "",
+    "is_censored": false
+   },
+   {
+    "id": "2",
+    "type": "2",
+    "uid": "",
+    "nickName": "",
+    "imgUrl": "https://pic.hj260302818.top/hjstore/images/20261102/43fd160bea2de31d157aa4ca74ec6683.jpg.txt",
+    "videoUrl": "",
+    "audioUrl": "",
+    "emoId": "",
+    "topicId": "",
+    "bookId": "",
+    "text": "",
+    "attachmentsId": "14394817",
+    "isSell": "",
+    "is_censored": false
+   },
+   {
+    "id": "3",
+    "type": "2",
+    "uid": "",
+    "nickName": "",
+    "imgUrl": "https://pic.hj260302818.top/hjstore/images/20261102/ab7e983082150296c3b65aa922e6e1ca.jpg.txt",
+    "videoUrl": "",
+    "audioUrl": "",
+    "emoId": "",
+    "topicId": "",
+    "bookId": "",
+    "text": "",
+    "attachmentsId": "14394814",
+    "isSell": "",
+    "is_censored": false
+   },
+   {
+    "id": "4",
+    "type": "2",
+    "uid": "",
+    "nickName": "",
+    "imgUrl": "https://pic.hj260302818.top/hjstore/images/20261102/55eebf76e3b3b9485d17ed9b65260121.jpg.txt",
+    "videoUrl": "",
+    "audioUrl": "",
+    "emoId": "",
+    "topicId": "",
+    "bookId": "",
+    "text": "",
+    "attachmentsId": "14394813",
+    "isSell": "",
+    "is_censored": false
+   }
+  ],
+  "reward": null,
+  "sale": null,
+  "viewCountStr": "\u0000",
+  "commentCountStr": "\u0000",
+  "doors": null,
+  "folderId": null
+ }
+}

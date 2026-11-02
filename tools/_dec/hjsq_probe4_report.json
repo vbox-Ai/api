@@ -1,0 +1,29 @@
+{
+ "m3u8": {
+  "status": 200,
+  "ctype": "audio/x-mpegurl",
+  "len": 1470,
+  "head": "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:2\n#EXT-X-MEDIA-SEQUENCE:0\n#EXT-X-KEY:METHOD=AES-128,URI=\"enc_14386723.key\",IV=0x826ad24afd439476567471ddf2a93c82\n#EXTINF:1.250000,\nc223baf856c72b8f53f6e54ac5f1e7a4.ts\n#EXTINF:1.250000,\na10f6bbf2ecd7281eb1afbab1c626848.ts\n#EXTINF:1.250000,\n938fc03efd2e9b85e2863e0b6618c171.ts\n#EXTINF:1.250000,\n38a8e4e7b868b136671f3a6e4ccca18d.ts\n#EXTINF:1.250000,\nc2c4d47e4a5632c8512e429f0db70d4c.ts\n#EXTINF:1.250000,\ncf832d9b0e325906a871394364413a9c.ts\n#EXTINF:1.250000,\ne3fa615d418c2557eb4eb1367b07133e.ts\n#EXTINF:1.250000,\n7fbaace3364bcdef3fff34108f1fbf86.ts\n#EXTINF:1.250000,\n01840005dbb5fc2549e089c0745e0cfc.ts\n#EXTINF:1.250000,\na3a012c141e68ce6bdc26cacec0a75a0.ts\n#EXTINF:1.250000,\n0c8b129c454aa3c3594e1f11a07d941a.ts\n#EXTINF:1.250000,\nba13abe03b0f7fe5b633ca69919d",
+  "segs": 24,
+  "seg0_url": "https://0ts10.hj260302818.top/hjstore/video/20261101/b5cfbcae693d2b39d547397a4ae82bb9/c223baf856c72b8f53f6e54ac5f1e7a4.ts",
+  "seg0": {
+   "status": 200,
+   "ctype": "text/vnd.trolltech.linguist; charset=utf-8",
+   "len_sample": 64,
+   "hex": "b8cad3d8121878172d282e8994399983"
+  }
+ },
+ "img": {
+  "status": 200,
+  "ctype": "text/plain; charset=utf-8",
+  "len": 138448,
+  "head_ascii": "#FEyXSnnZVEl#R8oaFUlN1Ifa1T1MCutNVmtLlbDQTEB#ybC#1MGPjElR*I2XynDTVbKQ*IQSiQBayv*PkrSQWa3UTfRZ1#HYDBfR*I2#ynDMF4IPyjxRWf2Xyr*X2BLQ*E3SiQQL*f4XxUPUFb4T*Lyci4*RTIDTVrJQ*ExSTbBL*4GQ*jmR*MEcTzoRWjMYij4SVnIcTzoRWjMYij4SVnIcTzoRWjMYij4SVnIcTzoRWjMYij4SVnIcTzoRWjMYij4SVnIcTzoRWjMbg8BPTIERTIfPTUOPTzCRVbBPyUQQTQETTetc*EGYTEBPTICTTUCPUEEPiEQPTEBPTEBPTEBPTEQRTQCPUUGPlblRiMlazEBPTjCPWbMPyIBST#CTUEEPTEBPk#QQTMB",
+  "head_hex": "2346457958536e6e5a56456c2352386f6146556c4e314966613154314d4375744e566d744c6c6244515445422379624323314d47506a456c522a493258796e44",
+  "newlines": 0,
+  "colons": 0,
+  "pipes": 0,
+  "b64_candidate_len": 127,
+  "b64_dec_hex": "304713ce84568cc6228f84959c8713ce",
+  "b64_dec_magic": "304713ce"
+ }
+}

@@ -1,0 +1,502 @@
+{
+ "hdr3_p16": {
+  "residues_without_shift": 16,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr3_p8": {
+  "residues_without_shift": 8,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr3_p12": {
+  "residues_without_shift": 12,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr3_p32": {
+  "residues_without_shift": 32,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr3_p24": {
+  "residues_without_shift": 24,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr4_p16": {
+  "residues_without_shift": 16,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr4_p8": {
+  "residues_without_shift": 8,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr4_p12": {
+  "residues_without_shift": 12,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr4_p32": {
+  "residues_without_shift": 32,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr4_p24": {
+  "residues_without_shift": 24,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr0_p16": {
+  "residues_without_shift": 16,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr0_p8": {
+  "residues_without_shift": 8,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr0_p12": {
+  "residues_without_shift": 12,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr0_p32": {
+  "residues_without_shift": 32,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "hdr0_p24": {
+  "residues_without_shift": 24,
+  "cand_counts": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "first_residue_cands": [],
+  "unique_all": false
+ },
+ "detail_p16": {
+  "period": 16,
+  "hdr": 3,
+  "per_residue": [
+   {
+    "r": 0,
+    "distinct": 52,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#*12345BCDEFGHIJKLMN"
+   },
+   {
+    "r": 1,
+    "distinct": 19,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#JKLMNPQRSTUVXYZabc"
+   },
+   {
+    "r": 2,
+    "distinct": 24,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "*12CDEFGRSTUVWghijkl"
+   },
+   {
+    "r": 3,
+    "distinct": 32,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#*3478ABEHILMPQTUXab"
+   },
+   {
+    "r": 4,
+    "distinct": 52,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#*12345BCDEFGHIJKLMN"
+   },
+   {
+    "r": 5,
+    "distinct": 19,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#JKLMNPQRSTUVXYZabc"
+   },
+   {
+    "r": 6,
+    "distinct": 24,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "*12CDEFGRSTUVWghijkl"
+   },
+   {
+    "r": 7,
+    "distinct": 32,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#*3478ABEHILMPQTUXab"
+   },
+   {
+    "r": 8,
+    "distinct": 52,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#*12345BCDEFGHIJKLMN"
+   },
+   {
+    "r": 9,
+    "distinct": 19,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#JKLMNPQRSTUVXYZabc"
+   },
+   {
+    "r": 10,
+    "distinct": 24,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "*12CDEFGRSTUVWghijkl"
+   },
+   {
+    "r": 11,
+    "distinct": 32,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#*3478ABEHILMPQTUXab"
+   },
+   {
+    "r": 12,
+    "distinct": 53,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#*12345=BCDEFGHIJKLM"
+   },
+   {
+    "r": 13,
+    "distinct": 19,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#JKLMNPQRSTUVXYZabc"
+   },
+   {
+    "r": 14,
+    "distinct": 24,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "*12CDEFGRSTUVWghijkl"
+   },
+   {
+    "r": 15,
+    "distinct": 32,
+    "cands": [],
+    "n_cands": 0,
+    "sample_chars": "#*3478ABEHILMPQTUXab"
+   }
+  ]
+ },
+ "derived_key": null
+}

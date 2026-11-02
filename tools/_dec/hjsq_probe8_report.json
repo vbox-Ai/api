@@ -1,0 +1,12 @@
+{
+ "inner_len": 103835,
+ "inner_head": "data:image/jpeg;base64,/9j/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLD",
+ "inner_tail": "Ldd27VU8xfU1Zm7n/9k=",
+ "mime": "data:image/jpeg;base64",
+ "b64_len": 103812,
+ "img_len": 77858,
+ "img_hex": "ffd8ffdb008400080606070605080707",
+ "img_magic": "JPEG",
+ "saved": "C:\\Users\\Administrator\\Downloads\\vboxapp\\_remote_api\\tools\\_dec\\hjsq_img_decoded.jpg",
+ "saved_size": 77858
+}

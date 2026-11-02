@@ -1,0 +1,109 @@
+{
+ "steps": [
+  {
+   "step": "homeContent",
+   "ok": true,
+   "classes": 27,
+   "with_filters": 16
+  },
+  {
+   "step": "category tid=hot pg=1",
+   "ok": true,
+   "n": 20,
+   "total": 1000,
+   "pagecount": 50
+  },
+  {
+   "step": "category tid=news pg=1",
+   "ok": true,
+   "n": 20,
+   "total": 900,
+   "pagecount": 45
+  },
+  {
+   "step": "category tid=new pg=1",
+   "ok": true,
+   "n": 20,
+   "total": 10000,
+   "pagecount": 500
+  },
+  {
+   "step": "category tid=cream pg=1",
+   "ok": true,
+   "n": 20,
+   "total": 5757,
+   "pagecount": 288
+  },
+  {
+   "step": "category tid=original pg=1",
+   "ok": true,
+   "n": 20,
+   "total": 7555,
+   "pagecount": 378
+  },
+  {
+   "step": "category tid=900 pg=1",
+   "ok": true,
+   "n": 0,
+   "total": 0,
+   "pagecount": 1
+  },
+  {
+   "step": "category tid=900 pg=2",
+   "ok": true,
+   "n": 0,
+   "total": 0,
+   "pagecount": 1
+  },
+  {
+   "step": "pagination hot",
+   "ok": true,
+   "p1": "2304257",
+   "p2": "2303212"
+  },
+  {
+   "step": "detail 视频帖 2304257",
+   "ok": true,
+   "name": "（精品原创）答应大家的福利来了，广州高端海选，各个巨乳大长腿，感谢支持",
+   "has_play": true,
+   "play_head": "正片 11:37$https://0ts10.hj260302818.top/hjstore/video/20261101/b5cfbcae693d2b39d547397a4ae82bb9/571842_i_preview.m3u8",
+   "content_len": 681,
+   "pic_head": "http://127.0.0.1:9978/proxy?do=py&type=hjsq&url=https%3A%2F%2Fpic.hj260302818.to"
+  },
+  {
+   "step": "detail 图帖 2304720",
+   "ok": true,
+   "name": "3. 老妈昨晚差点夜不归宿，骚逼思春了，严重怀疑有人要给我当爹",
+   "has_play": true,
+   "play_head": "图1$http://127.0.0.1:9978/proxy?do=py&type=hjsq&url=https%3A%2F%2Fpic.hj260302818.top%2Fhjstore%2Fimages%2F20261102%2Fab7",
+   "content_len": 512,
+   "pic_head": "http://127.0.0.1:9978/proxy?do=py&type=hjsq&url=https%3A%2F%2Fpic.hj260302818.to"
+  },
+  {
+   "step": "search",
+   "ok": true,
+   "n": 20
+  },
+  {
+   "step": "localProxy decode",
+   "ok": true,
+   "code": 200,
+   "ctype": "image/jpeg",
+   "bytes": 72588,
+   "magic": "ffd8ffdb"
+  },
+  {
+   "step": "playerContent",
+   "ok": true,
+   "parse": 0,
+   "url_head": "https://0ts10.hj260302818.top/hjstore/video/20261101/b5cfbcae693d2b39d547397a4ae82bb9/571842_i_previ"
+  },
+  {
+   "step": "HLS+AES key",
+   "ok": true,
+   "segs": 24,
+   "key_hex": "25ae9037f3a047f9d65be8f1bd3bc303",
+   "key_len": 16
+  }
+ ]
+}

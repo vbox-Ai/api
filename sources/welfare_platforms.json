@@ -2427,6 +2427,28 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "hjsq_py",
+      "name": "海角社区",
+      "category": "video",
+      "icon": "flame.fill",
+      "desc": "Python蜘蛛版 — 直连 REST，游客 token 可读全站",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "http://23.225.145.74"
+      ],
+      "sortOrder": 640,
+      "defaultProxy": false,
+      "notes": "海角社区（hjsq/haijiao）。协议由 libapp.so 反汇编还原：鉴权头 X-User-Id=171299991201（静态硬编码）+ X-User-Token（游客 token）；信封 errorCode/message/data。分类来自 api2/topic/nodes（137 节点扁平表，按 parentId 组树）+ 5 个固定栏目（热帖/新闻/最新/精华/原创）。列表 api2/topic/node/topics（page/nodeId/type）、热帖 hot/topics、新闻 node/news、详情 api2/topic/{id}、搜索 api2/topic/search（keyword）。视频直链明文在详情 attachments[category=video].remoteUrl（HLS m3u8 + AES-128，key 同目录可取，实测 24 分片全通）；图片 *.jpg.txt 为自定义字母表 base64 包裹的 data URI，需解码后才是 JPEG，由 localProxy 实时解码输出。api2/video/node_list 需真实登录态，游客 token 不可用。",
+      "api": "./sources/welfare-js/hjsq.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
   "updatedAt": "2026-10-31T04:30:00Z"

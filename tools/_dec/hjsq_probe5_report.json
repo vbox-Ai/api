@@ -1,0 +1,58 @@
+{
+ "len_text": 138448,
+ "head": "#FEyXSnnZVEl#R8oaFUlN1Ifa1T1MCutNVmtLlbD",
+ "charset": "#*1234578=ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz",
+ "charset_size": 61,
+ "extra": "#*=",
+ "missing": "+/069d",
+ "attempts": [
+  {
+   "map": "star->+ hash->/",
+   "strip": 0,
+   "declen": 103835,
+   "magic": null,
+   "head_hex": "fc51325d29e7655125fd1f2868552537"
+  },
+  {
+   "map": "star->+ hash->/",
+   "strip": 3,
+   "declen": 103833,
+   "magic": null,
+   "head_hex": "c974a79d954497f47ca1a15494dd487d"
+  },
+  {
+   "map": "star->+ hash->/",
+   "strip": 4,
+   "declen": 103832,
+   "magic": null,
+   "head_hex": "5d29e7655125fd1f2868552537521f6b"
+  },
+  {
+   "map": "star->/ hash->+",
+   "strip": 0,
+   "declen": 103835,
+   "magic": null,
+   "head_hex": "f851325d29e7655125f91f2868552537"
+  },
+  {
+   "map": "star->/ hash->+",
+   "strip": 3,
+   "declen": 103833,
+   "magic": null,
+   "head_hex": "c974a79d954497e47ca1a15494dd487d"
+  },
+  {
+   "map": "star->/ hash->+",
+   "strip": 4,
+   "declen": 103832,
+   "magic": null,
+   "head_hex": "5d29e7655125f91f2868552537521f6b"
+  }
+ ],
+ "best": null,
+ "aes_key": {
+  "status": 200,
+  "len": 16,
+  "hex": "25ae9037f3a047f9d65be8f1bd3bc303"
+ }
+}
