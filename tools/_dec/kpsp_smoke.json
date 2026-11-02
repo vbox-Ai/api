@@ -1,0 +1,81 @@
+{
+ "steps": [
+  {
+   "step": "homeContent",
+   "ok": true,
+   "classes": 84
+  },
+  {
+   "step": "category tid=all",
+   "ok": true,
+   "n": 20,
+   "total": 115048
+  },
+  {
+   "step": "category tid=2194",
+   "ok": true,
+   "n": 20,
+   "total": 35
+  },
+  {
+   "step": "category tid=407",
+   "ok": true,
+   "n": 20,
+   "total": 1623
+  },
+  {
+   "step": "category tid=300",
+   "ok": true,
+   "n": 20,
+   "total": 34477
+  },
+  {
+   "step": "pagination",
+   "ok": true,
+   "p1": "242253",
+   "p2": "241852"
+  },
+  {
+   "step": "tag isolation",
+   "ok": true,
+   "tag407_first": "242253",
+   "all_first": "242253",
+   "tag_total": 1623,
+   "all_total": 115048
+  },
+  {
+   "step": "detail 242253",
+   "ok": true,
+   "name": "酒店偷拍一对年轻情侣体力就是好",
+   "play": "正片$https://hm-img.hdstfb.com/videos3/202611/02/774357207/index.m3u8#预览$https://hm-img.hdstfb.com/videos3/202611/02/774357207/preview.m3u8",
+   "pic": "https://hm-img.hdstfb.com/source3/202611/02/774357207/source_jpg.image",
+   "content_len": 122
+  },
+  {
+   "step": "search",
+   "ok": true,
+   "n": 20,
+   "total": 2873
+  },
+  {
+   "step": "playerContent",
+   "ok": true,
+   "parse": 0,
+   "url": "https://hm-img.hdstfb.com/videos3/202611/02/774357207/index.m3u8"
+  },
+  {
+   "step": "HLS+AES key",
+   "ok": true,
+   "segs": 2873,
+   "key_hex": "38626437613438316265383834343530",
+   "key_len": 16
+  },
+  {
+   "step": "cover fetch",
+   "ok": true,
+   "status": 200,
+   "magic": "67414141",
+   "ctype": "application/x-image"
+  }
+ ]
+}
