@@ -1,29 +1,18 @@
-feat(aijav): AiJav 协议打通 —— 分类/列表/详情三能力（播放需登录购买）
+chore(qysq): 响应解密攻坚记录 —— 签名全通、解密 10 轮未命中、排除面收窄
 
-与 mdtv 同一套 encrypt 胶水层，本轮把 mdtv 的两条经验直接套用，4 个常量全部
-从 libapp.so 原始字节取证，一次打通：
-  KEY     = 0XxdjmI55ZjjqQLO3nI7gGqrBP0Vz9jS   (32B, @322372)
-  REQ_IV  = RWf23muavYNWSdef                   (16B, @944669 = "RWf23muavY"+suffix头)
-  SECRET  = &NRkw0g3iJLDvw5tJ5PuVt5276z0SOuyL  (@500125)
-  头        suffix: NWSdef                     (@572092)
-  响应 IV = "RWf23muavY" + 响应体 suffix
+本轮先把 mdtv/aijav 两个提交推送进 origin/main（bcfacbe..89925a4），
+然后接续 qysq。
 
-顺带纠正上一版情报的错误：REQ_KEY 不是 16B 的 "RWf23muavYNWSdef"（那是 IV），
-请求/响应共用同一把 32B key。
+qysq 进展：
+- 签名链在真实接口上 100% 跑通：POST api/app/media/home → code 6023（业务错）
+  GET api/app/ping/config → code 200 success；POST short/hot → 200
+- 定位到解密函数 CryptoUtil::asGjCrypto @0x7237f0（QySqHttp.post 直接调用后 jsonDecode）
+- 钉死三条硬事实：32B 盐 vEukA&w…（@521089）、两段 sha256 KDF、
+  密文 = D[12:]（与样本 %16==12 吻合）
+- 约 120 万组合爆破（sha256/384/512 × 顺序 × 切片 × CBC/CFB/OFB × skip）全部 0 命中
+  → 结论：KDF 的槽位写回顺序在 blutter 里读错，必须逐指令重放或真机 Frida
 
-两条新方法论（已写进交接文档坑表 23/24）：
-1) 路由不存在恒返 {"code":999}，业务码≠999 即路由存在 —— 据此扫 186 条候选路径，
-   只有 video/info、video/purchase、video/collect 三条不是 999；
-2) 详情参数名是 vid 不是 id（传 id → 3001 视频不存在）。
-
-播放结论（已取证，不是没找到）：列表项与 video/info 都不含媒体直链，
-取流路由（play/url/m3u8/source/stream）全 999，video/purchase|collect → 2000 登录失效，
-m3u8_url 字段名虽在二进制中但只在购买后下发 → 与 rryy 同类，适配器如实交付三能力。
-
-交付：
-- sources/welfare-js/aijav.py   注册键 aijav_py（46 分类 / 54 页 / 18774 条 / 详情通）
-- docs/aijav协议详解.md          协议全量 + 999 路由判据 + 播放受限取证
-- tools/_aijav_r1..r5.py         打通五连 + 二进制取证脚本
-
-验证：smoke aijav 分类46/列表54/详情1/播放-；mdtv 101/120/1/通（无回归）；
-平台总表 31 平台 · 平铺 12 · 出数据 11 · 四能力全通 11。
+新增：
+- docs/qysq响应解密攻坚.md（含已排除面矩阵 + 下一步三条路）
+- tools/_qysq_r5..r10.py、_qysq_env.py、_qysq_saltbytes.py
+- 判据教训：不能拿「明文像 {」当命中，必须严格 json.loads；样本 %16==12 先钉 ct 起点
