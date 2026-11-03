@@ -7,7 +7,7 @@
   "play": 1,
   "err": "",
   "sample": "{\"vod_id\": \"550100\", \"vod_name\": \"集四国可爱特质于一身、令世界倾心的混血美女桐谷艾玛出道\", \"vod_pic\": \"https://gjwspicacrlvz.gdpcdz.com/uploads/images/movies/2026-11-03/1793668811059.jpeg\", \"vod_remarks\": \"SNOS-489\"}",
-  "play_url": "https://api.b7f3192.com/pwa/v2_0/getM3u8.m3u8?v=577034&params=5371773172363842383842645939747a57702b766a4a7233767674633574444339394a5972506a676168713952336b5a6b"
+  "play_url": "https://api.b7f3192.com/pwa/v2_0/getM3u8.m3u8?v=577034&params=5371773172363842383842645939747a57702b766a4d684751594c6255426f754c4633302f79744e503333316b73565342"
  },
  {
   "key": "mmav",
@@ -56,7 +56,7 @@
   "detail": 1,
   "play": 1,
   "err": "",
-  "sample": "{\"vod_id\": \"3851570\", \"vod_name\": \"肥而不腻\", \"vod_pic\": \"https://imgs.e8eues3.xyz/uploads/images/2026-11-02/21363770/da7167080fe3db298bcb04a084645dd5.jpg\", \"vod_remarks\": \"720p · 132赞 · 神座出流\", \"style\": {\"type\": \"rect\", \"rat",
+  "sample": "{\"vod_id\": \"3851570\", \"vod_name\": \"肥而不腻\", \"vod_pic\": \"https://imgs.e8eues3.xyz/uploads/images/2026-11-02/21363770/da7167080fe3db298bcb04a084645dd5.jpg\", \"vod_remarks\": \"720p · 136赞 · 神座出流\", \"style\": {\"type\": \"rect\", \"rat",
   "play_url": "正片$http://119.28.204.36/uploads/2026-11-02/21363770/54f6e38348984f2335653619dd53c9a6_wm.mp4"
  },
  {
@@ -76,27 +76,17 @@
   "detail": 1,
   "play": 1,
   "err": "",
-  "sample": "{\"vod_id\": \"242798\", \"vod_name\": \"香蕉秀xjx254新年快乐2025第一炮-狐不妖\", \"vod_pic\": \"https://hm-img.hdstfb.com/source3/202611/03/4006821746/source_jpg.image\", \"vod_remarks\": \"27:01 · 8580 播放 · 国产自拍/原创视频\", \"style\": {\"type\": \"rect\", \"",
-  "play_url": "正片$https://hm-img.hdstfb.com/videos3/202611/03/4006821746/index.m3u8#预览$https://hm-img.hdstfb.com/videos3/202611/03/4006821746/preview.m3u8"
- },
- {
-  "key": "hjsq",
-  "class": 27,
-  "list": 20,
-  "detail": 1,
-  "play": 1,
-  "err": "",
-  "sample": "{\"vod_id\": \"2304257\", \"vod_name\": \"（精品原创）答应大家的福利来了，广州高端海选，各个巨乳大长腿，感谢支持\", \"vod_pic\": \"http://127.0.0.1:9978/proxy?do=py&type=hjsq&url=https%3A%2F%2Fpic.hj260302818.top%2Fhjstore%2Fimages%2F20261004%2Fe61f4db82ebf55c283009",
-  "play_url": "正片 11:37$https://0ts10.hj260302818.top/hjstore/video/20261101/b5cfbcae693d2b39d547397a4ae82bb9/571842_i_preview.m3u8"
+  "sample": "{\"vod_id\": \"242810\", \"vod_name\": \"公鸡俱乐部-NTR老公无套，射完再把精液嘟回去！ 3P全纪录 昀希PART (1)\", \"vod_pic\": \"https://hm-img.hdstfb.com/source3/202611/03/618206608/source_jpg.image\", \"vod_remarks\": \"45:26 · 10200 播放 · 国产自拍/原创视频\", \"style\": {",
+  "play_url": "正片$https://hm-img.hdstfb.com/videos3/202611/03/618206608/index.m3u8#预览$https://hm-img.hdstfb.com/videos3/202611/03/618206608/preview.m3u8"
  },
  {
   "key": "mw",
   "class": 4,
-  "list": 39,
+  "list": 40,
   "detail": 1,
   "play": 1,
   "err": "",
-  "sample": "{\"vod_id\": \"547302\", \"vod_name\": \"酒、樱花、蓝天\", \"vod_pic\": \"https://mwfimsvfast40.cc/static/upload3/book/content/20261103/95861da756d0c09b4312c3e34c24cbf8.jpg\", \"vod_remarks\": \"\", \"style\": {\"type\": \"rect\", \"ratio\": 0.75}}",
-  "play_url": "短篇                  $31516452"
+  "sample": "{\"vod_id\": \"449794\", \"vod_name\": \"天才侧写师\", \"vod_pic\": \"https://mwfimsvfast40.cc/static/upload3/book/id/449794/cover_1.jpg?v=1762194691\", \"vod_remarks\": \"\", \"style\": {\"type\": \"rect\", \"ratio\": 0.75}}",
+  "play_url": "[第1话] 最后1%$31200954#[第2话] 犯罪动机，侦查动机$31200957#[第3话] 像侧写师一样$31200961#[第4话] 选择$31200966#[第5话] 黄金时间$31200971#[第6话] 反应$31200975#[第7话] 不可饶恕之人$31200981#[第8话] 潘多拉的魔盒 I$"
  }
 ]
