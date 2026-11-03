@@ -1,0 +1,362 @@
+[
+ {
+  "key": "aijav",
+  "host": "https://newavapi.9xyrp3kg4b86.com",
+  "ip": "153.79.172.14",
+  "status": 200,
+  "ctype": "application/json; charse",
+  "head": "{\"data\":\"ipNCCoURzJYS2A2Ttinbr0q3MvHnePRm80NfdHgel",
+  "asm": true,
+  "paths": [
+   "actor/lists",
+   "application/json",
+   "publisher/lists",
+   "tag/lists",
+   "video/lists"
+  ]
+ },
+ {
+  "key": "akmh",
+  "host": "https://www.18akmanhua.com",
+  "ip": "172.67.208.87",
+  "status": 0,
+  "ctype": "URLError",
+  "head": "",
+  "asm": true,
+  "paths": [
+   "/player",
+   "api/bookDetails",
+   "api/chaptersDetails",
+   "api/chaptersDirectories",
+   "api/stacks",
+   "api/stacksCategories",
+   "api/videoLists",
+   "read/comic"
+  ]
+ },
+ {
+  "key": "cgw",
+  "host": "https://h96h69.com",
+  "ip": "23.224.127.166",
+  "status": 200,
+  "ctype": "text/html",
+  "head": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><",
+  "asm": true,
+  "paths": [
+   "/player",
+   "api.php/api/contents/detail_content",
+   "api.php/api/contents/list_category",
+   "api.php/api/contents/list_contents",
+   "api.php/api/contents/search",
+   "api.php/api/videos/list_category",
+   "api.php/api/videos/list_contents",
+   "api/callback/checkLine",
+   "api/videos/detail",
+   "application/x-www-form-urlencoded"
+  ]
+ },
+ {
+  "key": "djr",
+  "host": "https://tokyohot-api-bo92ps.mtqztc.com",
+  "ip": "",
+  "status": 0,
+  "ctype": "URLError",
+  "head": "",
+  "asm": true,
+  "paths": [
+   "/player",
+   "api/v1/system/domain",
+   "api/v1/video",
+   "api/v1/video/actor",
+   "api/v1/video/producer",
+   "api/v1/video/tag"
+  ]
+ },
+ {
+  "key": "fl2",
+  "host": "https://prja.website",
+  "ip": "13.35.36.85",
+  "status": 200,
+  "ctype": "image/png",
+  "head": "�PNG\r \u001a \u0000\u0000\u0000\rIHDR\u0000\u0000\u0000�\u0000\u0000\u00002\u0001\u0003\u0000\u0000\u0000{���\u0000\u0000\u0000\u0006PLTE\u0000\u0000\u0000�eq.�~",
+  "asm": true,
+  "paths": [
+   "/host_f2_pwa_v3.json",
+   "/layout",
+   "/player",
+   "/speed.html",
+   "application/x-www-form-urlencoded",
+   "register/token",
+   "v1/actor/",
+   "v1/actors",
+   "v1/menu/",
+   "v1/refresh/token",
+   "v1/register/token",
+   "v1/user/info",
+   "v2/menu/type",
+   "v2/search/",
+   "v2/vertical/list/"
+  ]
+ },
+ {
+  "key": "hgsp",
+  "host": "https://api55.nmrgqb.com",
+  "ip": "177.201.234.49",
+  "status": 404,
+  "ctype": "text/html;charset=UTF-8",
+  "head": "<html><body><h1>Whitelabel Error Page</h1><p>This ",
+  "asm": true,
+  "paths": [
+   "actor/movie/list",
+   "actor/video",
+   "application/json",
+   "es/mov/V418/search",
+   "home/actor/list",
+   "home/clsmov/query",
+   "home/defaultchannels",
+   "home/module/selection",
+   "home/movlist",
+   "home/newmov/query",
+   "home/selection/query",
+   "module/movlist2",
+   "mov/browse2"
+  ]
+ },
+ {
+  "key": "hhlz",
+  "host": "https://snen24.com",
+  "ip": "202.160.130.66",
+  "status": 0,
+  "ctype": "URLError",
+  "head": "",
+  "asm": true,
+  "paths": [
+   "/domain/check",
+   "application/json",
+   "book/category-index",
+   "book/search",
+   "cartoon/info",
+   "chapter/catalog",
+   "chapter/text",
+   "comic-video/catalog",
+   "comic-video/category-index",
+   "comic-video/search",
+   "comic/",
+   "comic/catalog",
+   "comic/chapter",
+   "comic/list",
+   "comic/search",
+   "read/comic"
+  ]
+ },
+ {
+  "key": "hxsp",
+  "host": "https://hxapi.ruueyek.com",
+  "ip": "14.0.47.29",
+  "status": 404,
+  "ctype": "text/html;charset=UTF-8",
+  "head": "<html><body><h1>Whitelabel Error Page</h1><p>This ",
+  "asm": true,
+  "paths": [
+   "appApi/actor/filterActorPage",
+   "appApi/channel/getCartoonChannelList",
+   "appApi/channel/getCartoonProductList",
+   "appApi/detail/getVideoDetail",
+   "appApi/difference/search/searchLongVideoPage",
+   "appApi/difference/search/searchShortVideoPage",
+   "appApi/getActorProductList",
+   "appApi/getPubConfig",
+   "appApi/index/competitiveProductList",
+   "appApi/index/screeningSearchList",
+   "appApi/index/shortVideo",
+   "appApi/label/getLabelClassify",
+   "appApi/label/getLabelListWithClassifyId",
+   "appApi/label/getLabelProducList",
+   "appApi/subscribe/masterChannel",
+   "application/json"
+  ]
+ },
+ {
+  "key": "insav",
+  "host": "https://snen24.com",
+  "ip": "202.160.130.66",
+  "status": 0,
+  "ctype": "URLError",
+  "head": "",
+  "asm": true,
+  "paths": [
+   "//dm.",
+   "/player",
+   "/upload",
+   "api/actor/lists",
+   "api/publisher/lists",
+   "api/tag/lists",
+   "api/video/hotLists",
+   "api/video/lists",
+   "application/json"
+  ]
+ },
+ {
+  "key": "javdb",
+  "host": "https://jdforrepam.com",
+  "ip": "104.21.82.56",
+  "status": 404,
+  "ctype": "text/html",
+  "head": "<html>\r <head><title>404 Not Found</title></head>\r",
+  "asm": true,
+  "paths": [
+   "/magnets",
+   "api/v1/actors",
+   "api/v1/makers",
+   "api/v1/movies/",
+   "api/v1/movies/tags",
+   "api/v2/search",
+   "api/v2/tags",
+   "api/v4/movies/",
+   "creator/video"
+  ]
+ },
+ {
+  "key": "jmtt",
+  "host": "https://jdforrepam.com",
+  "ip": "104.21.82.56",
+  "status": 404,
+  "ctype": "text/html",
+  "head": "<html>\r <head><title>404 Not Found</title></head>\r",
+  "asm": true,
+  "paths": [
+   "categories/filter",
+   "read/comic"
+  ]
+ },
+ {
+  "key": "lxs",
+  "host": "https://api.hichatapi.info",
+  "ip": "172.67.219.28",
+  "status": 0,
+  "ctype": "URLError",
+  "head": "",
+  "asm": true,
+  "paths": [
+   "actor/video",
+   "application/x-www-form-urlencoded"
+  ]
+ },
+ {
+  "key": "mdtv",
+  "host": "https://spi.d5c4a712.com",
+  "ip": "104.21.40.37",
+  "status": 200,
+  "ctype": "text/html; charset=utf-8",
+  "head": "online8-25-1",
+  "asm": true,
+  "paths": [
+   "/player",
+   "application/json",
+   "video/channel",
+   "video/list",
+   "video/listcache",
+   "video/tags"
+  ]
+ },
+ {
+  "key": "qysq",
+  "host": "https://d1kmvkv4iwtiup.cloudfront.net",
+  "ip": "18.65.59.199",
+  "status": 200,
+  "ctype": "text/html",
+  "head": "<!DOCTYPE html> <html lang=\"en\">  <head>   <meta c",
+  "asm": true,
+  "paths": [
+   "/player",
+   "api/app/live/home",
+   "api/app/media/home",
+   "api/app/media/short/hot",
+   "api/app/media/topic/details",
+   "api/app/ping/config",
+   "api/app/post/detail",
+   "api/app/publish/contents",
+   "api/app/search/details"
+  ]
+ },
+ {
+  "key": "txvlog",
+  "host": "https://api.0yhxyky2v099lb9.com",
+  "ip": "13.226.69.58",
+  "status": 403,
+  "ctype": "text/html; charset=utf-8",
+  "head": "<html>\r <head><title>403 Forbidden</title></head>\r",
+  "asm": true,
+  "paths": [
+   "txapi/movie/detail",
+   "txapi/movie/navBlock",
+   "txapi/ping",
+   "txapi/search/movie",
+   "txapi/system/info"
+  ]
+ },
+ {
+  "key": "zlt",
+  "host": "https://apjk85sd.q2ngx58.com",
+  "ip": "149.104.33.51",
+  "status": 200,
+  "ctype": "text/html",
+  "head": "<!DOCTYPE html> <html> <head>     <title>hello wor",
+  "asm": true,
+  "paths": [
+   "actor/video",
+   "api/girls/list/",
+   "api/index_items/more",
+   "api/query/tags_and_attr",
+   "api/tags/navicate",
+   "api/v2/girls/videos/",
+   "api/v2/index_items",
+   "api/v2/query/",
+   "api/v2/query/result",
+   "api/v2/video/details/",
+   "api/video/search",
+   "application/x-www-form-urlencoded",
+   "label/video"
+  ]
+ },
+ {
+  "key": "4hu",
+  "host": "https://h96h69.com",
+  "ip": "23.224.127.166",
+  "status": 200,
+  "ctype": "text/html",
+  "head": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><",
+  "asm": false,
+  "paths": []
+ },
+ {
+  "key": "51cg",
+  "host": "https://h96h69.com",
+  "ip": "23.224.127.166",
+  "status": 200,
+  "ctype": "text/html",
+  "head": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><",
+  "asm": false,
+  "paths": []
+ },
+ {
+  "key": "91av",
+  "host": "https://api3.lmqtqhiho.cc",
+  "ip": "103.41.185.239",
+  "status": 200,
+  "ctype": "text/html; charset=utf-8",
+  "head": "",
+  "asm": false,
+  "paths": []
+ },
+ {
+  "key": "91pron",
+  "host": "https://we.killcovid2020.com",
+  "ip": "172.67.223.215",
+  "status": 200,
+  "ctype": "text/html",
+  "head": "<html>     <head> <title>Chinese homemade video</t",
+  "asm": false,
+  "paths": []
+ }
+]

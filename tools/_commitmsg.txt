@@ -1,0 +1,41 @@
+docs: 剩余21平台攻坚情报 — qysq 签名全破 / mdtv 解密全破
+
+## 最新可达性（2026-11-03 实测）
+可达 15：aijav cgw fl2 hgsp hxsp javdb jmtt mdtv qysq txvlog zlt 4hu 51cg 91av 91pron
+已死 5：akmh djr hhlz insav lxs
+
+## 已完整破解的算法
+
+### qysq 妻友社区 — 请求签名 100% 还原
+QySqInterceptor::_generateSign @ 0x8e100c
+  SECRET = "gH3nA7fR9tV1jY6z"
+  DEV_UA = "DevType=Apple iPhone mobile;SysType=light;Ver=2.1.2;BuildID=Mobile Safari 18.5"
+  msg    = token + "&" + "/" + path + "&" + DEV_UA + "&" + ts + "&" + nonce
+  sign   = HMAC_SHA1(SECRET, msg)
+  x-api-key: "timestamp=<ts>;sign=<sign>;nonce=<nonce>"
+  另需 X-User-Agent / user-agent / authorization: Bearer token_qysq
+
+实测 /api/app/media/home、/short/hot、/ping/config 全部 code=200（签名通过）
+卡点：响应 data 为 base64 密文（340012B, %16=12），解密函数不在 interceptor/service
+
+### mdtv 麻豆TV — 响应解密 100% 还原
+  RESP_KEY = b"Vq234zBeSdGgYXzVTEfnnjjdmaTkk7A4"  (AES-256)
+  RESP_IV  = b"-p9B[~PnPs" + suffix
+
+实测 video/list、video/channel、video/tags 均解密成功（code=1002 参数错误）
+签名与 aijav 同链（SIGN_SECRET = &NRkw0g3iJLDvw5tJ5PuVt5276z0SOuyL）
+卡点：业务参数名（page/list_row/channel/key 已试，需按 detail_page 实际调用核对）
+
+### aijav — 响应解密已破
+  RESP_KEY = b"0XxdjmI55ZjjqQLO3nI7gGqrBP0Vz9jS"
+  RESP_IV  = b"RWf23muavY" + suffix
+
+## 本轮排除
+- cgw/51cg/4hu：共用 h96h69.com 域名池，ap-d XOR 只能解外层，
+  内层是 script src=/indexaKo.js 的 JS 挑战，需 Node/Playwright
+- jmtt：Cloudflare Just a moment + splash 未下发 host
+- zlt：需「驾照」授权凭证（401 驾照无效）
+- javdb：需 jdsignature
+- hgsp/hxsp：老问题，需真机 Frida
+
+新增 docs/剩余21平台攻坚情报.md（含 P0-P4 优先级与难度评估）
