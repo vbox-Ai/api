@@ -42,6 +42,7 @@ BASELINE = {
     "hsck": {"class": 10, "list": 40, "detail": 1, "play": 1},
     "live": {"class": 130, "list": 99, "detail": 1, "play": 1},
     "mw":   {"class": 4,   "list": 38, "detail": 1, "play": 1},
+    "mmmh": {"class": 25,  "list": 18, "detail": 1, "play": 0},
 }
 
 # 冒烟结果（若有数据则优先采用，否则回落基线）

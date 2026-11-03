@@ -43,6 +43,14 @@ META = {
              "/mf/{address} 下发该平台 90+ 主播（zhubo，含 FLV 直播直链，wsSecret 已内嵌 URL）。"
              "平台=分类，主播=列表项，vod_id 用 base64url 包裹播放地址。"),
     # ---------------- 漫画类（category=comic）----------------
+    "mmmh": ("迷妹漫画", "books.vertical.fill", 661,
+             "三层结构：① host_pwa.txt 配置 AES-256-CBC 解密（key/iv 为 mmmh_main 里的 base64 常量，"
+             "明文=32位校验+JSON+32位校验）拿到真实 API host；② Authorization: Bearer <token_mmmh>"
+             "（Django 三段式，32位hex 会 498）；③ 响应用 key=ae52f7ffd2dd66ba5743bb180188b991 + "
+             "MD5(X-Response-Length)[8:24] 的动态 IV 做 AES-256-CBC 解密。"
+             "接口 /v1/animat/category(.list?category_id&type=1&page)、/v1/fiction/category。"
+             "⚠ media 的 m3u8 直取返回 500（分类/列表正常，media 端点另有校验）；"
+             "⚠ 封面 encrypt=true 需 MmMhAnimImg+chain 解密，暂未破。", "comic"),
     "mw": ("漫蛙漫画", "books.vertical.fill", 660,
            "纯 HTML 明文，无加密无签名。列表 /booklist?page&tag&gender，详情 /book/{id} 取章节，"
            "阅读 /chapter/{id} 取正文图。vbox 漫画约定：播放返回 manga:// + 图片以 && 连接。"
