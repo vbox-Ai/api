@@ -42,6 +42,11 @@ META = {
              "零鉴权零加密纯 JSON：/mf/json.txt 下发 130 个平台（pingtai），"
              "/mf/{address} 下发该平台 90+ 主播（zhubo，含 FLV 直播直链，wsSecret 已内嵌 URL）。"
              "平台=分类，主播=列表项，vod_id 用 base64url 包裹播放地址。"),
+    # ---------------- 漫画类（category=comic）----------------
+    "mw": ("漫蛙漫画", "books.vertical.fill", 660,
+           "纯 HTML 明文，无加密无签名。列表 /booklist?page&tag&gender，详情 /book/{id} 取章节，"
+           "阅读 /chapter/{id} 取正文图。vbox 漫画约定：播放返回 manga:// + 图片以 && 连接。"
+           "坑：搜索页/详情页真封面在 data-original（src 是占位图），列表页真封面在 src。", "comic"),
 }
 
 SOFTWARE = {
@@ -77,11 +82,15 @@ def plat_hosts(key):
 
 
 def build_entry(key):
-    name, icon, sort, notes = META[key]
+    meta = META[key]
+    name, icon, sort, notes = meta[0], meta[1], meta[2], meta[3]
+    ctype = meta[4] if len(meta) > 4 else "video"      # 第 5 项可指定 video/comic/live
     e = dict(SOFTWARE)
     e.update({
         "platformKey": "%s_py" % key,
         "name": name,
+        "category": ctype,
+        "contentType": ctype,
         "icon": icon,
         "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
         "defaultHosts": plat_hosts(key),

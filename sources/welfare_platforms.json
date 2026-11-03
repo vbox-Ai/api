@@ -1763,28 +1763,6 @@
       "visibleInHome": false
     },
     {
-      "platformKey": "muse_mw_py",
-      "name": "漫蛙漫画",
-      "category": "comic",
-      "icon": "books.vertical.fill",
-      "desc": "Python蜘蛛版 — 暮色漫蛙漫画（漫画栏目）",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://manwaqr.cc"
-      ],
-      "sortOrder": 540,
-      "defaultProxy": false,
-      "notes": "暮色 plist 导出 flutter.mw=manwaqr.cc（漫蛙漫画），纯 HTML 明文站，无需解密。链路实测：首页 / → 漫画列表(a href=/book/{id} title + img data-home-src封面)；分类 /booklist?tag={tag}；详情 /book/{id} → 章节 /chapter/{chapterId}；章节页正文图 data-r-src=.../upload3/book/id/{bookId}/{chapterId}/xxx.webp。图片用 manga:// 协议返回，vbox WelfareResultMapper 自动解析。图片域 mwfimsvfast40.cc。",
-      "api": "./sources/welfare-js/muse_mw.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "contentType": "comic",
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
       "platformKey": "91dashen_py",
       "name": "91大神",
       "category": "video",
@@ -2627,23 +2605,23 @@
       "visibleInHome": false
     },
     {
-      "platformKey": "live_py",
-      "name": "直播盒子",
-      "category": "video",
-      "icon": "antenna.radiowaves.left.and.right",
+      "platformKey": "mw_py",
+      "name": "漫蛙漫画",
+      "category": "comic",
+      "icon": "books.vertical.fill",
       "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
       "serviceType": "python_spider",
       "defaultHosts": [
-        "http://api.hclyz.com:81"
+        "https://manwaqr.cc"
       ],
-      "sortOrder": 657,
+      "sortOrder": 660,
       "defaultProxy": false,
-      "notes": "零鉴权零加密纯 JSON：/mf/json.txt 下发 130 个平台（pingtai），/mf/{address} 下发该平台 90+ 主播（zhubo，含 FLV 直播直链，wsSecret 已内嵌 URL）。平台=分类，主播=列表项，vod_id 用 base64url 包裹播放地址。",
-      "api": "./sources/welfare-js/live.py",
+      "notes": "纯 HTML 明文，无加密无签名。列表 /booklist?page&tag&gender，详情 /book/{id} 取章节，阅读 /chapter/{id} 取正文图。vbox 漫画约定：播放返回 manga:// + 图片以 && 连接。坑：搜索页/详情页真封面在 data-original（src 是占位图），列表页真封面在 src。",
+      "api": "./sources/welfare-js/mw.py",
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
-      "contentType": "video",
+      "contentType": "comic",
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false

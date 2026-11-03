@@ -1,0 +1,56 @@
+{
+ "steps": [
+  {
+   "step": "homeContent",
+   "ok": true,
+   "classes": 4,
+   "names": [
+    "全部",
+    "一般向",
+    "BL向",
+    "其他"
+   ]
+  },
+  {
+   "step": "categoryContent",
+   "ok": true,
+   "tid": "gender:-1",
+   "n": 38
+  },
+  {
+   "step": "cover real",
+   "ok": true,
+   "pic": "https://mwfimsvfast40.cc/static/upload3/book/id/538642/cover_1.png?v=1790016648"
+  },
+  {
+   "step": "pagination",
+   "ok": true,
+   "p2_first": "547268"
+  },
+  {
+   "step": "detailContent",
+   "ok": true,
+   "name": "[Pixiv] Misoya (25058255",
+   "chapters": 38
+  },
+  {
+   "step": "playerContent(manga://)",
+   "ok": true,
+   "cid": "31486601",
+   "images": 100,
+   "head": "manga://https://mwfimsvfast40.cc/static/upload3/book/id/538642/31486601/9314665f2265e936ab3ffd652dd6"
+  },
+  {
+   "step": "image fetch",
+   "ok": true,
+   "status": 200,
+   "ctype": "binary/octet-stream",
+   "magic": "fa262fe5"
+  },
+  {
+   "step": "searchContent",
+   "ok": true,
+   "n": 35
+  }
+ ]
+}

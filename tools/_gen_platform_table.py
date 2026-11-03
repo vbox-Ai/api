@@ -21,11 +21,13 @@ adapters = dict(re.findall(r'"([^"]+)":\s*(\w+)', ad_seg))
 
 wp = json.load(open(os.path.join(SRC, "welfare_platforms.json"), encoding="utf-8"))
 regmap = {}
+catmap = {}
 for e in wp["platforms"]:
     api = str(e.get("api") or "")
     m = re.search(r"welfare-js/([A-Za-z0-9_]+)\.py$", api)
     if m:
         regmap[m.group(1)] = e.get("platformKey")
+        catmap[m.group(1)] = e.get("category") or "video"
 
 # 已验证结果基线（每轮冒烟后人工确认；避免单次冒烟文件只含个别平台时统计失真）
 BASELINE = {
@@ -39,6 +41,7 @@ BASELINE = {
     "km":   {"class": 2,  "list": 10, "detail": 1, "play": 1},
     "hsck": {"class": 10, "list": 40, "detail": 1, "play": 1},
     "live": {"class": 130, "list": 99, "detail": 1, "play": 1},
+    "mw":   {"class": 4,   "list": 38, "detail": 1, "play": 1},
 }
 
 # 冒烟结果（若有数据则优先采用，否则回落基线）
@@ -71,7 +74,7 @@ for cid, key, name, tabs in cat:
     state = "已适配" if (selfile and pk and l) else ("已平铺待修" if (selfile and pk) else
                                                    ("脚本就绪未注册" if selfile else "未平铺"))
     rows.append({
-        "key": key, "name": name, "pk": pk or "-", "selfile": selfile,
+        "key": key, "name": name, "pk": pk or "-", "selfile": selfile, "cat": catmap.get(key, "video"),
         "adapter": has_ad, "c": c, "l": l, "d": d, "p": p, "state": state,
     })
 
@@ -98,8 +101,8 @@ lines.append("| 尚未平铺 | %d |" % (tot - flat))
 lines.append("")
 
 lines.append("\n## 二、逐平台状态\n")
-lines.append("| # | key | 平台 | 注册键 | 分类 | 列表 | 详情 | 播放 | 状态 |")
-lines.append("|---|---|---|---|---|---|---|---|---|")
+lines.append("| # | key | 平台 | 栏目 | 注册键 | 分类 | 列表 | 详情 | 播放 | 状态 |")
+lines.append("|---|---|---|---|---|---|---|---|---|---|")
 for n, r in enumerate(rows, 1):
     lines.append("| %d | `%s` | %s | %s | %s | %s | %s | %s | %s |" % (
         n, r["key"], r["name"], ("`%s`" % r["pk"]) if r["pk"] != "-" else "-",
