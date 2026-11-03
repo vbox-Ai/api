@@ -1,12 +1,25 @@
-chore(qysq): 解释器跑通全链路，卡点收敛到「立即数是否 Smi」
+fix(mdtv,aijav): 首页「未能解析到分类」—— homeContent 联网打满客户端 20s 预算
 
-- r13 修完槽位归属（_slowSetRange 的 dst 在 x1、D 副本先落数据）后链路首次完整跑通，
-  拿到真实摘要：X=盐+D[0:24]=56B -> H1 -> K1 -> L2=K1+X -> H2/H3 -> KEY/IV 缓冲
-- 按原始立即数拼出的 KEY 是 48/80/96B，而 AES(Key) 只接受 16/24/32
-  ⇒ 立即数里必有 Smi 编码；按折算后 KEY 恰 32、IV 恰 16，逻辑自洽
-- r15 按折算后切片穷举（4 种 K1 x 2 拼接序 x 36 key x 34 iv，8 变体）仍未命中
-  ⇒ 折算不是统一折半，需逐条对照 movz/lsl 来源（体力活，非猜公式）
-- 结论：静态路线只差这一处 tag 语义，判错则 key/iv 全错且无旁路判据；
-  真机 Frida hook 0x7237f0 是唯一确定收口路径。无设备则本平台挂起，先扫 zlt/javdb
+现象：客户端进入 aijav / mdtv 直接报「未能解析到分类，请检查域名或网络」，
+而本地 smoke 一切正常（分类 101 / 46）。
 
-docs/qysq响应解密攻坚.md 新增第七节写死该结论。
+根因（客户端源码实证）：
+- welfare_spider_main_page.dart：result.categories.isEmpty → 出该文案
+- python_bridge_engine.dart：PythonBridgeEngine.timeout = 20s 是整次调用总预算
+- 这两个适配器的 homeContent 都在联网（mdtv: channel+tags；aijav: tag+publisher），
+  每跳 timeout=20s；网络慢/域名被墙时两跳把总预算打满 → 客户端判超时 → empty → 报错
+- 其余平台 homeContent 是静态数组，所以只有这两个中招
+
+修复（两适配器同口径）：
+1) homeContent 走 classes(quick=True)：只拉一跳，QUICK_TIMEOUT=3s
+2) 拿不到回退内置快照 STATIC_CLASSES（离线可用）：
+   mdtv 8 频道 + 8 热门标签；aijav 首页 + 8 标签 + 3 片商
+3) homeVideoContent 直接返回空（客户端首页探测会顺带调它）
+4) 全量动态分类仍在 classes(quick=False)
+
+验证 tools/_home_deadline_test.py：
+  mdtv  正常 69类/1.87s   断网 16类/0.00s   慢网 16类/1.50s
+  aijav 正常 31类/0.57s   断网 11类/0.00s   慢网 11类/1.50s
+均远小于 20s 且 class 恒非空。smoke：mdtv 61/120/1/✓，aijav 31/54/1/-，hdb 无回归。
+
+文档：mdtv/aijav 协议详解各补第九节；交接文档坑表新增 #25；平台总表重生成。

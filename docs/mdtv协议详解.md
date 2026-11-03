@@ -143,3 +143,33 @@ $ python tools/_gen_platform_table.py
    这类平台的 IV 常常由"固定前缀 + 平台标识头"拼成，头就是密钥的一部分。
 3. **错误码迁移是进度条**：同一请求改一个变量后错误码变化（1002→1001→0），
    比任何 A/B 穷举都更能证明"改的是正确的那一层"。
+
+## 九、线上故障修复：首页「未能解析到分类，请检查域名或网络」（2026-11-03 18:40）
+
+**现象**：客户端进入 aijav / mdtv 直接报「未能解析到分类，请检查域名或网络」。
+
+**定位**（客户端源码）：
+- `welfare_spider_main_page.dart`：`result.categories.isEmpty` → 出这条文案；
+- `python_bridge_engine.dart`：`PythonBridgeEngine.timeout = 20s` 是**整次调用**的总预算；
+- `welfare_python_spider_service.dart::fetchHomeContent` 异常即返回 `FuliHomeResult.empty`。
+
+而我们这两个适配器的 `homeContent` 都在**联网**（mdtv: channel+tags 两跳；aijav: tag+publisher 两跳），
+每跳 `timeout=20s`。只要网络慢/域名被墙，两跳就把 20s 总预算打满 →
+客户端判超时 → empty → 报「未能解析到分类」。其余平台 homeContent 都是静态数组，所以只有这两个中招。
+
+**修复**（两个适配器同口径）：
+1. `homeContent` 走 `classes(quick=True)`：**只拉一跳**，`QUICK_TIMEOUT = 3s`；
+2. 拿不到就回退**内置快照**（`STATIC_CLASSES`，离线可用）——
+   mdtv 8 频道 + 8 热门标签，aijav 首页 + 8 标签 + 3 片商；
+3. `homeVideoContent` 直接返回空（客户端首页探测会顺带调它，联网会吃光预算）；
+4. 真正的动态全量分类仍在 `classes(quick=False)`（非首页路径/调试用）。
+
+**验证**（`tools/_home_deadline_test.py`）：
+
+| 场景 | mdtv | aijav |
+|---|---|---|
+| 正常网络 | 69 分类 / 1.87s | 31 分类 / 0.57s |
+| 断网 | 16 分类 / 0.00s | 11 分类 / 0.00s |
+| 慢网（每跳挂死） | 16 分类 / 1.50s | 11 分类 / 1.50s |
+
+三次都远小于 20s 预算，且 `class` 恒非空 → 不再出「未能解析到分类」。

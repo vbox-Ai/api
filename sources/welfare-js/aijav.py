@@ -68,6 +68,23 @@ RESP_IV_HEAD = "RWf23muavY"
 SUFFIX = "NWSdef"
 SECRET = "&NRkw0g3iJLDvw5tJ5PuVt5276z0SOuyL"
 UA = "Dart/3.4 (dart:io)"
+
+# ⚠ 同 mdtv：homeContent 有 20s 总预算，tag/lists + publisher/lists 两跳一旦超时，
+#   首页就报「未能解析到分类，请检查域名或网络」。这里给 3s 快速预算 + 内置快照兜底。
+STATIC_CLASSES = [
+    {"type_id": "home", "type_name": "最新"},
+    {"type_id": "tag:1", "type_name": "#巨乳"},
+    {"type_id": "tag:85", "type_name": "#熟女"},
+    {"type_id": "tag:38", "type_name": "#乳交"},
+    {"type_id": "tag:39", "type_name": "#癡女"},
+    {"type_id": "tag:30", "type_name": "#人妻"},
+    {"type_id": "tag:32", "type_name": "#姊姊"},
+    {"type_id": "tag:80", "type_name": "#亂倫"},
+    {"type_id": "publisher:1", "type_name": "MAX-A"},
+    {"type_id": "publisher:3", "type_name": "MOODYZ"},
+    {"type_id": "publisher:2", "type_name": "WANZ FACTORY"},
+]
+QUICK_TIMEOUT = 3.0
 IMG_HOST = "https://mmjs.1vkx.cn"              # 图片相对路径的兜底前缀
 
 # ============================================================ vbox 运行时适配
@@ -199,7 +216,7 @@ class AijavCore(object):
             return {"code": -1, "msg": "解密失败 suffix=%s" % suf}
 
     # ---------------- 请求 ----------------
-    def call(self, path, biz=None):
+    def call(self, path, biz=None, timeout=None):
         mp = self._sign(biz or {})
         plain = json.dumps(mp, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
         post = base64.b64encode(_aes_cbc(KEY, REQ_IV, plain, encrypt=True)).decode()
@@ -212,7 +229,7 @@ class AijavCore(object):
             "suffix": SUFFIX,          # ← 缺这一行就是 999/1002 一类的泛化错误
         })
         try:
-            with self._open(req) as r:
+            with self._open(req, timeout) as r:
                 return self._dec(r.read())
         except urllib.error.HTTPError as e:
             try:
@@ -278,13 +295,17 @@ class AijavCore(object):
         return self._page("video/lists", {"page": int(page), "limit": int(per),
                                          "keyword": str(key)})
 
-    def classes(self):
-        """首页 + 热门标签 + 主要片商（都来自服务端，失败只剩首页）。"""
+    def classes(self, quick=False):
+        """首页 + 热门标签 + 主要片商。
+
+        quick=True（homeContent 用）：只给 QUICK_TIMEOUT 秒预算，失败/超时回退内置快照。
+        """
         if self._classes is not None:
             return self._classes
+        tmo = QUICK_TIMEOUT if quick else None
         out = [{"type_id": self.CATE_HOME, "type_name": "最新"}]
         try:
-            j = self.call("tag/lists", {"page": 1, "limit": 60})
+            j = self.call("tag/lists", {"page": 1, "limit": 60}, timeout=tmo)
             tags = (j.get("data") or {}).get("data") or []
             tags = [t for t in tags if isinstance(t, dict) and t.get("id") is not None]
             tags.sort(key=lambda x: -int(x.get("video_count") or 0))
@@ -293,8 +314,14 @@ class AijavCore(object):
                             "type_name": "#" + str(t.get("name") or t.get("id"))})
         except Exception:
             pass
+        if quick:                              # 快速路径只拉一跳
+            if len(out) < 2:
+                self._classes = [dict(x) for x in STATIC_CLASSES]
+                return self._classes
+            self._classes = out
+            return out
         try:
-            j = self.call("publisher/lists", {"page": 1, "limit": 30})
+            j = self.call("publisher/lists", {"page": 1, "limit": 30}, timeout=tmo)
             pubs = (j.get("data") or {}).get("data") or []
             pubs = [p for p in pubs if isinstance(p, dict) and p.get("id") is not None]
             pubs.sort(key=lambda x: -int(x.get("video_count") or 0))
@@ -303,6 +330,9 @@ class AijavCore(object):
                             "type_name": str(p.get("name") or p.get("id"))})
         except Exception:
             pass
+        if len(out) < 2:
+            self._classes = [dict(x) for x in STATIC_CLASSES]
+            return self._classes
         self._classes = out
         return out
 
@@ -426,17 +456,14 @@ class Spider(SpiderBase):
     # ---------------- vbox 接口 ----------------
     def homeContent(self, filter):
         try:
-            cls = self._c().classes()
+            cls = self._c().classes(quick=True)
         except Exception:
-            cls = [{"type_id": "home", "type_name": "最新"}]
+            cls = [dict(x) for x in STATIC_CLASSES]
         return {"class": cls, "list": []}
 
     def homeVideoContent(self):
-        try:
-            items, _ = self._c().list_page("home", 1)
-            return {"list": items}
-        except Exception:
-            return {"list": []}
+        # 客户端首页探测会顺带调这里，联网会吃光 20s 总预算 → 直接返回空
+        return {"list": []}
 
     def categoryContent(self, tid, pg, filter, extend):
         try:

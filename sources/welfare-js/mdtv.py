@@ -70,6 +70,31 @@ SUFFIX = "JGDZMX"                              # 平台标识，请求头 suffix
 SECRET = "&m}q%ea6:LDcmS?aK)CeF287bPvd99@E,9Up^"
 UA = "Dart/3.4 (dart:io)"
 
+# ⚠ 客户端的 homeContent 有 20s 总预算（PythonBridgeEngine.timeout），
+#   一旦分类拉取（video/channel + video/tags 两跳）超时，整次调用被判失败 →
+#   首页报「未能解析到分类，请检查域名或网络」。
+#   所以 homeContent **只给 3s 的快速预算**，拿不到就用这份内置快照（实测值，可离线）。
+STATIC_CLASSES = [
+    {"type_id": "rec", "type_name": "推荐"},
+    {"type_id": "c:21", "type_name": "麻豆传媒映画"},
+    {"type_id": "c:20", "type_name": "91制作"},
+    {"type_id": "c:51", "type_name": "91茄子"},
+    {"type_id": "c:23", "type_name": "探花系列"},
+    {"type_id": "c:14", "type_name": "SWAG"},
+    {"type_id": "c:39", "type_name": "日本AV-4K"},
+    {"type_id": "c:101", "type_name": "乐播传媒"},
+    # 快速路径下补上的热门标签（t: 前缀 → video/listcache 的 tags 参数）
+    {"type_id": "t:99", "type_name": "#热门推荐"},
+    {"type_id": "t:62", "type_name": "#国产"},
+    {"type_id": "t:102", "type_name": "#麻豆"},
+    {"type_id": "t:104", "type_name": "#SWAG"},
+    {"type_id": "t:43", "type_name": "#巨乳"},
+    {"type_id": "t:47", "type_name": "#美少女"},
+    {"type_id": "t:46", "type_name": "#裤袜"},
+    {"type_id": "t:27", "type_name": "#萝莉系"},
+]
+QUICK_TIMEOUT = 3.0
+
 # ============================================================ vbox 运行时适配
 # 客户端 base.spider 只给 requests 打了「代理 + verify=False」补丁，裸 urllib 不走；
 # 而 iOS CPython 无系统 CA 证书包 —— urllib 的 HTTPS 会全部 SSLError。
@@ -208,7 +233,7 @@ class MdtvCore(object):
             return {"code": -1, "msg": "解密失败 suffix=%s" % suf}
 
     # ---------------- 请求 ----------------
-    def call(self, path, biz=None):
+    def call(self, path, biz=None, timeout=None):
         mp = self._sign(biz or {})
         plain = json.dumps(mp, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
         post = base64.b64encode(_aes_cbc(KEY, REQ_IV, plain, encrypt=True)).decode()
@@ -221,7 +246,7 @@ class MdtvCore(object):
             "suffix": SUFFIX,          # ← 缺这一行就是 1002 参数错误
         })
         try:
-            with self._open(req) as r:
+            with self._open(req, timeout) as r:
                 return self._dec(r.read())
         except urllib.error.HTTPError as e:
             try:
@@ -295,13 +320,18 @@ class MdtvCore(object):
             pass
         return hits, last
 
-    def classes(self):
-        """分类 = 推荐 + 频道（channel）+ 热门标签（tags）。"""
+    def classes(self, quick=False):
+        """分类 = 推荐 + 频道（channel）+ 热门标签（tags）。
+
+        quick=True（homeContent 用）：只给 QUICK_TIMEOUT 秒预算，失败/超时回退内置快照，
+        保证首页永远能出分类（否则客户端 20s 总预算被打满 → 「未能解析到分类」）。
+        """
         if self._classes is not None:
             return self._classes
+        tmo = QUICK_TIMEOUT if quick else None
         out = [{"type_id": self.CATE_REC, "type_name": "推荐"}]
         try:
-            j = self.call("video/channel")
+            j = self.call("video/channel", timeout=tmo)
             chans = j.get("data")
             if isinstance(chans, dict):
                 chans = chans.get("data")
@@ -312,8 +342,15 @@ class MdtvCore(object):
                             "type_name": str(c.get("name") or c.get("id"))})
         except Exception:
             pass
+        if quick:                              # 快速路径只拉一跳（channel），标签用内置快照补齐
+            if len(out) < 2:
+                self._classes = [dict(x) for x in STATIC_CLASSES]
+                return self._classes
+            out.extend([dict(x) for x in STATIC_CLASSES if x["type_id"].startswith("t:")])
+            self._classes = out
+            return out
         try:
-            j = self.call("video/tags")
+            j = self.call("video/tags", timeout=tmo)
             tags = j.get("data")
             if isinstance(tags, dict):
                 tags = tags.get("data")
@@ -324,6 +361,9 @@ class MdtvCore(object):
                             "type_name": "#" + str(t.get("name") or t.get("id"))})
         except Exception:
             pass
+        if len(out) < 2:                      # 网络没通：用内置快照兜底
+            self._classes = [dict(x) for x in STATIC_CLASSES]
+            return self._classes
         self._classes = out
         return out
 
@@ -450,17 +490,15 @@ class Spider(SpiderBase):
     # ---------------- vbox 接口 ----------------
     def homeContent(self, filter):
         try:
-            cls = self._c().classes()
+            cls = self._c().classes(quick=True)
         except Exception:
-            cls = [{"type_id": "rec", "type_name": "推荐"}]
+            cls = [dict(x) for x in STATIC_CLASSES]
         return {"class": cls, "list": []}
 
     def homeVideoContent(self):
-        try:
-            items, _ = self._c().list_page("rec", 1)
-            return {"list": items}
-        except Exception:
-            return {"list": []}
+        # 注意：客户端的首页探测会顺带调这里，联网会把 20s 总预算吃光 —— 直接返回空，
+        # 首屏数据交给 categoryContent('rec', 1) 去取。
+        return {"list": []}
 
     def categoryContent(self, tid, pg, filter, extend):
         try:

@@ -1,7 +1,17 @@
 [
  {
+  "key": "mdtv",
+  "class": 61,
+  "list": 120,
+  "detail": 1,
+  "play": 1,
+  "err": "",
+  "sample": "{\"vod_id\": \"483570\", \"vod_name\": \"MD-0376.苡若.艾嫣.盛夏芬德拉.姐妹百合凌辱禁忌NTR.\", \"vod_pic\": \"https://imgsmd.n123dx.xyz/doudou/ms/fc50e00c43936ae2383644a57__1306860/fc50e00c43936ae2383644a57__1306860.jpg\", \"vod_remarks\": \"麻豆传媒映画 · 多P",
+  "play_url": "正片$https://m3md.n6uem8.xyz/doudou/ms/fc50e00c43936ae2383644a57__1306860/hls/1/index.m3u8"
+ },
+ {
   "key": "aijav",
-  "class": 46,
+  "class": 31,
   "list": 54,
   "detail": 1,
   "play": 0,
@@ -10,13 +20,13 @@
   "play_url": ""
  },
  {
-  "key": "mdtv",
-  "class": 101,
-  "list": 120,
+  "key": "hdb",
+  "class": 1,
+  "list": 20,
   "detail": 1,
   "play": 1,
   "err": "",
-  "sample": "{\"vod_id\": \"483570\", \"vod_name\": \"MD-0376.苡若.艾嫣.盛夏芬德拉.姐妹百合凌辱禁忌NTR.\", \"vod_pic\": \"https://imgsmd.n123dx.xyz/doudou/ms/fc50e00c43936ae2383644a57__1306860/fc50e00c43936ae2383644a57__1306860.jpg\", \"vod_remarks\": \"麻豆传媒映画 · 多P",
-  "play_url": "正片$https://m3md.n6uem8.xyz/doudou/ms/fc50e00c43936ae2383644a57__1306860/hls/1/index.m3u8"
+  "sample": "{\"vod_id\": \"550100\", \"vod_name\": \"集四国可爱特质于一身、令世界倾心的混血美女桐谷艾玛出道\", \"vod_pic\": \"https://gjwspicacrlvz.gdpcdz.com/uploads/images/movies/2026-11-03/1793668811059.jpeg\", \"vod_remarks\": \"SNOS-489\"}",
+  "play_url": "https://api.b7f3192.com/pwa/v2_0/getM3u8.m3u8?v=577034&params=5371773172363842383842645939747a57702b766a465965447476486f7832686f76564d6974597951724f4f476b677941"
  }
 ]
