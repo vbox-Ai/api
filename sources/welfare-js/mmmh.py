@@ -179,6 +179,8 @@ class MmMhCore(object):
         self.base = ""          # 由配置解析得到
         self.img_host = ""
         self.comic_chain = ""
+        self.stream_chain = ""
+        self.stream_ts = ""
         self._cfg_ts = 0
         self._cache = {}        # id -> item（详情复用列表数据）
 
@@ -232,6 +234,9 @@ class MmMhCore(object):
         self.img_host = (img[0].get("url") if img else "https://image.meme06.live").rstrip("/")
         comic = cfg.get("comic") or []
         self.comic_chain = (comic[0].get("chain") if comic else "") or ""
+        stream = cfg.get("stream") or []
+        self.stream_chain = (stream[0].get("chain") if stream else "") or ""
+        self.stream_ts = (stream[0].get("tsurl") if stream else "") or ""
         self._cfg_ts = time.time()
         return self.base
 
@@ -355,12 +360,16 @@ class MmMhCore(object):
             meta.append("标签：%s" % " / ".join([str(t) for t in tags[:12]]))
 
         base = self.ensure_config()
-        media = it.get("media") or {}
+        avkey = it.get("avkey") or ""
         plays = []
-        for label, q in (("正片 720", "720"), ("标清 240", "240"), ("预览", "intro")):
-            rel = media.get(q)
-            if rel:
-                url = rel if rel.startswith("http") else base + rel
+        # 按 UrlUtil::mmMhAnim 的模板拼（缺 host/chain/encrypt/token 会 500）
+        if avkey:
+            for label, q in (("正片 720", "720"), ("标清 240", "240"),
+                             ("预览", "intro")):
+                url = ("%s/v1/animat/pwa/media/%s/%s.m3u8"
+                       "?host=%s&chain=%s&encrypt=true&token=%s"
+                       % (base, q, avkey, self.token,
+                          self.stream_chain, self.token))
                 plays.append("%s$%s" % (label, url))
 
         desc = "\n".join(meta)

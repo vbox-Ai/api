@@ -584,8 +584,7 @@ class Spider(SpiderBase):
         self.ctx.check_hostname = False
         self.ctx.verify_mode = ssl.CERT_NONE
         self._jar = http.cookiejar.CookieJar()
-        self._opener = urllib.request.build_opener(
-            urllib.request.HTTPCookieProcessor(self._jar))
+        self._opener = _vbox_opener(self)
         self._adapter = None
         self._last_adapter = None  # 目录模式下记录最近一次 categoryContent 用到的 adapter
 
@@ -656,7 +655,7 @@ class Spider(SpiderBase):
         req = urllib.request.Request(url, data=data, headers=h,
                                      method="POST" if data is not None else "GET")
         try:
-            with self._opener.open(req, timeout=self.timeout) as r:
+            with _vbox_opener(self).open(req, timeout=self.timeout) as r:
                 raw = r.read()
                 enc = (r.headers.get("Content-Encoding") or "").lower()
                 if "gzip" in enc:
@@ -689,7 +688,7 @@ class Spider(SpiderBase):
         req = urllib.request.Request(url, data=data, headers=h,
                                      method="POST" if data is not None else "GET")
         try:
-            with self._opener.open(req, timeout=self.timeout) as r:
+            with _vbox_opener(self).open(req, timeout=self.timeout) as r:
                 raw = r.read()
                 enc = (r.headers.get("Content-Encoding") or "").lower()
                 if "gzip" in enc:

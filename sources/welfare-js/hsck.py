@@ -121,30 +121,47 @@ class HsckCore(object):
         return _vbox_opener(getattr(self, "sp", None)).open(req, timeout=t)
 
     def get_html(self, path, timeout=None):
-        url = path if path.startswith("http") else self.base.rstrip("/") + "/" + path.lstrip("/")
+        """取页面。站点恒返 418，body 仍有效 —— 绝不按 status 判失败。"""
+        if path.startswith("http"):
+            urls = [path]
+        else:
+            urls = [self.base.rstrip("/") + "/" + path.lstrip("/")]
+            for alt in getattr(self, "_alt_hosts", None) or []:
+                a = str(alt).rstrip("/")
+                if a and a != self.base.rstrip("/"):
+                    urls.append(a + "/" + path.lstrip("/"))
+        for url in urls:
+            body = self._get_once(url, timeout)
+            if body:
+                return body
+        return ""
+
+    def _get_once(self, url, timeout=None):
         req = urllib.request.Request(url, headers={
             "User-Agent": UA,
             "Accept": "text/html,application/xhtml+xml,*/*",
             "Accept-Language": "zh-CN,zh;q=0.9",
             "Referer": self.base + "/",
         })
+        raw = None
         try:
             with self._open(req, timeout) as r:
                 raw = r.read()
-                if raw[:2] == b"\x1f\x8b":
-                    try:
-                        raw = gzip.decompress(raw)
-                    except Exception:
-                        pass
-                return raw.decode("utf-8", "replace")
-        except urllib.error.HTTPError as e:
-            # 站点恒返 418，body 仍有效
-            try:
-                return e.read().decode("utf-8", "replace")
-            except Exception:
-                return ""
-        except Exception:
+        except Exception as e:
+            rd = getattr(e, "read", None)
+            if callable(rd):
+                try:
+                    raw = rd()
+                except Exception:
+                    raw = None
+        if not raw:
             return ""
+        if raw[:2] == b"\x1f\x8b":
+            try:
+                raw = gzip.decompress(raw)
+            except Exception:
+                pass
+        return raw.decode("utf-8", "replace")
 
     # ---------------- 解析 ----------------
     def parse_items(self, html):
@@ -304,18 +321,11 @@ class Spider(SpiderBase):
         except Exception:
             self.timeout = 20
         self._core.timeout = self.timeout
-        # 客户端注入的自定义域名优先于脚本内置默认值
+        # 客户端注入域名：仅作回退候选，不覆盖内置域名（防注入错域导致全挂）
         try:
             _inj = _vbox_host(self, "")
-            if _inj:
-                for _attr in ("base", "host"):
-                    if hasattr(self, _inj if False else _attr):
-                        setattr(self, _attr, _inj)
-                _core = getattr(self, "_core", None)
-                if _core is not None:
-                    for _attr in ("base", "host"):
-                        if hasattr(_core, _attr):
-                            setattr(_core, _attr, _inj)
+            if _inj and self._core is not None:
+                self._core._alt_hosts = [_inj]
         except Exception:
             pass
 

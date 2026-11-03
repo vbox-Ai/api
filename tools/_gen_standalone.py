@@ -327,8 +327,17 @@ def build(key):
     body += HOST_SEG
     body += AES_SEG
     body += ADAPTER_SEG[key]
+    # 强制把裸 build_opener 换成带 SSL/代理 的 _vbox_opener
+    _init_seg = INIT_SEG
+    if "self._opener = urllib.request.build_opener(" in _init_seg:
+        _init_seg = re.sub(
+            r"self\._opener = urllib\.request\.build_opener\([^)]*\)",
+            "self._opener = _vbox_opener(self)", _init_seg, count=1)
+        _init_seg = _init_seg.replace(
+            "urllib.request.HTTPCookieProcessor(self._jar))", "")
+    INIT_PATCHED = _init_seg
     body += SPIDER_TPL.format(key=key, name=name, cls=cls,
-                              init_seg=INIT_SEG, fetchb=FETCHB_SEG, fetcht=FETCHT_SEG)
+                              init_seg=INIT_PATCHED, fetchb=FETCHB_SEG, fetcht=FETCHT_SEG)
     # one 平台需要 token 注入钩子
     if key == "one":
         body = body.replace(
