@@ -91,12 +91,17 @@ D_BYTES = []
 KEYB = None
 IVB = None
 LASTSET = None
+AESKEY = None
 STUB_DATA = []
 
 
 class Stub:
+    def __init__(self):
+        self.data = None
+        self.born = None
+
     def content(self):
-        return list(D_BYTES)
+        return list(self.data) if self.data is not None else []
 
 
 def fetch():
@@ -167,7 +172,10 @@ def simulate(sample_b64, algo_name):
                 if mn in ("stur", "str"):
                     slots[offi] = gr(tok[1])
                 else:
-                    sr(tok[1], slots.get(offi))
+                    v = slots.get(offi)
+                    if offi in (-0x18, -8):
+                        print("   [dbg load fp-0x%02x] @0x%x -> %s" % (-offi, addr, type(v).__name__))
+                    sr(tok[1], v)
             elif base.startswith("x"):
                 dstobj = regs.get(int(base[1:]))
                 if mn in ("stur", "str") and isinstance(dstobj, Obj):
@@ -215,6 +223,9 @@ def simulate(sample_b64, algo_name):
                 en = stack.pop() if stack else None
                 if isinstance(src, list):
                     real_en = en if isinstance(en, int) else len(src)
+                    print("   [slice] @0x%x [%s:%s] of %dB -> %s" % (
+                        addr, st, real_en, len(src),
+                        bytes(list(src)[st:real_en]).hex()[:40]))
                     if real_en > len(src):
                         clamps.append((addr, st, real_en, len(src)))
                     regs[0] = Bytes(list(src)[st:real_en])
@@ -230,22 +241,32 @@ def simulate(sample_b64, algo_name):
                 data = coerce(gr("x2")) or []
                 hf = {"sha256": hashlib.sha256, "sha384": hashlib.sha384,
                       "sha512": hashlib.sha512}[algo_name]
-                regs[0] = Obj("Digest", bytes=Bytes(hf(bytes(list(data))).digest()))
+                dg = hf(bytes(list(data))).digest()
+                print("   [hash] @0x%x in=%dB %s -> %s" % (addr, len(bytes(list(data))), bytes(list(data))[:12].hex(), dg.hex()))
+                regs[0] = Obj("Digest", bytes=Bytes(dg))
             elif "fromList" in nm and "Uint8List" in nm:
                 src = coerce(gr("x2"))
                 if not isinstance(src, list):
                     src = coerce(gr("x1"))
                 regs[0] = Bytes(list(src or []))
             elif "AllocateUint8Array" in nm:
-                regs[0] = Stub()
+                st = Stub(); st.born = addr
+                if addr == 0x723840:      # 这一处就是 D 的副本缓冲，先落数据（真实代码在该分支里已 memcpy）
+                    st.data = list(D_BYTES)
+                print("   [dbg alloc] @0x%x" % addr)
+                regs[0] = st
             elif "_slowSetRange" in nm:
                 global LASTSET
-                dst, src = regs.get(0), coerce(gr("x5"))
+                dst, src = gr("x1"), coerce(gr("x5"))
                 if not isinstance(src, list):
-                    src = coerce(slots.get(-0x38)) or coerce(slots.get(-0x18))
-                if isinstance(src, list):
+                    src = coerce(slots.get(-0x38))
+                if isinstance(dst, Stub) and isinstance(src, list):
+                    dst.data = list(src)
                     LASTSET = list(src)
-                    regs[0] = Bytes(list(src))
+                    print("   [dbg slowset] @0x%x dst(born=0x%x) <- %dB" % (addr, dst.born or 0, len(src)))
+            elif "] AES::AES" in nm or "encrypt.dart] AES::AES" in nm:
+                global AESKEY
+                AESKEY = coerce(gr("x2"))
             elif "AllocateKeyStub" in nm:
                 regs[0] = Obj("Key")
                 print("   [dbg] Allocate Key @0x%x" % addr)
@@ -256,11 +277,43 @@ def simulate(sample_b64, algo_name):
                 print("   [dbg] Allocate Encrypted @0x%x" % addr)
             elif "Encrypter::decrypt" in nm:
                 enc = gr("x2")
-                ivv = gr("x3") or (stack.pop() if stack else None)
-                ct = getattr(enc, "bytes", None)
-                ivb = getattr(ivv, "bytes", None) or IVB
+                ivv = gr("x3")
+                ct = coerce(getattr(enc, "bytes", None))
+                ivb = coerce(getattr(ivv, "bytes", None)) or IVB
                 try:
-                    kb = bytes(list(KEYB or []))
+                    # 直接把 Key/IV 缓冲原始字节打出来
+                    for nm2, arr in (("KEYARR", KEYB), ("IVARR", IVB), ("AESKEY", AESKEY)):
+                        if isinstance(arr, list) and arr:
+                            print("   [buf] %-7s len=%-3d %s" % (nm2, len(arr), bytes(list(arr)).hex()))
+                    # 组合试探：32+16 / 16+32 / 取前 32 / 取前 16
+                    combos = []
+                    ka = list(KEYB or [])
+                    ia = list(IVB or [])
+                    if len(ka) >= 48:
+                        combos.append(("K[0:32],K[32:48]", ka[:32], ka[32:48]))
+                    if len(ka) == 32 and len(ia) >= 16:
+                        combos.append(("K[0:32],I[0:16]", ka, ia[:16]))
+                    if len(ka) >= 16 and len(ia) >= 16:
+                        combos.append(("K[0:16],I[0:16]", ka[:16], ia[:16]))
+                    if len(ia) >= 48:
+                        combos.append(("I[0:32],I[32:48]", ia[:32], ia[32:48]))
+                    ctt = bytes(list(coerce(gr("x2")).__class__ and (getattr(gr("x2"), "bytes", None) or []) or [])) if False else None
+                    for tag, kb2, iv2 in combos:
+                        if len(kb2) in (16, 24, 32) and len(iv2) == 16:
+                            try:
+                                ptt = AES.new(bytes(kb2), AES.MODE_CBC, bytes(iv2)).decrypt(
+                                    bytes(list(getattr(gr("x2"), "bytes", []) or [])))
+                                t2 = ptt.decode("utf-8", "replace")
+                                print("   [try] %-16s -> %r" % (tag, t2[:80]))
+                                try:
+                                    json.loads(t2)
+                                    print("   ★★★ 命中 %s" % tag)
+                                    open("tools/_dec/qysq_plain.json","w",encoding="utf-8").write(t2)
+                                except Exception:
+                                    pass
+                            except Exception as e:
+                                print("   [try] %s err %s" % (tag, e))
+                    kb = bytes(list(AESKEY or KEYB or []))
                     ivb2 = bytes(list(ivb or []))[:16]
                     ctb = bytes(list(ct or []))
                     if len(kb) in (16, 24, 32) and len(ivb2) == 16 and ctb and len(ctb) % 16 == 0:
