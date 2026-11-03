@@ -1,18 +1,7 @@
-chore(qysq): 响应解密攻坚记录 —— 签名全通、解密 10 轮未命中、排除面收窄
+chore(repo): 清理误提交的 qysq_plain.json（爆破假阳性产物）+ 情报回写
 
-本轮先把 mdtv/aijav 两个提交推送进 origin/main（bcfacbe..89925a4），
-然后接续 qysq。
-
-qysq 进展：
-- 签名链在真实接口上 100% 跑通：POST api/app/media/home → code 6023（业务错）
-  GET api/app/ping/config → code 200 success；POST short/hot → 200
-- 定位到解密函数 CryptoUtil::asGjCrypto @0x7237f0（QySqHttp.post 直接调用后 jsonDecode）
-- 钉死三条硬事实：32B 盐 vEukA&w…（@521089）、两段 sha256 KDF、
-  密文 = D[12:]（与样本 %16==12 吻合）
-- 约 120 万组合爆破（sha256/384/512 × 顺序 × 切片 × CBC/CFB/OFB × skip）全部 0 命中
-  → 结论：KDF 的槽位写回顺序在 blutter 里读错，必须逐指令重放或真机 Frida
-
-新增：
-- docs/qysq响应解密攻坚.md（含已排除面矩阵 + 下一步三条路）
-- tools/_qysq_r5..r10.py、_qysq_env.py、_qysq_saltbytes.py
-- 判据教训：不能拿「明文像 {」当命中，必须严格 json.loads；样本 %16==12 先钉 ct 起点
+- 删除 tools/_dec/qysq_plain.json：r6 把「明文以 { 开头」当命中判据时的噪声产物，
+  判据已改为严格 json.loads，该文件无价值
+- docs/剩余21平台攻坚情报.md §2.1 qysq：补 15:20 更新（解密函数定位、盐取证、
+  120 万组合排除面、下一步逐指令重放/真机 Frida）
+- docs/会话交接文档.md §4.7 qysq：同步同上结论
