@@ -1,7 +1,19 @@
-chore(repo): 清理误提交的 qysq_plain.json（爆破假阳性产物）+ 情报回写
+chore(qysq): 指令级迷你解释器 + 压缩分支爆破，卡点定位到「分支建模」
 
-- 删除 tools/_dec/qysq_plain.json：r6 把「明文以 { 开头」当命中判据时的噪声产物，
-  判据已改为严格 json.loads，该文件无价值
-- docs/剩余21平台攻坚情报.md §2.1 qysq：补 15:20 更新（解密函数定位、盐取证、
-  120 万组合排除面、下一步逐指令重放/真机 Frida）
-- docs/会话交接文档.md §4.7 qysq：同步同上结论
+继续 qysq 响应解密，两条新线索：
+
+1) r11 补上「明文其实是压缩流」分支（zlib/raw-deflate/gzip + 严格 JSON），
+   key/iv 空间 2337×1070 全扫，仍 0 命中 —— 排除「解出来是压缩流被可打印率判据丢掉」这一可能。
+
+2) r12 不再猜公式，直接给 asGjCrypto（341 条指令）写状态机解释器：
+   x0..x21 + [fp-0xNN] 槽位 + SP 参数栈，忽略分支，桩函数按 Dart ABI 语义实现。
+   跑通后确认：X = 盐(32B) + D[0:24] = 56B → sha256 → 切片链 → Key()/IV() 两次 _slowSetRange。
+
+   新卡点已定位到机制：忽略分支会让越界 sublist 被 clamp（[8:48] 在 32B 摘要上截成 24B），
+   而真实 Dart 走另一条内联拷贝分支，边界不同 → 模拟出的 key/iv 必然不对。
+   同时用 sublist(D,0,24) 反证「立即数是 Smi、真实值需 /2」的假设不成立
+   （否则 44 字节缓冲后面接 sublist(0,112) 立刻越界）。
+
+   下一步：给解释器补 tbz/tbnz + 类型标签比较，或真机 Frida hook 0x7237f0。
+
+新增 tools/_qysq_r11.py、_qysq_r12_sim.py；docs/qysq响应解密攻坚.md 同步第四·补节。
