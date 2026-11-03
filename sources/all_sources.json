@@ -3459,6 +3459,138 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "hdb_py",
+        "name": "黄豆瓣",
+        "category": "video",
+        "icon": "film.stack.fill",
+        "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://api.b7f3192.com"
+        ],
+        "sortOrder": 650,
+        "defaultProxy": false,
+        "notes": "RSA-2048 + AES-128-CBC 双向信封。分类/列表/详情/播放全通（播放为 getM3u8 签名直链）。",
+        "api": "./sources/welfare-js/hdb.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "mmav_py",
+        "name": "猫咪AV",
+        "category": "video",
+        "icon": "cat.fill",
+        "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://bvbvbvssu.a63qv1sy.com"
+        ],
+        "sortOrder": 651,
+        "defaultProxy": false,
+        "notes": "AES-256-CBC 动态 IV（固定串 + 响应 suffix）+ wsSecret 播放签名。分类/列表/详情/播放全通。",
+        "api": "./sources/welfare-js/mmav.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "rryy_py",
+        "name": "2048",
+        "category": "video",
+        "icon": "square.stack.3d.up.fill",
+        "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://yy.swgongshui.com"
+        ],
+        "sortOrder": 652,
+        "defaultProxy": false,
+        "notes": "纯 HTML + 门禁 cookie 解析。分类/列表/详情可出，播放需 VIP。",
+        "api": "./sources/welfare-js/rryy.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "one_py",
+        "name": "one",
+        "category": "video",
+        "icon": "1.circle.fill",
+        "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://api.3459381.com"
+        ],
+        "sortOrder": 653,
+        "defaultProxy": false,
+        "notes": "AES-128-CBC + MD5 签名。分类可出；列表依赖内置 token，token 过期则列表为空（需外部喂 one_token）。",
+        "api": "./sources/welfare-js/one.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "lclf_py",
+        "name": "绿茶楼凤",
+        "category": "video",
+        "icon": "building.2.fill",
+        "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://lclf.lol"
+        ],
+        "sortOrder": 654,
+        "defaultProxy": false,
+        "notes": "纯 REST，零鉴权。feed/top/detail 全 POST（detail 参数走 query string 的 postId）。图文型内容：多图直链可浏览，无视频流。支持 cid 地区过滤（type_id 用 city_<cid>）。",
+        "api": "./sources/welfare-js/lclf.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
+      },
+      {
+        "platformKey": "km_py",
+        "name": "快猫",
+        "category": "video",
+        "icon": "cat.circle.fill",
+        "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://icef4vn.xyz"
+        ],
+        "sortOrder": 655,
+        "defaultProxy": false,
+        "notes": "请求加密：data=base16(AES-128-CBC(json)) + sig=MD5('data='+data+'maomi_pass_xyz')，响应为 hex(AES)。接口 /api/videos/listAll 与 listHot（路径即方法名，打到 /api/videos/ 会 501）。列表项自带 mv_play_url mp4 直链，无需 detail（detail 需登录）。⚠ 实测视频源 IP 119.28.204.36 直连超时/代理 502，播放能否成功取决于客户端网络。",
+        "api": "./sources/welfare-js/km.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ],
     "updatedAt": "2026-10-31T04:30:00Z"

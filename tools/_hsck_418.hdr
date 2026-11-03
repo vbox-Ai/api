@@ -1,0 +1,14 @@
+HTTP/1.1 418 I'm a teapot
+Date: Mon, 02 Nov 2026 15:47:32 GMT
+Content-Type: text/html;charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Server: cloudflare
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Set-Cookie: JSESSIONID=15DF9DD38F94CD3476D332935662136C; Path=/; HttpOnly
+Content-Language: en-US
+cf-cache-status: DYNAMIC
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Frq7b8AJSakc0AlLytCfMCIADsHiiXb6hlYk9rn5xcKgS6rB9tCmeC5OJ0xzeZRO6REwhTst8pMO6LFdXoLf3%2F3D8PerXafnY%2Fj7SOalVeoqTnvlJkM1hUu3SO4Kl6lv"}]}
+CF-RAY: a544473d4b0c312a-AMS
+alt-svc: h3=":443"; ma=86400
+

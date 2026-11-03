@@ -1,0 +1,148 @@
+# -*- coding: utf-8 -*-
+"""通用平台注册器：把独立平铺的平台双写进 welfare_platforms.json + all_sources.json
+
+用法：python tools/_register_platforms.py [key1 key2 ...]
+    不带参数则注册 META 里全部已就绪平台。
+只注册脚本文件确实存在且能通过语法编译的平台。
+"""
+import json
+import os
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC = os.path.join(ROOT, "sources")
+WJ = os.path.join(SRC, "welfare-js")
+WP = os.path.join(SRC, "welfare_platforms.json")
+AS = os.path.join(SRC, "all_sources.json")
+
+# key -> (中文名, 图标, sortOrder, 备注)
+META = {
+    "hdb": ("黄豆瓣", "film.stack.fill", 650,
+            "RSA-2048 + AES-128-CBC 双向信封。分类/列表/详情/播放全通（播放为 getM3u8 签名直链）。"),
+    "mmav": ("猫咪AV", "cat.fill", 651,
+             "AES-256-CBC 动态 IV（固定串 + 响应 suffix）+ wsSecret 播放签名。分类/列表/详情/播放全通。"),
+    "rryy": ("2048", "square.stack.3d.up.fill", 652,
+             "纯 HTML + 门禁 cookie 解析。分类/列表/详情可出，播放需 VIP。"),
+    "one": ("one", "1.circle.fill", 653,
+            "AES-128-CBC + MD5 签名。分类可出；列表依赖内置 token，token 过期则列表为空（需外部喂 one_token）。"),
+    "lclf": ("绿茶楼凤", "building.2.fill", 654,
+             "纯 REST，零鉴权。feed/top/detail 全 POST（detail 参数走 query string 的 postId）。"
+             "图文型内容：多图直链可浏览，无视频流。支持 cid 地区过滤（type_id 用 city_<cid>）。"),
+    "km": ("快猫", "cat.circle.fill", 655,
+           "请求加密：data=base16(AES-128-CBC(json)) + sig=MD5('data='+data+'maomi_pass_xyz')，"
+           "响应为 hex(AES)。接口 /api/videos/listAll 与 listHot（路径即方法名，打到 /api/videos/ 会 501）。"
+           "列表项自带 mv_play_url mp4 直链，无需 detail（detail 需登录）。"
+           "⚠ 实测视频源 IP 119.28.204.36 直连超时/代理 502，播放能否成功取决于客户端网络。"),
+}
+
+SOFTWARE = {
+    "platformKey": None,
+    "name": None,
+    "category": "video",
+    "icon": "film.fill",
+    "desc": None,
+    "serviceType": "python_spider",
+    "defaultHosts": [],
+    "sortOrder": 700,
+    "defaultProxy": False,
+    "notes": None,
+    "api": None,
+    "scriptType": "python",
+    "engine": "python",
+    "sslBypass": True,
+    "contentType": "video",
+    "visibleInNormalSpider": False,
+    "visibleInGlobalSearch": False,
+    "visibleInHome": False,
+}
+
+
+def plat_hosts(key):
+    """从 muse_avbox.py 的 PLATFORM_HOSTS 取该平台主域名。"""
+    import re
+    s = open(os.path.join(WJ, "muse_avbox.py"), encoding="utf-8").read()
+    seg = s[s.index("PLATFORM_HOSTS = {"):]
+    seg = seg[:seg.index("\n}") + 2]
+    m = re.search(r'"%s":\s*"([^"]+)"' % re.escape(key), seg)
+    return [m.group(1)] if m else []
+
+
+def build_entry(key):
+    name, icon, sort, notes = META[key]
+    e = dict(SOFTWARE)
+    e.update({
+        "platformKey": "%s_py" % key,
+        "name": name,
+        "icon": icon,
+        "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
+        "defaultHosts": plat_hosts(key),
+        "sortOrder": sort,
+        "notes": notes,
+        "api": "./sources/welfare-js/%s.py" % key,
+    })
+    return e
+
+
+def load(p):
+    with open(p, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def dump(p, o):
+    with open(p, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(o, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+
+def upsert(lst, entry):
+    pk = entry["platformKey"]
+    for i, x in enumerate(lst):
+        if x.get("platformKey") == pk:
+            lst[i] = entry
+            return "update"
+    lst.append(entry)
+    return "append"
+
+
+if __name__ == "__main__":
+    keys = sys.argv[1:] or list(META.keys())
+    ready, skipped = [], []
+    for k in keys:
+        if k not in META:
+            skipped.append((k, "无 META"))
+            continue
+        p = os.path.join(WJ, k + ".py")
+        if not os.path.exists(p):
+            skipped.append((k, "脚本不存在"))
+            continue
+        try:
+            compile(open(p, encoding="utf-8").read(), p, "exec")
+        except SyntaxError as e:
+            skipped.append((k, "语法错 line %s" % e.lineno))
+            continue
+        ready.append(k)
+
+    if not ready:
+        print("无就绪平台；跳过:", skipped)
+        raise SystemExit(1)
+
+    wp = load(WP)
+    asrc = load(AS)
+    asl = (asrc.get("welfarePlatforms") or {}).get("platforms")
+    if not isinstance(asl, list):
+        print("all_sources 结构异常")
+        raise SystemExit(1)
+
+    for k in ready:
+        e = build_entry(k)
+        r1 = upsert(wp["platforms"], e)
+        r2 = upsert(asl, e)
+        print("%-6s -> %-10s welfare=%s  all_sources=%s  hosts=%s" %
+              (k, e["platformKey"], r1, r2, e["defaultHosts"]))
+
+    dump(WP, wp)
+    dump(AS, asrc)
+    print("\n平台总数: welfare=%d  all_sources=%d" % (
+        len(wp["platforms"]), len(asl)))
+    if skipped:
+        print("跳过:", skipped)
