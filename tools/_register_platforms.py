@@ -33,6 +33,15 @@ META = {
            "响应为 hex(AES)。接口 /api/videos/listAll 与 listHot（路径即方法名，打到 /api/videos/ 会 501）。"
            "列表项自带 mv_play_url mp4 直链，无需 detail（detail 需登录）。"
            "⚠ 实测视频源 IP 119.28.204.36 直连超时/代理 502，播放能否成功取决于客户端网络。"),
+    "hsck": ("黄色仓库", "shippingbox.fill", 656,
+             "纯 HTML（苹果CMS stui 模板），无加密无签名。站点对任何请求恒返 HTTP 418，"
+             "但 body 是完整真实页面 —— 不能用 status==200 判断成功。页面 UTF-8 编码。"
+             "分类是 query 风格 /?type={dm|gc|om|ycgc|...}&p={page}，搜索 /?search2={kw}。"
+             "播放地址伪装在详情页 <img id=\"video_img\" src=\"...a.m3u8\"> 里。"),
+    "live": ("直播盒子", "antenna.radiowaves.left.and.right", 657,
+             "零鉴权零加密纯 JSON：/mf/json.txt 下发 130 个平台（pingtai），"
+             "/mf/{address} 下发该平台 90+ 主播（zhubo，含 FLV 直播直链，wsSecret 已内嵌 URL）。"
+             "平台=分类，主播=列表项，vod_id 用 base64url 包裹播放地址。"),
 }
 
 SOFTWARE = {

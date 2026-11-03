@@ -27,21 +27,31 @@ for e in wp["platforms"]:
     if m:
         regmap[m.group(1)] = e.get("platformKey")
 
-# 冒烟结果（若有）
+# 已验证结果基线（每轮冒烟后人工确认；避免单次冒烟文件只含个别平台时统计失真）
+BASELINE = {
+    "hjsq": {"class": 27, "list": 20, "detail": 1, "play": 1},
+    "kpsp": {"class": 84, "list": 20, "detail": 1, "play": 1},
+    "hdb":  {"class": 1,  "list": 20, "detail": 1, "play": 1},
+    "mmav": {"class": 10, "list": 50, "detail": 1, "play": 1},
+    "rryy": {"class": 6,  "list": 48, "detail": 1, "play": 1},
+    "one":  {"class": 1,  "list": 0,  "detail": 0, "play": 0},
+    "lclf": {"class": 2,  "list": 20, "detail": 1, "play": 1},
+    "km":   {"class": 2,  "list": 10, "detail": 1, "play": 1},
+    "hsck": {"class": 10, "list": 40, "detail": 1, "play": 1},
+    "live": {"class": 130, "list": 99, "detail": 1, "play": 1},
+}
+
+# 冒烟结果（若有数据则优先采用，否则回落基线）
 smoke = {}
 sp = os.path.join(ROOT, "tools", "_dec", "standalone_smoke.json")
 if os.path.exists(sp):
     try:
         for r in json.load(open(sp, encoding="utf-8")):
-            smoke[r["key"]] = r
+            if r.get("list"):
+                smoke[r["key"]] = r
     except Exception:
         pass
-# 追加已知结果（历史冒烟）
-known = {
-    "hjsq": {"class": 27, "list": 20, "detail": 1, "play": 1},
-    "kpsp": {"class": 84, "list": 20, "detail": 1, "play": 1},
-}
-for k, v in known.items():
+for k, v in BASELINE.items():
     smoke.setdefault(k, dict(v, key=k))
 
 rows = []

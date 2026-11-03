@@ -2603,6 +2603,50 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "hsck_py",
+      "name": "黄色仓库",
+      "category": "video",
+      "icon": "shippingbox.fill",
+      "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://hsck3.u0u0.cc"
+      ],
+      "sortOrder": 656,
+      "defaultProxy": false,
+      "notes": "纯 HTML（苹果CMS stui 模板），无加密无签名。站点对任何请求恒返 HTTP 418，但 body 是完整真实页面 —— 不能用 status==200 判断成功。页面 UTF-8 编码。分类是 query 风格 /?type={dm|gc|om|ycgc|...}&p={page}，搜索 /?search2={kw}。播放地址伪装在详情页 <img id=\"video_img\" src=\"...a.m3u8\"> 里。",
+      "api": "./sources/welfare-js/hsck.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "live_py",
+      "name": "直播盒子",
+      "category": "video",
+      "icon": "antenna.radiowaves.left.and.right",
+      "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "http://api.hclyz.com:81"
+      ],
+      "sortOrder": 657,
+      "defaultProxy": false,
+      "notes": "零鉴权零加密纯 JSON：/mf/json.txt 下发 130 个平台（pingtai），/mf/{address} 下发该平台 90+ 主播（zhubo，含 FLV 直播直链，wsSecret 已内嵌 URL）。平台=分类，主播=列表项，vod_id 用 base64url 包裹播放地址。",
+      "api": "./sources/welfare-js/live.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
   "updatedAt": "2026-10-31T04:30:00Z"
