@@ -1,38 +1,18 @@
-docs: 重写会话交接文档 — 完整交接本次会话全部成果
+feat(mdtv): 麻豆TV 全链路打通 —— 分类/列表/详情/播放四能力全通
 
-## 交接要点（新会话读 docs/会话交接文档.md 即可恢复）
+两个真凶（都在报文胶水层，与业务参数无关）：
+1. onRequest 里 headers["suffix"]="JGDZMX" 被漏抄。服务端用该头拼请求 IV
+   ("-p9B[~PnPs"+头值)，头不发 → 请求体解不开 → 恒 {"code":1002,"参数错误"}；
+   而响应 IV 只依赖响应体 suffix 字段，照样能解开，于是极像「参数名不对」。
+2. 签名 SECRET 照抄了 blutter 的 `\?` 转义，实际 libapp.so 偏移 367007 的原始
+   字节没有反斜杠 → 补头后立刻变 {"code":1001,"签名错误"}，去掉反斜杠 → code 0。
 
-### 本次会话交付 11 个自包含适配器
-CATALOG 内 10 个四能力全通：hdb mmav rryy one lclf km hsck kpsp mw mmmh
-CATALOG 外 1 个：hjsq 海角社区（四能力全通）
+交付：
+- sources/welfare-js/mdtv.py  自包含适配器（内联 vbox 运行时层），注册键 mdtv_py
+  · video/channel 分类 101 个 · video/listcache 推荐/分区/标签 9404 条 120/页
+  · video/list 搜索 · 列表项 video_url 即 HLS m3u8 直链
+- docs/mdtv协议详解.md  协议全量 + 1002/1001 复盘 + asm→结论索引
+- tools/_mdtv_r8.py（打通）/ _mdtv_r9.py（全接口）/ _mdtv_strbytes.py（二进制取证）
 
-### 三个线上故障级修复（重点交接）
-1. [致命] 适配器未接入客户端运行时 → 「分类有、数据无」
-   根因：base/spider.py 只给 requests 打补丁（代理 + verify=False + 域名替换），
-         裸 urllib 三条全不生效；iOS CPython 无 CA 证书 → HTTPS 全 SSLError
-   修复：每适配器内联 _SSL_CTX + _vbox_proxy + _vbox_host + _vbox_opener
-         且 opener 必须每次请求构建（注入发生在 __init__ 之后）
-2. 生成器多行替换一度没生效（_opener 仍是裸 build_opener）
-3. hsck：418 不能按异常类型判失败 + 域名内置优先/注入回退
-
-### 算法资产（全部已验证）
-hjsq 自定义字母表 base64 图片 / kpsp Fernet 结构 / km AES+MD5 sig /
-mmmh 三层（配置 AES256 + Bearer + MD5(X-Resp-Len) 动态 IV）/
-mdtv 加解密全破（差报文细节）/ aijav 响应解密 / qysq HMAC-SHA1 签名全破
-
-### 剩余 21 平台
-已死 5：akmh djr hhlz insav lxs
-可攻 16：mdtv aijav qysq(P0-P1) javdb zlt(P2) cgw 51cg 4hu(P3,JS挑战)
-         jmtt txvlog 91av 91pron fl2(P4) hgsp hxsp(需Frida) live(已按要求移除)
-
-### 环境四个坑（已写入文档）
-1. git 必须 -c http.sslBackend=openssl（schannel 过代理必失败）
-2. 必须 -c credential.helper=（否则 GCM 卡死）
-3. mihomo 会自停（本会话重启 4 次）
-4. commit message 不要用 PowerShell here-string（中文括号会被吃）
-
-### 20 条踩坑清单
-含 #FE 不能剥、字母表被重排、418 不能按 status 判、tag 必传 id、
-x-data 在 body 里、mw 封面 data-original 优先级等
-
-文档结构：现状 / 环境 / 交付 / 算法资产 / 剩余平台 / 踩坑 / 快速恢复 / 硬约束 / 下一步 / 文件索引
+验证：smoke_standalone mdtv 分类101 / 列表120 / 详情1 / 播放通；
+_test_inject mdtv 101/120/1；平台总表 31 平台 · 平铺 11 · 四能力全通 11。

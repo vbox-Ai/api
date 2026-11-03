@@ -3635,6 +3635,28 @@
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
+      },
+      {
+        "platformKey": "mdtv_py",
+        "name": "麻豆TV",
+        "category": "video",
+        "icon": "film.fill",
+        "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
+        "serviceType": "python_spider",
+        "defaultHosts": [
+          "https://spi.d5c4a712.com"
+        ],
+        "sortOrder": 658,
+        "defaultProxy": false,
+        "notes": "AES-256-CBC 双向信封（key=Vq234z…）：请求 biz 加毫秒 timestamp → 按 key 排序拼串 + MD5(secret) 得 encode_sign → base64(AES(json)) 装进 {\"post-data\"}；响应 {\"suffix\",\"data\"} 用 IV=\"-p9B[~PnPs\"+suffix 解密。**请求头必须带 suffix: JGDZMX**（否则服务端还原不了 IV → 恒 1002 参数错误）。接口 video/channel、video/tags、video/listcache（page/list_row/type/channel|tags）、video/list（搜索）。列表项自带 video_url = HLS m3u8 直链，客户端无 detail/play 接口。",
+        "api": "./sources/welfare-js/mdtv.py",
+        "scriptType": "python",
+        "engine": "python",
+        "sslBypass": true,
+        "contentType": "video",
+        "visibleInNormalSpider": false,
+        "visibleInGlobalSearch": false,
+        "visibleInHome": false
       }
     ],
     "updatedAt": "2026-10-31T04:30:00Z"

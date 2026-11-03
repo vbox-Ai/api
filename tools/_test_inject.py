@@ -28,6 +28,8 @@ CASES = [
     ("hsck", {"_vbox_effective_hosts": ["https://hsck3.u0u0.cc"]}),
     # mw 漫画
     ("mw", {"_vbox_proxy_enabled": False}),
+    # mdtv 验证「注入域名 == 内置域名」时不误伤（注入值必须能被 base 消费）
+    ("mdtv", {"_vbox_effective_hosts": ["https://spi.d5c4a712.com"]}),
 ]
 
 

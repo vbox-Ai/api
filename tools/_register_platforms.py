@@ -42,6 +42,13 @@ META = {
              "零鉴权零加密纯 JSON：/mf/json.txt 下发 130 个平台（pingtai），"
              "/mf/{address} 下发该平台 90+ 主播（zhubo，含 FLV 直播直链，wsSecret 已内嵌 URL）。"
              "平台=分类，主播=列表项，vod_id 用 base64url 包裹播放地址。"),
+    "mdtv": ("麻豆TV", "film.fill", 658,
+             "AES-256-CBC 双向信封（key=Vq234z…）：请求 biz 加毫秒 timestamp → 按 key 排序拼串 + "
+             "MD5(secret) 得 encode_sign → base64(AES(json)) 装进 {\"post-data\"}；"
+             "响应 {\"suffix\",\"data\"} 用 IV=\"-p9B[~PnPs\"+suffix 解密。"
+             "**请求头必须带 suffix: JGDZMX**（否则服务端还原不了 IV → 恒 1002 参数错误）。"
+             "接口 video/channel、video/tags、video/listcache（page/list_row/type/channel|tags）、"
+             "video/list（搜索）。列表项自带 video_url = HLS m3u8 直链，客户端无 detail/play 接口。"),
     # ---------------- 漫画类（category=comic）----------------
     "mmmh": ("迷妹漫画", "books.vertical.fill", 661,
              "三层结构：① host_pwa.txt 配置 AES-256-CBC 解密（key/iv 为 mmmh_main 里的 base64 常量，"

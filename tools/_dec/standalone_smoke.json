@@ -1,5 +1,15 @@
 [
  {
+  "key": "mdtv",
+  "class": 101,
+  "list": 120,
+  "detail": 1,
+  "play": 1,
+  "err": "",
+  "sample": "{\"vod_id\": \"483570\", \"vod_name\": \"MD-0376.苡若.艾嫣.盛夏芬德拉.姐妹百合凌辱禁忌NTR.\", \"vod_pic\": \"https://imgsmd.n123dx.xyz/doudou/ms/fc50e00c43936ae2383644a57__1306860/fc50e00c43936ae2383644a57__1306860.jpg\", \"vod_remarks\": \"麻豆传媒映画 · 多P",
+  "play_url": "正片$https://m3md.n6uem8.xyz/doudou/ms/fc50e00c43936ae2383644a57__1306860/hls/1/index.m3u8"
+ },
+ {
   "key": "hdb",
   "class": 1,
   "list": 20,
@@ -7,47 +17,7 @@
   "play": 1,
   "err": "",
   "sample": "{\"vod_id\": \"550100\", \"vod_name\": \"集四国可爱特质于一身、令世界倾心的混血美女桐谷艾玛出道\", \"vod_pic\": \"https://gjwspicacrlvz.gdpcdz.com/uploads/images/movies/2026-11-03/1793668811059.jpeg\", \"vod_remarks\": \"SNOS-489\"}",
-  "play_url": "https://api.b7f3192.com/pwa/v2_0/getM3u8.m3u8?v=577034&params=5371773172363842383842645939747a57702b766a4d684751594c6255426f754c4633302f79744e503333316b73565342"
- },
- {
-  "key": "mmav",
-  "class": 10,
-  "list": 50,
-  "detail": 1,
-  "play": 1,
-  "err": "",
-  "sample": "{\"vod_id\": \"55027\", \"vod_name\": \"极品御姐被男友调教成骚货母狗 蒙脸后抬起双腿被猛男用无套大屌插入湿润骚逼狠狠猛干\", \"vod_pic\": \"https://wzzqlm.erbaiwulaoge.com/common/msdl//107361f2258536ace3c8e81b33__1285796/107361f2258536ace3c8e81b33__1285796.jpg\", \"vod_rema",
-  "play_url": "极品御姐被男友调教成骚货母狗 蒙脸后抬起双腿被猛男用无套大屌插入湿润骚逼狠狠猛干$55027"
- },
- {
-  "key": "rryy",
-  "class": 1,
-  "list": 0,
-  "detail": 0,
-  "play": 0,
-  "err": "列表空",
-  "sample": "",
-  "play_url": ""
- },
- {
-  "key": "one",
-  "class": 1,
-  "list": 0,
-  "detail": 0,
-  "play": 0,
-  "err": "列表空",
-  "sample": "",
-  "play_url": ""
- },
- {
-  "key": "lclf",
-  "class": 2,
-  "list": 2,
-  "detail": 1,
-  "play": 1,
-  "err": "",
-  "sample": "{\"vod_id\": \"111847\", \"vod_name\": \"性感性欲极品御姐\", \"vod_pic\": \"https://lclf.lol/images/98adc5d9-309b-41dc-8df2-3eab91fc4bd4.jpg\", \"vod_remarks\": \"置顶 · 消费680 · 包夜1280 · 21-25岁 · 9分\", \"style\": {\"type\": \"rect\", \"ratio\": 0.75}}",
-  "play_url": "图1$https://lclf.lol/images/98adc5d9-309b-41dc-8df2-3eab91fc4bd4.jpg#图2$https://lclf.lol/images/55a5263b-f37b-4f7a-a42e-ca381608c527.jpg#图3$https://lclf.lol/imag"
+  "play_url": "https://api.b7f3192.com/pwa/v2_0/getM3u8.m3u8?v=577034&params=5371773172363842383842645939747a57702b766a446a58737579596c68766a6347706c4b3235587254555772346b5564"
  },
  {
   "key": "km",
@@ -56,37 +26,7 @@
   "detail": 1,
   "play": 1,
   "err": "",
-  "sample": "{\"vod_id\": \"3851570\", \"vod_name\": \"肥而不腻\", \"vod_pic\": \"https://imgs.e8eues3.xyz/uploads/images/2026-11-02/21363770/da7167080fe3db298bcb04a084645dd5.jpg\", \"vod_remarks\": \"720p · 136赞 · 神座出流\", \"style\": {\"type\": \"rect\", \"rat",
+  "sample": "{\"vod_id\": \"3851570\", \"vod_name\": \"肥而不腻\", \"vod_pic\": \"https://imgs.e8eues3.xyz/uploads/images/2026-11-02/21363770/da7167080fe3db298bcb04a084645dd5.jpg\", \"vod_remarks\": \"720p · 141赞 · 神座出流\", \"style\": {\"type\": \"rect\", \"rat",
   "play_url": "正片$http://119.28.204.36/uploads/2026-11-02/21363770/54f6e38348984f2335653619dd53c9a6_wm.mp4"
- },
- {
-  "key": "hsck",
-  "class": 10,
-  "list": 40,
-  "detail": 1,
-  "play": 1,
-  "err": "",
-  "sample": "{\"vod_id\": \"cbhkerwn\", \"vod_name\": \"今天約清純學生妹,身材不錯白嫩緊致\", \"vod_pic\": \"https://aliyun.cctv05.com/i/a1002678.jpg\", \"vod_remarks\": \"\", \"style\": {\"type\": \"rect\", \"ratio\": 0.75}}",
-  "play_url": "正片$https://t0.97img.com/a1002678/a.m3u8"
- },
- {
-  "key": "kpsp",
-  "class": 84,
-  "list": 20,
-  "detail": 1,
-  "play": 1,
-  "err": "",
-  "sample": "{\"vod_id\": \"242810\", \"vod_name\": \"公鸡俱乐部-NTR老公无套，射完再把精液嘟回去！ 3P全纪录 昀希PART (1)\", \"vod_pic\": \"https://hm-img.hdstfb.com/source3/202611/03/618206608/source_jpg.image\", \"vod_remarks\": \"45:26 · 10200 播放 · 国产自拍/原创视频\", \"style\": {",
-  "play_url": "正片$https://hm-img.hdstfb.com/videos3/202611/03/618206608/index.m3u8#预览$https://hm-img.hdstfb.com/videos3/202611/03/618206608/preview.m3u8"
- },
- {
-  "key": "mw",
-  "class": 4,
-  "list": 40,
-  "detail": 1,
-  "play": 1,
-  "err": "",
-  "sample": "{\"vod_id\": \"449794\", \"vod_name\": \"天才侧写师\", \"vod_pic\": \"https://mwfimsvfast40.cc/static/upload3/book/id/449794/cover_1.jpg?v=1762194691\", \"vod_remarks\": \"\", \"style\": {\"type\": \"rect\", \"ratio\": 0.75}}",
-  "play_url": "[第1话] 最后1%$31200954#[第2话] 犯罪动机，侦查动机$31200957#[第3话] 像侧写师一样$31200961#[第4话] 选择$31200966#[第5话] 黄金时间$31200971#[第6话] 反应$31200975#[第7话] 不可饶恕之人$31200981#[第8话] 潘多拉的魔盒 I$"
  }
 ]
