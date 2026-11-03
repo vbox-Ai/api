@@ -58,6 +58,13 @@ META = {
               "video/info（参数名 **vid**）、tag/lists、actor/lists、publisher/lists。"
               "⚠ 播放受限：匿名态不下发 m3u8（video/purchase、video/collect 返 2000 登录失效），"
               "仅交付分类/列表/详情三能力。"),
+    "javdb": ("JavDB", "magnifyingglass.circle.fill", 664,
+              "签名极简：ts=秒；first=MD5(ts+SECRET)；头 jdsignature=\"{ts}.lpw6vgqzsp.{first}\"；"
+              "头 accept-language=zh。SECRET 在 service.dart 构造 JavDbInterceptor 时写入（64+ 位十六进制串）。"
+              "接口 api/v1/movies/latest、api/v1/movies/tags?filter_by=tag、api/v2/search?q=、api/v4/movies/{id}。"
+              "参数缺失会返回 \"參數不能爲空: xxx\"，可据此枚举必填项。"
+              "⚠ 正片需登录+VIP（play_sources 为空、show_vip_banner=true），"
+              "仅交付 分类/列表/详情 + 官方 720p 试看 m3u8（preview_video_url）。"),
     # ---------------- 漫画类（category=comic）----------------
     "mmmh": ("迷妹漫画", "books.vertical.fill", 661,
              "三层结构：① host_pwa.txt 配置 AES-256-CBC 解密（key/iv 为 mmmh_main 里的 base64 常量，"

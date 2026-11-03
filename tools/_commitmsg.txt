@@ -1,25 +1,24 @@
-fix(mdtv,aijav): 首页「未能解析到分类」—— homeContent 联网打满客户端 20s 预算
+feat(javdb): JavDB 协议打通 —— 分类/列表/详情 + 官方 720p 试看
 
-现象：客户端进入 aijav / mdtv 直接报「未能解析到分类，请检查域名或网络」，
-而本地 smoke 一切正常（分类 101 / 46）。
+javdb 的卡点原来是「需 jdsignature」。本轮把它彻底还原（onRequest 全函数只有 30 余条指令）：
+    ts    = 秒（micros/1000/1000，两次 sdiv）
+    first = MD5(ts + SECRET)
+    header accept-language: zh
+    header jdsignature: "{ts}.lpw6vgqzsp.{first}"
+SECRET 不在常量池，而是构造 JavDbInterceptor 时写入 field_7 的实参
+（service.dart @0x7b9fa8，64+ 位十六进制串）—— 之前只盯着 .lpw6vgqzsp. 这条线索所以没找到。
 
-根因（客户端源码实证）：
-- welfare_spider_main_page.dart：result.categories.isEmpty → 出该文案
-- python_bridge_engine.dart：PythonBridgeEngine.timeout = 20s 是整次调用总预算
-- 这两个适配器的 homeContent 都在联网（mdtv: channel+tags；aijav: tag+publisher），
-  每跳 timeout=20s；网络慢/域名被墙时两跳把总预算打满 → 客户端判超时 → empty → 报错
-- 其余平台 homeContent 是静态数组，所以只有这两个中招
+接口：api/v1/movies/latest、api/v1/movies/tags?filter_by=tag、api/v2/search?q=、
+详情 api/v4/movies/{id}（v1 那条 404）。参数缺失会返「參數不能爲空: xxx」，可直接当参数发现器。
 
-修复（两适配器同口径）：
-1) homeContent 走 classes(quick=True)：只拉一跳，QUICK_TIMEOUT=3s
-2) 拿不到回退内置快照 STATIC_CLASSES（离线可用）：
-   mdtv 8 频道 + 8 热门标签；aijav 首页 + 8 标签 + 3 片商
-3) homeVideoContent 直接返回空（客户端首页探测会顺带调它）
-4) 全量动态分类仍在 classes(quick=False)
+播放：正片需登录+VIP（play_sources 空、show_vip_banner true、列表 can_play 恒 false），
+可播的是官方试看 movie.preview_video_url（720p m3u8，sign/t 由服务端签发）。
 
-验证 tools/_home_deadline_test.py：
-  mdtv  正常 69类/1.87s   断网 16类/0.00s   慢网 16类/1.50s
-  aijav 正常 31类/0.57s   断网 11类/0.00s   慢网 11类/1.50s
-均远小于 20s 且 class 恒非空。smoke：mdtv 61/120/1/✓，aijav 31/54/1/-，hdb 无回归。
+交付：
+- sources/welfare-js/javdb.py（注册键 javdb_py，静态分类不联网，规避 20s 预算坑）
+- docs/javdb协议详解.md
+- tools/_javdb_r1..r3.py（签名验证 / 参数发现 / 详情与播放定位）
+- 攻坚情报：javdb 段落改写为已打通；zlt 段落补「签名加密全破，卡在驾照 token 过期」
 
-文档：mdtv/aijav 协议详解各补第九节；交接文档坑表新增 #25；平台总表重生成。
+验证：smoke javdb 分类2 / 列表10 / 详情1 / 播放通（试看 m3u8）；
+平台总表 31 平台 · 平铺 13 · 四能力全通 11。
