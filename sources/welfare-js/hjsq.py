@@ -67,6 +67,54 @@ SPECIAL_GROUPS = [
 ]
 _TYPE_MAP = {"new": 1, "cream": 3, "original": 7}
 
+# ============================================================ vbox 运行时适配
+# 客户端 base.spider 只给 requests 打了「代理 + verify=False」补丁，裸 urllib 不走；
+# 而 iOS CPython 无系统 CA 证书包 —— urllib 的 HTTPS 会全部 SSLError。
+# 现象即「分类能显示（本地静态），点进去没有数据（联网失败）」。
+try:
+    import ssl as _ssl
+    _SSL_CTX = _ssl.create_default_context()
+    _SSL_CTX.check_hostname = False
+    _SSL_CTX.verify_mode = _ssl.CERT_NONE
+except Exception:
+    _SSL_CTX = None
+
+
+def _vbox_cfg(sp, name, default=None):
+    v = getattr(sp, name, None)
+    if v is None:
+        v = globals().get(name)
+    return default if v is None else v
+
+
+def _vbox_proxy(sp=None):
+    if sp is not None and not _vbox_cfg(sp, "_vbox_proxy_enabled", False):
+        return {}
+    if sp is None and not globals().get("_vbox_proxy_enabled", False):
+        return {}
+    u = (getattr(sp, "_vbox_proxy_url", None) if sp is not None else None) \
+        or globals().get("_vbox_proxy_url", "") or ""
+    return {"http": u, "https": u} if u else {}
+
+
+def _vbox_host(sp, default=""):
+    hs = _vbox_cfg(sp, "_vbox_effective_hosts", None)
+    if isinstance(hs, list) and hs:
+        try:
+            return str(hs[0]).rstrip("/")
+        except Exception:
+            pass
+    return default
+
+
+def _vbox_opener(sp=None):
+    """带 SSL 放行 + 客户端代理 的 opener。"""
+    handlers = [urllib.request.ProxyHandler(_vbox_proxy(sp))]
+    if _SSL_CTX is not None:
+        handlers.append(urllib.request.HTTPSHandler(context=_SSL_CTX))
+    return urllib.request.build_opener(*handlers)
+
+
 UA = ("Mozilla/5.0 (Linux; Android 12; SM-G998B) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
 
@@ -155,6 +203,21 @@ class Spider(SpiderBase):
             self.timeout = int(cfg.get("timeout") or 20)
         except Exception:
             self.timeout = 20
+        # 客户端注入的自定义域名优先于脚本内置默认值
+        try:
+            _inj = _vbox_host(self, "")
+            if _inj:
+                for _attr in ("base", "host"):
+                    if hasattr(self, _inj if False else _attr):
+                        setattr(self, _attr, _inj)
+                _core = getattr(self, "_core", None)
+                if _core is not None:
+                    for _attr in ("base", "host"):
+                        if hasattr(_core, _attr):
+                            setattr(_core, _attr, _inj)
+        except Exception:
+            pass
+
         return None
 
     def destroy(self):
@@ -187,13 +250,9 @@ class Spider(SpiderBase):
             h.update(extra)
         return h
 
-    def _open(self, req):
-        """先走默认 opener，失败再显式绕代理（本机常见全局代理环境变量）。"""
-        try:
-            return urllib.request.urlopen(req, timeout=self.timeout)
-        except Exception:
-            op = urllib.request.build_opener(urllib.request.ProxyHandler({}))
-            return op.open(req, timeout=self.timeout)
+    def _open(self, req, timeout=None):
+        t = timeout if timeout is not None else getattr(self, "timeout", 20)
+        return _vbox_opener(getattr(self, "sp", None)).open(req, timeout=t)
 
     def _get(self, path, qp=None):
         url = path if path.startswith("http") else self.base + "/" + path.lstrip("/")

@@ -39,7 +39,56 @@ except ImportError:
             return "fail"
 
 
-_LOG = logging.getLogger("mmav")
+# ============================================================ vbox 运行时适配
+# 客户端 base.spider 只给 requests 打了「代理 + verify=False」补丁，裸 urllib 不走。
+# 而 iOS CPython 无系统 CA 证书包 —— urllib 的 HTTPS 会全部 SSLError，
+# 现象就是「分类能显示（本地静态），点进去没有数据（联网失败）」。
+# 这里显式构造：不验证证书的 SSL 上下文 + 客户端注入的代理 + 自定义域名。
+try:
+    import ssl as _ssl
+    _SSL_CTX = _ssl.create_default_context()
+    _SSL_CTX.check_hostname = False
+    _SSL_CTX.verify_mode = _ssl.CERT_NONE
+except Exception:
+    _SSL_CTX = None
+
+
+def _vbox_cfg(sp, name, default=None):
+    v = getattr(sp, name, None)
+    if v is None:
+        v = globals().get(name)
+    return default if v is None else v
+
+
+def _vbox_proxy(sp):
+    if not _vbox_cfg(sp, '_vbox_proxy_enabled', False):
+        return {}
+    u = _vbox_cfg(sp, '_vbox_proxy_url', '') or ''
+    return {'http': u, 'https': u} if u else {}
+
+
+def _vbox_host(sp, default):
+    hs = _vbox_cfg(sp, '_vbox_effective_hosts', None)
+    if isinstance(hs, list) and hs:
+        try:
+            return str(hs[0]).rstrip('/')
+        except Exception:
+            pass
+    return default
+
+
+def _vbox_opener(sp):
+    handlers = [urllib.request.ProxyHandler(_vbox_proxy(sp))]
+    if _SSL_CTX is not None:
+        handlers.append(urllib.request.HTTPSHandler(context=_SSL_CTX))
+    try:
+        handlers.append(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+    except Exception:
+        pass
+    return urllib.request.build_opener(*handlers)
+
+
+_LOG = logging.getLogger("{key}")
 if not _LOG.handlers:
     _LOG.addHandler(logging.NullHandler())
 
@@ -550,6 +599,13 @@ class Spider(SpiderBase):
                 self.ADAPTER.HOST = str(host).rstrip("/")
             except Exception:
                 pass
+        # 客户端注入的自定义域名优先于脚本内置默认值
+        try:
+            inj = _vbox_host(self, "")
+            if inj:
+                self.ADAPTER.HOST = inj
+        except Exception:
+            pass
         self._adapter = None
         return None
 
