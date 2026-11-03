@@ -1,12 +1,102 @@
 [
  {
-  "key": "live",
-  "class": 130,
-  "list": 99,
+  "key": "hdb",
+  "class": 1,
+  "list": 20,
   "detail": 1,
   "play": 1,
   "err": "",
-  "sample": "{\"vod_id\": \"aHR0cDovLzc3Ym8ueG4tLWZocXY5MnAuY29tL2xpdmUvY3hfMTU2MDEuZmx2P3dzU2VjcmV0PTlhMDIwMjNlZDM5NWI1ZmRhZDI2NjE2NGYxMWQzYjdhJndzVGltZT0xNzkzNTU2MzU2\", \"vod_name\": \"撸管专用系列@\", \"vod_pic\": \"https://jdhanhdckdkakk.quanyua",
-  "play_url": "直播$http://77bo.xn--fhqv92p.com/live/cx_15601.flv?wsSecret=9a02023ed395b5fdad266164f11d3b7a&wsTime=1793556356"
+  "sample": "{\"vod_id\": \"550100\", \"vod_name\": \"集四国可爱特质于一身、令世界倾心的混血美女桐谷艾玛出道\", \"vod_pic\": \"https://gjwspicacrlvz.gdpcdz.com/uploads/images/movies/2026-11-03/1793668811059.jpeg\", \"vod_remarks\": \"SNOS-489\"}",
+  "play_url": "https://api.b7f3192.com/pwa/v2_0/getM3u8.m3u8?v=577034&params=5371773172363842383842645939747a57702b766a4249644f42432f4a7134575768594b4370457765366373693444476e"
+ },
+ {
+  "key": "mmav",
+  "class": 10,
+  "list": 50,
+  "detail": 1,
+  "play": 1,
+  "err": "",
+  "sample": "{\"vod_id\": \"55027\", \"vod_name\": \"极品御姐被男友调教成骚货母狗 蒙脸后抬起双腿被猛男用无套大屌插入湿润骚逼狠狠猛干\", \"vod_pic\": \"https://wzzqlm.erbaiwulaoge.com/common/msdl//107361f2258536ace3c8e81b33__1285796/107361f2258536ace3c8e81b33__1285796.jpg\", \"vod_rema",
+  "play_url": "极品御姐被男友调教成骚货母狗 蒙脸后抬起双腿被猛男用无套大屌插入湿润骚逼狠狠猛干$55027"
+ },
+ {
+  "key": "rryy",
+  "class": 1,
+  "list": 0,
+  "detail": 0,
+  "play": 0,
+  "err": "列表空",
+  "sample": "",
+  "play_url": ""
+ },
+ {
+  "key": "one",
+  "class": 1,
+  "list": 0,
+  "detail": 0,
+  "play": 0,
+  "err": "列表空",
+  "sample": "",
+  "play_url": ""
+ },
+ {
+  "key": "lclf",
+  "class": 2,
+  "list": 2,
+  "detail": 1,
+  "play": 1,
+  "err": "",
+  "sample": "{\"vod_id\": \"111847\", \"vod_name\": \"性感性欲极品御姐\", \"vod_pic\": \"https://lclf.lol/images/98adc5d9-309b-41dc-8df2-3eab91fc4bd4.jpg\", \"vod_remarks\": \"置顶 · 消费680 · 包夜1280 · 21-25岁 · 9分\", \"style\": {\"type\": \"rect\", \"ratio\": 0.75}}",
+  "play_url": "图1$https://lclf.lol/images/98adc5d9-309b-41dc-8df2-3eab91fc4bd4.jpg#图2$https://lclf.lol/images/55a5263b-f37b-4f7a-a42e-ca381608c527.jpg#图3$https://lclf.lol/imag"
+ },
+ {
+  "key": "km",
+  "class": 2,
+  "list": 10,
+  "detail": 1,
+  "play": 1,
+  "err": "",
+  "sample": "{\"vod_id\": \"3851570\", \"vod_name\": \"肥而不腻\", \"vod_pic\": \"https://imgs.e8eues3.xyz/uploads/images/2026-11-02/21363770/da7167080fe3db298bcb04a084645dd5.jpg\", \"vod_remarks\": \"720p · 117赞 · 神座出流\", \"style\": {\"type\": \"rect\", \"rat",
+  "play_url": "正片$http://119.28.204.36/uploads/2026-11-02/21363770/54f6e38348984f2335653619dd53c9a6_wm.mp4"
+ },
+ {
+  "key": "hsck",
+  "class": 10,
+  "list": 40,
+  "detail": 1,
+  "play": 1,
+  "err": "",
+  "sample": "{\"vod_id\": \"cbhkerwn\", \"vod_name\": \"今天約清純學生妹,身材不錯白嫩緊致\", \"vod_pic\": \"https://aliyun.cctv05.com/i/a1002678.jpg\", \"vod_remarks\": \"\", \"style\": {\"type\": \"rect\", \"ratio\": 0.75}}",
+  "play_url": "正片$https://t0.97img.com/a1002678/a.m3u8"
+ },
+ {
+  "key": "kpsp",
+  "class": 84,
+  "list": 20,
+  "detail": 1,
+  "play": 1,
+  "err": "",
+  "sample": "{\"vod_id\": \"242778\", \"vod_name\": \"酒店精品,校园女大和社会纹身男友暴力打桩\", \"vod_pic\": \"https://hm-img.hdstfb.com/source3/202611/03/4197431998/source_jpg.image\", \"vod_remarks\": \"29:20 · 7560 播放 · ekcbmq/偷拍\", \"style\": {\"type\": \"rect\", \"rati",
+  "play_url": "正片$https://hm-img.hdstfb.com/videos3/202611/03/4197431998/index.m3u8#预览$https://hm-img.hdstfb.com/videos3/202611/03/4197431998/preview.m3u8"
+ },
+ {
+  "key": "hjsq",
+  "class": 27,
+  "list": 20,
+  "detail": 1,
+  "play": 1,
+  "err": "",
+  "sample": "{\"vod_id\": \"2304257\", \"vod_name\": \"（精品原创）答应大家的福利来了，广州高端海选，各个巨乳大长腿，感谢支持\", \"vod_pic\": \"http://127.0.0.1:9978/proxy?do=py&type=hjsq&url=https%3A%2F%2Fpic.hj260302818.top%2Fhjstore%2Fimages%2F20261004%2Fe61f4db82ebf55c283009",
+  "play_url": "正片 11:37$https://0ts10.hj260302818.top/hjstore/video/20261101/b5cfbcae693d2b39d547397a4ae82bb9/571842_i_preview.m3u8"
+ },
+ {
+  "key": "mw",
+  "class": 4,
+  "list": 39,
+  "detail": 1,
+  "play": 1,
+  "err": "",
+  "sample": "{\"vod_id\": \"547297\", \"vod_name\": \"勃起みせつけいいなり村〜勃起ちんぽを见せつければなんでも言うこと闻いてくれる村\", \"vod_pic\": \"https://mwfimsvfast40.cc/static/upload3/book/id/547297/cover_1.png?v=1793679193\", \"vod_remarks\": \"\", \"style\": {\"type\": \"rect\", \"rati",
+  "play_url": "第1话$31516428#第1话1                $31516429"
  }
 ]
