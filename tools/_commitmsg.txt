@@ -1,18 +1,29 @@
-feat(mdtv): 麻豆TV 全链路打通 —— 分类/列表/详情/播放四能力全通
+feat(aijav): AiJav 协议打通 —— 分类/列表/详情三能力（播放需登录购买）
 
-两个真凶（都在报文胶水层，与业务参数无关）：
-1. onRequest 里 headers["suffix"]="JGDZMX" 被漏抄。服务端用该头拼请求 IV
-   ("-p9B[~PnPs"+头值)，头不发 → 请求体解不开 → 恒 {"code":1002,"参数错误"}；
-   而响应 IV 只依赖响应体 suffix 字段，照样能解开，于是极像「参数名不对」。
-2. 签名 SECRET 照抄了 blutter 的 `\?` 转义，实际 libapp.so 偏移 367007 的原始
-   字节没有反斜杠 → 补头后立刻变 {"code":1001,"签名错误"}，去掉反斜杠 → code 0。
+与 mdtv 同一套 encrypt 胶水层，本轮把 mdtv 的两条经验直接套用，4 个常量全部
+从 libapp.so 原始字节取证，一次打通：
+  KEY     = 0XxdjmI55ZjjqQLO3nI7gGqrBP0Vz9jS   (32B, @322372)
+  REQ_IV  = RWf23muavYNWSdef                   (16B, @944669 = "RWf23muavY"+suffix头)
+  SECRET  = &NRkw0g3iJLDvw5tJ5PuVt5276z0SOuyL  (@500125)
+  头        suffix: NWSdef                     (@572092)
+  响应 IV = "RWf23muavY" + 响应体 suffix
+
+顺带纠正上一版情报的错误：REQ_KEY 不是 16B 的 "RWf23muavYNWSdef"（那是 IV），
+请求/响应共用同一把 32B key。
+
+两条新方法论（已写进交接文档坑表 23/24）：
+1) 路由不存在恒返 {"code":999}，业务码≠999 即路由存在 —— 据此扫 186 条候选路径，
+   只有 video/info、video/purchase、video/collect 三条不是 999；
+2) 详情参数名是 vid 不是 id（传 id → 3001 视频不存在）。
+
+播放结论（已取证，不是没找到）：列表项与 video/info 都不含媒体直链，
+取流路由（play/url/m3u8/source/stream）全 999，video/purchase|collect → 2000 登录失效，
+m3u8_url 字段名虽在二进制中但只在购买后下发 → 与 rryy 同类，适配器如实交付三能力。
 
 交付：
-- sources/welfare-js/mdtv.py  自包含适配器（内联 vbox 运行时层），注册键 mdtv_py
-  · video/channel 分类 101 个 · video/listcache 推荐/分区/标签 9404 条 120/页
-  · video/list 搜索 · 列表项 video_url 即 HLS m3u8 直链
-- docs/mdtv协议详解.md  协议全量 + 1002/1001 复盘 + asm→结论索引
-- tools/_mdtv_r8.py（打通）/ _mdtv_r9.py（全接口）/ _mdtv_strbytes.py（二进制取证）
+- sources/welfare-js/aijav.py   注册键 aijav_py（46 分类 / 54 页 / 18774 条 / 详情通）
+- docs/aijav协议详解.md          协议全量 + 999 路由判据 + 播放受限取证
+- tools/_aijav_r1..r5.py         打通五连 + 二进制取证脚本
 
-验证：smoke_standalone mdtv 分类101 / 列表120 / 详情1 / 播放通；
-_test_inject mdtv 101/120/1；平台总表 31 平台 · 平铺 11 · 四能力全通 11。
+验证：smoke aijav 分类46/列表54/详情1/播放-；mdtv 101/120/1/通（无回归）；
+平台总表 31 平台 · 平铺 12 · 出数据 11 · 四能力全通 11。

@@ -49,6 +49,15 @@ META = {
              "**请求头必须带 suffix: JGDZMX**（否则服务端还原不了 IV → 恒 1002 参数错误）。"
              "接口 video/channel、video/tags、video/listcache（page/list_row/type/channel|tags）、"
              "video/list（搜索）。列表项自带 video_url = HLS m3u8 直链，客户端无 detail/play 接口。"),
+    "aijav": ("AiJav", "film.fill", 659,
+              "与 mdtv 同构的 AES-256 双向信封（同一套 encrypt 包胶水层），差异只在 4 个常量："
+              "KEY=0XxdjmI55…(32B)、REQ_IV=RWf23muavYNWSdef、SECRET=&NRkw0g3i…、头 suffix=NWSdef；"
+              "响应 IV=RWf23muavY+响应 suffix。**成功码是 1 不是 0**；"
+              "「路由不存在」恒返 {\"code\":999}，可据此扫接口。"
+              "接口 video/lists（首页 type=8&limit=54；分区 tag_id|actor_id|publisher_id；搜索 keyword）、"
+              "video/info（参数名 **vid**）、tag/lists、actor/lists、publisher/lists。"
+              "⚠ 播放受限：匿名态不下发 m3u8（video/purchase、video/collect 返 2000 登录失效），"
+              "仅交付分类/列表/详情三能力。"),
     # ---------------- 漫画类（category=comic）----------------
     "mmmh": ("迷妹漫画", "books.vertical.fill", 661,
              "三层结构：① host_pwa.txt 配置 AES-256-CBC 解密（key/iv 为 mmmh_main 里的 base64 常量，"
