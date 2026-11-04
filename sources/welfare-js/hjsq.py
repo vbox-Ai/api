@@ -173,7 +173,11 @@ class Spider(SpiderBase):
         self.base = BASE_DEFAULT
         self.uid = USER_ID_DEFAULT
         self.token = TOKEN_DEFAULT
-        self.proxy_base = "http://127.0.0.1:9978/proxy?do=py&type=hjsq&url="
+        # 客户端受控代理：端口 18080，参数是 key?platformKey（v7 起），不是 type=hjsq/9978
+        try:
+            self.proxy_base = self.getProxyUrl() + "&url="
+        except Exception:
+            self.proxy_base = "http://127.0.0.1:18080/proxy?do=py&key=hjsq_py&url="
         self.pic_mode = "proxy"        # proxy | raw | none
         self.timeout = 20
         self._nodes = None

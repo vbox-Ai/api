@@ -659,10 +659,11 @@ class Spider(SpiderBase):
                 self.ADAPTER.HOST = str(host).rstrip("/")
             except Exception:
                 pass
-        # 客户端注入的自定义域名优先于脚本内置默认值
+        # 内置域名优先、注入域名仅回退（坑表 #15）
+        # 之前是"注入即覆盖"：客户端下发的 defaultHosts 一旦过期，列表就全空（分类是静态的，所以表现成"有分类无数据"）
         try:
             inj = _vbox_host(self, "")
-            if inj:
+            if inj and not getattr(self.ADAPTER, "HOST", ""):
                 self.ADAPTER.HOST = inj
         except Exception:
             pass

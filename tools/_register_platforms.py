@@ -27,7 +27,8 @@ META = {
             "AES-128-CBC + MD5 签名。分类可出；列表依赖内置 token，token 过期则列表为空（需外部喂 one_token）。"),
     "lclf": ("绿茶楼凤", "building.2.fill", 654,
              "纯 REST，零鉴权。feed/top/detail 全 POST（detail 参数走 query string 的 postId）。"
-             "图文型内容：多图直链可浏览，无视频流。支持 cid 地区过滤（type_id 用 city_<cid>）。"),
+             "图文型内容：多图直链可浏览，无视频流。支持 cid 地区过滤（type_id 用 city_<cid>）。"
+             "播放按 vbox 漫画约定输出 manga:// + && 连接（客户端渲染图片阅读器）。", "comic"),
     "km": ("快猫", "cat.circle.fill", 655,
            "请求加密：data=base16(AES-128-CBC(json)) + sig=MD5('data='+data+'maomi_pass_xyz')，"
            "响应为 hex(AES)。接口 /api/videos/listAll 与 listHot（路径即方法名，打到 /api/videos/ 会 501）。"

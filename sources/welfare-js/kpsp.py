@@ -39,6 +39,7 @@ import sys
 import time
 import urllib.error
 import urllib.parse
+import urllib.parse
 import urllib.request
 
 try:
@@ -350,7 +351,7 @@ class Spider(SpiderBase):
         return {
             "vod_id": str(it.get("id")),
             "vod_name": (it.get("name") or "").strip() or "无标题",
-            "vod_pic": self._abs_media(it.get("pic") or it.get("preview_url")),
+            "vod_pic": self._px(self._abs_media(it.get("pic") or it.get("preview_url"))),
             "vod_remarks": " · ".join(remarks),
             "style": {"type": "rect", "ratio": 0.75},
         }
@@ -472,7 +473,7 @@ class Spider(SpiderBase):
             "list": [{
                 "vod_id": vid,
                 "vod_name": title,
-                "vod_pic": cover,
+                "vod_pic": self._px(cover),
                 "vod_year": (d.get("pubdate") or "")[:4],
                 "vod_area": "看片视频",
                 "vod_remarks": dur or ("付费" if int(d.get("is_paid") or 0) == 1 else "高清"),
@@ -515,7 +516,26 @@ class Spider(SpiderBase):
             "list": [self._item(it) for it in items if it.get("id")],
         }
 
-    # ---------------- 本地代理（媒体直取，兜底用） ----------------
+
+    # ---------------- 封面走客户端本地代理 ----------------
+    def _px(self, url):
+        u = (url or "").strip()
+        if not u:
+            return ""
+        if u.startswith("//"):
+            u = "https:" + u
+        if not u.startswith("http"):
+            return u
+        base = ""
+        try:
+            base = self.getProxyUrl()
+        except Exception:
+            base = ""
+        if not base:
+            base = "http://127.0.0.1:18080/proxy?do=py&key=%s" % getattr(self, "MODULE", "kpsp")
+        return base + "&url=" + urllib.parse.quote(u, safe="")
+
+    # ---------------- 本地代理（媒体/封面直取） ----------------
     def localProxy(self, param):
         p = param or {}
         if isinstance(p, str):
@@ -527,7 +547,18 @@ class Spider(SpiderBase):
             req = urllib.request.Request(target, headers={
                 "User-Agent": UA, "Referer": self.media + "/"})
             with self._open(req) as r:
-                return [200, r.headers.get("Content-Type") or "application/octet-stream",
-                        r.read(), {}]
+                raw = r.read()
+                ct = (r.headers.get("Content-Type") or "").lower()
+                if raw[:3] == b"\xff\xd8\xff":
+                    ct = "image/jpeg"
+                elif raw[:8] == b"\x89PNG\r\n\x1a\n":
+                    ct = "image/png"
+                elif raw[:4] == b"GIF8":
+                    ct = "image/gif"
+                elif raw[:4] == b"RIFF" and raw[8:12] == b"WEBP":
+                    ct = "image/webp"
+                elif not ct.startswith(("image/", "video/", "application/vnd.apple")):
+                    ct = "image/jpeg"
+                return [200, ct, raw, {"Cache-Control": "max-age=86400"}]
         except Exception as e:
             return [500, "text/plain; charset=utf-8", str(e).encode("utf-8"), {}]

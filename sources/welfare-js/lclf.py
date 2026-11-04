@@ -246,7 +246,9 @@ class LclfCore(object):
         desc = desc.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
         pics = self._pics(d.get("picture"))
-        play = "#".join(["图%d$%s" % (i, u) for i, u in enumerate(pics[:30], 1)])
+        # 图文型：vbox 漫画约定 —— "manga://" + 图片以 "&&" 连接，
+        # 客户端会渲染成图片阅读器；若按视频 episode 输出，播放器会把图片当视频播（用户实测“播的是其它资源”）
+        play = ("manga://" + "&&".join(pics)) if pics else ""
 
         return {
             "vod_id": str(vid),
@@ -258,7 +260,10 @@ class LclfCore(object):
         }
 
     def play(self, vid):
-        # 图文型：单张图片直接返回
+        # 漫画/图集：原样回传，由客户端阅读器处理
+        if str(vid).startswith("manga://"):
+            return {"parse": 0, "url": str(vid),
+                    "header": {"User-Agent": UA, "Referer": self.base + "/"}}
         if str(vid).startswith("http"):
             return {"parse": 0, "url": str(vid),
                     "header": {"User-Agent": UA, "Referer": self.base + "/"}}

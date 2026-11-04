@@ -46,6 +46,7 @@ import hashlib
 import json
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 
 try:
@@ -195,6 +196,31 @@ class MdtvCore(object):
         t = timeout if timeout is not None else getattr(self, "timeout", 20)
         return _vbox_opener(getattr(self, "sp", None)).open(req, timeout=t)
 
+    # ---------------- 封面走客户端本地代理 ----------------
+    def _px(self, url):
+        """封面统一经客户端本地受控代理（127.0.0.1:18080 + key=平台标识）。
+
+        原因：客户端 img 加载器对 `application/octet-stream` / `application/x-image`
+        这类非标准 Content-Type 会直接放弃（javdb 的 tp.spfcas.com、kpsp 的 .image 都是这种）；
+        另外部分 CDN 有防盗链。走代理后由 Python 侧带 UA 取字节、嗅探真实类型再回给客户端。
+        """
+        u = (url or "").strip()
+        if not u:
+            return ""
+        if u.startswith("//"):
+            u = "https:" + u
+        if not u.startswith("http"):
+            return u
+        base = ""
+        try:
+            base = self.sp.getProxyUrl()      # 客户端 base.spider 提供（含 do=py&key=…）
+        except Exception:
+            base = ""
+        if not base:
+            base = "http://127.0.0.1:18080/proxy?do=py&key=%s" % getattr(self.sp, "MODULE", "")
+        return base + "&url=" + urllib.parse.quote(u, safe="")
+
+
     # ---------------- 加解密 / 签名 ----------------
     @staticmethod
     def _sign(biz):
@@ -271,7 +297,7 @@ class MdtvCore(object):
         return {
             "vod_id": str(vid),
             "vod_name": (it.get("title") or "").strip() or ("麻豆 #%s" % vid),
-            "vod_pic": pic,
+            "vod_pic": self._px(pic),
             "vod_remarks": " · ".join([x for x in remarks if x]),
             "style": {"type": "rect", "ratio": 0.5625},
         }
@@ -401,7 +427,7 @@ class MdtvCore(object):
         return {
             "vod_id": str(vid),
             "vod_name": (it.get("title") or "").strip() or ("麻豆 #%s" % vid),
-            "vod_pic": it.get("thumb") or it.get("preview") or "",
+            "vod_pic": self._px(it.get("thumb") or it.get("preview") or ""),
             "vod_content": desc,
             "vod_play_url": ("正片$%s" % play) if play else "",
         }
@@ -560,5 +586,39 @@ class Spider(SpiderBase):
         return {"list": items, "page": page, "pagecount": max(last, page),
                 "limit": len(items), "total": 9999 if items else 0}
 
+    def _core_open(self, req):
+        return self._c()._open(req, 20)
+
     def localProxy(self, param):
-        return [404, "text/plain; charset=utf-8", b"", {}]
+        """受控代理：取图 → 嗅探真实类型 → 回给客户端（避免 Content-Type 被拒 / 防盗链）。"""
+        p = param or {}
+        if isinstance(p, str):
+            p = dict(urllib.parse.parse_qsl(p.lstrip("?")))
+        url = ""
+        if isinstance(p, dict):
+            url = p.get("url") or p.get("u") or ""
+        if not url:
+            return [400, "text/plain; charset=utf-8", b"missing url", {}]
+        if url.startswith("//"):
+            url = "https:" + url
+        try:
+            ref = "/".join(url.split("/")[:3]) + "/"
+            req = urllib.request.Request(url, headers={
+                "User-Agent": UA, "Referer": ref, "Accept": "image/*,*/*"})
+            with self._core_open(req) as r:
+                raw = r.read()
+                ct = (r.headers.get("Content-Type") or "").lower()
+        except Exception as e:
+            return [502, "text/plain; charset=utf-8", str(e)[:120].encode("utf-8"), {}]
+        if raw[:3] == b"\xff\xd8\xff":
+            ct = "image/jpeg"
+        elif raw[:8] == b"\x89PNG\r\n\x1a\n":
+            ct = "image/png"
+        elif raw[:4] == b"GIF8":
+            ct = "image/gif"
+        elif raw[:4] == b"RIFF" and raw[8:12] == b"WEBP":
+            ct = "image/webp"
+        elif not ct.startswith("image/"):
+            ct = "image/jpeg"
+        return [200, ct, raw, {"Cache-Control": "max-age=86400"}]
+

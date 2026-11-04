@@ -1,24 +1,29 @@
-feat(javdb): JavDB 协议打通 —— 分类/列表/详情 + 官方 720p 试看
+fix: 线上反馈 6 类问题处置 + 平台适配统计文档
 
-javdb 的卡点原来是「需 jdsignature」。本轮把它彻底还原（onRequest 全函数只有 30 余条指令）：
-    ts    = 秒（micros/1000/1000，两次 sdiv）
-    first = MD5(ts + SECRET)
-    header accept-language: zh
-    header jdsignature: "{ts}.lpw6vgqzsp.{first}"
-SECRET 不在常量池，而是构造 JavDbInterceptor 时写入 field_7 的实参
-（service.dart @0x7b9fa8，64+ 位十六进制串）—— 之前只盯着 .lpw6vgqzsp. 这条线索所以没找到。
+用户实测反馈逐条处置：
+1) mdtv/javdb/kpsp/hjsq 封面不显示
+   - hjsq 封面 URL 写死 127.0.0.1:9978，客户端受控代理实际是 18080 且参数为 key=<platformKey>（v7 修正）
+     → 代理 404，图片全空
+   - javdb 封面 CDN 返 application/octet-stream、kpsp 返 application/x-image，客户端图片加载器直接放弃
+   修法：四个平台封面统一走 getProxyUrl()（18080+key），localProxy 里嗅探字节头回正确 image/*，
+         并带 UA/Referer 绕过防盗链
+2) mmav/hdb/hsck 有分类无数据
+   - 三者 init 都是「注入域名覆盖内置域名」，客户端下发的 defaultHosts 一旦过期列表全空
+     （分类是静态数组，所以表现成有分类无数据）
+   修法：改回「内置优先、注入仅回退」（坑表 #15，之前只在 hsck 落地）
+3) lclf 图文型被当视频播（"播的是其它资源"）
+   修法：按 vbox 漫画约定输出 manga:// + &&，并把平台注册为 category=comic（客户端渲染图片阅读器）
+4) aijav 播放提示未解析
+   - 付费站，匿名态服务端不下发 m3u8（video/purchase → 2000 登录失效），脚本侧无解，如实留空
+5) km 报未能解析到分类
+   - homeContent 是纯静态两项，本地 class=2 正常；脚本侧无网络依赖 → 需客户端日志定位
+6) rryy/one 无数据
+   - rryy 域名被 DNS 污染需代理；one 内置 token 已过期 → 外部依赖
 
-接口：api/v1/movies/latest、api/v1/movies/tags?filter_by=tag、api/v2/search?q=、
-详情 api/v4/movies/{id}（v1 那条 404）。参数缺失会返「參數不能爲空: xxx」，可直接当参数发现器。
+新增 docs/暮色平台适配统计_2026-11-04.md：
+  已平铺 13 / 四能力全通 12 / 未适配 18（含 5 个已死），
+  逐平台列出卡点与下一步（P0=fl2，P1=qysq，P2=zlt/txvlog/91av/91pron，P3=JS挑战与需真机项）。
 
-播放：正片需登录+VIP（play_sources 空、show_vip_banner true、列表 can_play 恒 false），
-可播的是官方试看 movie.preview_video_url（720p m3u8，sign/t 由服务端签发）。
-
-交付：
-- sources/welfare-js/javdb.py（注册键 javdb_py，静态分类不联网，规避 20s 预算坑）
-- docs/javdb协议详解.md
-- tools/_javdb_r1..r3.py（签名验证 / 参数发现 / 详情与播放定位）
-- 攻坚情报：javdb 段落改写为已打通；zlt 段落补「签名加密全破，卡在驾照 token 过期」
-
-验证：smoke javdb 分类2 / 列表10 / 详情1 / 播放通（试看 m3u8）；
-平台总表 31 平台 · 平铺 13 · 四能力全通 11。
+验证：smoke mdtv 69/120/1/✓、javdb 2/10/1/✓、kpsp 84/20/1/✓、lclf 2/2/1/✓、
+      mmav 10/50/1/✓、hdb 1/20/1/✓、hsck 10/40/1/✓、aijav 31/54/1/-；
+      图片代理实测：三个平台 localProxy 均返回 200 + image/jpeg（153KB~575KB）。

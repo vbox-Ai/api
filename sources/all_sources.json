@@ -3529,7 +3529,7 @@
       {
         "platformKey": "lclf_py",
         "name": "绿茶楼凤",
-        "category": "video",
+        "category": "comic",
         "icon": "building.2.fill",
         "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
         "serviceType": "python_spider",
@@ -3538,12 +3538,12 @@
         ],
         "sortOrder": 654,
         "defaultProxy": false,
-        "notes": "纯 REST，零鉴权。feed/top/detail 全 POST（detail 参数走 query string 的 postId）。图文型内容：多图直链可浏览，无视频流。支持 cid 地区过滤（type_id 用 city_<cid>）。",
+        "notes": "纯 REST，零鉴权。feed/top/detail 全 POST（detail 参数走 query string 的 postId）。图文型内容：多图直链可浏览，无视频流。支持 cid 地区过滤（type_id 用 city_<cid>）。播放按 vbox 漫画约定输出 manga:// + && 连接（客户端渲染图片阅读器）。",
         "api": "./sources/welfare-js/lclf.py",
         "scriptType": "python",
         "engine": "python",
         "sslBypass": true,
-        "contentType": "video",
+        "contentType": "comic",
         "visibleInNormalSpider": false,
         "visibleInGlobalSearch": false,
         "visibleInHome": false
