@@ -1,29 +1,25 @@
-fix: 线上反馈 6 类问题处置 + 平台适配统计文档
+feat(fl2): fulao2 信封 + 响应解密 + register-token 全通（业务接口部分完成）
 
-用户实测反馈逐条处置：
-1) mdtv/javdb/kpsp/hjsq 封面不显示
-   - hjsq 封面 URL 写死 127.0.0.1:9978，客户端受控代理实际是 18080 且参数为 key=<platformKey>（v7 修正）
-     → 代理 404，图片全空
-   - javdb 封面 CDN 返 application/octet-stream、kpsp 返 application/x-image，客户端图片加载器直接放弃
-   修法：四个平台封面统一走 getProxyUrl()（18080+key），localProxy 里嗅探字节头回正确 image/*，
-         并带 UA/Referer 绕过防盗链
-2) mmav/hdb/hsck 有分类无数据
-   - 三者 init 都是「注入域名覆盖内置域名」，客户端下发的 defaultHosts 一旦过期列表全空
-     （分类是静态数组，所以表现成有分类无数据）
-   修法：改回「内置优先、注入仅回退」（坑表 #15，之前只在 hsck 落地）
-3) lclf 图文型被当视频播（"播的是其它资源"）
-   修法：按 vbox 漫画约定输出 manga:// + &&，并把平台注册为 category=comic（客户端渲染图片阅读器）
-4) aijav 播放提示未解析
-   - 付费站，匿名态服务端不下发 m3u8（video/purchase → 2000 登录失效），脚本侧无解，如实留空
-5) km 报未能解析到分类
-   - homeContent 是纯静态两项，本地 class=2 正常；脚本侧无网络依赖 → 需客户端日志定位
-6) rryy/one 无数据
-   - rryy 域名被 DNS 污染需代理；one 内置 token 已过期 → 外部依赖
+本轮把 fl2 最硬的三层打通：
 
-新增 docs/暮色平台适配统计_2026-11-04.md：
-  已平铺 13 / 四能力全通 12 / 未适配 18（含 5 个已死），
-  逐平台列出卡点与下一步（P0=fl2，P1=qysq，P2=zlt/txvlog/91av/91pron，P3=JS挑战与需真机项）。
+1) 请求信封（onRequest）
+   KEY=base64Decode("euZN1Gg3JIwWOEWhmE7C4l5dSSRU34fyuPMXjtuoqVs=") 32B/AES-256
+   payload = base64(IV) + "." + base64(AES-256-CBC(jsonEncode(map), KEY, IV))
+   GET ?payload=… / POST form payload=…
+   头：User-Agent "Fulao2/Android 2.40; <model>"、X-Info、Uuid、Authorization Bearer <token>
+   坑：map["path"] 必须**不带前导斜杠** —— 带斜杠时服务端回 495 decrypt failure，
+       极容易误判成"密钥不对"（r1 就是这个反例，r2 四维扫描定出来）
 
-验证：smoke mdtv 69/120/1/✓、javdb 2/10/1/✓、kpsp 84/20/1/✓、lclf 2/2/1/✓、
-      mmav 10/50/1/✓、hdb 1/20/1/✓、hsck 10/40/1/✓、aijav 31/54/1/-；
-      图片代理实测：三个平台 localProxy 均返回 200 + image/jpeg（153KB~575KB）。
+2) 响应解密（onResponse）
+   vtag=响应头 X-VTag；h=MD5(vtag)；Key=utf8("db6f7f9e5d7a770e0e3497a7d7a077f5")；
+   IV=utf8(h[8:24])；AES-256-CBC-decrypt64 → jsonDecode
+   （asm 的 0x30 是 Smi 编码=24，与 Dart substring 越界必抛互证）
+
+3) register/token（无需账号，uuid4 即注册）
+   device_id / key=sha256("jav"+dev+"jav") / universal_id=base64(dev) / platform=Android
+   → {"status":{"code":200},"response":{"token":…,"refresh":…,"expired":7200}}
+
+已验证接口：v2/menu/type（推荐/最新/抢先看…）、v1/actors（15968 个）；
+v1/menu/*、v2/vertical/list/{id}、v2/search/* 需 POST（GET 405），下一步补完再落地 fl2.py。
+
+新增 docs/fl2协议详解.md（含反例与坑）、tools/_fl2_r1..r5.py。
