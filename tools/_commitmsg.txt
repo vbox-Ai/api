@@ -1,25 +1,15 @@
-feat(fl2): fulao2 信封 + 响应解密 + register-token 全通（业务接口部分完成）
+feat(fl2): 列表/详情接口打通（menu layout + video info），播放差媒体 token 一步
 
-本轮把 fl2 最硬的三层打通：
+本轮把 fl2 的业务面补齐：
+  · v1/menu/{id}/layout   GET  → 35 个区块，data[] 即视频列表（video_id/title/thumb/cover）
+  · v1/video/info/{id}    GET  → 详情 + video_urls{240,480,intro}（带 expire/hash 的 m3u8 相对路径）
+  · v1/actor/{id}         GET  → 演员页 + 24 条视频
+  · v2/search/*、v1/search/* 全 405（Supported: OPTIONS）→ 搜索路径仍未定
 
-1) 请求信封（onRequest）
-   KEY=base64Decode("euZN1Gg3JIwWOEWhmE7C4l5dSSRU34fyuPMXjtuoqVs=") 32B/AES-256
-   payload = base64(IV) + "." + base64(AES-256-CBC(jsonEncode(map), KEY, IV))
-   GET ?payload=… / POST form payload=…
-   头：User-Agent "Fulao2/Android 2.40; <model>"、X-Info、Uuid、Authorization Bearer <token>
-   坑：map["path"] 必须**不带前导斜杠** —— 带斜杠时服务端回 495 decrypt failure，
-       极容易误判成"密钥不对"（r1 就是这个反例，r2 四维扫描定出来）
+播放未通：/media/**.m3u8 无论带不带 Bearer、带不带信封，都返回
+  {"status":{"code":498,"message":"Token 格式錯誤"}}
+  → 媒体路径要的 token 不是 Bearer，需另找字段；且媒体响应同样被 X-VTag 加密包着，
+    客户端播放器直接读不了 → 最终大概率要用 localProxy 做「取流→解密→转发」。
 
-2) 响应解密（onResponse）
-   vtag=响应头 X-VTag；h=MD5(vtag)；Key=utf8("db6f7f9e5d7a770e0e3497a7d7a077f5")；
-   IV=utf8(h[8:24])；AES-256-CBC-decrypt64 → jsonDecode
-   （asm 的 0x30 是 Smi 编码=24，与 Dart substring 越界必抛互证）
-
-3) register/token（无需账号，uuid4 即注册）
-   device_id / key=sha256("jav"+dev+"jav") / universal_id=base64(dev) / platform=Android
-   → {"status":{"code":200},"response":{"token":…,"refresh":…,"expired":7200}}
-
-已验证接口：v2/menu/type（推荐/最新/抢先看…）、v1/actors（15968 个）；
-v1/menu/*、v2/vertical/list/{id}、v2/search/* 需 POST（GET 405），下一步补完再落地 fl2.py。
-
-新增 docs/fl2协议详解.md（含反例与坑）、tools/_fl2_r1..r5.py。
+因此**暂不注册 fl2**（不留半残平台），等播放链路闭环再落地 fl2.py。
+docs/fl2协议详解.md 已补第四·补节与收尾清单。

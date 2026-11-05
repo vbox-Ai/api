@@ -72,17 +72,37 @@ map 附加：
 |---|---|---|
 | `v2/menu/type` | GET | `pixeled`：推荐(1) / 最新(4) / 抢先看(16) … |
 | `v1/actors` | GET | `total_results=15968`，actor_id / actor_name / actor_url |
-| `v1/menu/*` | **POST** | GET 返回 405（Supported: OPTIONS/POST） |
-| `v1/user/info` | POST | 405 on GET，支持 POST |
-| `v2/vertical/list/{id}` | 待定 | GET 405 |
-| `v2/search/*` | 待定 | GET 405 |
+| `v1/menu/{id}/layout` | GET | ✅ 返回 35 个区块，每块 `data[]` 是视频（video_id/title/thumb/cover），也有 banner 块 |
+| `v1/video/info/{id}` | GET | ✅ 详情：`video_urls{240,480,intro}`（带 expire/hash 的 m3u8 相对路径）、cover_url、actor[]、tags、duration |
+| `v1/actor/{id}` | GET | ✅ 演员页 + 其视频列表（24 条/页） |
+| `v2/search/*`、`v1/search/*` | ? | 全部 405（Supported: OPTIONS）→ 搜索路径仍未找到 |
+| `v1/menu/{id}`（无 /layout） | — | 405，说明 menu 只暴露 `/layout` |
+
+## 四·补、播放（未通，差一步）
+
+`v1/video/info/{id}` 给的 `video_urls` 是**相对路径 + 签名**：
+
+```
+"480": "/media/480/524937.m3u8?expire=1793893925&hash=1b700846…"
+```
+
+直取（无论带不带 Bearer、带不带信封）都返回同一句：
+`{"status":{"code":498,"message":"Token 格式錯誤"}}` —— 说明 **媒体路径要的"token"不是 Bearer**，
+而是另一个字段（很可能是 query 里的 `token`，或 payload 内的 token 字段），下一轮专门解这个。
+
+> 注意：媒体响应也被同一套 X-VTag 加密包着（裸取回来是 base64 密文），
+> 所以就算拿到 URL，客户端的播放器也读不了 —— 最终大概率要走 `localProxy`
+> 做「取流→解密→回吐 m3u8/分片」的转发。这是 fl2 最后的工作量所在。
 
 ## 五、下一步（收尾清单）
 
-1. 用 **POST** 重试 `v1/menu/*`、`v2/vertical/list/{id}`、`v2/search/…`，把列表/搜索/详情路径定下来；
-2. 详情页字段（actor/maker/tags/播放地址）→ `v1/actor/{id}`、`v2/vertical/*`；
-3. 播放地址形态确认（m3u8 直链 or 需再取流）；
-4. 落地 `sources/welfare-js/fl2.py`（homeContent 静态分类，避免 20s 预算坑）并注册。
+1. **媒体 token**：写清 `/media/**.m3u8` 需要的 token 从哪来（query 参数名？payload 内字段？），
+   以及分片 `.ts` 是否同样加密/需要同样的 token；
+2. 若分片也加密 → 用 `localProxy` 实现「m3u8 重写 + 分片解密转发」，播放器才能吃；
+3. 搜索路径待定（`v2/search/*` 全 405）；
+4. 以上都通后落地 `sources/welfare-js/fl2.py`（homeContent 静态分类避开 20s 预算坑）并注册。
+
+**当前不注册**：分类/列表/详情虽已通，但播放未通，按"不留半残平台"的口径先挂起。
 
 ## 六、脚本
 
