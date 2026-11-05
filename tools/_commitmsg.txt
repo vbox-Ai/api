@@ -1,15 +1,13 @@
-feat(fl2): 列表/详情接口打通（menu layout + video info），播放差媒体 token 一步
+feat(fl2): 找到媒体域名表（v1/host），CDN 侧仍 403 —— 最后一道门
 
-本轮把 fl2 的业务面补齐：
-  · v1/menu/{id}/layout   GET  → 35 个区块，data[] 即视频列表（video_id/title/thumb/cover）
-  · v1/video/info/{id}    GET  → 详情 + video_urls{240,480,intro}（带 expire/hash 的 m3u8 相对路径）
-  · v1/actor/{id}         GET  → 演员页 + 24 条视频
-  · v2/search/*、v1/search/* 全 405（Supported: OPTIONS）→ 搜索路径仍未定
+- v1/host（同样 X-VTag 加密）返回 5 个 CloudFront 媒体域名：
+  d33oobeksey8im / dnsgfrollmalw / d3voys8tzpz3wg / db0zulhunpasr / d1hqpgh1in91sr .cloudfront.net
+  媒体 URL = https://<cdn>/media/480/<id>.m3u8?expire=…&hash=…
+  → 之前所有"给 API 域名加 token"的尝试都是 498，因为那台机器根本不发媒体流
+- 用这 5 个域名 + 原始 expire/hash 取 m3u8：全部 403 Forbidden
+  已排除 UA（App/浏览器）、Referer、Origin、Accept
+  expire/hash 不是标准 CloudFront 签名参数（标准 Expires/Signature/Key-Pair-Id）
+  → CDN 前置了自定义校验：hash 可能绑定 Host/IP，或需要 CloudFront 签名 Cookie
 
-播放未通：/media/**.m3u8 无论带不带 Bearer、带不带信封，都返回
-  {"status":{"code":498,"message":"Token 格式錯誤"}}
-  → 媒体路径要的 token 不是 Bearer，需另找字段；且媒体响应同样被 X-VTag 加密包着，
-    客户端播放器直接读不了 → 最终大概率要用 localProxy 做「取流→解密→转发」。
-
-因此**暂不注册 fl2**（不留半残平台），等播放链路闭环再落地 fl2.py。
-docs/fl2协议详解.md 已补第四·补节与收尾清单。
+fl2 现状：分类/列表/详情全通，播放剩 CDN 授权一环；仍不注册（不留半残平台）。
+docs/fl2协议详解.md 补「四·补二」与收尾清单。

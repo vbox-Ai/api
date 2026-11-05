@@ -86,19 +86,44 @@ map 附加：
 "480": "/media/480/524937.m3u8?expire=1793893925&hash=1b700846…"
 ```
 
-直取（无论带不带 Bearer、带不带信封）都返回同一句：
-`{"status":{"code":498,"message":"Token 格式錯誤"}}` —— 说明 **媒体路径要的"token"不是 Bearer**，
-而是另一个字段（很可能是 query 里的 `token`，或 payload 内的 token 字段），下一轮专门解这个。
+在 API 域名上直取（带/不带 Bearer、带/不带信封、加 `?token=`、改各种头）**全部**返回
+`{"status":{"code":498,"message":"Token 格式錯誤"}}`。根因在下一轮找到：
+
+**媒体不在 API 域名上。** `GET v1/host` 返回的是 5 个 CloudFront 媒体域名：
+
+```
+d33oobeksey8im.cloudfront.net
+dnsgfrollmalw.cloudfront.net
+d3voys8tzpz3wg.cloudfront.net
+db0zulhunpasr.cloudfront.net
+d1hqpgh1in91sr.cloudfront.net
+```
+
+拼法：`https://<cdn>/media/480/524937.m3u8?expire=…&hash=…`。
+（`v1/host` 的响应同样是 X-VTag 加密的，解出来就是这张表 —— 这也是为什么之前所有
+"给 API 域名加 token"的尝试都是 498：那台机器根本不发媒体流。）
 
 > 注意：媒体响应也被同一套 X-VTag 加密包着（裸取回来是 base64 密文），
 > 所以就算拿到 URL，客户端的播放器也读不了 —— 最终大概率要走 `localProxy`
 > 做「取流→解密→回吐 m3u8/分片」的转发。这是 fl2 最后的工作量所在。
 
+## 四·补二、CDN 侧仍 403（最后一道门）
+
+用上面 5 个 CloudFront 域名 + 原始 `expire/hash` 取 m3u8：**全部 403 Forbidden**。
+已排除：UA（App UA / 浏览器 UA）、Referer、Origin、Accept。
+`expire/hash` 不是标准的 CloudFront 签名参数（标准是 `Expires/Signature/Key-Pair-Id`），
+说明 CDN 前面挂了自定义校验（Lambda@Edge 之类），很可能要求：
+  · `hash` 绑定的是 **Host** 或 **客户端 IP**，换个域名就失效；
+  · 或需要额外的 CloudFront 签名 Cookie（`CloudFront-Policy/-Signature/-Key-Pair-Id`）。
+
+下一步两条：
+1. 在 `player_page.dart` / `media_kit` 初始化处看它实际请求的 URL（是否带 Cookie / 是否换了 host）；
+2. 用 `v1/host` 的第一个域名 + 抓一次真实播放请求头（需要真机）确认缺哪个参数。
+
 ## 五、下一步（收尾清单）
 
-1. **媒体 token**：写清 `/media/**.m3u8` 需要的 token 从哪来（query 参数名？payload 内字段？），
-   以及分片 `.ts` 是否同样加密/需要同样的 token；
-2. 若分片也加密 → 用 `localProxy` 实现「m3u8 重写 + 分片解密转发」，播放器才能吃；
+1. **CDN 403**：确认 CloudFront 侧缺的是签名 Cookie 还是 `hash` 绑定 Host/IP（见四·补二）；
+2. 分片 `.ts` 是否同样受限（拿到 m3u8 后立刻验证）；
 3. 搜索路径待定（`v2/search/*` 全 405）；
 4. 以上都通后落地 `sources/welfare-js/fl2.py`（homeContent 静态分类避开 20s 预算坑）并注册。
 
