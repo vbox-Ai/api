@@ -218,7 +218,8 @@ class MdtvCore(object):
             base = ""
         if not base:
             base = "http://127.0.0.1:18080/proxy?do=py&key=%s" % getattr(self.sp, "MODULE", "")
-        return base + "&url=" + urllib.parse.quote(u, safe="")
+        # Flutter 客户端没有实现 /proxy?do=py 路由（只有 iOS 有），代理 URL 在 App 内必 404
+        return u
 
 
     # ---------------- 加解密 / 签名 ----------------

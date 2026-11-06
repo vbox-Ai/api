@@ -1,26 +1,21 @@
-feat(hhlz): 嘿嘿连载打通（抓包+asm 双证据）—— 分类/列表/详情/播放 四能力全通
+fix(comic): 漫画图片/封面不显示 —— 客户端无 /proxy?do=py + 图片本身是密文
 
-用户提供的桌面抓包包分析结果（详见 docs/暮色抓包分析报告_2026-11-06.md）：
-  可用的是 归档.zip（Stream 代理抓到的 88 条明文 HTTP）；
-  暮色抓包.zip 里的 FLEX_* 全是 TLS 密文，不可用。
+用户反馈：嘿嘿连载、迷妹漫画不加载图片和封面；漫蛙漫画部分封面能出、图片不出。
 
-hhlz 三件以前拿不到的东西，这次都拿到了：
-  1) 真域名 rrs0a03ak.pye57rf.com —— 此前 muse 表里写的是 snen24.com（那是 INSAV 的），
-     所以 hhlz 被误判为"站点已死"
-  2) sign 是**硬编码常量** d01ef895544ab4f2a1f4d38d66edb283
-     （抓包记录 64 与 asm module/hhlz/network/interceptor.dart @0x8de318 完全一致）
-  3) 响应密钥 AES-128-CBC key=D2o4XyQeIFobJ4tS / iv=sciCuBC7orQtDhTO，作用于 data 的 base64
+两个独立根因：
+1) Flutter 端**没有** /proxy?do=py 路由（只有 iOS 的 DoubanImageProxyServer 有；
+   Flutter 18080 只跑 Go 代理）。上一轮把 mdtv/javdb/kpsp/hhlz 封面改写成
+   http://127.0.0.1:18080/proxy?do=py&key=…&url=… 在 App 内一律 404 → 封面全空。
+   修：四个适配器 _px() 全部改回直连。
+2) 这些平台的图片本身是 AES 密文。asm images/decrypt_image_byte.dart::decryptImage
+   按 module 路径分派：
+     · 默认分支（/module/hhlz 等）AES-128-CBC key=saIZXc4yMvq0Iz56 iv=kbJYtBJUECT0oyjo
+     · /module/mw            AES-128-CBC key=iv=my2ecret782ecret
+   两者均已在 Python 侧复现（解出 RIFF/WEBP）。
+   交付方式：客户端漫画阅读器支持 data: URL → 适配器抓取→解密→base64 内联进 manga://。
+     hhlz 28 图 3.17MB 1.6s；mw 41 图 2.59MB 10.4s（16 并发 + 14s 硬截止回落原地址）
 
-交付：
-  sources/welfare-js/hhlz.py（注册键 hhlz_py，category=comic，静态分类不联网，封面走本地代理）
-  docs/hhlz协议详解.md、docs/暮色抓包分析报告_2026-11-06.md
-  tools/_hhlz_r1..r4.py（信封/解 data/详情目录/章节图）、tools/_cap_one_sign.py（one 签名穷举留证）
-  sources/welfare-js/muse_avbox.py 的 hhlz 主机纠正为抓包实测域名
+附带：mmmh 注册成 comic 但它下发 m3u8 视频（客户端当图片阅读器 → 未解析到套图图片），
+      注册分类改回 video 并重新注册。
 
-验证：smoke hhlz 分类14 / 列表12 / 详情1 / 播放✓；章节 28 图；localProxy 200 image/webp。
-平台总表：总31 / 平铺14，hhlz 已适配。
-
-抓包另外给出三条线索（已写进报告）：
-  insav 与 aijav 同款信封（suffix NWSdef），只差当前域名；
-  one 的完整头（uuid/timestamp/platform/token/sign）与明文 MP4 直链，sign 穷举未命中（需隐藏盐）；
-  ut.lnh7.com 的 HLS 是标准 AES128（enc.key 仅 16B），佐证 mdtv/mmav/kpsp 播放链路无需分片代理。
+新增 docs/漫画图片解密与Flutter图片链路.md（含各分支密钥表与待办：mmmh 链式解密未破）。

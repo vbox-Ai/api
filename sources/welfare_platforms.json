@@ -2629,7 +2629,7 @@
     {
       "platformKey": "mmmh_py",
       "name": "迷妹漫画",
-      "category": "comic",
+      "category": "video",
       "icon": "books.vertical.fill",
       "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
       "serviceType": "python_spider",
@@ -2643,7 +2643,7 @@
       "scriptType": "python",
       "engine": "python",
       "sslBypass": true,
-      "contentType": "comic",
+      "contentType": "video",
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false

@@ -74,7 +74,7 @@ META = {
              "MD5(X-Response-Length)[8:24] 的动态 IV 做 AES-256-CBC 解密。"
              "接口 /v1/animat/category(.list?category_id&type=1&page)、/v1/fiction/category。"
              "⚠ media 的 m3u8 直取返回 500（分类/列表正常，media 端点另有校验）；"
-             "⚠ 封面 encrypt=true 需 MmMhAnimImg+chain 解密，暂未破。", "comic"),
+             "⚠ 封面 encrypt=true 需 MmMhAnimImg+chain 解密，暂未破。", "video"),
     "hhlz": ("嘿嘿连载", "books.vertical.fill", 662,
              "抓包+asm 双证据：请求送一套固定设备参数（appId/debug/osType/product/ver/"
              "marketChannel/sysVer/proxyChannel/packageName/time/phoneModel/udid），"

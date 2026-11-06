@@ -31,7 +31,14 @@ import sys
 import time
 import urllib.error
 import urllib.parse
+import base64
 import urllib.request
+
+try:
+    from Crypto.Cipher import AES
+    from Crypto.Util.Padding import unpad
+except Exception:
+    AES = None
 
 try:
     from base.spider import Spider as SpiderBase
@@ -98,6 +105,10 @@ def _vbox_opener(sp=None):
 
 UA = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
       "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1")
+
+# 图片解密：asm images/decrypt_image_byte.dart @0xa41dd8/@0xa41dec（key=iv "my2ecret782ecret"）
+IMG_KEY = b"my2ecret782ecret"
+IMG_IV = b"my2ecret782ecret"
 
 # 列表卡片：<a href="/book/N" title="名"> … </a>
 RE_CARD = re.compile(
@@ -437,6 +448,50 @@ class Spider(SpiderBase):
             "vod_play_url": d.get("vod_play_url", ""),
         }]}
 
+    # ---------------- 图片解密内联（客户端无本地代理，走 data: URL） ----------------
+    @staticmethod
+    def _dec_img(raw):
+        if raw[:4] == b"RIFF" and raw[8:12] == b"WEBP":
+            return raw
+        if raw[:3] == b"\xff\xd8\xff":
+            return raw
+        try:
+            pt = AES.new(IMG_KEY, AES.MODE_CBC, IMG_IV).decrypt(raw[:len(raw) // 16 * 16])
+            try:
+                pt = unpad(pt, 16)
+            except Exception:
+                pass
+            return pt
+        except Exception:
+            return raw
+
+    def _inline(self, url, timeout=None):
+        u = (url or "").strip()
+        if not u.startswith("http"):
+            return u
+        if not hasattr(self, "_imgs"):
+            self._imgs = {}
+        if u in self._imgs:
+            return self._imgs[u]
+        try:
+            req = urllib.request.Request(u, headers={"User-Agent": UA, "Referer": self._c().host + "/"})
+            with self._c()._open(req, timeout or 15) as r:
+                raw = r.read()
+            raw = self._dec_img(raw)
+            if raw[:4] == b"RIFF":
+                mime = "image/webp"
+            elif raw[:3] == b"\xff\xd8\xff":
+                mime = "image/jpeg"
+            elif raw[:4] == b"\x89PNG":
+                mime = "image/png"
+            else:
+                mime = "image/jpeg"
+            out = "data:%s;base64,%s" % (mime, base64.b64encode(raw).decode())
+        except Exception:
+            out = u
+        self._imgs[u] = out
+        return out
+
     def playerContent(self, flag, id, vipFlags):
         cid = str(id).strip()
         if cid.startswith("http"):
@@ -446,7 +501,26 @@ class Spider(SpiderBase):
         except Exception:
             imgs = []
         if imgs:
-            return {"parse": 0, "url": "manga://" + "&&".join(imgs),
+            # 客户端（Flutter）无 /proxy?do=py 路由 → 图片解密后以 data: 内联
+            data = [None] * len(imgs)
+            deadline = time.time() + 14.0
+            def work(i, u):
+                if time.time() > deadline:          # 超预算就回落原地址，避免整次调用超 20s
+                    data[i] = u
+                    return
+                data[i] = self._inline(u, timeout=12)
+            try:
+                import concurrent.futures as cf
+                with cf.ThreadPoolExecutor(max_workers=16) as ex:
+                    futs = [ex.submit(work, i, u) for i, u in enumerate(imgs)]
+                    for f in futs:
+                        f.result()
+            except Exception:
+                for i, u in enumerate(imgs):
+                    if data[i] is None:
+                        work(i, u)
+            imgs2 = [x for x in data if x]
+            return {"parse": 0, "url": "manga://" + "&&".join(imgs2),
                     "header": {"User-Agent": UA, "Referer": self._c().host + "/"}}
         return {"parse": 0, "url": "",
                 "header": {"User-Agent": UA, "Referer": self._c().host + "/"}}

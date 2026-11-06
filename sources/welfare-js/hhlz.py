@@ -66,6 +66,9 @@ SIGN = "d01ef895544ab2f4a1f4d38d66edb283"[:0] or "d01ef895544ab4f2a1f4d38d66edb2
 PKG = "com.t55f8907c5.z222ec9ed4.vcd6814de920260901"
 RESP_KEY = b"D2o4XyQeIFobJ4tS"
 RESP_IV = b"sciCuBC7orQtDhTO"
+# 图片解密：asm images/decrypt_image_byte.dart @0xa41bd4/@0xa41be8（/module/hhlz 分支）
+IMG_KEY = b"saIZXc4yMvq0Iz56"
+IMG_IV = b"kbJYtBJUECT0oyjo"
 UA = "Dart/3.12 (dart:io)"
 PROXY_BASE = "http://127.0.0.1:18080/proxy?do=py&key=hhlz_py&url="
 
@@ -137,6 +140,7 @@ class HhlzCore(object):
         self.base = BASE_DEFAULT
         self.timeout = 20
         self.udid = str(uuid.uuid4())
+        self._imgs = {}
 
     def _open(self, req, timeout=None):
         t = timeout if timeout is not None else getattr(self, "timeout", 20)
@@ -196,12 +200,49 @@ class HhlzCore(object):
         return self._dec_data(env) or {}
 
     # ---------------- 映射 ----------------
+    # ---------------- 图片：抓取 + AES 解密 + 内联 ----------------
+    # 客户端（Flutter）内部没有 /proxy?do=py 路由，无法走本地代理；
+    # 但漫画阅读器支持 `data:` 内联图 —— 所以这里直接把解密后的字节 base64 内联。
     @staticmethod
-    def _px(url):
+    def _dec_img(raw):
+        if raw[:4] == b"RIFF" and raw[8:12] == b"WEBP":
+            return raw
+        try:
+            pt = AES.new(IMG_KEY, AES.MODE_CBC, IMG_IV).decrypt(raw[:len(raw) // 16 * 16])
+            try:
+                pt = unpad(pt, 16)
+            except Exception:
+                pass
+            return pt
+        except Exception:
+            return raw
+
+    def _inline(self, url, timeout=None):
+        """返回 data: URL；失败则回落原地址。"""
         u = (url or "").strip()
         if not u.startswith("http"):
             return u
-        return PROXY_BASE + urllib.parse.quote(u, safe="")
+        key = ("img", u)
+        if key in self._imgs:
+            return self._imgs[key]
+        try:
+            req = urllib.request.Request(u, headers={"User-Agent": UA, "Accept": "image/*,*/*"})
+            with self._open(req, timeout or 15) as r:
+                raw = r.read()
+            raw = self._dec_img(raw)
+            if raw[:4] == b"RIFF":
+                mime = "image/webp"
+            elif raw[:3] == b"\xff\xd8\xff":
+                mime = "image/jpeg"
+            elif raw[:4] == b"\x89PNG":
+                mime = "image/png"
+            else:
+                mime = "image/jpeg"
+            out = "data:%s;base64,%s" % (mime, base64.b64encode(raw).decode())
+        except Exception:
+            out = u
+        self._imgs[key] = out
+        return out
 
     def list_page(self, cat, page):
         d = self.call("/comic/list", {"cat": str(cat or ""), "page_num": int(page)})
@@ -224,7 +265,7 @@ class HhlzCore(object):
             out.append({
                 "vod_id": str(cid),
                 "vod_name": (it.get("name") or "").strip() or str(cid),
-                "vod_pic": self._px(it.get("cover") or it.get("vertical_cover") or ""),
+                "vod_pic": self._inline(it.get("cover") or it.get("vertical_cover") or ""),
                 "vod_remarks": " · ".join(rem),
             })
         total_page = 0
@@ -263,18 +304,38 @@ class HhlzCore(object):
         return {
             "vod_id": str(cid),
             "vod_name": (info.get("name") or "").strip() or str(cid),
-            "vod_pic": self._px(info.get("horizontal_cover") or info.get("vertical_cover") or ""),
+            "vod_pic": self._inline(info.get("horizontal_cover") or info.get("vertical_cover") or ""),
             "vod_content": text,
             "vod_play_url": "#".join(eps),
         }
 
     def chapter(self, cid, chid):
         d = self.call("/comic/chapter", {"comic_id": str(cid), "chapter_id": str(chid)})
-        imgs = []
+        urls = []
         for im in (d.get("image_list") or []):
             if isinstance(im, dict) and im.get("img"):
-                imgs.append(im["img"])
-        return imgs
+                urls.append(im["img"])
+        if not urls:
+            return []
+        # 并发抓取 + 解密 + 内联（顺序保持）
+        out = [None] * len(urls)
+        deadline = time.time() + 14.0
+        def work(i, u):
+            if time.time() > deadline:              # 超预算回落原地址
+                out[i] = u
+                return
+            out[i] = self._inline(u, timeout=12)
+        try:
+            import concurrent.futures as cf
+            with cf.ThreadPoolExecutor(max_workers=16) as ex:
+                futs = [ex.submit(work, i, u) for i, u in enumerate(urls)]
+                for f in futs:
+                    f.result()
+        except Exception:
+            for i, u in enumerate(urls):
+                if out[i] is None:
+                    work(i, u)
+        return [x for x in out if x]
 
 
 class Spider(SpiderBase):

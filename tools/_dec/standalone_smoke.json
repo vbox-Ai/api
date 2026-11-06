@@ -6,7 +6,17 @@
   "detail": 1,
   "play": 1,
   "err": "",
-  "sample": "{\"vod_id\": \"490146\", \"vod_name\": \"[on] 有村麻央はBBCに堕ちる\", \"vod_pic\": \"http://127.0.0.1:18080/proxy?do=py&key=hhlz_py&url=https%3A%2F%2Fenimages52.bole573.com%2Fcomic%2F20261105%2Fb9550ea4-4057-4b8c-8ca0-d38f38d53c20%2Fcover_",
+  "sample": "{\"vod_id\": \"490146\", \"vod_name\": \"[on] 有村麻央はBBCに堕ちる\", \"vod_pic\": \"data:image/webp;base64,UklGRgBNAABXRUJQVlA4IPRMAACQ8wCdASosAZABPp1Amkmlo6WhKzhNELATiWNu1AwdB0TnfdXPie45+l32/NMU958+B6n1uxeSj6R/F/63wv/OPq/9b/fv8p76f2h/t+D",
   "play_url": "第1话 2026-11-06$490146|395892"
+ },
+ {
+  "key": "mw",
+  "class": 4,
+  "list": 43,
+  "detail": 1,
+  "play": 1,
+  "err": "",
+  "sample": "{\"vod_id\": \"546097\", \"vod_name\": \"偷心小姐别想逃\", \"vod_pic\": \"https://mwfimsvfast40.cc/static/upload3/book/id/546097/cover_1.jpg?v=1793683676\", \"vod_remarks\": \"\", \"style\": {\"type\": \"rect\", \"ratio\": 0.75}}",
+  "play_url": "序章$31514057#第1话$31516459#第2话$31517190#第3话                 $31518482"
  }
 ]
