@@ -1,13 +1,26 @@
-feat(fl2): 找到媒体域名表（v1/host），CDN 侧仍 403 —— 最后一道门
+feat(hhlz): 嘿嘿连载打通（抓包+asm 双证据）—— 分类/列表/详情/播放 四能力全通
 
-- v1/host（同样 X-VTag 加密）返回 5 个 CloudFront 媒体域名：
-  d33oobeksey8im / dnsgfrollmalw / d3voys8tzpz3wg / db0zulhunpasr / d1hqpgh1in91sr .cloudfront.net
-  媒体 URL = https://<cdn>/media/480/<id>.m3u8?expire=…&hash=…
-  → 之前所有"给 API 域名加 token"的尝试都是 498，因为那台机器根本不发媒体流
-- 用这 5 个域名 + 原始 expire/hash 取 m3u8：全部 403 Forbidden
-  已排除 UA（App/浏览器）、Referer、Origin、Accept
-  expire/hash 不是标准 CloudFront 签名参数（标准 Expires/Signature/Key-Pair-Id）
-  → CDN 前置了自定义校验：hash 可能绑定 Host/IP，或需要 CloudFront 签名 Cookie
+用户提供的桌面抓包包分析结果（详见 docs/暮色抓包分析报告_2026-11-06.md）：
+  可用的是 归档.zip（Stream 代理抓到的 88 条明文 HTTP）；
+  暮色抓包.zip 里的 FLEX_* 全是 TLS 密文，不可用。
 
-fl2 现状：分类/列表/详情全通，播放剩 CDN 授权一环；仍不注册（不留半残平台）。
-docs/fl2协议详解.md 补「四·补二」与收尾清单。
+hhlz 三件以前拿不到的东西，这次都拿到了：
+  1) 真域名 rrs0a03ak.pye57rf.com —— 此前 muse 表里写的是 snen24.com（那是 INSAV 的），
+     所以 hhlz 被误判为"站点已死"
+  2) sign 是**硬编码常量** d01ef895544ab4f2a1f4d38d66edb283
+     （抓包记录 64 与 asm module/hhlz/network/interceptor.dart @0x8de318 完全一致）
+  3) 响应密钥 AES-128-CBC key=D2o4XyQeIFobJ4tS / iv=sciCuBC7orQtDhTO，作用于 data 的 base64
+
+交付：
+  sources/welfare-js/hhlz.py（注册键 hhlz_py，category=comic，静态分类不联网，封面走本地代理）
+  docs/hhlz协议详解.md、docs/暮色抓包分析报告_2026-11-06.md
+  tools/_hhlz_r1..r4.py（信封/解 data/详情目录/章节图）、tools/_cap_one_sign.py（one 签名穷举留证）
+  sources/welfare-js/muse_avbox.py 的 hhlz 主机纠正为抓包实测域名
+
+验证：smoke hhlz 分类14 / 列表12 / 详情1 / 播放✓；章节 28 图；localProxy 200 image/webp。
+平台总表：总31 / 平铺14，hhlz 已适配。
+
+抓包另外给出三条线索（已写进报告）：
+  insav 与 aijav 同款信封（suffix NWSdef），只差当前域名；
+  one 的完整头（uuid/timestamp/platform/token/sign）与明文 MP4 直链，sign 穷举未命中（需隐藏盐）；
+  ut.lnh7.com 的 HLS 是标准 AES128（enc.key 仅 16B），佐证 mdtv/mmav/kpsp 播放链路无需分片代理。

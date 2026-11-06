@@ -139,7 +139,7 @@ PLATFORM_HOSTS = {
     "jmtt": "https://jdforrepam.com",                 # ✓ 禁漫天堂（splash 未下发，沿用）
     "mw": "https://manwaqr.cc",                       # ✓ 漫蛙
     "mmmh": "https://public.mino02.live",             # ✓ 迷妹漫画（配置另见 MMMH_HOST_TXT）
-    "hhlz": "https://snen24.com",                     # ✓ 嘿嘿连载（splash 未下发，沿用）
+    "hhlz": "https://rrs0a03ak.pye57rf.com",          # ✓ 嘿嘿连载（抓包实测，splash 未下发）
     # ---------------- 其他 ----------------
     "fl2": "https://prja.website",                    # ✓ fulao2（配置另见 FL2_HOST_API）
     "4hu": "https://h96h69.com",                      # ✗ DNS 有记录但 TCP 不通

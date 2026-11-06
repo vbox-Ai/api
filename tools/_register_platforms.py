@@ -75,6 +75,15 @@ META = {
              "接口 /v1/animat/category(.list?category_id&type=1&page)、/v1/fiction/category。"
              "⚠ media 的 m3u8 直取返回 500（分类/列表正常，media 端点另有校验）；"
              "⚠ 封面 encrypt=true 需 MmMhAnimImg+chain 解密，暂未破。", "comic"),
+    "hhlz": ("嘿嘿连载", "books.vertical.fill", 662,
+             "抓包+asm 双证据：请求送一套固定设备参数（appId/debug/osType/product/ver/"
+             "marketChannel/sysVer/proxyChannel/packageName/time/phoneModel/udid），"
+             "其中 **sign 是硬编码常量 d01ef895544ab4f2a1f4d38d66edb283**（无需计算）。"
+             "响应用 AES-128-CBC(key=D2o4XyQeIFobJ4tS, iv=sciCuBC7orQtDhTO) 解 data 字段。"
+             "接口 /comic/list{cat,page_num}、/cartoon/info{comic_id}、/comic/catalog{comic_id}、"
+             "/comic/chapter{comic_id,chapter_id}（缺 comic_id 返 702）。"
+             "播放按漫画约定输出 manga:// + && 连接（客户端渲染图片阅读器）。"
+             "host https://rrs0a03ak.pye57rf.com 来自抓包（此前被误判为站点已死）。", "comic"),
     "mw": ("漫蛙漫画", "books.vertical.fill", 660,
            "纯 HTML 明文，无加密无签名。列表 /booklist?page&tag&gender，详情 /book/{id} 取章节，"
            "阅读 /chapter/{id} 取正文图。vbox 漫画约定：播放返回 manga:// + 图片以 && 连接。"

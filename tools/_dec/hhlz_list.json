@@ -1,0 +1,675 @@
+{
+ "search_box": [
+  {
+   "label": "分类",
+   "field": "cat",
+   "list": [
+    {
+     "display": "全部",
+     "value": "",
+     "checked": 1
+    },
+    {
+     "display": "韩漫",
+     "value": "1",
+     "checked": 0
+    },
+    {
+     "display": "日漫",
+     "value": "2",
+     "checked": 0
+    },
+    {
+     "display": "3D漫画",
+     "value": "25",
+     "checked": 0
+    },
+    {
+     "display": "全彩",
+     "value": "6",
+     "checked": 0
+    },
+    {
+     "display": "Cosplay",
+     "value": "7",
+     "checked": 0
+    },
+    {
+     "display": "写真",
+     "value": "527",
+     "checked": 0
+    },
+    {
+     "display": "H漫",
+     "value": "609",
+     "checked": 0
+    },
+    {
+     "display": "校园",
+     "value": "19",
+     "checked": 0
+    },
+    {
+     "display": "乳交",
+     "value": "605",
+     "checked": 0
+    },
+    {
+     "display": "口交",
+     "value": "603",
+     "checked": 0
+    },
+    {
+     "display": "出轨",
+     "value": "604",
+     "checked": 0
+    },
+    {
+     "display": "榨精",
+     "value": "606",
+     "checked": 0
+    },
+    {
+     "display": "母女",
+     "value": "598",
+     "checked": 0
+    },
+    {
+     "display": "兽交",
+     "value": "590",
+     "checked": 0
+    },
+    {
+     "display": "自慰",
+     "value": "607",
+     "checked": 0
+    },
+    {
+     "display": "CG画集",
+     "value": "20",
+     "checked": 0
+    },
+    {
+     "display": "痴汉",
+     "value": "683",
+     "checked": 0
+    },
+    {
+     "display": "真人",
+     "value": "5",
+     "checked": 0
+    },
+    {
+     "display": "港漫",
+     "value": "13",
+     "checked": 0
+    },
+    {
+     "display": "巨乳",
+     "value": "12",
+     "checked": 0
+    },
+    {
+     "display": "人妻",
+     "value": "15",
+     "checked": 0
+    },
+    {
+     "display": "青春",
+     "value": "16",
+     "checked": 0
+    },
+    {
+     "display": "剧情",
+     "value": "24",
+     "checked": 0
+    },
+    {
+     "display": "萝莉",
+     "value": "69",
+     "checked": 0
+    },
+    {
+     "display": "御姐",
+     "value": "26",
+     "checked": 0
+    },
+    {
+     "display": "女仆",
+     "value": "71",
+     "checked": 0
+    },
+    {
+     "display": "SM",
+     "value": "40",
+     "checked": 0
+    },
+    {
+     "display": "百合",
+     "value": "94",
+     "checked": 0
+    },
+    {
+     "display": "调教",
+     "value": "122",
+     "checked": 0
+    },
+    {
+     "display": "同人志",
+     "value": "137",
+     "checked": 0
+    },
+    {
+     "display": "NTR",
+     "value": "134",
+     "checked": 0
+    },
+    {
+     "display": "多P",
+     "value": "311",
+     "checked": 0
+    },
+    {
+     "display": "强迫",
+     "value": "123",
+     "checked": 0
+    },
+    {
+     "display": "伪娘",
+     "value": "50",
+     "checked": 0
+    },
+    {
+     "display": "男同",
+     "value": "38",
+     "checked": 0
+    },
+    {
+     "display": "扶她",
+     "value": "126",
+     "checked": 0
+    },
+    {
+     "display": "乱伦",
+     "value": "17",
+     "checked": 0
+    },
+    {
+     "display": "AI图集",
+     "value": "696",
+     "checked": 0
+    },
+    {
+     "display": "杂志&短篇",
+     "value": "129",
+     "checked": 0
+    }
+   ]
+  },
+  {
+   "label": "付费",
+   "field": "pay_status",
+   "list": [
+    {
+     "display": "全部",
+     "value": 0,
+     "checked": 1
+    },
+    {
+     "display": "付费",
+     "value": 1,
+     "checked": 0
+    },
+    {
+     "display": "免费",
+     "value": 2,
+     "checked": 0
+    }
+   ]
+  },
+  {
+   "label": "连载",
+   "field": "finished",
+   "list": [
+    {
+     "display": "全部",
+     "value": "",
+     "checked": 1
+    },
+    {
+     "display": "连载中",
+     "value": 0,
+     "checked": 0
+    },
+    {
+     "display": "已完结",
+     "value": 1,
+     "checked": 0
+    }
+   ]
+  },
+  {
+   "label": "排序",
+   "field": "recommend_flag",
+   "list": [
+    {
+     "display": "推荐排行",
+     "value": 0,
+     "checked": 1
+    },
+    {
+     "display": "最新上架",
+     "value": 3,
+     "checked": 0
+    },
+    {
+     "display": "最近更新",
+     "value": 2,
+     "checked": 0
+    },
+    {
+     "display": "阅读热度",
+     "value": 1,
+     "checked": 0
+    },
+    {
+     "display": "周热度",
+     "value": 4,
+     "checked": 0
+    }
+   ]
+  }
+ ],
+ "list": {
+  "total_page": 31921,
+  "current_page": 1,
+  "page_size": 12,
+  "total_count": 383047,
+  "list": [
+   {
+    "comic_id": 490146,
+    "name": "[on] 有村麻央はBBCに堕ちる",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/b9550ea4-4057-4b8c-8ca0-d38f38d53c20/cover_17937816747189730.webp?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/b9550ea4-4057-4b8c-8ca0-d38f38d53c20/cover_17937816747189730.webp?c",
+    "author": "",
+    "description": "簡介：有村麻央堕入BBC",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 202,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   },
+   {
+    "comic_id": 490145,
+    "name": "[sasapoliton]当玛贝埋在恰那援衣中（有栖川汉化）",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/031138c5-febe-4883-aeac-8afc782b7253/cover_1793784198805208.webp?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/031138c5-febe-4883-aeac-8afc782b7253/cover_1793784198805208.webp?c",
+    "author": "",
+    "description": "簡介：",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 0,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   },
+   {
+    "comic_id": 490144,
+    "name": "[すみやお] モナ フィッシュル それぞれ中出し (原神) [最爱吃手手的大bt个人汉化]",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/ceb0d4d1-c99d-4434-93e2-10dac571cd0e/cover_17937921519499274.webp?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/ceb0d4d1-c99d-4434-93e2-10dac571cd0e/cover_17937921519499274.webp?c",
+    "author": "",
+    "description": "簡介：",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 101,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   },
+   {
+    "comic_id": 490143,
+    "name": "[pazzimo] Yunji Cum-Tribute Fingerjob (Patreon) [最爱吃手手的大bt个人汉化]",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/bef3159c-887a-4272-9da0-44a562fe96c3/cover_17937926119517211.webp?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/bef3159c-887a-4272-9da0-44a562fe96c3/cover_17937926119517211.webp?c",
+    "author": "",
+    "description": "簡介：",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 101,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   },
+   {
+    "comic_id": 490142,
+    "name": "[茶の魔王 (煎茶柱、麥茶柱)] 妖精娼館 3号室レイシー 〜褐色肌エルフを指名した童貞オーク〜 1 [中国語] [無修正]Ai上色",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/578ad67f-a15f-4ebc-80f2-a6fc187df2fc/cover_1793767572311199.jpg?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/578ad67f-a15f-4ebc-80f2-a6fc187df2fc/cover_1793767572311199.jpg?c",
+    "author": "",
+    "description": "簡介：非常好",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 303,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   },
+   {
+    "comic_id": 490141,
+    "name": "[ネコぬめ堂 (ネコぬめ)] スキスキお兄ちゃん義妹とエッチ ～朝勃ちお兄ちゃんのおちんちんを調べてイチャラブ～ [甜族星人x我不看本子汉化] [DL版]",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/2440a59d-93af-441e-b998-f7d73b320f03/cover_17938134789734271.webp?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/2440a59d-93af-441e-b998-f7d73b320f03/cover_17938134789734271.webp?c",
+    "author": "",
+    "description": "簡介：",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 101,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   },
+   {
+    "comic_id": 490140,
+    "name": "[多摩豪] 幼馴染に騙された [COW个人汉化]",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/4ce965bb-51b1-4e88-a607-a65436046d9a/cover_1793813487235384.webp?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/4ce965bb-51b1-4e88-a607-a65436046d9a/cover_1793813487235384.webp?c",
+    "author": "",
+    "description": "簡介：",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 202,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   },
+   {
+    "comic_id": 490139,
+    "name": "[大蔵妖館 (大蔵一也)] エロい事以外で時を止めてはダメですよ 4 [中国翻訳] [DL版]",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/1ebe24a9-d32e-4156-93d6-12f205b9df58/cover_17938135055122501.webp?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/1ebe24a9-d32e-4156-93d6-12f205b9df58/cover_17938135055122501.webp?c",
+    "author": "",
+    "description": "簡介：",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 101,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   },
+   {
+    "comic_id": 490138,
+    "name": "[情緒不安定 (ereere)] ユウカを3人編成していちゃいちゃ乱交SEX (ブルーアーカイブ)｜把3个优香 编入同一个队伍恩恩爱爱的♡ 乱交SEX [小桃汉化组] [DL版]",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/8ec1a878-94ff-47b2-9cd0-4e2dcbb3c015/cover_17938135065075308.webp?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/8ec1a878-94ff-47b2-9cd0-4e2dcbb3c015/cover_17938135065075308.webp?c",
+    "author": "",
+    "description": "簡介：",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 0,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   },
+   {
+    "comic_id": 490137,
+    "name": "[桂ハルフミ] 隣のギャルが授業中におっぱいを見せてくる・・・！[Amerins漢化]",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/a03c1fdd-4e19-4503-b5f8-20d72fae4637/cover_17938135197456850.webp?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/a03c1fdd-4e19-4503-b5f8-20d72fae4637/cover_17938135197456850.webp?c",
+    "author": "",
+    "description": "簡介：",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 202,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   },
+   {
+    "comic_id": 490136,
+    "name": "[甘酒鳩商店 (養酒オヘペ)] 親友の娘 早織 ー短編①~②ー [Amerins漢化] [DL版]",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/e7dc9dd8-7852-4893-8fdf-a1ba642073e7/cover_1793813531108597.webp?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/e7dc9dd8-7852-4893-8fdf-a1ba642073e7/cover_1793813531108597.webp?c",
+    "author": "",
+    "description": "簡介：",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 0,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   },
+   {
+    "comic_id": 490135,
+    "name": "[Gakispark] デュエル・バニーガール 022 中文",
+    "vertical_cover": "https://enimages52.bole573.com/comic/20261105/185c63af-3aa1-41c4-a8db-8c7a48641809/cover_17938135369441932.webp?c",
+    "cover": "https://enimages52.bole573.com/comic/20261105/185c63af-3aa1-41c4-a8db-8c7a48641809/cover_17938135369441932.webp?c",
+    "author": "",
+    "description": "簡介：",
+    "is_vip": 0,
+    "is_baoyue": 0,
+    "is_finish": 1,
+    "is_finished": 1,
+    "total_chapters": 1,
+    "free_chapters": 0,
+    "total_views": 0,
+    "tag": [
+     {
+      "tab": "已完结",
+      "color": "#71c5fb"
+     }
+    ],
+    "finished": "已完结",
+    "flag": "更新至1话",
+    "is_free": 0,
+    "last_updated_chapter_time": 0,
+    "discount_start": 0,
+    "discount_end": 0,
+    "discount": 0,
+    "total_chapter": 1,
+    "week_rank_total": 0,
+    "discount_days": 0,
+    "is_collect": 0
+   }
+  ]
+ }
+}

@@ -2713,6 +2713,28 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "hhlz_py",
+      "name": "嘿嘿连载",
+      "category": "comic",
+      "icon": "books.vertical.fill",
+      "desc": "Python蜘蛛版 — 自包含单文件（平铺）",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://rrs0a03ak.pye57rf.com"
+      ],
+      "sortOrder": 662,
+      "defaultProxy": false,
+      "notes": "抓包+asm 双证据：请求送一套固定设备参数（appId/debug/osType/product/ver/marketChannel/sysVer/proxyChannel/packageName/time/phoneModel/udid），其中 **sign 是硬编码常量 d01ef895544ab4f2a1f4d38d66edb283**（无需计算）。响应用 AES-128-CBC(key=D2o4XyQeIFobJ4tS, iv=sciCuBC7orQtDhTO) 解 data 字段。接口 /comic/list{cat,page_num}、/cartoon/info{comic_id}、/comic/catalog{comic_id}、/comic/chapter{comic_id,chapter_id}（缺 comic_id 返 702）。播放按漫画约定输出 manga:// + && 连接（客户端渲染图片阅读器）。host https://rrs0a03ak.pye57rf.com 来自抓包（此前被误判为站点已死）。",
+      "api": "./sources/welfare-js/hhlz.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "comic",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
   "updatedAt": "2026-10-31T04:30:00Z"
