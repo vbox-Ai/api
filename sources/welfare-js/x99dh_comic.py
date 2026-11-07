@@ -777,22 +777,47 @@ class Spider(SpiderBase):
             return
         seen[key] = now
 
-        others = [c["type_id"] for c in self.cats_for(platform) if c["type_id"] != str(cate)][:2]
+        others = [c["type_id"] for c in self.cats_for(platform) if c["type_id"] != str(cate)][:3]
         if not others:
             return
+        self._prefetch_worker(platform, others)
+
+    def _prefetch_worker(self, platform, cates):
+        """并行抓若干分类并写缓存（最多 3 个线程）。"""
+        adapter_cls = ADAPTERS.get(platform.get("adapter") or "generic", _GenericAdapter)
+
+        def job(cate):
+            if self._list_get("%s|%s|1" % (platform["key"], cate)) is not None:
+                return
+            try:
+                host = self._picker.pick(platform)
+                res = adapter_cls(self, platform, host).list(cate, 1)
+                if res.get("list"):
+                    self._list_put("%s|%s|1" % (platform["key"], cate), res)
+            except Exception:
+                pass
+
+        threads = []
+        for cate in cates[:3]:
+            th = threading.Thread(target=job, args=(cate,))
+            th.daemon = True
+            th.start()
+            threads.append(th)
+        for th in threads:
+            th.join(6)
+
+    def warm_first_tabs(self):
+        """首屏后台预热前 3 个平台的首个分类（约 180KB 流量），本次进程只做一次。"""
+        if getattr(self, "_warmed", False):
+            return
+        self._warmed = True
 
         def work():
-            adapter_cls = ADAPTERS.get(platform.get("adapter") or "generic", _GenericAdapter)
-            for other in others:
-                if self._list_get("%s|%s|1" % (key, other)) is not None:
-                    continue
-                try:
-                    host = self._picker.pick(platform)
-                    res = adapter_cls(self, platform, host).list(other, 1)
-                    if res.get("list"):
-                        self._list_put("%s|%s|1" % (key, other), res)
-                except Exception:
-                    continue
+            time.sleep(1)
+            for platform in (self._snapshot.get("platforms") or [])[:3]:
+                cats = self.cats_for(platform)
+                if cats:
+                    self._prefetch_worker(platform, [cats[0]["type_id"]])
 
         th = threading.Thread(target=work)
         th.daemon = True
@@ -915,6 +940,7 @@ class Spider(SpiderBase):
             })
             filters[platform["key"]] = chips
         self.kick_refresh()
+        self.warm_first_tabs()
         return {"class": classes, "filters": filters, "list": []}
 
     def homeVideoContent(self):
