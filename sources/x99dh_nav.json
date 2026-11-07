@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "version": "2026.11.07.1434",
-  "generatedAt": "2026-11-07T14:34:31+08:00",
+  "version": "2026.11.07.2251",
+  "generatedAt": "2026-11-07T22:51:42+08:00",
   "entry": [
     "https://x99dh.net",
     "https://x99dh.lat"
@@ -9,7 +9,7 @@
   "counts": {
     "platforms": 29,
     "lines": 361,
-    "alive": 331
+    "alive": 321
   },
   "platforms": [
     {
@@ -22,250 +22,250 @@
       "url": "https://www.thisav66.com/cn",
       "lines": [
         {
-          "url": "https://www.missav05.com/cn",
-          "testUrl": "https://www.missav05.com/status.html",
+          "url": "https://www.missav666.net/cn",
+          "testUrl": "https://www.missav666.net/status.html",
           "ok": true,
-          "ms": 513.0
+          "ms": 189.0
         },
         {
           "url": "https://www.missav03.net/cn",
           "testUrl": "https://www.missav03.net/status.html",
           "ok": true,
-          "ms": 525.0
-        },
-        {
-          "url": "https://www.missav666.net/cn",
-          "testUrl": "https://www.missav666.net/status.html",
-          "ok": true,
-          "ms": 651.0
-        },
-        {
-          "url": "https://www.missav08.net/cn",
-          "testUrl": "https://www.missav08.net/status.html",
-          "ok": true,
-          "ms": 681.0
-        },
-        {
-          "url": "https://www.njavtv.my/cn",
-          "testUrl": "https://www.njavtv.my/status.html",
-          "ok": true,
-          "ms": 703.0
-        },
-        {
-          "url": "https://www.missav3.one/cn",
-          "testUrl": "https://www.missav3.one/status.html",
-          "ok": true,
-          "ms": 787.0
-        },
-        {
-          "url": "https://www.njav01.net/cn",
-          "testUrl": "https://www.njav01.net/status.html",
-          "ok": true,
-          "ms": 805.0
-        },
-        {
-          "url": "https://www.njavtv01.com/cn",
-          "testUrl": "https://www.njavtv01.com/status.html",
-          "ok": true,
-          "ms": 817.0
-        },
-        {
-          "url": "https://www.missav08.com/cn",
-          "testUrl": "https://www.missav08.com/status.html",
-          "ok": true,
-          "ms": 831.0
-        },
-        {
-          "url": "https://www.missav1.one/cn",
-          "testUrl": "https://www.missav1.one/status.html",
-          "ok": true,
-          "ms": 858.0
-        },
-        {
-          "url": "https://www.njav01.com/cn",
-          "testUrl": "https://www.njav01.com/status.html",
-          "ok": true,
-          "ms": 890.0
-        },
-        {
-          "url": "https://www.thisav33.net/cn",
-          "testUrl": "https://www.thisav33.net/status.html",
-          "ok": true,
-          "ms": 937.0
-        },
-        {
-          "url": "https://www.missav888.cc/cn",
-          "testUrl": "https://www.missav888.cc/status.html",
-          "ok": true,
-          "ms": 999.0
-        },
-        {
-          "url": "https://www.missav123.nl/cn",
-          "testUrl": "https://www.missav123.nl/status.html",
-          "ok": true,
-          "ms": 1013.0
-        },
-        {
-          "url": "https://www.thisav02.net/cn",
-          "testUrl": "https://www.thisav02.net/status.html",
-          "ok": true,
-          "ms": 1018.0
-        },
-        {
-          "url": "https://www.thisav01.net/cn",
-          "testUrl": "https://www.thisav01.net/status.html",
-          "ok": true,
-          "ms": 1089.0
-        },
-        {
-          "url": "https://www.thisav01.cc/cn",
-          "testUrl": "https://www.thisav01.cc/status.html",
-          "ok": true,
-          "ms": 1103.0
+          "ms": 194.0
         },
         {
           "url": "https://www.missav05.net/cn",
           "testUrl": "https://www.missav05.net/status.html",
           "ok": true,
-          "ms": 1105.0
+          "ms": 202.0
         },
         {
-          "url": "https://www.njavtv.art/cn",
-          "testUrl": "https://www.njavtv.art/status.html",
+          "url": "https://www.thisav01.net/cn",
+          "testUrl": "https://www.thisav01.net/status.html",
           "ok": true,
-          "ms": 1137.0
-        },
-        {
-          "url": "https://www.missav-ai.cc/cn",
-          "testUrl": "https://www.missav-ai.cc/status.html",
-          "ok": true,
-          "ms": 1148.0
-        },
-        {
-          "url": "https://www.missav.watch/cn",
-          "testUrl": "https://www.missav.watch/status.html",
-          "ok": true,
-          "ms": 1153.0
+          "ms": 207.0
         },
         {
           "url": "https://www.missav02.net/cn",
           "testUrl": "https://www.missav02.net/status.html",
           "ok": true,
-          "ms": 1179.0
+          "ms": 280.0
         },
         {
-          "url": "https://www.missav666.cc/cn",
-          "testUrl": "https://www.missav666.cc/status.html",
+          "url": "https://www.missav.watch/cn",
+          "testUrl": "https://www.missav.watch/status.html",
           "ok": true,
-          "ms": 1232.0
+          "ms": 397.0
         },
         {
-          "url": "https://www.missav09.com/cn",
-          "testUrl": "https://www.missav09.com/status.html",
+          "url": "https://www.njavtv01.com/cn",
+          "testUrl": "https://www.njavtv01.com/status.html",
           "ok": true,
-          "ms": 1266.0
+          "ms": 435.0
         },
         {
-          "url": "https://www.thisav02.com/cn",
-          "testUrl": "https://www.thisav02.com/status.html",
+          "url": "https://www.missav08.net/cn",
+          "testUrl": "https://www.missav08.net/status.html",
           "ok": true,
-          "ms": 1293.0
-        },
-        {
-          "url": "https://www.missav06.com/cn",
-          "testUrl": "https://www.missav06.com/status.html",
-          "ok": true,
-          "ms": 1416.0
-        },
-        {
-          "url": "https://www.missav07.net/cn",
-          "testUrl": "https://www.missav07.net/status.html",
-          "ok": true,
-          "ms": 1589.0
-        },
-        {
-          "url": "https://www.thisav.pw/cn",
-          "testUrl": "https://www.thisav.pw/status.html",
-          "ok": true,
-          "ms": 1665.0
-        },
-        {
-          "url": "https://www.thisav.sbs/cn",
-          "testUrl": "https://www.thisav.sbs/status.html",
-          "ok": true,
-          "ms": 1803.0
-        },
-        {
-          "url": "https://www.njavtv.nl/cn",
-          "testUrl": "https://www.njavtv.nl/status.html",
-          "ok": true,
-          "ms": 1875.0
+          "ms": 497.0
         },
         {
           "url": "https://www.missav888.net/cn",
           "testUrl": "https://www.missav888.net/status.html",
           "ok": true,
-          "ms": 1903.0
+          "ms": 690.0
+        },
+        {
+          "url": "https://www.missav09.com/cn",
+          "testUrl": "https://www.missav09.com/status.html",
+          "ok": true,
+          "ms": 775.0
+        },
+        {
+          "url": "https://www.thisav01.cc/cn",
+          "testUrl": "https://www.thisav01.cc/status.html",
+          "ok": true,
+          "ms": 809.0
+        },
+        {
+          "url": "https://www.njav01.com/cn",
+          "testUrl": "https://www.njav01.com/status.html",
+          "ok": true,
+          "ms": 873.0
+        },
+        {
+          "url": "https://www.thisav.pw/cn",
+          "testUrl": "https://www.thisav.pw/status.html",
+          "ok": true,
+          "ms": 988.0
+        },
+        {
+          "url": "https://www.njavtv.nl/cn",
+          "testUrl": "https://www.njavtv.nl/status.html",
+          "ok": true,
+          "ms": 994.0
         },
         {
           "url": "https://www.njav.one/cn",
           "testUrl": "https://www.njav.one/status.html",
           "ok": true,
-          "ms": 1980.0
+          "ms": 1001.0
         },
         {
           "url": "https://www.missav123.life/cn",
           "testUrl": "https://www.missav123.life/status.html",
           "ok": true,
-          "ms": 2100.0
+          "ms": 1047.0
         },
         {
-          "url": "https://www.missav06.net/cn",
-          "testUrl": "https://www.missav06.net/status.html",
+          "url": "https://www.missav-ai.cc/cn",
+          "testUrl": "https://www.missav-ai.cc/status.html",
           "ok": true,
-          "ms": 2173.0
+          "ms": 1167.0
         },
         {
-          "url": "https://www.thisav33.com/cn",
-          "testUrl": "https://www.thisav33.com/status.html",
+          "url": "https://www.missav666.cc/cn",
+          "testUrl": "https://www.missav666.cc/status.html",
           "ok": true,
-          "ms": 2679.0
-        },
-        {
-          "url": "https://www.missav2.one/cn",
-          "testUrl": "https://www.missav2.one/status.html",
-          "ok": true,
-          "ms": 2906.0
+          "ms": 1203.0
         },
         {
           "url": "https://www.missav01.net/cn",
           "testUrl": "https://www.missav01.net/status.html",
           "ok": true,
-          "ms": 3097.0
+          "ms": 1273.0
+        },
+        {
+          "url": "https://www.missav05.com/cn",
+          "testUrl": "https://www.missav05.com/status.html",
+          "ok": true,
+          "ms": 1327.0
+        },
+        {
+          "url": "https://www.njav01.net/cn",
+          "testUrl": "https://www.njav01.net/status.html",
+          "ok": true,
+          "ms": 1376.0
+        },
+        {
+          "url": "https://www.missav06.com/cn",
+          "testUrl": "https://www.missav06.com/status.html",
+          "ok": true,
+          "ms": 1439.0
+        },
+        {
+          "url": "https://www.missav06.net/cn",
+          "testUrl": "https://www.missav06.net/status.html",
+          "ok": true,
+          "ms": 1628.0
+        },
+        {
+          "url": "https://www.missav888.cc/cn",
+          "testUrl": "https://www.missav888.cc/status.html",
+          "ok": true,
+          "ms": 1657.0
+        },
+        {
+          "url": "https://www.thisav02.com/cn",
+          "testUrl": "https://www.thisav02.com/status.html",
+          "ok": true,
+          "ms": 1757.0
+        },
+        {
+          "url": "https://www.missav2.one/cn",
+          "testUrl": "https://www.missav2.one/status.html",
+          "ok": true,
+          "ms": 1824.0
+        },
+        {
+          "url": "https://www.missav1.one/cn",
+          "testUrl": "https://www.missav1.one/status.html",
+          "ok": true,
+          "ms": 1862.0
+        },
+        {
+          "url": "https://www.missav07.net/cn",
+          "testUrl": "https://www.missav07.net/status.html",
+          "ok": true,
+          "ms": 1900.0
+        },
+        {
+          "url": "https://www.thisav02.net/cn",
+          "testUrl": "https://www.thisav02.net/status.html",
+          "ok": true,
+          "ms": 1977.0
+        },
+        {
+          "url": "https://www.thisav33.net/cn",
+          "testUrl": "https://www.thisav33.net/status.html",
+          "ok": true,
+          "ms": 2302.0
+        },
+        {
+          "url": "https://www.missav123.nl/cn",
+          "testUrl": "https://www.missav123.nl/status.html",
+          "ok": true,
+          "ms": 2343.0
+        },
+        {
+          "url": "https://www.missav08.com/cn",
+          "testUrl": "https://www.missav08.com/status.html",
+          "ok": true,
+          "ms": 3544.0
         },
         {
           "url": "https://www.thisav66.com/cn",
           "testUrl": "https://www.thisav66.com/status.html",
           "ok": true,
-          "ms": 7358.0
+          "ms": 3662.0
+        },
+        {
+          "url": "https://www.thisav33.com/cn",
+          "testUrl": "https://www.thisav33.com/status.html",
+          "ok": true,
+          "ms": 4127.0
+        },
+        {
+          "url": "https://www.njavtv.my/cn",
+          "testUrl": "https://www.njavtv.my/status.html",
+          "ok": false,
+          "ms": 651.0
         },
         {
           "url": "https://www.missav1.vip/cn",
           "testUrl": "https://www.missav1.vip/status.html",
           "ok": false,
-          "ms": 1006.0
+          "ms": 784.0
+        },
+        {
+          "url": "https://www.missav3.one/cn",
+          "testUrl": "https://www.missav3.one/status.html",
+          "ok": false,
+          "ms": 1010.0
         },
         {
           "url": "https://www.missav365.icu/cn",
           "testUrl": "https://www.missav365.icu/status.html",
           "ok": false,
-          "ms": 1714.0
+          "ms": 1659.0
+        },
+        {
+          "url": "https://www.thisav.sbs/cn",
+          "testUrl": "https://www.thisav.sbs/status.html",
+          "ok": false,
+          "ms": 1688.0
         },
         {
           "url": "https://www.missav365.one/cn",
           "testUrl": "https://www.missav365.one/status.html",
           "ok": false,
-          "ms": 1904.0
+          "ms": 1908.0
+        },
+        {
+          "url": "https://www.njavtv.art/cn",
+          "testUrl": "https://www.njavtv.art/status.html",
+          "ok": false,
+          "ms": 1950.0
         }
       ],
       "classes": [
@@ -309,196 +309,196 @@
       "url": "https://www.hanime16.com/enter",
       "lines": [
         {
-          "url": "https://www.hanime101.net/enter",
-          "testUrl": "https://www.hanime101.net/status.html",
-          "ok": true,
-          "ms": 344.0
-        },
-        {
-          "url": "https://www.hanime102.net/enter",
-          "testUrl": "https://www.hanime102.net/status.html",
-          "ok": true,
-          "ms": 440.0
-        },
-        {
-          "url": "https://www.hanime999.cc/enter",
-          "testUrl": "https://www.hanime999.cc/status.html",
-          "ok": true,
-          "ms": 594.0
-        },
-        {
-          "url": "https://www.hanime169.com/enter",
-          "testUrl": "https://www.hanime169.com/status.html",
-          "ok": true,
-          "ms": 803.0
-        },
-        {
-          "url": "https://www.hanime2.cfd/enter",
-          "testUrl": "https://www.hanime2.cfd/status.html",
-          "ok": true,
-          "ms": 808.0
-        },
-        {
-          "url": "https://www.hanime103.com/enter",
-          "testUrl": "https://www.hanime103.com/status.html",
-          "ok": true,
-          "ms": 808.0
-        },
-        {
           "url": "https://www.hanime169.net/enter",
           "testUrl": "https://www.hanime169.net/status.html",
           "ok": true,
-          "ms": 811.0
+          "ms": 464.0
         },
         {
           "url": "https://www.hanime101.com/enter",
           "testUrl": "https://www.hanime101.com/status.html",
           "ok": true,
-          "ms": 854.0
+          "ms": 527.0
+        },
+        {
+          "url": "https://www.hanime101.net/enter",
+          "testUrl": "https://www.hanime101.net/status.html",
+          "ok": true,
+          "ms": 593.0
         },
         {
           "url": "https://www.hanime163.com/enter",
           "testUrl": "https://www.hanime163.com/status.html",
           "ok": true,
-          "ms": 860.0
+          "ms": 606.0
         },
         {
           "url": "https://www.hanime666.net/enter",
           "testUrl": "https://www.hanime666.net/status.html",
           "ok": true,
-          "ms": 864.0
-        },
-        {
-          "url": "https://www.hanime1.my/enter",
-          "testUrl": "https://www.hanime1.my/status.html",
-          "ok": true,
-          "ms": 1012.0
-        },
-        {
-          "url": "https://www.hanime169.cc/enter",
-          "testUrl": "https://www.hanime169.cc/status.html",
-          "ok": true,
-          "ms": 1080.0
-        },
-        {
-          "url": "https://www.hanime123.one/enter",
-          "testUrl": "https://www.hanime123.one/status.html",
-          "ok": true,
-          "ms": 1102.0
-        },
-        {
-          "url": "https://www.hanime999.net/enter",
-          "testUrl": "https://www.hanime999.net/status.html",
-          "ok": true,
-          "ms": 1114.0
-        },
-        {
-          "url": "https://www.hanime2.one/enter",
-          "testUrl": "https://www.hanime2.one/status.html",
-          "ok": true,
-          "ms": 1148.0
-        },
-        {
-          "url": "https://www.hanime163.net/enter",
-          "testUrl": "https://www.hanime163.net/status.html",
-          "ok": true,
-          "ms": 1165.0
-        },
-        {
-          "url": "https://www.hanime2.icu/enter",
-          "testUrl": "https://www.hanime2.icu/status.html",
-          "ok": true,
-          "ms": 1199.0
-        },
-        {
-          "url": "https://www.hanime123.org/enter",
-          "testUrl": "https://www.hanime123.org/status.html",
-          "ok": true,
-          "ms": 1384.0
-        },
-        {
-          "url": "https://www.hanime123.cc/enter",
-          "testUrl": "https://www.hanime123.cc/status.html",
-          "ok": true,
-          "ms": 1417.0
-        },
-        {
-          "url": "https://www.hanime123.sbs/enter",
-          "testUrl": "https://www.hanime123.sbs/status.html",
-          "ok": true,
-          "ms": 1565.0
+          "ms": 629.0
         },
         {
           "url": "https://www.hanime02.com/enter",
           "testUrl": "https://www.hanime02.com/status.html",
           "ok": true,
-          "ms": 1679.0
+          "ms": 641.0
         },
         {
-          "url": "https://www.hanime1.art/enter",
-          "testUrl": "https://www.hanime1.art/status.html",
+          "url": "https://www.hanime123.org/enter",
+          "testUrl": "https://www.hanime123.org/status.html",
           "ok": true,
-          "ms": 1711.0
+          "ms": 749.0
+        },
+        {
+          "url": "https://www.hanime169.cc/enter",
+          "testUrl": "https://www.hanime169.cc/status.html",
+          "ok": true,
+          "ms": 797.0
+        },
+        {
+          "url": "https://www.hanime169.com/enter",
+          "testUrl": "https://www.hanime169.com/status.html",
+          "ok": true,
+          "ms": 816.0
         },
         {
           "url": "https://www.hanime999.com/enter",
           "testUrl": "https://www.hanime999.com/status.html",
           "ok": true,
-          "ms": 1805.0
+          "ms": 849.0
         },
         {
-          "url": "https://www.hanime103.net/enter",
-          "testUrl": "https://www.hanime103.net/status.html",
+          "url": "https://www.hanime2.icu/enter",
+          "testUrl": "https://www.hanime2.icu/status.html",
           "ok": true,
-          "ms": 1994.0
+          "ms": 863.0
         },
         {
-          "url": "https://www.hanime102.com/enter",
-          "testUrl": "https://www.hanime102.com/status.html",
+          "url": "https://www.hanime103.com/enter",
+          "testUrl": "https://www.hanime103.com/status.html",
           "ok": true,
-          "ms": 2600.0
+          "ms": 1015.0
+        },
+        {
+          "url": "https://www.hanime999.cc/enter",
+          "testUrl": "https://www.hanime999.cc/status.html",
+          "ok": true,
+          "ms": 1017.0
+        },
+        {
+          "url": "https://www.hanime1.my/enter",
+          "testUrl": "https://www.hanime1.my/status.html",
+          "ok": true,
+          "ms": 1020.0
+        },
+        {
+          "url": "https://www.hanime102.net/enter",
+          "testUrl": "https://www.hanime102.net/status.html",
+          "ok": true,
+          "ms": 1031.0
+        },
+        {
+          "url": "https://www.hanime123.cc/enter",
+          "testUrl": "https://www.hanime123.cc/status.html",
+          "ok": true,
+          "ms": 1158.0
         },
         {
           "url": "https://www.hanime1.life/enter",
           "testUrl": "https://www.hanime1.life/status.html",
           "ok": true,
-          "ms": 3269.0
+          "ms": 1239.0
         },
         {
-          "url": "https://www.hanime104.com/enter",
-          "testUrl": "https://www.hanime104.com/status.html",
+          "url": "https://www.hanime999.net/enter",
+          "testUrl": "https://www.hanime999.net/status.html",
           "ok": true,
-          "ms": 4640.0
+          "ms": 1449.0
+        },
+        {
+          "url": "https://www.hanime102.com/enter",
+          "testUrl": "https://www.hanime102.com/status.html",
+          "ok": true,
+          "ms": 1516.0
+        },
+        {
+          "url": "https://www.hanime103.net/enter",
+          "testUrl": "https://www.hanime103.net/status.html",
+          "ok": true,
+          "ms": 1681.0
+        },
+        {
+          "url": "https://www.hanime123.sbs/enter",
+          "testUrl": "https://www.hanime123.sbs/status.html",
+          "ok": true,
+          "ms": 1723.0
+        },
+        {
+          "url": "https://www.hanime123.one/enter",
+          "testUrl": "https://www.hanime123.one/status.html",
+          "ok": true,
+          "ms": 2281.0
         },
         {
           "url": "https://www.hanime16.com/enter",
           "testUrl": "https://www.hanime16.com/status.html",
           "ok": true,
-          "ms": 6543.0
+          "ms": 3426.0
         },
         {
-          "url": "https://www.hanime888.net/enter",
-          "testUrl": "https://www.hanime888.net/status.html",
-          "ok": false,
-          "ms": 1150.0
+          "url": "https://www.hanime1.art/enter",
+          "testUrl": "https://www.hanime1.art/status.html",
+          "ok": true,
+          "ms": 3966.0
+        },
+        {
+          "url": "https://www.hanime104.com/enter",
+          "testUrl": "https://www.hanime104.com/status.html",
+          "ok": true,
+          "ms": 9369.0
+        },
+        {
+          "url": "https://www.hanime163.net/enter",
+          "testUrl": "https://www.hanime163.net/status.html",
+          "ok": true,
+          "ms": 11410.0
         },
         {
           "url": "https://www.hanime1-me.cc/enter",
           "testUrl": "https://www.hanime1-me.cc/status.html",
           "ok": false,
-          "ms": 1185.0
+          "ms": 945.0
+        },
+        {
+          "url": "https://www.hanime2.one/enter",
+          "testUrl": "https://www.hanime2.one/status.html",
+          "ok": false,
+          "ms": 1022.0
         },
         {
           "url": "https://www.hanime1.pw/enter",
           "testUrl": "https://www.hanime1.pw/status.html",
           "ok": false,
-          "ms": 1264.0
+          "ms": 1096.0
+        },
+        {
+          "url": "https://www.hanime888.net/enter",
+          "testUrl": "https://www.hanime888.net/status.html",
+          "ok": false,
+          "ms": 1139.0
         },
         {
           "url": "https://www.hanime2.org/enter",
           "testUrl": "https://www.hanime2.org/status.html",
           "ok": false,
-          "ms": 2970.0
+          "ms": 1332.0
+        },
+        {
+          "url": "https://www.hanime2.cfd/enter",
+          "testUrl": "https://www.hanime2.cfd/status.html",
+          "ok": false,
+          "ms": 2362.0
         }
       ],
       "classes": []
@@ -513,136 +513,136 @@
       "url": "https://huangguo04.net/asian/zh-CN",
       "lines": [
         {
-          "url": "https://huangguo02.net/asian/zh-CN",
-          "testUrl": "https://huangguo02.net/status.html",
-          "ok": true,
-          "ms": 649.0
-        },
-        {
-          "url": "https://lissav.net/asian/zh-CN",
-          "testUrl": "https://lissav.net/status.html",
-          "ok": true,
-          "ms": 705.0
-        },
-        {
           "url": "https://tktube.vip/asian/zh-CN",
           "testUrl": "https://tktube.vip/status.html",
           "ok": true,
-          "ms": 744.0
-        },
-        {
-          "url": "https://lissav.nl/asian/zh-CN",
-          "testUrl": "https://lissav.nl/status.html",
-          "ok": true,
-          "ms": 879.0
-        },
-        {
-          "url": "https://lissav.one/asian/zh-CN",
-          "testUrl": "https://lissav.one/status.html",
-          "ok": true,
-          "ms": 881.0
+          "ms": 484.0
         },
         {
           "url": "https://huangguo01.net/asian/zh-CN",
           "testUrl": "https://huangguo01.net/status.html",
           "ok": true,
-          "ms": 994.0
+          "ms": 810.0
         },
         {
-          "url": "https://lissav.ws/asian/zh-CN",
-          "testUrl": "https://lissav.ws/status.html",
+          "url": "https://lissav.nl/asian/zh-CN",
+          "testUrl": "https://lissav.nl/status.html",
           "ok": true,
-          "ms": 1036.0
-        },
-        {
-          "url": "https://mdba8.com/asian/zh-CN",
-          "testUrl": "https://mdba8.com/status.html",
-          "ok": true,
-          "ms": 1281.0
-        },
-        {
-          "url": "https://madou666.net/asian/zh-CN",
-          "testUrl": "https://madou666.net/status.html",
-          "ok": true,
-          "ms": 1348.0
-        },
-        {
-          "url": "https://lissav.my/asian/zh-CN",
-          "testUrl": "https://lissav.my/status.html",
-          "ok": true,
-          "ms": 1370.0
+          "ms": 915.0
         },
         {
           "url": "https://lissav.vip/asian/zh-CN",
           "testUrl": "https://lissav.vip/status.html",
           "ok": true,
-          "ms": 1409.0
-        },
-        {
-          "url": "https://madou8.pw/asian/zh-CN",
-          "testUrl": "https://madou8.pw/status.html",
-          "ok": true,
-          "ms": 1410.0
-        },
-        {
-          "url": "https://lissav1.com/asian/zh-CN",
-          "testUrl": "https://lissav1.com/status.html",
-          "ok": true,
-          "ms": 1560.0
-        },
-        {
-          "url": "https://madou8.my/asian/zh-CN",
-          "testUrl": "https://madou8.my/status.html",
-          "ok": true,
-          "ms": 1580.0
+          "ms": 954.0
         },
         {
           "url": "https://tktube.nl/asian/zh-CN",
           "testUrl": "https://tktube.nl/status.html",
           "ok": true,
-          "ms": 1658.0
+          "ms": 1042.0
         },
         {
-          "url": "https://huangguo123.com/asian/zh-CN",
-          "testUrl": "https://huangguo123.com/status.html",
+          "url": "https://lissav.my/asian/zh-CN",
+          "testUrl": "https://lissav.my/status.html",
           "ok": true,
-          "ms": 2041.0
+          "ms": 1073.0
         },
         {
-          "url": "https://javxx.sbs/asian/zh-CN",
-          "testUrl": "https://javxx.sbs/status.html",
+          "url": "https://lissav.ws/asian/zh-CN",
+          "testUrl": "https://lissav.ws/status.html",
           "ok": true,
-          "ms": 2701.0
-        },
-        {
-          "url": "https://mdba8.net/asian/zh-CN",
-          "testUrl": "https://mdba8.net/status.html",
-          "ok": true,
-          "ms": 2736.0
+          "ms": 1176.0
         },
         {
           "url": "https://madou8.ws/asian/zh-CN",
           "testUrl": "https://madou8.ws/status.html",
           "ok": true,
-          "ms": 3145.0
+          "ms": 1332.0
+        },
+        {
+          "url": "https://madou666.net/asian/zh-CN",
+          "testUrl": "https://madou666.net/status.html",
+          "ok": true,
+          "ms": 1602.0
+        },
+        {
+          "url": "https://lissav.net/asian/zh-CN",
+          "testUrl": "https://lissav.net/status.html",
+          "ok": true,
+          "ms": 1719.0
+        },
+        {
+          "url": "https://mdba8.com/asian/zh-CN",
+          "testUrl": "https://mdba8.com/status.html",
+          "ok": true,
+          "ms": 1908.0
+        },
+        {
+          "url": "https://madou8.pw/asian/zh-CN",
+          "testUrl": "https://madou8.pw/status.html",
+          "ok": true,
+          "ms": 2182.0
+        },
+        {
+          "url": "https://lissav1.com/asian/zh-CN",
+          "testUrl": "https://lissav1.com/status.html",
+          "ok": true,
+          "ms": 2215.0
+        },
+        {
+          "url": "https://madou8.my/asian/zh-CN",
+          "testUrl": "https://madou8.my/status.html",
+          "ok": true,
+          "ms": 2566.0
         },
         {
           "url": "https://huangguo04.net/asian/zh-CN",
           "testUrl": "https://huangguo04.net/status.html",
           "ok": true,
-          "ms": 3249.0
+          "ms": 2960.0
+        },
+        {
+          "url": "https://huangguo02.net/asian/zh-CN",
+          "testUrl": "https://huangguo02.net/status.html",
+          "ok": true,
+          "ms": 4656.0
+        },
+        {
+          "url": "https://huangguo123.com/asian/zh-CN",
+          "testUrl": "https://huangguo123.com/status.html",
+          "ok": true,
+          "ms": 4716.0
         },
         {
           "url": "https://huangguo03.net/asian/zh-CN",
           "testUrl": "https://huangguo03.net/status.html",
           "ok": true,
-          "ms": 6141.0
+          "ms": 4726.0
+        },
+        {
+          "url": "https://mdba8.net/asian/zh-CN",
+          "testUrl": "https://mdba8.net/status.html",
+          "ok": true,
+          "ms": 5592.0
+        },
+        {
+          "url": "https://javxx.sbs/asian/zh-CN",
+          "testUrl": "https://javxx.sbs/status.html",
+          "ok": true,
+          "ms": 13261.0
+        },
+        {
+          "url": "https://lissav.one/asian/zh-CN",
+          "testUrl": "https://lissav.one/status.html",
+          "ok": true,
+          "ms": 16098.0
         },
         {
           "url": "https://lissav.com/asian/zh-CN",
           "testUrl": "https://lissav.com/status.html",
           "ok": false,
-          "ms": 2186.0
+          "ms": 1897.0
         }
       ],
       "classes": []
@@ -657,136 +657,136 @@
       "url": "https://huangguo04.net/domestic/zh-CN",
       "lines": [
         {
-          "url": "https://lissav.my/domestic/zh-CN",
-          "testUrl": "https://lissav.my/status.html",
+          "url": "https://huangguo01.net/domestic/zh-CN",
+          "testUrl": "https://huangguo01.net/status.html",
           "ok": true,
-          "ms": 190.0
-        },
-        {
-          "url": "https://lissav.nl/domestic/zh-CN",
-          "testUrl": "https://lissav.nl/status.html",
-          "ok": true,
-          "ms": 592.0
-        },
-        {
-          "url": "https://tktube.nl/domestic/zh-CN",
-          "testUrl": "https://tktube.nl/status.html",
-          "ok": true,
-          "ms": 612.0
-        },
-        {
-          "url": "https://mdba8.net/domestic/zh-CN",
-          "testUrl": "https://mdba8.net/status.html",
-          "ok": true,
-          "ms": 618.0
-        },
-        {
-          "url": "https://lissav.one/domestic/zh-CN",
-          "testUrl": "https://lissav.one/status.html",
-          "ok": true,
-          "ms": 729.0
-        },
-        {
-          "url": "https://huangguo123.com/domestic/zh-CN",
-          "testUrl": "https://huangguo123.com/status.html",
-          "ok": true,
-          "ms": 749.0
-        },
-        {
-          "url": "https://madou8.ws/domestic/zh-CN",
-          "testUrl": "https://madou8.ws/status.html",
-          "ok": true,
-          "ms": 768.0
-        },
-        {
-          "url": "https://madou8.pw/domestic/zh-CN",
-          "testUrl": "https://madou8.pw/status.html",
-          "ok": true,
-          "ms": 834.0
-        },
-        {
-          "url": "https://lissav.vip/domestic/zh-CN",
-          "testUrl": "https://lissav.vip/status.html",
-          "ok": true,
-          "ms": 842.0
-        },
-        {
-          "url": "https://javxx.sbs/domestic/zh-CN",
-          "testUrl": "https://javxx.sbs/status.html",
-          "ok": true,
-          "ms": 865.0
-        },
-        {
-          "url": "https://huangguo02.net/domestic/zh-CN",
-          "testUrl": "https://huangguo02.net/status.html",
-          "ok": true,
-          "ms": 992.0
-        },
-        {
-          "url": "https://tktube.vip/domestic/zh-CN",
-          "testUrl": "https://tktube.vip/status.html",
-          "ok": true,
-          "ms": 1146.0
-        },
-        {
-          "url": "https://lissav.ws/domestic/zh-CN",
-          "testUrl": "https://lissav.ws/status.html",
-          "ok": true,
-          "ms": 1150.0
+          "ms": 130.0
         },
         {
           "url": "https://lissav1.com/domestic/zh-CN",
           "testUrl": "https://lissav1.com/status.html",
           "ok": true,
-          "ms": 1172.0
+          "ms": 175.0
         },
         {
-          "url": "https://mdba8.com/domestic/zh-CN",
-          "testUrl": "https://mdba8.com/status.html",
+          "url": "https://huangguo123.com/domestic/zh-CN",
+          "testUrl": "https://huangguo123.com/status.html",
           "ok": true,
-          "ms": 1225.0
+          "ms": 204.0
         },
         {
-          "url": "https://madou8.my/domestic/zh-CN",
-          "testUrl": "https://madou8.my/status.html",
+          "url": "https://madou8.ws/domestic/zh-CN",
+          "testUrl": "https://madou8.ws/status.html",
           "ok": true,
-          "ms": 1453.0
+          "ms": 222.0
+        },
+        {
+          "url": "https://mdba8.net/domestic/zh-CN",
+          "testUrl": "https://mdba8.net/status.html",
+          "ok": true,
+          "ms": 417.0
+        },
+        {
+          "url": "https://tktube.nl/domestic/zh-CN",
+          "testUrl": "https://tktube.nl/status.html",
+          "ok": true,
+          "ms": 482.0
+        },
+        {
+          "url": "https://huangguo02.net/domestic/zh-CN",
+          "testUrl": "https://huangguo02.net/status.html",
+          "ok": true,
+          "ms": 509.0
+        },
+        {
+          "url": "https://lissav.one/domestic/zh-CN",
+          "testUrl": "https://lissav.one/status.html",
+          "ok": true,
+          "ms": 547.0
+        },
+        {
+          "url": "https://lissav.nl/domestic/zh-CN",
+          "testUrl": "https://lissav.nl/status.html",
+          "ok": true,
+          "ms": 567.0
         },
         {
           "url": "https://lissav.net/domestic/zh-CN",
           "testUrl": "https://lissav.net/status.html",
           "ok": true,
-          "ms": 1799.0
+          "ms": 1088.0
         },
         {
-          "url": "https://huangguo01.net/domestic/zh-CN",
-          "testUrl": "https://huangguo01.net/status.html",
+          "url": "https://madou8.pw/domestic/zh-CN",
+          "testUrl": "https://madou8.pw/status.html",
           "ok": true,
-          "ms": 1844.0
+          "ms": 1088.0
+        },
+        {
+          "url": "https://tktube.vip/domestic/zh-CN",
+          "testUrl": "https://tktube.vip/status.html",
+          "ok": true,
+          "ms": 1114.0
+        },
+        {
+          "url": "https://lissav.my/domestic/zh-CN",
+          "testUrl": "https://lissav.my/status.html",
+          "ok": true,
+          "ms": 1133.0
+        },
+        {
+          "url": "https://madou8.my/domestic/zh-CN",
+          "testUrl": "https://madou8.my/status.html",
+          "ok": true,
+          "ms": 1353.0
         },
         {
           "url": "https://madou666.net/domestic/zh-CN",
           "testUrl": "https://madou666.net/status.html",
           "ok": true,
-          "ms": 2411.0
+          "ms": 1668.0
         },
         {
-          "url": "https://huangguo04.net/domestic/zh-CN",
-          "testUrl": "https://huangguo04.net/status.html",
+          "url": "https://mdba8.com/domestic/zh-CN",
+          "testUrl": "https://mdba8.com/status.html",
           "ok": true,
-          "ms": 3185.0
+          "ms": 3124.0
         },
         {
           "url": "https://huangguo03.net/domestic/zh-CN",
           "testUrl": "https://huangguo03.net/status.html",
           "ok": true,
-          "ms": 3965.0
+          "ms": 3202.0
+        },
+        {
+          "url": "https://lissav.ws/domestic/zh-CN",
+          "testUrl": "https://lissav.ws/status.html",
+          "ok": true,
+          "ms": 4031.0
+        },
+        {
+          "url": "https://huangguo04.net/domestic/zh-CN",
+          "testUrl": "https://huangguo04.net/status.html",
+          "ok": true,
+          "ms": 4073.0
+        },
+        {
+          "url": "https://javxx.sbs/domestic/zh-CN",
+          "testUrl": "https://javxx.sbs/status.html",
+          "ok": true,
+          "ms": 7681.0
+        },
+        {
+          "url": "https://lissav.vip/domestic/zh-CN",
+          "testUrl": "https://lissav.vip/status.html",
+          "ok": true,
+          "ms": 13332.0
         },
         {
           "url": "https://lissav.com/domestic/zh-CN",
           "testUrl": "https://lissav.com/status.html",
           "ok": false,
-          "ms": 1941.0
+          "ms": 1900.0
         }
       ],
       "classes": []
@@ -795,112 +795,112 @@
       "key": "x99_2721419a",
       "name": "Jable",
       "kind": "video",
-      "adapter": "missav",
+      "adapter": "jable",
       "desc": "另一个亚洲视频站点",
       "icon": "play.rectangle.fill",
       "url": "https://jable02.com/enter",
       "lines": [
         {
-          "url": "https://jable18.top/enter",
-          "testUrl": "https://jable18.top/status.html",
+          "url": "https://jable02.com/enter",
+          "testUrl": "https://jable02.com/status.html",
           "ok": true,
-          "ms": 530.0
+          "ms": 176.0
         },
         {
           "url": "https://jable1.cc/enter",
           "testUrl": "https://jable1.cc/status.html",
           "ok": true,
-          "ms": 596.0
+          "ms": 507.0
         },
         {
           "url": "https://jable888.com/enter",
           "testUrl": "https://jable888.com/status.html",
           "ok": true,
-          "ms": 878.0
-        },
-        {
-          "url": "https://jable1.com/enter",
-          "testUrl": "https://jable1.com/status.html",
-          "ok": true,
-          "ms": 973.0
-        },
-        {
-          "url": "https://jable01.net/enter",
-          "testUrl": "https://jable01.net/status.html",
-          "ok": true,
-          "ms": 1187.0
-        },
-        {
-          "url": "https://jable1.xyz/enter",
-          "testUrl": "https://jable1.xyz/status.html",
-          "ok": true,
-          "ms": 1204.0
-        },
-        {
-          "url": "https://jable.cfd/enter",
-          "testUrl": "https://jable.cfd/status.html",
-          "ok": true,
-          "ms": 1255.0
-        },
-        {
-          "url": "https://91jable.icu/enter",
-          "testUrl": "https://91jable.icu/status.html",
-          "ok": true,
-          "ms": 1326.0
-        },
-        {
-          "url": "https://jable1.lat/enter",
-          "testUrl": "https://jable1.lat/status.html",
-          "ok": true,
-          "ms": 1430.0
-        },
-        {
-          "url": "https://91jable.top/enter",
-          "testUrl": "https://91jable.top/status.html",
-          "ok": true,
-          "ms": 1498.0
-        },
-        {
-          "url": "https://jable1.net/enter",
-          "testUrl": "https://jable1.net/status.html",
-          "ok": true,
-          "ms": 1536.0
-        },
-        {
-          "url": "https://jable888.net/enter",
-          "testUrl": "https://jable888.net/status.html",
-          "ok": true,
-          "ms": 1756.0
-        },
-        {
-          "url": "https://jable02.com/enter",
-          "testUrl": "https://jable02.com/status.html",
-          "ok": true,
-          "ms": 1808.0
-        },
-        {
-          "url": "https://jable1.vip/enter",
-          "testUrl": "https://jable1.vip/status.html",
-          "ok": true,
-          "ms": 1861.0
-        },
-        {
-          "url": "https://jable01.com/enter",
-          "testUrl": "https://jable01.com/status.html",
-          "ok": true,
-          "ms": 1863.0
+          "ms": 599.0
         },
         {
           "url": "https://jable666.net/enter",
           "testUrl": "https://jable666.net/status.html",
           "ok": true,
-          "ms": 1940.0
+          "ms": 760.0
+        },
+        {
+          "url": "https://jable.cfd/enter",
+          "testUrl": "https://jable.cfd/status.html",
+          "ok": true,
+          "ms": 848.0
         },
         {
           "url": "https://jable666.com/enter",
           "testUrl": "https://jable666.com/status.html",
           "ok": true,
-          "ms": 3694.0
+          "ms": 874.0
+        },
+        {
+          "url": "https://jable18.top/enter",
+          "testUrl": "https://jable18.top/status.html",
+          "ok": true,
+          "ms": 915.0
+        },
+        {
+          "url": "https://jable01.net/enter",
+          "testUrl": "https://jable01.net/status.html",
+          "ok": true,
+          "ms": 1049.0
+        },
+        {
+          "url": "https://jable1.xyz/enter",
+          "testUrl": "https://jable1.xyz/status.html",
+          "ok": true,
+          "ms": 1337.0
+        },
+        {
+          "url": "https://91jable.top/enter",
+          "testUrl": "https://91jable.top/status.html",
+          "ok": true,
+          "ms": 1537.0
+        },
+        {
+          "url": "https://91jable.icu/enter",
+          "testUrl": "https://91jable.icu/status.html",
+          "ok": true,
+          "ms": 1579.0
+        },
+        {
+          "url": "https://jable1.vip/enter",
+          "testUrl": "https://jable1.vip/status.html",
+          "ok": true,
+          "ms": 1847.0
+        },
+        {
+          "url": "https://jable01.com/enter",
+          "testUrl": "https://jable01.com/status.html",
+          "ok": true,
+          "ms": 2295.0
+        },
+        {
+          "url": "https://jable1.net/enter",
+          "testUrl": "https://jable1.net/status.html",
+          "ok": true,
+          "ms": 2776.0
+        },
+        {
+          "url": "https://jable888.net/enter",
+          "testUrl": "https://jable888.net/status.html",
+          "ok": true,
+          "ms": 4790.0
+        },
+        {
+          "url": "https://jable1.lat/enter",
+          "testUrl": "https://jable1.lat/status.html",
+          "ok": true,
+          "ms": 7908.0
+        },
+        {
+          "url": "https://jable1.com/enter",
+          "testUrl": "https://jable1.com/status.html",
+          "ok": false,
+          "ms": 1557.0
         }
       ],
       "classes": []
@@ -915,94 +915,94 @@
       "url": "https://zh.xhamster02.com/enter",
       "lines": [
         {
-          "url": "https://zh.xhamster1.nl/enter",
-          "testUrl": "https://zh.xhamster1.nl/status.html",
+          "url": "https://zh.xv123.top/enter",
+          "testUrl": "https://zh.xv123.top/status.html",
           "ok": true,
-          "ms": 635.0
-        },
-        {
-          "url": "https://zh.xhamster01.net/enter",
-          "testUrl": "https://zh.xhamster01.net/status.html",
-          "ok": true,
-          "ms": 689.0
-        },
-        {
-          "url": "https://zh.xhamster1.icu/enter",
-          "testUrl": "https://zh.xhamster1.icu/status.html",
-          "ok": true,
-          "ms": 964.0
-        },
-        {
-          "url": "https://zh.xv123.icu/enter",
-          "testUrl": "https://zh.xv123.icu/status.html",
-          "ok": true,
-          "ms": 1289.0
-        },
-        {
-          "url": "https://zh.xhamster1.one/enter",
-          "testUrl": "https://zh.xhamster1.one/status.html",
-          "ok": true,
-          "ms": 1412.0
-        },
-        {
-          "url": "https://zh.xhamster1.net/enter",
-          "testUrl": "https://zh.xhamster1.net/status.html",
-          "ok": true,
-          "ms": 1501.0
-        },
-        {
-          "url": "https://zh.xv123.xyz/enter",
-          "testUrl": "https://zh.xv123.xyz/status.html",
-          "ok": true,
-          "ms": 1516.0
-        },
-        {
-          "url": "https://zh.xhamster1.top/enter",
-          "testUrl": "https://zh.xhamster1.top/status.html",
-          "ok": true,
-          "ms": 1564.0
-        },
-        {
-          "url": "https://zh.xhamster02.com/enter",
-          "testUrl": "https://zh.xhamster02.com/status.html",
-          "ok": true,
-          "ms": 1670.0
+          "ms": 561.0
         },
         {
           "url": "https://zh.xhamster1.cc/enter",
           "testUrl": "https://zh.xhamster1.cc/status.html",
           "ok": true,
-          "ms": 1776.0
+          "ms": 662.0
         },
         {
-          "url": "https://zh.xhamster1.pw/enter",
-          "testUrl": "https://zh.xhamster1.pw/status.html",
+          "url": "https://zh.xhamster02.com/enter",
+          "testUrl": "https://zh.xhamster02.com/status.html",
           "ok": true,
-          "ms": 1871.0
+          "ms": 730.0
         },
         {
           "url": "https://zh.xhamster1.art/enter",
           "testUrl": "https://zh.xhamster1.art/status.html",
           "ok": true,
-          "ms": 2142.0
+          "ms": 776.0
         },
         {
-          "url": "https://zh.xhamster.ist/enter",
-          "testUrl": "https://zh.xhamster.ist/status.html",
+          "url": "https://zh.xhamster1.one/enter",
+          "testUrl": "https://zh.xhamster1.one/status.html",
           "ok": true,
-          "ms": 2343.0
+          "ms": 1576.0
+        },
+        {
+          "url": "https://zh.xhamster01.net/enter",
+          "testUrl": "https://zh.xhamster01.net/status.html",
+          "ok": true,
+          "ms": 1582.0
+        },
+        {
+          "url": "https://zh.xhamster1.net/enter",
+          "testUrl": "https://zh.xhamster1.net/status.html",
+          "ok": true,
+          "ms": 1705.0
+        },
+        {
+          "url": "https://zh.xhamster1.top/enter",
+          "testUrl": "https://zh.xhamster1.top/status.html",
+          "ok": true,
+          "ms": 1721.0
         },
         {
           "url": "https://zh.xhamster1.vip/enter",
           "testUrl": "https://zh.xhamster1.vip/status.html",
           "ok": true,
-          "ms": 2700.0
+          "ms": 1870.0
         },
         {
-          "url": "https://zh.xv123.top/enter",
-          "testUrl": "https://zh.xv123.top/status.html",
+          "url": "https://zh.xhamster.ist/enter",
+          "testUrl": "https://zh.xhamster.ist/status.html",
           "ok": true,
-          "ms": 2822.0
+          "ms": 1959.0
+        },
+        {
+          "url": "https://zh.xv123.icu/enter",
+          "testUrl": "https://zh.xv123.icu/status.html",
+          "ok": true,
+          "ms": 2082.0
+        },
+        {
+          "url": "https://zh.xhamster1.nl/enter",
+          "testUrl": "https://zh.xhamster1.nl/status.html",
+          "ok": true,
+          "ms": 3138.0
+        },
+        {
+          "url": "https://zh.xhamster1.pw/enter",
+          "testUrl": "https://zh.xhamster1.pw/status.html",
+          "ok": true,
+          "ms": 3212.0
+        },
+        {
+          "url": "https://zh.xhamster1.icu/enter",
+          "testUrl": "https://zh.xhamster1.icu/status.html",
+          "ok": true,
+          "ms": 3388.0
+        },
+        {
+          "url": "https://zh.xv123.xyz/enter",
+          "testUrl": "https://zh.xv123.xyz/status.html",
+          "ok": true,
+          "ms": 5012.0
         }
       ],
       "classes": []
@@ -1011,136 +1011,136 @@
       "key": "x99_8be4dcd9",
       "name": "肉视频",
       "kind": "video",
-      "adapter": "missav",
+      "adapter": "rou",
       "desc": "国产视频为主,AI短剧",
       "icon": "play.rectangle.fill",
       "url": "https://rou07.net/home",
       "lines": [
         {
-          "url": "https://rou168.com/home",
-          "testUrl": "https://rou168.com/status.html",
-          "ok": true,
-          "ms": 650.0
-        },
-        {
-          "url": "https://rou06.cc/home",
-          "testUrl": "https://rou06.cc/status.html",
-          "ok": true,
-          "ms": 791.0
-        },
-        {
-          "url": "https://rou01.cc/home",
-          "testUrl": "https://rou01.cc/status.html",
-          "ok": true,
-          "ms": 902.0
-        },
-        {
           "url": "https://rou07.net/home",
           "testUrl": "https://rou07.net/status.html",
           "ok": true,
-          "ms": 926.0
-        },
-        {
-          "url": "https://rou1.pw/home",
-          "testUrl": "https://rou1.pw/status.html",
-          "ok": true,
-          "ms": 940.0
-        },
-        {
-          "url": "https://rou1.men/home",
-          "testUrl": "https://rou1.men/status.html",
-          "ok": true,
-          "ms": 1109.0
-        },
-        {
-          "url": "https://rou1.art/home",
-          "testUrl": "https://rou1.art/status.html",
-          "ok": true,
-          "ms": 1126.0
-        },
-        {
-          "url": "https://rou08.net/home",
-          "testUrl": "https://rou08.net/status.html",
-          "ok": true,
-          "ms": 1180.0
-        },
-        {
-          "url": "https://rou1.sbs/home",
-          "testUrl": "https://rou1.sbs/status.html",
-          "ok": true,
-          "ms": 1218.0
+          "ms": 173.0
         },
         {
           "url": "https://rou08.com/home",
           "testUrl": "https://rou08.com/status.html",
           "ok": true,
-          "ms": 1254.0
+          "ms": 519.0
         },
         {
           "url": "https://rou163.top/home",
           "testUrl": "https://rou163.top/status.html",
           "ok": true,
-          "ms": 1261.0
-        },
-        {
-          "url": "https://rou06.net/home",
-          "testUrl": "https://rou06.net/status.html",
-          "ok": true,
-          "ms": 1482.0
-        },
-        {
-          "url": "https://rou888.net/home",
-          "testUrl": "https://rou888.net/status.html",
-          "ok": true,
-          "ms": 1519.0
+          "ms": 852.0
         },
         {
           "url": "https://rouav.sbs/home",
           "testUrl": "https://rouav.sbs/status.html",
           "ok": true,
-          "ms": 1649.0
+          "ms": 945.0
         },
         {
-          "url": "https://rouxxx.net/home",
-          "testUrl": "https://rouxxx.net/status.html",
+          "url": "https://rou08.net/home",
+          "testUrl": "https://rou08.net/status.html",
           "ok": true,
-          "ms": 1705.0
-        },
-        {
-          "url": "https://rou666.net/home",
-          "testUrl": "https://rou666.net/status.html",
-          "ok": true,
-          "ms": 1748.0
-        },
-        {
-          "url": "https://rou1.my/home",
-          "testUrl": "https://rou1.my/status.html",
-          "ok": true,
-          "ms": 2204.0
-        },
-        {
-          "url": "https://rouxxx.sbs/home",
-          "testUrl": "https://rouxxx.sbs/status.html",
-          "ok": true,
-          "ms": 2306.0
-        },
-        {
-          "url": "https://rou666.com/home",
-          "testUrl": "https://rou666.com/status.html",
-          "ok": true,
-          "ms": 3093.0
+          "ms": 1010.0
         },
         {
           "url": "https://rou07.com/home",
           "testUrl": "https://rou07.com/status.html",
           "ok": true,
-          "ms": 3389.0
+          "ms": 1102.0
+        },
+        {
+          "url": "https://rou1.men/home",
+          "testUrl": "https://rou1.men/status.html",
+          "ok": true,
+          "ms": 1285.0
+        },
+        {
+          "url": "https://rou01.cc/home",
+          "testUrl": "https://rou01.cc/status.html",
+          "ok": true,
+          "ms": 1299.0
+        },
+        {
+          "url": "https://rou168.com/home",
+          "testUrl": "https://rou168.com/status.html",
+          "ok": true,
+          "ms": 1827.0
+        },
+        {
+          "url": "https://rou1.art/home",
+          "testUrl": "https://rou1.art/status.html",
+          "ok": true,
+          "ms": 1888.0
+        },
+        {
+          "url": "https://rou1.my/home",
+          "testUrl": "https://rou1.my/status.html",
+          "ok": true,
+          "ms": 1895.0
+        },
+        {
+          "url": "https://rou888.net/home",
+          "testUrl": "https://rou888.net/status.html",
+          "ok": true,
+          "ms": 1970.0
+        },
+        {
+          "url": "https://rou1.sbs/home",
+          "testUrl": "https://rou1.sbs/status.html",
+          "ok": true,
+          "ms": 1982.0
+        },
+        {
+          "url": "https://rou666.com/home",
+          "testUrl": "https://rou666.com/status.html",
+          "ok": true,
+          "ms": 2343.0
+        },
+        {
+          "url": "https://rou666.net/home",
+          "testUrl": "https://rou666.net/status.html",
+          "ok": true,
+          "ms": 2458.0
+        },
+        {
+          "url": "https://rou06.cc/home",
+          "testUrl": "https://rou06.cc/status.html",
+          "ok": true,
+          "ms": 2546.0
+        },
+        {
+          "url": "https://rou1.pw/home",
+          "testUrl": "https://rou1.pw/status.html",
+          "ok": true,
+          "ms": 3323.0
+        },
+        {
+          "url": "https://rouxxx.net/home",
+          "testUrl": "https://rouxxx.net/status.html",
+          "ok": true,
+          "ms": 3423.0
+        },
+        {
+          "url": "https://rou06.net/home",
+          "testUrl": "https://rou06.net/status.html",
+          "ok": true,
+          "ms": 8858.0
+        },
+        {
+          "url": "https://rouxxx.sbs/home",
+          "testUrl": "https://rouxxx.sbs/status.html",
+          "ok": false,
+          "ms": 611.0
         },
         {
           "url": "https://rouxxx.cc/home",
           "testUrl": "https://rouxxx.cc/status.html",
           "ok": false,
-          "ms": 1003.0
+          "ms": 1707.0
         }
       ],
       "classes": []
@@ -1158,109 +1158,109 @@
           "url": "https://pb365.top/enter",
           "testUrl": "https://pb365.top/status.html",
           "ok": true,
-          "ms": 497.0
-        },
-        {
-          "url": "https://hsex1.vip/enter",
-          "testUrl": "https://hsex1.vip/status.html",
-          "ok": true,
-          "ms": 625.0
-        },
-        {
-          "url": "https://hsex1.top/enter",
-          "testUrl": "https://hsex1.top/status.html",
-          "ok": true,
-          "ms": 654.0
-        },
-        {
-          "url": "https://hsex.sbs/enter",
-          "testUrl": "https://hsex.sbs/status.html",
-          "ok": true,
-          "ms": 708.0
-        },
-        {
-          "url": "https://hsex.top/enter",
-          "testUrl": "https://hsex.top/status.html",
-          "ok": true,
-          "ms": 768.0
-        },
-        {
-          "url": "https://hsex1.cc/enter",
-          "testUrl": "https://hsex1.cc/status.html",
-          "ok": true,
-          "ms": 817.0
-        },
-        {
-          "url": "https://pb365.one/enter",
-          "testUrl": "https://pb365.one/status.html",
-          "ok": true,
-          "ms": 970.0
-        },
-        {
-          "url": "https://hsex1.sbs/enter",
-          "testUrl": "https://hsex1.sbs/status.html",
-          "ok": true,
-          "ms": 1004.0
-        },
-        {
-          "url": "https://hsex.nl/enter",
-          "testUrl": "https://hsex.nl/status.html",
-          "ok": true,
-          "ms": 1024.0
-        },
-        {
-          "url": "https://hsex01.net/enter",
-          "testUrl": "https://hsex01.net/status.html",
-          "ok": true,
-          "ms": 1027.0
-        },
-        {
-          "url": "https://hsex1.icu/enter",
-          "testUrl": "https://hsex1.icu/status.html",
-          "ok": true,
-          "ms": 1067.0
-        },
-        {
-          "url": "https://pb365.sbs/enter",
-          "testUrl": "https://pb365.sbs/status.html",
-          "ok": true,
-          "ms": 1170.0
-        },
-        {
-          "url": "https://hsex.one/enter",
-          "testUrl": "https://hsex.one/status.html",
-          "ok": true,
-          "ms": 1306.0
-        },
-        {
-          "url": "https://hsex.cfd/enter",
-          "testUrl": "https://hsex.cfd/status.html",
-          "ok": true,
-          "ms": 1313.0
+          "ms": 472.0
         },
         {
           "url": "https://hsex02.com/enter",
           "testUrl": "https://hsex02.com/status.html",
           "ok": true,
-          "ms": 1541.0
+          "ms": 573.0
+        },
+        {
+          "url": "https://hsex.nl/enter",
+          "testUrl": "https://hsex.nl/status.html",
+          "ok": true,
+          "ms": 785.0
+        },
+        {
+          "url": "https://hsex01.net/enter",
+          "testUrl": "https://hsex01.net/status.html",
+          "ok": true,
+          "ms": 896.0
+        },
+        {
+          "url": "https://pb365.one/enter",
+          "testUrl": "https://pb365.one/status.html",
+          "ok": true,
+          "ms": 1019.0
+        },
+        {
+          "url": "https://hsex.top/enter",
+          "testUrl": "https://hsex.top/status.html",
+          "ok": true,
+          "ms": 1031.0
+        },
+        {
+          "url": "https://hsex1.sbs/enter",
+          "testUrl": "https://hsex1.sbs/status.html",
+          "ok": true,
+          "ms": 1056.0
         },
         {
           "url": "https://hsex01.com/enter",
           "testUrl": "https://hsex01.com/status.html",
           "ok": true,
-          "ms": 3202.0
+          "ms": 1057.0
         },
         {
-          "url": "https://pb365.nl/enter",
-          "testUrl": "https://pb365.nl/status.html",
-          "ok": false,
-          "ms": 987.0
+          "url": "https://hsex1.cc/enter",
+          "testUrl": "https://hsex1.cc/status.html",
+          "ok": true,
+          "ms": 1214.0
+        },
+        {
+          "url": "https://hsex1.icu/enter",
+          "testUrl": "https://hsex1.icu/status.html",
+          "ok": true,
+          "ms": 1253.0
+        },
+        {
+          "url": "https://hsex1.top/enter",
+          "testUrl": "https://hsex1.top/status.html",
+          "ok": true,
+          "ms": 1319.0
+        },
+        {
+          "url": "https://hsex.cfd/enter",
+          "testUrl": "https://hsex.cfd/status.html",
+          "ok": true,
+          "ms": 1330.0
+        },
+        {
+          "url": "https://hsex.sbs/enter",
+          "testUrl": "https://hsex.sbs/status.html",
+          "ok": true,
+          "ms": 1643.0
+        },
+        {
+          "url": "https://hsex.one/enter",
+          "testUrl": "https://hsex.one/status.html",
+          "ok": true,
+          "ms": 2051.0
+        },
+        {
+          "url": "https://pb365.sbs/enter",
+          "testUrl": "https://pb365.sbs/status.html",
+          "ok": true,
+          "ms": 2253.0
+        },
+        {
+          "url": "https://hsex1.vip/enter",
+          "testUrl": "https://hsex1.vip/status.html",
+          "ok": true,
+          "ms": 2985.0
         },
         {
           "url": "https://hsex.mom/enter",
           "testUrl": "https://hsex.mom/status.html",
           "ok": false,
-          "ms": 1955.0
+          "ms": 1402.0
+        },
+        {
+          "url": "https://pb365.nl/enter",
+          "testUrl": "https://pb365.nl/status.html",
+          "ok": false,
+          "ms": 2197.0
         }
       ],
       "classes": []
@@ -1275,70 +1275,70 @@
       "url": "https://321av.art/enter",
       "lines": [
         {
-          "url": "https://321av.ws/enter",
-          "testUrl": "https://321av.ws/status.html",
-          "ok": true,
-          "ms": 181.0
-        },
-        {
-          "url": "https://321av.top/enter",
-          "testUrl": "https://321av.top/status.html",
-          "ok": true,
-          "ms": 676.0
-        },
-        {
           "url": "https://321xav.cc/enter",
           "testUrl": "https://321xav.cc/status.html",
           "ok": true,
-          "ms": 683.0
-        },
-        {
-          "url": "https://321av.icu/enter",
-          "testUrl": "https://321av.icu/status.html",
-          "ok": true,
-          "ms": 694.0
-        },
-        {
-          "url": "https://321av.sbs/enter",
-          "testUrl": "https://321av.sbs/status.html",
-          "ok": true,
-          "ms": 738.0
-        },
-        {
-          "url": "https://321av.org/enter",
-          "testUrl": "https://321av.org/status.html",
-          "ok": true,
-          "ms": 754.0
+          "ms": 193.0
         },
         {
           "url": "https://321av.men/enter",
           "testUrl": "https://321av.men/status.html",
           "ok": true,
-          "ms": 856.0
+          "ms": 332.0
         },
         {
-          "url": "https://321av.fans/enter",
-          "testUrl": "https://321av.fans/status.html",
+          "url": "https://321av.org/enter",
+          "testUrl": "https://321av.org/status.html",
           "ok": true,
-          "ms": 951.0
-        },
-        {
-          "url": "https://321av.art/enter",
-          "testUrl": "https://321av.art/status.html",
-          "ok": true,
-          "ms": 1081.0
+          "ms": 409.0
         },
         {
           "url": "https://321av.xyz/enter",
           "testUrl": "https://321av.xyz/status.html",
           "ok": true,
-          "ms": 1091.0
+          "ms": 595.0
+        },
+        {
+          "url": "https://321av.fans/enter",
+          "testUrl": "https://321av.fans/status.html",
+          "ok": true,
+          "ms": 1035.0
+        },
+        {
+          "url": "https://321av.ws/enter",
+          "testUrl": "https://321av.ws/status.html",
+          "ok": true,
+          "ms": 1056.0
+        },
+        {
+          "url": "https://321av.sbs/enter",
+          "testUrl": "https://321av.sbs/status.html",
+          "ok": true,
+          "ms": 2066.0
+        },
+        {
+          "url": "https://321av.icu/enter",
+          "testUrl": "https://321av.icu/status.html",
+          "ok": true,
+          "ms": 2870.0
+        },
+        {
+          "url": "https://321av.art/enter",
+          "testUrl": "https://321av.art/status.html",
+          "ok": true,
+          "ms": 3070.0
+        },
+        {
+          "url": "https://321av.top/enter",
+          "testUrl": "https://321av.top/status.html",
+          "ok": true,
+          "ms": 6460.0
         },
         {
           "url": "https://321av.vip/enter",
           "testUrl": "https://321av.vip/status.html",
           "ok": false,
-          "ms": 1010.0
+          "ms": 1767.0
         }
       ],
       "classes": [
@@ -1369,52 +1369,52 @@
       "url": "https://rou123.ws/enter",
       "lines": [
         {
-          "url": "https://rou123.org/enter",
-          "testUrl": "https://rou123.org/status.html",
-          "ok": true,
-          "ms": 623.0
-        },
-        {
-          "url": "https://rou123.one/enter",
-          "testUrl": "https://rou123.one/status.html",
-          "ok": true,
-          "ms": 642.0
-        },
-        {
-          "url": "https://rou123.ws/enter",
-          "testUrl": "https://rou123.ws/status.html",
-          "ok": true,
-          "ms": 680.0
-        },
-        {
           "url": "https://rou123.cc/enter",
           "testUrl": "https://rou123.cc/status.html",
           "ok": true,
-          "ms": 988.0
+          "ms": 273.0
         },
         {
           "url": "https://rou123.cfd/enter",
           "testUrl": "https://rou123.cfd/status.html",
           "ok": true,
-          "ms": 1226.0
+          "ms": 1031.0
+        },
+        {
+          "url": "https://rou123.ws/enter",
+          "testUrl": "https://rou123.ws/status.html",
+          "ok": true,
+          "ms": 1179.0
+        },
+        {
+          "url": "https://rou123.org/enter",
+          "testUrl": "https://rou123.org/status.html",
+          "ok": true,
+          "ms": 1474.0
+        },
+        {
+          "url": "https://rou123.top/enter",
+          "testUrl": "https://rou123.top/status.html",
+          "ok": true,
+          "ms": 1753.0
         },
         {
           "url": "https://rou123.sbs/enter",
           "testUrl": "https://rou123.sbs/status.html",
           "ok": true,
-          "ms": 1333.0
+          "ms": 1793.0
+        },
+        {
+          "url": "https://rou123.one/enter",
+          "testUrl": "https://rou123.one/status.html",
+          "ok": false,
+          "ms": 1161.0
         },
         {
           "url": "https://rou123.vip/enter",
           "testUrl": "https://rou123.vip/status.html",
           "ok": false,
-          "ms": 849.0
-        },
-        {
-          "url": "https://rou123.top/enter",
-          "testUrl": "https://rou123.top/status.html",
-          "ok": false,
-          "ms": 1050.0
+          "ms": 1376.0
         }
       ],
       "classes": [
@@ -1460,46 +1460,46 @@
       "url": "https://www.hsck01.net/enter",
       "lines": [
         {
-          "url": "https://www.hsck01.net/enter",
-          "testUrl": "https://www.hsck01.net/status.html",
+          "url": "https://www.69ck1.net/enter",
+          "testUrl": "https://www.69ck1.net/status.html",
           "ok": true,
-          "ms": 166.0
+          "ms": 551.0
         },
         {
           "url": "https://www.69ck1.com/enter",
           "testUrl": "https://www.69ck1.com/status.html",
           "ok": true,
-          "ms": 781.0
+          "ms": 680.0
         },
         {
           "url": "https://www.hsck.nl/enter",
           "testUrl": "https://www.hsck.nl/status.html",
           "ok": true,
-          "ms": 798.0
-        },
-        {
-          "url": "https://www.hsck.sbs/enter",
-          "testUrl": "https://www.hsck.sbs/status.html",
-          "ok": true,
-          "ms": 1005.0
-        },
-        {
-          "url": "https://www.69ck1.net/enter",
-          "testUrl": "https://www.69ck1.net/status.html",
-          "ok": true,
-          "ms": 1017.0
+          "ms": 840.0
         },
         {
           "url": "https://www.69ck.one/enter",
           "testUrl": "https://www.69ck.one/status.html",
           "ok": true,
-          "ms": 1206.0
+          "ms": 841.0
+        },
+        {
+          "url": "https://www.hsck.sbs/enter",
+          "testUrl": "https://www.hsck.sbs/status.html",
+          "ok": true,
+          "ms": 1004.0
+        },
+        {
+          "url": "https://www.hsck01.net/enter",
+          "testUrl": "https://www.hsck01.net/status.html",
+          "ok": true,
+          "ms": 1365.0
         },
         {
           "url": "https://www.69ck.ws/enter",
           "testUrl": "https://www.69ck.ws/status.html",
           "ok": true,
-          "ms": 1786.0
+          "ms": 2140.0
         }
       ],
       "classes": [
@@ -1540,40 +1540,40 @@
       "url": "https://www.18av02.com/enter",
       "lines": [
         {
+          "url": "https://www.18av.ws/enter",
+          "testUrl": "https://www.18av.ws/status.html",
+          "ok": true,
+          "ms": 513.0
+        },
+        {
           "url": "https://www.18av.nl/enter",
           "testUrl": "https://www.18av.nl/status.html",
           "ok": true,
-          "ms": 546.0
+          "ms": 798.0
         },
         {
           "url": "https://www.18av01.cc/enter",
           "testUrl": "https://www.18av01.cc/status.html",
           "ok": true,
-          "ms": 699.0
-        },
-        {
-          "url": "https://www.18av.pw/enter",
-          "testUrl": "https://www.18av.pw/status.html",
-          "ok": true,
-          "ms": 890.0
-        },
-        {
-          "url": "https://www.18av01.net/enter",
-          "testUrl": "https://www.18av01.net/status.html",
-          "ok": true,
-          "ms": 1078.0
-        },
-        {
-          "url": "https://www.18av.ws/enter",
-          "testUrl": "https://www.18av.ws/status.html",
-          "ok": true,
-          "ms": 2166.0
+          "ms": 939.0
         },
         {
           "url": "https://www.18av02.com/enter",
           "testUrl": "https://www.18av02.com/status.html",
           "ok": true,
-          "ms": 2477.0
+          "ms": 1127.0
+        },
+        {
+          "url": "https://www.18av01.net/enter",
+          "testUrl": "https://www.18av01.net/status.html",
+          "ok": true,
+          "ms": 1681.0
+        },
+        {
+          "url": "https://www.18av.pw/enter",
+          "testUrl": "https://www.18av.pw/status.html",
+          "ok": true,
+          "ms": 2571.0
         }
       ],
       "classes": [
@@ -1620,13 +1620,13 @@
           "url": "https://dage.one/enter",
           "testUrl": "https://dage.one/status.html",
           "ok": true,
-          "ms": 627.0
+          "ms": 192.0
         },
         {
           "url": "https://dage01.net/enter",
           "testUrl": "https://dage01.net/status.html",
           "ok": true,
-          "ms": 2694.0
+          "ms": 692.0
         }
       ],
       "classes": []
@@ -1641,100 +1641,100 @@
       "url": "https://cn.pornhub06.com/enter",
       "lines": [
         {
-          "url": "https://cn.pornhub365.com/enter",
-          "testUrl": "https://cn.pornhub365.com/status.html",
-          "ok": true,
-          "ms": 541.0
-        },
-        {
-          "url": "https://cn.pornhub666.com/enter",
-          "testUrl": "https://cn.pornhub666.com/status.html",
-          "ok": true,
-          "ms": 715.0
-        },
-        {
           "url": "https://cn.pornhub06.com/enter",
           "testUrl": "https://cn.pornhub06.com/status.html",
           "ok": true,
-          "ms": 804.0
-        },
-        {
-          "url": "https://cn.pornhub02.com/enter",
-          "testUrl": "https://cn.pornhub02.com/status.html",
-          "ok": true,
-          "ms": 895.0
+          "ms": 406.0
         },
         {
           "url": "https://cn.pornhub03.net/enter",
           "testUrl": "https://cn.pornhub03.net/status.html",
           "ok": true,
-          "ms": 1017.0
+          "ms": 940.0
         },
         {
           "url": "https://cn.pornhub02.net/enter",
           "testUrl": "https://cn.pornhub02.net/status.html",
           "ok": true,
-          "ms": 1066.0
-        },
-        {
-          "url": "https://cn.pornhub365.sbs/enter",
-          "testUrl": "https://cn.pornhub365.sbs/status.html",
-          "ok": true,
-          "ms": 1098.0
-        },
-        {
-          "url": "https://cn.pornhub1.icu/enter",
-          "testUrl": "https://cn.pornhub1.icu/status.html",
-          "ok": true,
-          "ms": 1194.0
-        },
-        {
-          "url": "https://cn.pornhub666.cc/enter",
-          "testUrl": "https://cn.pornhub666.cc/status.html",
-          "ok": true,
-          "ms": 1284.0
+          "ms": 1187.0
         },
         {
           "url": "https://cn.pornhub163.com/enter",
           "testUrl": "https://cn.pornhub163.com/status.html",
           "ok": true,
-          "ms": 1502.0
-        },
-        {
-          "url": "https://cn.pornhub03.com/enter",
-          "testUrl": "https://cn.pornhub03.com/status.html",
-          "ok": true,
-          "ms": 1767.0
+          "ms": 1281.0
         },
         {
           "url": "https://cn.pornhub163.net/enter",
           "testUrl": "https://cn.pornhub163.net/status.html",
           "ok": true,
-          "ms": 3740.0
+          "ms": 1465.0
+        },
+        {
+          "url": "https://cn.pornhub365.com/enter",
+          "testUrl": "https://cn.pornhub365.com/status.html",
+          "ok": true,
+          "ms": 1604.0
+        },
+        {
+          "url": "https://cn.pornhub03.com/enter",
+          "testUrl": "https://cn.pornhub03.com/status.html",
+          "ok": true,
+          "ms": 1636.0
+        },
+        {
+          "url": "https://cn.pornhub365.sbs/enter",
+          "testUrl": "https://cn.pornhub365.sbs/status.html",
+          "ok": true,
+          "ms": 2526.0
+        },
+        {
+          "url": "https://cn.pornhub02.com/enter",
+          "testUrl": "https://cn.pornhub02.com/status.html",
+          "ok": true,
+          "ms": 2650.0
+        },
+        {
+          "url": "https://cn.pornhub666.com/enter",
+          "testUrl": "https://cn.pornhub666.com/status.html",
+          "ok": true,
+          "ms": 2803.0
+        },
+        {
+          "url": "https://cn.pornhub666.cc/enter",
+          "testUrl": "https://cn.pornhub666.cc/status.html",
+          "ok": true,
+          "ms": 2991.0
+        },
+        {
+          "url": "https://cn.pornhub1.icu/enter",
+          "testUrl": "https://cn.pornhub1.icu/status.html",
+          "ok": true,
+          "ms": 3134.0
         },
         {
           "url": "https://cn.pornhub365.top/enter",
           "testUrl": "https://cn.pornhub365.top/status.html",
           "ok": false,
-          "ms": 1370.0
-        },
-        {
-          "url": "https://cn.pornhub1.cc/enter",
-          "testUrl": "https://cn.pornhub1.cc/status.html",
-          "ok": false,
-          "ms": 1382.0
-        },
-        {
-          "url": "https://cn.pornhub365.mom/enter",
-          "testUrl": "https://cn.pornhub365.mom/status.html",
-          "ok": false,
-          "ms": 1484.0
+          "ms": 1876.0
         },
         {
           "url": "https://cn.pornhub1.mom/enter",
           "testUrl": "https://cn.pornhub1.mom/status.html",
           "ok": false,
-          "ms": 2273.0
+          "ms": 1945.0
+        },
+        {
+          "url": "https://cn.pornhub1.cc/enter",
+          "testUrl": "https://cn.pornhub1.cc/status.html",
+          "ok": false,
+          "ms": 2617.0
+        },
+        {
+          "url": "https://cn.pornhub365.mom/enter",
+          "testUrl": "https://cn.pornhub365.mom/status.html",
+          "ok": false,
+          "ms": 2873.0
         }
       ],
       "classes": []
@@ -1752,31 +1752,31 @@
           "url": "https://www.91xvideos.top/enter",
           "testUrl": "https://www.91xvideos.top/status.html",
           "ok": true,
-          "ms": 870.0
+          "ms": 1292.0
         },
         {
           "url": "https://www.xvideos1.icu/enter",
           "testUrl": "https://www.xvideos1.icu/status.html",
           "ok": true,
-          "ms": 1836.0
+          "ms": 2319.0
         },
         {
           "url": "https://www.x123.xyz/enter",
           "testUrl": "https://www.x123.xyz/status.html",
           "ok": false,
-          "ms": 1334.0
+          "ms": 1378.0
         },
         {
           "url": "https://www.x123.one/enter",
           "testUrl": "https://www.x123.one/status.html",
           "ok": false,
-          "ms": 1647.0
+          "ms": 1685.0
         },
         {
           "url": "https://www.xvideos163.top/enter",
           "testUrl": "https://www.xvideos163.top/status.html",
           "ok": false,
-          "ms": 24587.0
+          "ms": 12684.0
         }
       ],
       "classes": []
@@ -1794,37 +1794,37 @@
           "url": "https://xanimu.one/zh-CN/",
           "testUrl": "https://xanimu.one/status.html",
           "ok": true,
-          "ms": 695.0
+          "ms": 473.0
         },
         {
           "url": "https://xanimu.net/zh-CN/",
           "testUrl": "https://xanimu.net/status.html",
           "ok": true,
-          "ms": 793.0
-        },
-        {
-          "url": "https://xanimu.art/zh-CN/",
-          "testUrl": "https://xanimu.art/status.html",
-          "ok": true,
-          "ms": 800.0
-        },
-        {
-          "url": "https://xanimu.ws/zh-CN/",
-          "testUrl": "https://xanimu.ws/status.html",
-          "ok": true,
-          "ms": 1087.0
+          "ms": 515.0
         },
         {
           "url": "https://xanimu.sbs/zh-CN/",
           "testUrl": "https://xanimu.sbs/status.html",
           "ok": true,
-          "ms": 1420.0
+          "ms": 884.0
+        },
+        {
+          "url": "https://xanimu.art/zh-CN/",
+          "testUrl": "https://xanimu.art/status.html",
+          "ok": true,
+          "ms": 926.0
+        },
+        {
+          "url": "https://xanimu.ws/zh-CN/",
+          "testUrl": "https://xanimu.ws/status.html",
+          "ok": true,
+          "ms": 1610.0
         },
         {
           "url": "https://xanimu.top/zh-CN/",
           "testUrl": "https://xanimu.top/status.html",
           "ok": true,
-          "ms": 1905.0
+          "ms": 2387.0
         }
       ],
       "classes": []
@@ -1839,22 +1839,22 @@
       "url": "https://cn.avjoy.ws/enter",
       "lines": [
         {
-          "url": "https://cn.avjoy.ws/enter",
-          "testUrl": "https://cn.avjoy.ws/status.html",
-          "ok": true,
-          "ms": 171.0
-        },
-        {
           "url": "https://cn.avjoy.nl/enter",
           "testUrl": "https://cn.avjoy.nl/status.html",
           "ok": true,
-          "ms": 594.0
+          "ms": 197.0
         },
         {
           "url": "https://cn.avjoy.top/enter",
           "testUrl": "https://cn.avjoy.top/status.html",
           "ok": true,
-          "ms": 2554.0
+          "ms": 1341.0
+        },
+        {
+          "url": "https://cn.avjoy.ws/enter",
+          "testUrl": "https://cn.avjoy.ws/status.html",
+          "ok": true,
+          "ms": 2714.0
         }
       ],
       "classes": []
@@ -1869,22 +1869,22 @@
       "url": "https://cn.superporn.ws/enter",
       "lines": [
         {
-          "url": "https://cn.superporn.icu/enter",
-          "testUrl": "https://cn.superporn.icu/status.html",
+          "url": "https://cn.superporn.me/enter",
+          "testUrl": "https://cn.superporn.me/status.html",
           "ok": false,
-          "ms": 1166.0
+          "ms": 1628.0
         },
         {
           "url": "https://cn.superporn.ws/enter",
           "testUrl": "https://cn.superporn.ws/status.html",
           "ok": false,
-          "ms": 1664.0
+          "ms": 1733.0
         },
         {
-          "url": "https://cn.superporn.me/enter",
-          "testUrl": "https://cn.superporn.me/status.html",
+          "url": "https://cn.superporn.icu/enter",
+          "testUrl": "https://cn.superporn.icu/status.html",
           "ok": false,
-          "ms": 1849.0
+          "ms": 1857.0
         }
       ],
       "classes": []
@@ -1899,34 +1899,34 @@
       "url": "https://591av.ws/enter",
       "lines": [
         {
-          "url": "https://591av.ws/enter",
-          "testUrl": "https://591av.ws/status.html",
-          "ok": true,
-          "ms": 461.0
-        },
-        {
           "url": "https://91-av.one/enter",
           "testUrl": "https://91-av.one/status.html",
           "ok": true,
-          "ms": 485.0
-        },
-        {
-          "url": "https://91-av.men/enter",
-          "testUrl": "https://91-av.men/status.html",
-          "ok": true,
-          "ms": 960.0
-        },
-        {
-          "url": "https://591av.net/enter",
-          "testUrl": "https://591av.net/status.html",
-          "ok": true,
-          "ms": 1291.0
+          "ms": 1188.0
         },
         {
           "url": "https://591av.sbs/enter",
           "testUrl": "https://591av.sbs/status.html",
           "ok": true,
-          "ms": 2221.0
+          "ms": 1778.0
+        },
+        {
+          "url": "https://591av.ws/enter",
+          "testUrl": "https://591av.ws/status.html",
+          "ok": true,
+          "ms": 1910.0
+        },
+        {
+          "url": "https://91-av.men/enter",
+          "testUrl": "https://91-av.men/status.html",
+          "ok": true,
+          "ms": 2140.0
+        },
+        {
+          "url": "https://591av.net/enter",
+          "testUrl": "https://591av.net/status.html",
+          "ok": true,
+          "ms": 2243.0
         }
       ],
       "classes": []
@@ -1941,16 +1941,16 @@
       "url": "https://cn.yesporn.ws/enter",
       "lines": [
         {
-          "url": "https://cn.yesporn.ws/enter",
-          "testUrl": "https://cn.yesporn.ws/status.html",
-          "ok": true,
-          "ms": 303.0
-        },
-        {
           "url": "https://cn.yesporn1.cc/enter",
           "testUrl": "https://cn.yesporn1.cc/status.html",
           "ok": true,
-          "ms": 1233.0
+          "ms": 1871.0
+        },
+        {
+          "url": "https://cn.yesporn.ws/enter",
+          "testUrl": "https://cn.yesporn.ws/status.html",
+          "ok": true,
+          "ms": 2390.0
         }
       ],
       "classes": []
@@ -1965,184 +1965,184 @@
       "url": "https://18comic66.com/enter",
       "lines": [
         {
+          "url": "https://18comic1.nl/enter",
+          "testUrl": "https://18comic1.nl/status.html",
+          "ok": true,
+          "ms": 162.0
+        },
+        {
           "url": "https://18comic888.cc/enter",
           "testUrl": "https://18comic888.cc/status.html",
           "ok": true,
-          "ms": 429.0
+          "ms": 177.0
         },
         {
-          "url": "https://18comic01.cc/enter",
-          "testUrl": "https://18comic01.cc/status.html",
+          "url": "https://18comic168.cc/enter",
+          "testUrl": "https://18comic168.cc/status.html",
           "ok": true,
-          "ms": 464.0
-        },
-        {
-          "url": "https://18comic01.net/enter",
-          "testUrl": "https://18comic01.net/status.html",
-          "ok": true,
-          "ms": 677.0
+          "ms": 191.0
         },
         {
           "url": "https://18comic1.top/enter",
           "testUrl": "https://18comic1.top/status.html",
           "ok": true,
-          "ms": 711.0
-        },
-        {
-          "url": "https://18comic6.net/enter",
-          "testUrl": "https://18comic6.net/status.html",
-          "ok": true,
-          "ms": 805.0
-        },
-        {
-          "url": "https://jmcomic.nl/enter",
-          "testUrl": "https://jmcomic.nl/status.html",
-          "ok": true,
-          "ms": 821.0
-        },
-        {
-          "url": "https://18comic1.nl/enter",
-          "testUrl": "https://18comic1.nl/status.html",
-          "ok": true,
-          "ms": 933.0
-        },
-        {
-          "url": "https://18comic.pw/enter",
-          "testUrl": "https://18comic.pw/status.html",
-          "ok": true,
-          "ms": 993.0
+          "ms": 809.0
         },
         {
           "url": "https://18comic04.net/enter",
           "testUrl": "https://18comic04.net/status.html",
           "ok": true,
-          "ms": 1136.0
+          "ms": 821.0
         },
         {
           "url": "https://18comic666.cc/enter",
           "testUrl": "https://18comic666.cc/status.html",
           "ok": true,
-          "ms": 1144.0
-        },
-        {
-          "url": "https://18comic888.ws/enter",
-          "testUrl": "https://18comic888.ws/status.html",
-          "ok": true,
-          "ms": 1168.0
-        },
-        {
-          "url": "https://18comic2.icu/enter",
-          "testUrl": "https://18comic2.icu/status.html",
-          "ok": true,
-          "ms": 1240.0
-        },
-        {
-          "url": "https://18comic666.net/enter",
-          "testUrl": "https://18comic666.net/status.html",
-          "ok": true,
-          "ms": 1292.0
-        },
-        {
-          "url": "https://18comic.nl/enter",
-          "testUrl": "https://18comic.nl/status.html",
-          "ok": true,
-          "ms": 1298.0
-        },
-        {
-          "url": "https://18comic03.net/enter",
-          "testUrl": "https://18comic03.net/status.html",
-          "ok": true,
-          "ms": 1384.0
-        },
-        {
-          "url": "https://18comic.cfd/enter",
-          "testUrl": "https://18comic.cfd/status.html",
-          "ok": true,
-          "ms": 1413.0
+          "ms": 1046.0
         },
         {
           "url": "https://18comic1.cc/enter",
           "testUrl": "https://18comic1.cc/status.html",
           "ok": true,
-          "ms": 1431.0
+          "ms": 1138.0
         },
         {
-          "url": "https://18comic2.sbs/enter",
-          "testUrl": "https://18comic2.sbs/status.html",
+          "url": "https://18comic03.net/enter",
+          "testUrl": "https://18comic03.net/status.html",
           "ok": true,
-          "ms": 1432.0
+          "ms": 1290.0
         },
         {
-          "url": "https://18comic.my/enter",
-          "testUrl": "https://18comic.my/status.html",
+          "url": "https://18comic168.top/enter",
+          "testUrl": "https://18comic168.top/status.html",
           "ok": true,
-          "ms": 1631.0
+          "ms": 1410.0
         },
         {
-          "url": "https://mh99.ws/enter",
-          "testUrl": "https://mh99.ws/status.html",
+          "url": "https://18comic666.net/enter",
+          "testUrl": "https://18comic666.net/status.html",
           "ok": true,
-          "ms": 1634.0
-        },
-        {
-          "url": "https://mh99.cfd/enter",
-          "testUrl": "https://mh99.cfd/status.html",
-          "ok": true,
-          "ms": 1683.0
-        },
-        {
-          "url": "https://18comic1.sbs/enter",
-          "testUrl": "https://18comic1.sbs/status.html",
-          "ok": true,
-          "ms": 1792.0
-        },
-        {
-          "url": "https://18comic1.icu/enter",
-          "testUrl": "https://18comic1.icu/status.html",
-          "ok": true,
-          "ms": 3055.0
+          "ms": 1461.0
         },
         {
           "url": "https://18comic05.net/enter",
           "testUrl": "https://18comic05.net/status.html",
           "ok": true,
-          "ms": 3549.0
+          "ms": 1503.0
         },
         {
-          "url": "https://18comic66.com/enter",
-          "testUrl": "https://18comic66.com/status.html",
+          "url": "https://18comic1.sbs/enter",
+          "testUrl": "https://18comic1.sbs/status.html",
           "ok": true,
-          "ms": 4421.0
+          "ms": 1511.0
         },
         {
-          "url": "https://18comic6.com/enter",
-          "testUrl": "https://18comic6.com/status.html",
+          "url": "https://18comic2.sbs/enter",
+          "testUrl": "https://18comic2.sbs/status.html",
           "ok": true,
-          "ms": 4994.0
+          "ms": 1542.0
         },
         {
           "url": "https://18comic02.net/enter",
           "testUrl": "https://18comic02.net/status.html",
           "ok": true,
-          "ms": 8785.0
+          "ms": 1848.0
         },
         {
-          "url": "https://18comic168.top/enter",
-          "testUrl": "https://18comic168.top/status.html",
-          "ok": false,
-          "ms": 825.0
+          "url": "https://18comic.pw/enter",
+          "testUrl": "https://18comic.pw/status.html",
+          "ok": true,
+          "ms": 2270.0
         },
         {
-          "url": "https://18comic168.cc/enter",
-          "testUrl": "https://18comic168.cc/status.html",
+          "url": "https://18comic.cfd/enter",
+          "testUrl": "https://18comic.cfd/status.html",
+          "ok": true,
+          "ms": 2300.0
+        },
+        {
+          "url": "https://18comic01.net/enter",
+          "testUrl": "https://18comic01.net/status.html",
+          "ok": true,
+          "ms": 2516.0
+        },
+        {
+          "url": "https://18comic6.net/enter",
+          "testUrl": "https://18comic6.net/status.html",
+          "ok": true,
+          "ms": 2527.0
+        },
+        {
+          "url": "https://18comic888.ws/enter",
+          "testUrl": "https://18comic888.ws/status.html",
+          "ok": true,
+          "ms": 2819.0
+        },
+        {
+          "url": "https://18comic.nl/enter",
+          "testUrl": "https://18comic.nl/status.html",
+          "ok": true,
+          "ms": 3025.0
+        },
+        {
+          "url": "https://18comic01.cc/enter",
+          "testUrl": "https://18comic01.cc/status.html",
+          "ok": true,
+          "ms": 3862.0
+        },
+        {
+          "url": "https://18comic.my/enter",
+          "testUrl": "https://18comic.my/status.html",
+          "ok": true,
+          "ms": 4591.0
+        },
+        {
+          "url": "https://mh99.ws/enter",
+          "testUrl": "https://mh99.ws/status.html",
+          "ok": true,
+          "ms": 5161.0
+        },
+        {
+          "url": "https://18comic6.com/enter",
+          "testUrl": "https://18comic6.com/status.html",
+          "ok": true,
+          "ms": 6672.0
+        },
+        {
+          "url": "https://jmcomic.nl/enter",
+          "testUrl": "https://jmcomic.nl/status.html",
+          "ok": true,
+          "ms": 8681.0
+        },
+        {
+          "url": "https://18comic2.icu/enter",
+          "testUrl": "https://18comic2.icu/status.html",
+          "ok": true,
+          "ms": 11085.0
+        },
+        {
+          "url": "https://18comic66.com/enter",
+          "testUrl": "https://18comic66.com/status.html",
+          "ok": true,
+          "ms": 12620.0
+        },
+        {
+          "url": "https://mh99.cfd/enter",
+          "testUrl": "https://mh99.cfd/status.html",
           "ok": false,
-          "ms": 886.0
+          "ms": 714.0
+        },
+        {
+          "url": "https://18comic1.icu/enter",
+          "testUrl": "https://18comic1.icu/status.html",
+          "ok": false,
+          "ms": 4477.0
         },
         {
           "url": "https://18comic.sbs/enter",
           "testUrl": "https://18comic.sbs/status.html",
           "ok": false,
-          "ms": 1424.0
+          "ms": 5079.0
         }
       ],
       "classes": []
@@ -2157,112 +2157,112 @@
       "url": "https://www.wnacg02.net/enter",
       "lines": [
         {
-          "url": "https://wnacg.nl/enter",
-          "testUrl": "https://www.wnacg.nl/status.html",
+          "url": "https://99mh.men/enter",
+          "testUrl": "https://www.99mh.men/status.html",
           "ok": true,
-          "ms": 433.0
-        },
-        {
-          "url": "https://www.wnacg02.com/enter",
-          "testUrl": "https://www.wnacg02.com/status.html",
-          "ok": true,
-          "ms": 511.0
-        },
-        {
-          "url": "https://wnacg.vip/enter",
-          "testUrl": "https://www.wnacg.vip/status.html",
-          "ok": true,
-          "ms": 596.0
-        },
-        {
-          "url": "https://wnacg.pw/enter",
-          "testUrl": "https://www.wnacg.pw/status.html",
-          "ok": true,
-          "ms": 623.0
-        },
-        {
-          "url": "https://99xmh.top/enter",
-          "testUrl": "https://www.99xmh.top/status.html",
-          "ok": true,
-          "ms": 625.0
-        },
-        {
-          "url": "https://99mh.one/enter",
-          "testUrl": "https://www.99mh.one/status.html",
-          "ok": true,
-          "ms": 662.0
-        },
-        {
-          "url": "https://wnacg666.com/enter",
-          "testUrl": "https://www.wnacg666.com/status.html",
-          "ok": true,
-          "ms": 717.0
-        },
-        {
-          "url": "https://www.wnacg01.net/enter",
-          "testUrl": "https://www.wnacg01.net/status.html",
-          "ok": true,
-          "ms": 1095.0
-        },
-        {
-          "url": "https://wnacg888.net/enter",
-          "testUrl": "https://www.wnacg888.net/status.html",
-          "ok": true,
-          "ms": 1116.0
-        },
-        {
-          "url": "https://www.wnacg02.net/enter",
-          "testUrl": "https://www.wnacg02.net/status.html",
-          "ok": true,
-          "ms": 1144.0
-        },
-        {
-          "url": "https://wnacg666.net/enter",
-          "testUrl": "https://www.wnacg666.net/status.html",
-          "ok": true,
-          "ms": 1160.0
+          "ms": 1025.0
         },
         {
           "url": "https://wnacg888.com/enter",
           "testUrl": "https://www.wnacg888.com/status.html",
           "ok": true,
-          "ms": 1225.0
-        },
-        {
-          "url": "https://99mh.net/enter",
-          "testUrl": "https://www.99mh.net/status.html",
-          "ok": true,
-          "ms": 1476.0
-        },
-        {
-          "url": "https://99mh.nl/enter",
-          "testUrl": "https://www.99mh.nl/status.html",
-          "ok": true,
-          "ms": 1500.0
+          "ms": 1221.0
         },
         {
           "url": "https://wnacg.my/enter",
           "testUrl": "https://www.wnacg.my/status.html",
           "ok": true,
-          "ms": 1759.0
+          "ms": 1395.0
+        },
+        {
+          "url": "https://wnacg.nl/enter",
+          "testUrl": "https://www.wnacg.nl/status.html",
+          "ok": true,
+          "ms": 1572.0
+        },
+        {
+          "url": "https://99mh.net/enter",
+          "testUrl": "https://www.99mh.net/status.html",
+          "ok": true,
+          "ms": 1636.0
+        },
+        {
+          "url": "https://www.wnacg02.com/enter",
+          "testUrl": "https://www.wnacg02.com/status.html",
+          "ok": true,
+          "ms": 2337.0
+        },
+        {
+          "url": "https://wnacg666.com/enter",
+          "testUrl": "https://www.wnacg666.com/status.html",
+          "ok": true,
+          "ms": 2588.0
+        },
+        {
+          "url": "https://wnacg666.net/enter",
+          "testUrl": "https://www.wnacg666.net/status.html",
+          "ok": true,
+          "ms": 2682.0
+        },
+        {
+          "url": "https://99mh.one/enter",
+          "testUrl": "https://www.99mh.one/status.html",
+          "ok": true,
+          "ms": 2869.0
+        },
+        {
+          "url": "https://wnacg888.net/enter",
+          "testUrl": "https://www.wnacg888.net/status.html",
+          "ok": true,
+          "ms": 2873.0
+        },
+        {
+          "url": "https://99mh.nl/enter",
+          "testUrl": "https://www.99mh.nl/status.html",
+          "ok": true,
+          "ms": 3074.0
         },
         {
           "url": "https://wnacg.sbs/enter",
           "testUrl": "https://www.wnacg.sbs/status.html",
           "ok": true,
-          "ms": 1887.0
+          "ms": 3155.0
         },
         {
-          "url": "https://99mh.men/enter",
-          "testUrl": "https://www.99mh.men/status.html",
+          "url": "https://wnacg.pw/enter",
+          "testUrl": "https://www.wnacg.pw/status.html",
           "ok": true,
-          "ms": 2115.0
+          "ms": 3574.0
+        },
+        {
+          "url": "https://99xmh.top/enter",
+          "testUrl": "https://www.99xmh.top/status.html",
+          "ok": true,
+          "ms": 3879.0
+        },
+        {
+          "url": "https://www.wnacg02.net/enter",
+          "testUrl": "https://www.wnacg02.net/status.html",
+          "ok": true,
+          "ms": 4269.0
+        },
+        {
+          "url": "https://wnacg.vip/enter",
+          "testUrl": "https://www.wnacg.vip/status.html",
+          "ok": true,
+          "ms": 5053.0
+        },
+        {
+          "url": "https://www.wnacg01.net/enter",
+          "testUrl": "https://www.wnacg01.net/status.html",
+          "ok": true,
+          "ms": 5693.0
         },
         {
           "url": "https://wnacg.one/enter",
           "testUrl": "https://www.wnacg.one/status.html",
           "ok": false,
-          "ms": 1360.0
+          "ms": 3509.0
         }
       ],
       "classes": []
@@ -2280,19 +2280,19 @@
           "url": "https://www.amdcomic.art/enter",
           "testUrl": "https://www.amdcomic.art/status.html",
           "ok": true,
-          "ms": 224.0
+          "ms": 281.0
         },
         {
           "url": "https://www.amdcomic.one/enter",
           "testUrl": "https://www.amdcomic.one/status.html",
           "ok": true,
-          "ms": 844.0
+          "ms": 1742.0
         },
         {
           "url": "https://www.amdcomic.ws/enter",
           "testUrl": "https://www.amdcomic.ws/status.html",
           "ok": true,
-          "ms": 1860.0
+          "ms": 1932.0
         }
       ],
       "classes": [
@@ -2348,34 +2348,34 @@
       "url": "https://www.cartoonporno.vip/?hl=zh",
       "lines": [
         {
+          "url": "https://www.cartoonporno.ws/?hl=zh",
+          "testUrl": "https://www.cartoonporno.ws/status.html",
+          "ok": true,
+          "ms": 1056.0
+        },
+        {
           "url": "https://www.cartoonporno.vip/?hl=zh",
           "testUrl": "https://www.cartoonporno.vip/status.html",
           "ok": true,
-          "ms": 478.0
+          "ms": 1359.0
         },
         {
           "url": "https://www.cartoonporno.cc/?hl=zh",
           "testUrl": "https://www.cartoonporno.cc/status.html",
-          "ok": true,
-          "ms": 882.0
+          "ok": false,
+          "ms": 752.0
         },
         {
           "url": "https://www.cartoonporno.top/?hl=zh",
           "testUrl": "https://www.cartoonporno.top/status.html",
-          "ok": true,
-          "ms": 1300.0
-        },
-        {
-          "url": "https://www.cartoonporno.ws/?hl=zh",
-          "testUrl": "https://www.cartoonporno.ws/status.html",
-          "ok": true,
-          "ms": 1357.0
+          "ok": false,
+          "ms": 1011.0
         },
         {
           "url": "https://www.cartoonporno.art/?hl=zh",
           "testUrl": "https://www.cartoonporno.art/status.html",
           "ok": false,
-          "ms": 966.0
+          "ms": 1055.0
         }
       ],
       "classes": []
@@ -2390,40 +2390,40 @@
       "url": "https://cn.acgmh.art/enter",
       "lines": [
         {
+          "url": "https://cn.acgmh.icu/enter",
+          "testUrl": "https://cn.acgmh.icu/status.html",
+          "ok": true,
+          "ms": 361.0
+        },
+        {
           "url": "https://cn.acgmh.art/enter",
           "testUrl": "https://cn.acgmh.art/status.html",
           "ok": true,
-          "ms": 763.0
-        },
-        {
-          "url": "https://cn.acgmh.top/enter",
-          "testUrl": "https://cn.acgmh.top/status.html",
-          "ok": true,
-          "ms": 820.0
-        },
-        {
-          "url": "https://cn.acgmh.sbs/enter",
-          "testUrl": "https://cn.acgmh.sbs/status.html",
-          "ok": true,
-          "ms": 1079.0
+          "ms": 833.0
         },
         {
           "url": "https://cn.bato.icu/enter",
           "testUrl": "https://cn.bato.icu/status.html",
           "ok": true,
-          "ms": 1164.0
+          "ms": 1152.0
         },
         {
-          "url": "https://cn.acgmh.icu/enter",
-          "testUrl": "https://cn.acgmh.icu/status.html",
+          "url": "https://cn.acgmh.top/enter",
+          "testUrl": "https://cn.acgmh.top/status.html",
           "ok": true,
-          "ms": 1249.0
+          "ms": 1796.0
         },
         {
           "url": "https://cn.acgmh.vip/enter",
           "testUrl": "https://cn.acgmh.vip/status.html",
           "ok": true,
-          "ms": 1574.0
+          "ms": 1832.0
+        },
+        {
+          "url": "https://cn.acgmh.sbs/enter",
+          "testUrl": "https://cn.acgmh.sbs/status.html",
+          "ok": true,
+          "ms": 4701.0
         }
       ],
       "classes": []
@@ -2438,64 +2438,64 @@
       "url": "https://okav.art/enter",
       "lines": [
         {
-          "url": "https://okav.art/enter",
-          "testUrl": "https://okav.art/status.html",
-          "ok": true,
-          "ms": 431.0
-        },
-        {
-          "url": "https://okxxx.icu/enter",
-          "testUrl": "https://okxxx.icu/status.html",
-          "ok": true,
-          "ms": 1200.0
-        },
-        {
-          "url": "https://okxxxx.net/enter",
-          "testUrl": "https://okxxxx.net/status.html",
-          "ok": true,
-          "ms": 1270.0
-        },
-        {
           "url": "https://okx18.icu/enter",
           "testUrl": "https://okx18.icu/status.html",
           "ok": true,
-          "ms": 1490.0
-        },
-        {
-          "url": "https://okx18.cc/enter",
-          "testUrl": "https://okx18.cc/status.html",
-          "ok": true,
-          "ms": 1792.0
-        },
-        {
-          "url": "https://okxxx.ws/enter",
-          "testUrl": "https://okxxx.ws/status.html",
-          "ok": true,
-          "ms": 2365.0
-        },
-        {
-          "url": "https://okx18.vip/enter",
-          "testUrl": "https://okx18.vip/status.html",
-          "ok": true,
-          "ms": 2369.0
+          "ms": 1076.0
         },
         {
           "url": "https://okxxx.win/enter",
           "testUrl": "https://okxxx.win/status.html",
           "ok": true,
-          "ms": 2571.0
+          "ms": 1497.0
         },
         {
-          "url": "https://okxxx.men/enter",
-          "testUrl": "https://okxxx.men/status.html",
+          "url": "https://okav.art/enter",
+          "testUrl": "https://okav.art/status.html",
           "ok": true,
-          "ms": 2926.0
+          "ms": 1708.0
+        },
+        {
+          "url": "https://okx18.vip/enter",
+          "testUrl": "https://okx18.vip/status.html",
+          "ok": true,
+          "ms": 1721.0
+        },
+        {
+          "url": "https://okxxxx.net/enter",
+          "testUrl": "https://okxxxx.net/status.html",
+          "ok": true,
+          "ms": 1836.0
         },
         {
           "url": "https://okxxx.one/enter",
           "testUrl": "https://okxxx.one/status.html",
           "ok": true,
-          "ms": 2969.0
+          "ms": 1876.0
+        },
+        {
+          "url": "https://okxxx.ws/enter",
+          "testUrl": "https://okxxx.ws/status.html",
+          "ok": true,
+          "ms": 1934.0
+        },
+        {
+          "url": "https://okxxx.men/enter",
+          "testUrl": "https://okxxx.men/status.html",
+          "ok": true,
+          "ms": 2201.0
+        },
+        {
+          "url": "https://okxxx.icu/enter",
+          "testUrl": "https://okxxx.icu/status.html",
+          "ok": true,
+          "ms": 2204.0
+        },
+        {
+          "url": "https://okx18.cc/enter",
+          "testUrl": "https://okx18.cc/status.html",
+          "ok": true,
+          "ms": 2911.0
         }
       ],
       "classes": []
@@ -2510,34 +2510,34 @@
       "url": "https://vjav1.sbs/enter",
       "lines": [
         {
-          "url": "https://vjav-com.top/enter",
-          "testUrl": "https://vjav-com.top/status.html",
-          "ok": true,
-          "ms": 581.0
-        },
-        {
-          "url": "https://vjav.icu/enter",
-          "testUrl": "https://vjav.icu/status.html",
-          "ok": true,
-          "ms": 848.0
-        },
-        {
-          "url": "https://vjav1.sbs/enter",
-          "testUrl": "https://vjav1.sbs/status.html",
-          "ok": true,
-          "ms": 1591.0
-        },
-        {
           "url": "https://vjav-com.icu/enter",
           "testUrl": "https://vjav-com.icu/status.html",
           "ok": true,
-          "ms": 1828.0
+          "ms": 434.0
         },
         {
           "url": "https://vjav1.top/enter",
           "testUrl": "https://vjav1.top/status.html",
           "ok": true,
-          "ms": 2013.0
+          "ms": 630.0
+        },
+        {
+          "url": "https://vjav-com.top/enter",
+          "testUrl": "https://vjav-com.top/status.html",
+          "ok": true,
+          "ms": 805.0
+        },
+        {
+          "url": "https://vjav.icu/enter",
+          "testUrl": "https://vjav.icu/status.html",
+          "ok": true,
+          "ms": 1634.0
+        },
+        {
+          "url": "https://vjav1.sbs/enter",
+          "testUrl": "https://vjav1.sbs/status.html",
+          "ok": true,
+          "ms": 2048.0
         }
       ],
       "classes": []
@@ -2552,58 +2552,58 @@
       "url": "https://javdb02.com/?locale=zh",
       "lines": [
         {
-          "url": "https://javdb1.top/?locale=zh",
-          "testUrl": "https://javdb1.top/status.html",
-          "ok": true,
-          "ms": 634.0
-        },
-        {
-          "url": "https://javdb02.com/?locale=zh",
-          "testUrl": "https://javdb02.com/status.html",
-          "ok": true,
-          "ms": 661.0
-        },
-        {
           "url": "https://javdb.nl/?locale=zh",
           "testUrl": "https://javdb.nl/status.html",
           "ok": true,
-          "ms": 936.0
+          "ms": 541.0
         },
         {
           "url": "https://javdb1.art/?locale=zh",
           "testUrl": "https://javdb1.art/status.html",
           "ok": true,
-          "ms": 1016.0
-        },
-        {
-          "url": "https://javdb01.net/?locale=zh",
-          "testUrl": "https://javdb01.net/status.html",
-          "ok": true,
-          "ms": 1269.0
-        },
-        {
-          "url": "https://javdb.sbs/?locale=zh",
-          "testUrl": "https://javdb.sbs/status.html",
-          "ok": true,
-          "ms": 1328.0
-        },
-        {
-          "url": "https://javdb1.sbs/?locale=zh",
-          "testUrl": "https://javdb1.sbs/status.html",
-          "ok": true,
-          "ms": 1386.0
-        },
-        {
-          "url": "https://javdb.pw/?locale=zh",
-          "testUrl": "https://javdb.pw/status.html",
-          "ok": true,
-          "ms": 1987.0
+          "ms": 586.0
         },
         {
           "url": "https://javdb.icu/?locale=zh",
           "testUrl": "https://javdb.icu/status.html",
           "ok": true,
-          "ms": 2691.0
+          "ms": 728.0
+        },
+        {
+          "url": "https://javdb02.com/?locale=zh",
+          "testUrl": "https://javdb02.com/status.html",
+          "ok": true,
+          "ms": 735.0
+        },
+        {
+          "url": "https://javdb1.top/?locale=zh",
+          "testUrl": "https://javdb1.top/status.html",
+          "ok": true,
+          "ms": 819.0
+        },
+        {
+          "url": "https://javdb.sbs/?locale=zh",
+          "testUrl": "https://javdb.sbs/status.html",
+          "ok": true,
+          "ms": 820.0
+        },
+        {
+          "url": "https://javdb.pw/?locale=zh",
+          "testUrl": "https://javdb.pw/status.html",
+          "ok": true,
+          "ms": 1076.0
+        },
+        {
+          "url": "https://javdb1.sbs/?locale=zh",
+          "testUrl": "https://javdb1.sbs/status.html",
+          "ok": true,
+          "ms": 1768.0
+        },
+        {
+          "url": "https://javdb01.net/?locale=zh",
+          "testUrl": "https://javdb01.net/status.html",
+          "ok": true,
+          "ms": 2835.0
         }
       ],
       "classes": []
@@ -2621,79 +2621,79 @@
           "url": "https://ptt2.one/p/1",
           "testUrl": "https://ptt2.one/status.html",
           "ok": true,
-          "ms": 820.0
-        },
-        {
-          "url": "https://ptt01.com/p/1",
-          "testUrl": "https://ptt01.com/status.html",
-          "ok": true,
-          "ms": 849.0
-        },
-        {
-          "url": "https://ptt02.com/p/1",
-          "testUrl": "https://ptt02.com/status.html",
-          "ok": true,
-          "ms": 940.0
-        },
-        {
-          "url": "https://ptt02.net/p/1",
-          "testUrl": "https://ptt02.net/status.html",
-          "ok": true,
-          "ms": 944.0
-        },
-        {
-          "url": "https://ptt03.com/p/1",
-          "testUrl": "https://ptt03.com/status.html",
-          "ok": true,
-          "ms": 976.0
+          "ms": 140.0
         },
         {
           "url": "https://ptt2.nl/p/1",
           "testUrl": "https://ptt2.nl/status.html",
           "ok": true,
-          "ms": 998.0
+          "ms": 180.0
         },
         {
-          "url": "https://ptt2.my/p/1",
-          "testUrl": "https://ptt2.my/status.html",
+          "url": "https://ptt01.com/p/1",
+          "testUrl": "https://ptt01.com/status.html",
           "ok": true,
-          "ms": 1008.0
-        },
-        {
-          "url": "https://ptt02.nl/p/1",
-          "testUrl": "https://ptt02.nl/status.html",
-          "ok": true,
-          "ms": 1098.0
-        },
-        {
-          "url": "https://ptt02.cc/p/1",
-          "testUrl": "https://ptt02.cc/status.html",
-          "ok": true,
-          "ms": 1349.0
+          "ms": 430.0
         },
         {
           "url": "https://ptt01.ws/p/1",
           "testUrl": "https://ptt01.ws/status.html",
           "ok": true,
-          "ms": 1567.0
+          "ms": 573.0
         },
         {
-          "url": "https://ptt2.art/p/1",
-          "testUrl": "https://ptt2.art/status.html",
+          "url": "https://ptt02.cc/p/1",
+          "testUrl": "https://ptt02.cc/status.html",
           "ok": true,
-          "ms": 1594.0
+          "ms": 621.0
+        },
+        {
+          "url": "https://ptt02.com/p/1",
+          "testUrl": "https://ptt02.com/status.html",
+          "ok": true,
+          "ms": 730.0
+        },
+        {
+          "url": "https://ptt2.my/p/1",
+          "testUrl": "https://ptt2.my/status.html",
+          "ok": true,
+          "ms": 1074.0
         },
         {
           "url": "https://ptt03.net/p/1",
           "testUrl": "https://ptt03.net/status.html",
           "ok": true,
-          "ms": 2019.0
+          "ms": 1254.0
+        },
+        {
+          "url": "https://ptt02.nl/p/1",
+          "testUrl": "https://ptt02.nl/status.html",
+          "ok": true,
+          "ms": 1608.0
         },
         {
           "url": "https://ptt2.top/p/1",
           "testUrl": "https://ptt2.top/status.html",
           "ok": true,
-          "ms": 2157.0
+          "ms": 1779.0
+        },
+        {
+          "url": "https://ptt03.com/p/1",
+          "testUrl": "https://ptt03.com/status.html",
+          "ok": true,
+          "ms": 2254.0
+        },
+        {
+          "url": "https://ptt02.net/p/1",
+          "testUrl": "https://ptt02.net/status.html",
+          "ok": true,
+          "ms": 2643.0
+        },
+        {
+          "url": "https://ptt2.art/p/1",
+          "testUrl": "https://ptt2.art/status.html",
+          "ok": true,
+          "ms": 2854.0
         }
       ],
       "classes": []

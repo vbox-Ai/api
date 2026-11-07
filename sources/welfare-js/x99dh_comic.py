@@ -2,7 +2,7 @@
 """X99漫画导航 — vbox 远程源 python 蜘蛛（P0 骨架）
 
 由 build_nav_source.py 生成，请勿手改。
-类型: comic    快照: 2026.11.07.1434
+类型: comic    快照: 2026.11.07.2251
 """
 import base64
 import http.client
@@ -34,8 +34,8 @@ except ImportError:  # 本地调试
 KIND = "comic"
 PLATFORM_KEY = "x99dh_comic_py"
 TITLE = "X99漫画导航"
-SNAPSHOT_VERSION = "2026.11.07.1434"
-SNAPSHOT = json.loads('{"version":"2026.11.07.1434","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_6cc00cf5","name":"禁漫天堂","kind":"comic","adapter":"comic","desc":"H漫画","icon":"books.vertical.fill","url":"https://18comic66.com/enter","lines":[{"url":"https://18comic888.cc/enter","testUrl":"https://18comic888.cc/status.html","ok":true,"ms":429.0},{"url":"https://18comic01.cc/enter","testUrl":"https://18comic01.cc/status.html","ok":true,"ms":464.0},{"url":"https://18comic01.net/enter","testUrl":"https://18comic01.net/status.html","ok":true,"ms":677.0},{"url":"https://18comic1.top/enter","testUrl":"https://18comic1.top/status.html","ok":true,"ms":711.0},{"url":"https://18comic6.net/enter","testUrl":"https://18comic6.net/status.html","ok":true,"ms":805.0},{"url":"https://jmcomic.nl/enter","testUrl":"https://jmcomic.nl/status.html","ok":true,"ms":821.0},{"url":"https://18comic1.nl/enter","testUrl":"https://18comic1.nl/status.html","ok":true,"ms":933.0},{"url":"https://18comic.pw/enter","testUrl":"https://18comic.pw/status.html","ok":true,"ms":993.0},{"url":"https://18comic04.net/enter","testUrl":"https://18comic04.net/status.html","ok":true,"ms":1136.0},{"url":"https://18comic666.cc/enter","testUrl":"https://18comic666.cc/status.html","ok":true,"ms":1144.0},{"url":"https://18comic888.ws/enter","testUrl":"https://18comic888.ws/status.html","ok":true,"ms":1168.0},{"url":"https://18comic2.icu/enter","testUrl":"https://18comic2.icu/status.html","ok":true,"ms":1240.0},{"url":"https://18comic666.net/enter","testUrl":"https://18comic666.net/status.html","ok":true,"ms":1292.0},{"url":"https://18comic.nl/enter","testUrl":"https://18comic.nl/status.html","ok":true,"ms":1298.0},{"url":"https://18comic03.net/enter","testUrl":"https://18comic03.net/status.html","ok":true,"ms":1384.0},{"url":"https://18comic.cfd/enter","testUrl":"https://18comic.cfd/status.html","ok":true,"ms":1413.0},{"url":"https://18comic1.cc/enter","testUrl":"https://18comic1.cc/status.html","ok":true,"ms":1431.0},{"url":"https://18comic2.sbs/enter","testUrl":"https://18comic2.sbs/status.html","ok":true,"ms":1432.0},{"url":"https://18comic.my/enter","testUrl":"https://18comic.my/status.html","ok":true,"ms":1631.0},{"url":"https://mh99.ws/enter","testUrl":"https://mh99.ws/status.html","ok":true,"ms":1634.0},{"url":"https://mh99.cfd/enter","testUrl":"https://mh99.cfd/status.html","ok":true,"ms":1683.0},{"url":"https://18comic1.sbs/enter","testUrl":"https://18comic1.sbs/status.html","ok":true,"ms":1792.0},{"url":"https://18comic1.icu/enter","testUrl":"https://18comic1.icu/status.html","ok":true,"ms":3055.0},{"url":"https://18comic05.net/enter","testUrl":"https://18comic05.net/status.html","ok":true,"ms":3549.0},{"url":"https://18comic66.com/enter","testUrl":"https://18comic66.com/status.html","ok":true,"ms":4421.0},{"url":"https://18comic6.com/enter","testUrl":"https://18comic6.com/status.html","ok":true,"ms":4994.0},{"url":"https://18comic02.net/enter","testUrl":"https://18comic02.net/status.html","ok":true,"ms":8785.0},{"url":"https://18comic168.top/enter","testUrl":"https://18comic168.top/status.html","ok":false,"ms":825.0},{"url":"https://18comic168.cc/enter","testUrl":"https://18comic168.cc/status.html","ok":false,"ms":886.0},{"url":"https://18comic.sbs/enter","testUrl":"https://18comic.sbs/status.html","ok":false,"ms":1424.0}],"classes":[]},{"key":"x99_2f22a0a6","name":"99漫画","kind":"comic","adapter":"comic","desc":"另一个漫画站，资源多","icon":"books.vertical.fill","url":"https://www.wnacg02.net/enter","lines":[{"url":"https://wnacg.nl/enter","testUrl":"https://www.wnacg.nl/status.html","ok":true,"ms":433.0},{"url":"https://www.wnacg02.com/enter","testUrl":"https://www.wnacg02.com/status.html","ok":true,"ms":511.0},{"url":"https://wnacg.vip/enter","testUrl":"https://www.wnacg.vip/status.html","ok":true,"ms":596.0},{"url":"https://wnacg.pw/enter","testUrl":"https://www.wnacg.pw/status.html","ok":true,"ms":623.0},{"url":"https://99xmh.top/enter","testUrl":"https://www.99xmh.top/status.html","ok":true,"ms":625.0},{"url":"https://99mh.one/enter","testUrl":"https://www.99mh.one/status.html","ok":true,"ms":662.0},{"url":"https://wnacg666.com/enter","testUrl":"https://www.wnacg666.com/status.html","ok":true,"ms":717.0},{"url":"https://www.wnacg01.net/enter","testUrl":"https://www.wnacg01.net/status.html","ok":true,"ms":1095.0},{"url":"https://wnacg888.net/enter","testUrl":"https://www.wnacg888.net/status.html","ok":true,"ms":1116.0},{"url":"https://www.wnacg02.net/enter","testUrl":"https://www.wnacg02.net/status.html","ok":true,"ms":1144.0},{"url":"https://wnacg666.net/enter","testUrl":"https://www.wnacg666.net/status.html","ok":true,"ms":1160.0},{"url":"https://wnacg888.com/enter","testUrl":"https://www.wnacg888.com/status.html","ok":true,"ms":1225.0},{"url":"https://99mh.net/enter","testUrl":"https://www.99mh.net/status.html","ok":true,"ms":1476.0},{"url":"https://99mh.nl/enter","testUrl":"https://www.99mh.nl/status.html","ok":true,"ms":1500.0},{"url":"https://wnacg.my/enter","testUrl":"https://www.wnacg.my/status.html","ok":true,"ms":1759.0},{"url":"https://wnacg.sbs/enter","testUrl":"https://www.wnacg.sbs/status.html","ok":true,"ms":1887.0},{"url":"https://99mh.men/enter","testUrl":"https://www.99mh.men/status.html","ok":true,"ms":2115.0},{"url":"https://wnacg.one/enter","testUrl":"https://www.wnacg.one/status.html","ok":false,"ms":1360.0}],"classes":[]},{"key":"x99_ecb3368e","name":"爱漫岛","kind":"comic","adapter":"maccms","desc":"免费中文汉化、日本漫画、韩国漫画、10万本、色情漫画等","icon":"books.vertical.fill","url":"https://www.amdcomic.art/enter","lines":[{"url":"https://www.amdcomic.art/enter","testUrl":"https://www.amdcomic.art/status.html","ok":true,"ms":224.0},{"url":"https://www.amdcomic.one/enter","testUrl":"https://www.amdcomic.one/status.html","ok":true,"ms":844.0},{"url":"https://www.amdcomic.ws/enter","testUrl":"https://www.amdcomic.ws/status.html","ok":true,"ms":1860.0}],"classes":[{"type_id":"1","type_name":"同人","href":"/vodtype/1.html"},{"type_id":"2","type_name":"单本","href":"/vodtype/2.html"},{"type_id":"3","type_name":"短篇","href":"/vodtype/3.html"},{"type_id":"4","type_name":"韩漫","href":"/vodtype/4.html"},{"type_id":"6","type_name":"校园","href":"/vodtype/6.html"},{"type_id":"7","type_name":"幻想","href":"/vodtype/7.html"},{"type_id":"8","type_name":"都市","href":"/vodtype/8.html"},{"type_id":"9","type_name":"搞笑","href":"/vodtype/9.html"}]}]}')
+SNAPSHOT_VERSION = "2026.11.07.2251"
+SNAPSHOT = json.loads('{"version":"2026.11.07.2251","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_6cc00cf5","name":"禁漫天堂","kind":"comic","adapter":"comic","desc":"H漫画","icon":"books.vertical.fill","url":"https://18comic66.com/enter","lines":[{"url":"https://18comic1.nl/enter","testUrl":"https://18comic1.nl/status.html","ok":true,"ms":162.0},{"url":"https://18comic888.cc/enter","testUrl":"https://18comic888.cc/status.html","ok":true,"ms":177.0},{"url":"https://18comic168.cc/enter","testUrl":"https://18comic168.cc/status.html","ok":true,"ms":191.0},{"url":"https://18comic1.top/enter","testUrl":"https://18comic1.top/status.html","ok":true,"ms":809.0},{"url":"https://18comic04.net/enter","testUrl":"https://18comic04.net/status.html","ok":true,"ms":821.0},{"url":"https://18comic666.cc/enter","testUrl":"https://18comic666.cc/status.html","ok":true,"ms":1046.0},{"url":"https://18comic1.cc/enter","testUrl":"https://18comic1.cc/status.html","ok":true,"ms":1138.0},{"url":"https://18comic03.net/enter","testUrl":"https://18comic03.net/status.html","ok":true,"ms":1290.0},{"url":"https://18comic168.top/enter","testUrl":"https://18comic168.top/status.html","ok":true,"ms":1410.0},{"url":"https://18comic666.net/enter","testUrl":"https://18comic666.net/status.html","ok":true,"ms":1461.0},{"url":"https://18comic05.net/enter","testUrl":"https://18comic05.net/status.html","ok":true,"ms":1503.0},{"url":"https://18comic1.sbs/enter","testUrl":"https://18comic1.sbs/status.html","ok":true,"ms":1511.0},{"url":"https://18comic2.sbs/enter","testUrl":"https://18comic2.sbs/status.html","ok":true,"ms":1542.0},{"url":"https://18comic02.net/enter","testUrl":"https://18comic02.net/status.html","ok":true,"ms":1848.0},{"url":"https://18comic.pw/enter","testUrl":"https://18comic.pw/status.html","ok":true,"ms":2270.0},{"url":"https://18comic.cfd/enter","testUrl":"https://18comic.cfd/status.html","ok":true,"ms":2300.0},{"url":"https://18comic01.net/enter","testUrl":"https://18comic01.net/status.html","ok":true,"ms":2516.0},{"url":"https://18comic6.net/enter","testUrl":"https://18comic6.net/status.html","ok":true,"ms":2527.0},{"url":"https://18comic888.ws/enter","testUrl":"https://18comic888.ws/status.html","ok":true,"ms":2819.0},{"url":"https://18comic.nl/enter","testUrl":"https://18comic.nl/status.html","ok":true,"ms":3025.0},{"url":"https://18comic01.cc/enter","testUrl":"https://18comic01.cc/status.html","ok":true,"ms":3862.0},{"url":"https://18comic.my/enter","testUrl":"https://18comic.my/status.html","ok":true,"ms":4591.0},{"url":"https://mh99.ws/enter","testUrl":"https://mh99.ws/status.html","ok":true,"ms":5161.0},{"url":"https://18comic6.com/enter","testUrl":"https://18comic6.com/status.html","ok":true,"ms":6672.0},{"url":"https://jmcomic.nl/enter","testUrl":"https://jmcomic.nl/status.html","ok":true,"ms":8681.0},{"url":"https://18comic2.icu/enter","testUrl":"https://18comic2.icu/status.html","ok":true,"ms":11085.0},{"url":"https://18comic66.com/enter","testUrl":"https://18comic66.com/status.html","ok":true,"ms":12620.0},{"url":"https://mh99.cfd/enter","testUrl":"https://mh99.cfd/status.html","ok":false,"ms":714.0},{"url":"https://18comic1.icu/enter","testUrl":"https://18comic1.icu/status.html","ok":false,"ms":4477.0},{"url":"https://18comic.sbs/enter","testUrl":"https://18comic.sbs/status.html","ok":false,"ms":5079.0}],"classes":[]},{"key":"x99_2f22a0a6","name":"99漫画","kind":"comic","adapter":"comic","desc":"另一个漫画站，资源多","icon":"books.vertical.fill","url":"https://www.wnacg02.net/enter","lines":[{"url":"https://99mh.men/enter","testUrl":"https://www.99mh.men/status.html","ok":true,"ms":1025.0},{"url":"https://wnacg888.com/enter","testUrl":"https://www.wnacg888.com/status.html","ok":true,"ms":1221.0},{"url":"https://wnacg.my/enter","testUrl":"https://www.wnacg.my/status.html","ok":true,"ms":1395.0},{"url":"https://wnacg.nl/enter","testUrl":"https://www.wnacg.nl/status.html","ok":true,"ms":1572.0},{"url":"https://99mh.net/enter","testUrl":"https://www.99mh.net/status.html","ok":true,"ms":1636.0},{"url":"https://www.wnacg02.com/enter","testUrl":"https://www.wnacg02.com/status.html","ok":true,"ms":2337.0},{"url":"https://wnacg666.com/enter","testUrl":"https://www.wnacg666.com/status.html","ok":true,"ms":2588.0},{"url":"https://wnacg666.net/enter","testUrl":"https://www.wnacg666.net/status.html","ok":true,"ms":2682.0},{"url":"https://99mh.one/enter","testUrl":"https://www.99mh.one/status.html","ok":true,"ms":2869.0},{"url":"https://wnacg888.net/enter","testUrl":"https://www.wnacg888.net/status.html","ok":true,"ms":2873.0},{"url":"https://99mh.nl/enter","testUrl":"https://www.99mh.nl/status.html","ok":true,"ms":3074.0},{"url":"https://wnacg.sbs/enter","testUrl":"https://www.wnacg.sbs/status.html","ok":true,"ms":3155.0},{"url":"https://wnacg.pw/enter","testUrl":"https://www.wnacg.pw/status.html","ok":true,"ms":3574.0},{"url":"https://99xmh.top/enter","testUrl":"https://www.99xmh.top/status.html","ok":true,"ms":3879.0},{"url":"https://www.wnacg02.net/enter","testUrl":"https://www.wnacg02.net/status.html","ok":true,"ms":4269.0},{"url":"https://wnacg.vip/enter","testUrl":"https://www.wnacg.vip/status.html","ok":true,"ms":5053.0},{"url":"https://www.wnacg01.net/enter","testUrl":"https://www.wnacg01.net/status.html","ok":true,"ms":5693.0},{"url":"https://wnacg.one/enter","testUrl":"https://www.wnacg.one/status.html","ok":false,"ms":3509.0}],"classes":[]},{"key":"x99_ecb3368e","name":"爱漫岛","kind":"comic","adapter":"maccms","desc":"免费中文汉化、日本漫画、韩国漫画、10万本、色情漫画等","icon":"books.vertical.fill","url":"https://www.amdcomic.art/enter","lines":[{"url":"https://www.amdcomic.art/enter","testUrl":"https://www.amdcomic.art/status.html","ok":true,"ms":281.0},{"url":"https://www.amdcomic.one/enter","testUrl":"https://www.amdcomic.one/status.html","ok":true,"ms":1742.0},{"url":"https://www.amdcomic.ws/enter","testUrl":"https://www.amdcomic.ws/status.html","ok":true,"ms":1932.0}],"classes":[{"type_id":"1","type_name":"同人","href":"/vodtype/1.html"},{"type_id":"2","type_name":"单本","href":"/vodtype/2.html"},{"type_id":"3","type_name":"短篇","href":"/vodtype/3.html"},{"type_id":"4","type_name":"韩漫","href":"/vodtype/4.html"},{"type_id":"6","type_name":"校园","href":"/vodtype/6.html"},{"type_id":"7","type_name":"幻想","href":"/vodtype/7.html"},{"type_id":"8","type_name":"都市","href":"/vodtype/8.html"},{"type_id":"9","type_name":"搞笑","href":"/vodtype/9.html"}]}]}')
 
 # ---- 运行参数（方案 v8 定稿）----
 CACHE_TTL = 600          # 线路/入口胜者缓存
@@ -554,62 +554,380 @@ class _MaccmsAdapter(_BaseAdapter):
         return ""
 
 
+# ---- AES-128-CBC（18av 播放 id 是 JS 里 AES 解出来的，蜘蛛侧用纯标准库复刻）----
+_AES_SBOX = (
+    0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
+    0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,
+    0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15,
+    0x04, 0xc7, 0x23, 0xc3, 0x18, 0x96, 0x05, 0x9a, 0x07, 0x12, 0x80, 0xe2, 0xeb, 0x27, 0xb2, 0x75,
+    0x09, 0x83, 0x2c, 0x1a, 0x1b, 0x6e, 0x5a, 0xa0, 0x52, 0x3b, 0xd6, 0xb3, 0x29, 0xe3, 0x2f, 0x84,
+    0x53, 0xd1, 0x00, 0xed, 0x20, 0xfc, 0xb1, 0x5b, 0x6a, 0xcb, 0xbe, 0x39, 0x4a, 0x4c, 0x58, 0xcf,
+    0xd0, 0xef, 0xaa, 0xfb, 0x43, 0x4d, 0x33, 0x85, 0x45, 0xf9, 0x02, 0x7f, 0x50, 0x3c, 0x9f, 0xa8,
+    0x51, 0xa3, 0x40, 0x8f, 0x92, 0x9d, 0x38, 0xf5, 0xbc, 0xb6, 0xda, 0x21, 0x10, 0xff, 0xf3, 0xd2,
+    0xcd, 0x0c, 0x13, 0xec, 0x5f, 0x97, 0x44, 0x17, 0xc4, 0xa7, 0x7e, 0x3d, 0x64, 0x5d, 0x19, 0x73,
+    0x60, 0x81, 0x4f, 0xdc, 0x22, 0x2a, 0x90, 0x88, 0x46, 0xee, 0xb8, 0x14, 0xde, 0x5e, 0x0b, 0xdb,
+    0xe0, 0x32, 0x3a, 0x0a, 0x49, 0x06, 0x24, 0x5c, 0xc2, 0xd3, 0xac, 0x62, 0x91, 0x95, 0xe4, 0x79,
+    0xe7, 0xc8, 0x37, 0x6d, 0x8d, 0xd5, 0x4e, 0xa9, 0x6c, 0x56, 0xf4, 0xea, 0x65, 0x7a, 0xae, 0x08,
+    0xba, 0x78, 0x25, 0x2e, 0x1c, 0xa6, 0xb4, 0xc6, 0xe8, 0xdd, 0x74, 0x1f, 0x4b, 0xbd, 0x8b, 0x8a,
+    0x70, 0x3e, 0xb5, 0x66, 0x48, 0x03, 0xf6, 0x0e, 0x61, 0x35, 0x57, 0xb9, 0x86, 0xc1, 0x1d, 0x9e,
+    0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf,
+    0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16,
+)
+_AES_INV = [0] * 256
+for _aes_i, _aes_v in enumerate(_AES_SBOX):
+    _AES_INV[_aes_v] = _aes_i
+_AES_RCON = (0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36)
+
+
+def _aes_xt(a):
+    return ((a << 1) ^ 0x1B) & 0xFF if a & 0x80 else (a << 1) & 0xFF
+
+
+def _aes_mul(a, b):
+    out = 0
+    while b:
+        if b & 1:
+            out ^= a
+        a = _aes_xt(a)
+        b >>= 1
+    return out
+
+
+def _aes_expand(key):
+    words = [list(key[i:i + 4]) for i in range(0, 16, 4)]
+    for i in range(4, 44):
+        tail = list(words[i - 1])
+        if i % 4 == 0:
+            tail = [_AES_SBOX[b] for b in tail[1:] + tail[:1]]
+            tail[0] ^= _AES_RCON[i // 4 - 1]
+        words.append([words[i - 4][j] ^ tail[j] for j in range(4)])
+    return [sum(words[i:i + 4], []) for i in range(0, 44, 4)]
+
+
+def _aes_decrypt_block(block, round_keys):
+    state = [block[i] ^ round_keys[10][i] for i in range(16)]
+    for rnd in range(9, -1, -1):
+        state = [_AES_INV[state[((col - row) % 4) * 4 + row]]
+                 for col in range(4) for row in range(4)]
+        state = [state[i] ^ round_keys[rnd][i] for i in range(16)]
+        if rnd == 0:
+            break
+        mixed = [0] * 16
+        for col in range(4):
+            a = state[col * 4:col * 4 + 4]
+            mixed[col * 4 + 0] = _aes_mul(a[0], 14) ^ _aes_mul(a[1], 11) ^ _aes_mul(a[2], 13) ^ _aes_mul(a[3], 9)
+            mixed[col * 4 + 1] = _aes_mul(a[0], 9) ^ _aes_mul(a[1], 14) ^ _aes_mul(a[2], 11) ^ _aes_mul(a[3], 13)
+            mixed[col * 4 + 2] = _aes_mul(a[0], 13) ^ _aes_mul(a[1], 9) ^ _aes_mul(a[2], 14) ^ _aes_mul(a[3], 11)
+            mixed[col * 4 + 3] = _aes_mul(a[0], 11) ^ _aes_mul(a[1], 13) ^ _aes_mul(a[2], 9) ^ _aes_mul(a[3], 14)
+        state = mixed
+    return state
+
+
+def _aes_cbc_decrypt(data, key, iv):
+    """PKCS7 填充的 AES-128-CBC 解密，返回 bytes。"""
+    round_keys = _aes_expand(key)
+    prev = list(iv)
+    plain = []
+    for off in range(0, len(data), 16):
+        block = list(data[off:off + 16])
+        plain.extend(_aes_decrypt_block(block, round_keys)[i] ^ prev[i] for i in range(16))
+        prev = block
+    pad = plain[-1] if plain else 0
+    if 0 < pad <= 16 and len(plain) >= pad:
+        plain = plain[:-pad]
+    return bytes(plain)
+
+
 class _Av18Adapter(_BaseAdapter):
-    """18av：/zh/{cate}/all/{page}.html 列表，详情 video[data-src] 直链。"""
+    """18av：/zh/{cate}/all/{page}.html 列表；详情 mvarr 串（baseN 逐段异或）→
+    AES-128-CBC 解出 player id → /js/player/play.php → m3u8（必须带站点 Referer）。"""
 
     UA_MOBILE = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
                  "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1")
-    CARD_RE = re.compile(r'<a[^>]+href="(/zh/[^"]+)"[^>]*class="[^"]*post[^"]*"[^>]*>(.*?)</a>',
-                         re.S | re.I)
+    POST_SPLIT = re.compile(r"<div class='post\b", re.I)
+    CONTENT_HREF = re.compile(r"href=['\"]([^'\"]*?/zh/chinese_content/[^'\"]+)['\"]")
 
-    def _page(self, path):
-        return self.s.http(self._url(path), headers={"User-Agent": self.UA_MOBILE}) or ""
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_MOBILE}) or ""
+
+    @staticmethod
+    def _abs_url(host, url):
+        if url.startswith("//"):
+            return "https:" + url
+        if url.startswith("/"):
+            return host + url
+        return url
+
+    @staticmethod
+    def _jsint(text):
+        text = (text or "").strip()
+        if len(text) > 1 and text[0] == "0" and all(c in "01234567" for c in text):
+            return int(text, 8)
+        return int(text)
+
+    def _player_id(self, html):
+        enc = re.search(r"mvarr\['10_1'\]=\[\['[^']+','([0-9a-z]+)'", html)
+        base = re.search(r"hcdeedg252=(\d+)", html)
+        xor = re.search(r"hadeedg252=(\d+)", html)
+        key = re.search(r"var argdeqweqweqwe = '([0-9a-f]{16})'", html)
+        iv = re.search(r"var hdddedg252 = '([0-9a-f]{16})'", html)
+        if not (enc and base and xor and key and iv):
+            return ""
+        try:
+            radix = self._jsint(base.group(1))
+            mask = self._jsint(xor.group(1))
+            parts = enc.group(1).split(chr(radix + 97))
+            b64 = "".join(chr(int(p, radix) ^ mask) for p in parts)
+            plain = _aes_cbc_decrypt(base64.b64decode(b64), key.group(1).encode(), iv.group(1).encode())
+            return plain.decode("utf-8", errors="replace").strip()
+        except Exception:
+            return ""
+
+    def _streams(self, player_id, referer):
+        page = self._page("/js/player/play.php?numresolution=1080&id="
+                          + urllib.parse.quote(player_id), referer=referer)
+        found = re.findall(r"\{\s*src:\s*'([^']+)'[^}]*?size:\s*(\d+)", page)
+        streams = []
+        for src, size in found:
+            streams.append((int(size), self._abs_url(self.host, src)))
+        streams.sort(reverse=True)
+        return streams
 
     def list(self, cate, page):
         slug = cate if cate and not str(cate).isdigit() else "chinese_list"
-        html = self._page("/zh/%s/all/%d.html" % (slug, int(page)))
+        page = max(1, int(page))
+        html = self._page("/zh/%s/all/%d.html" % (slug, page))
+        videos = []
+        for block in self.POST_SPLIT.split(html)[1:]:
+            href = self.CONTENT_HREF.search(block)
+            if not href:
+                continue
+            url = self._abs_url(self.host, href.group(1))
+            title = re.search(r"<h3[^>]*>.*?<a[^>]*>(.*?)</a>", block, re.S)
+            name = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", title.group(1))).strip() if title else ""
+            img = re.search(r"<img[^>]+src=['\"]([^'\"]+)['\"]", block)
+            meta = re.search(r"<div class='meta'>(.*?)</div>", block, re.S)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + url,
+                "vod_name": name or url,
+                "vod_pic": self._abs_url(self.host, img.group(1)) if img else "",
+                "vod_remarks": re.sub(r"<[^>]+>", "", meta.group(1)).strip() if meta else "",
+            })
+        total = 0
+        for num in re.findall(r"/all/(\d+)\.html", html):
+            total = max(total, int(num))
+        return {"list": videos, "page": page, "pagecount": total or page + 1}
+
+    def detail(self, vid):
+        url = self._abs_url(self.host, vid)
+        html = self._page(url)
+        title = ""
+        found = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S) or \
+            re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if found:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", found.group(1))).strip()
+        pic = re.search(r'"thumbnailUrl"\s*:\s*"([^"]+)"', html)
+        player_id = self._player_id(html)
+        streams = self._streams(player_id, url) if player_id else []
+        episodes = ["%dp$%s::%s" % (size, self.p["key"], src) for size, src in streams]
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": pic.group(1) if pic else "",
+            "vod_content": "player:" + player_id if player_id else "",
+            "vod_play_from": "18av",
+            "vod_play_url": "#".join(episodes) if episodes else "正片$%s::%s" % (self.p["key"], url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_MOBILE, "Referer": self.host + "/"}}
+
+
+class _JableAdapter(_BaseAdapter):
+    """Jable：/latest-updates/{page}/ 列表；详情页 var hlsUrl 直接给 m3u8（302 到 CDN）。"""
+
+    UA_MOBILE = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
+                 "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1")
+    CARD_RE = re.compile(
+        r'<h6 class="title"><a href="([^"]+)">(.*?)</a></h6>', re.S)
+
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_MOBILE}) or ""
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        html = self._page("/latest-updates/%d/" % page)
         videos, seen = [], set()
         for href, inner in self.CARD_RE.findall(html):
             if href in seen:
                 continue
             seen.add(href)
-            title = re.search(r'<h[23][^>]*>(.*?)</h[23]>', inner, re.S)
-            name = re.sub(r"<[^>]+>", " ", title.group(1)).strip() if title else ""
-            img = re.search(r'(?:data-src|data-original|src)="([^"]+)"', inner)
+            name = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", inner)).strip()
+            img = re.search(r'<img[^>]+data-src="([^"]+)"', html[max(0, html.find(href) - 800):html.find(href) + 100])
+            label = re.search(r'<span class="label">([^<]+)</span>',
+                              html[max(0, html.find(href) - 800):html.find(href) + 100])
             videos.append({
-                "vod_id": self.p["key"] + "::" + href,
+                "vod_id": self.p["key"] + "::" + self._abs(href),
                 "vod_name": name or href,
                 "vod_pic": self._abs(img.group(1)) if img else "",
-                "vod_remarks": "",
+                "vod_remarks": label.group(1).strip() if label else "",
             })
-        if not videos:
-            for href in sorted(set(re.findall(r'href="(/zh/[a-z0-9_\-]+/[a-z0-9_\-]+)"', html)))[:40]:
-                videos.append({"vod_id": self.p["key"] + "::" + href,
-                               "vod_name": href, "vod_pic": "", "vod_remarks": ""})
-        return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+        total = 0
+        for num in re.findall(r"/latest-updates/(\d+)/", html):
+            total = max(total, int(num))
+        return {"list": videos, "page": page, "pagecount": total or page + 1}
 
     def detail(self, vid):
-        html = self._page(vid)
+        url = self._abs(vid)
+        html = self._page(url)
         title = ""
-        found = re.search(r'<h1[^>]*>(.*?)</h1>', html, re.S) or re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        found = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
         if found:
-            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", found.group(1))).strip()
-        direct = ""
-        found = re.search(r'<video[^>]+data-src="([^"]+)"', html)
-        if found:
-            direct = found.group(1)
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", found.group(1))).strip()
+            title = re.split(r"\s*-\s*jable", title)[0]
+        pic = re.search(r'<video\b[^>]*poster="([^"]+)"', html)
+        hls = re.search(r"var hlsUrl = '([^']+)'", html)
         vod = {
-            "vod_id": self.p["key"] + "::" + vid,
+            "vod_id": self.p["key"] + "::" + url,
             "vod_name": title or vid,
-            "vod_pic": "",
+            "vod_pic": self._abs(pic.group(1)) if pic else "",
             "vod_content": "",
             "vod_play_from": "直连",
-            "vod_play_url": "正片$" + self.p["key"] + "::" + direct,
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], self._abs(hls.group(1)) if hls else url),
         }
         return {"list": [vod]}
 
     def play(self, flag, url):
-        return {"parse": "0", "url": url, "header": self.s.headers()}
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_MOBILE, "Referer": self.host + "/"}}
+
+
+class _RouAdapter(_BaseAdapter):
+    """肉视频：/home SSR 嵌视频记录；详情页 ev:{d,k} 解出 /api/hls/{id}（302 到签名 CDN）。
+
+    解码：base64(d) 每个字节 -k，得到 JSON {videoUrl, thumbVTTUrl}。
+    """
+
+    UA_MOBILE = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
+                 "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1")
+    REC_RE = re.compile(r"\{id:\"cmw[0-9a-z]+\"")
+
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_MOBILE}) or ""
+
+    @staticmethod
+    def _match_obj(text, start):
+        depth = 0
+        i = start
+        n = len(text)
+        in_str = False
+        while i < n:
+            c = text[i]
+            if in_str:
+                if c == "\\":
+                    i += 2
+                    continue
+                if c == '"':
+                    in_str = False
+            elif c == '"':
+                in_str = True
+            elif c == "{":
+                depth += 1
+            elif c == "}":
+                depth -= 1
+                if depth == 0:
+                    return i
+            i += 1
+        return -1
+
+    @staticmethod
+    def _ev(html):
+        """返回 (videoUrl, thumbVTTUrl) 或 (None, None)。"""
+        m = re.search(r"ev:\$R\[\d+\]=\{d:\"([^\"]+)\",k:(-?\d+)\}", html)
+        if not m:
+            return None, None
+        try:
+            blob = base64.b64decode(m.group(1))
+            out = bytes((b - int(m.group(2))) & 0xFF for b in blob).decode("utf-8", "replace")
+            obj = json.loads(out)
+            return obj.get("videoUrl") or "", obj.get("thumbVTTUrl") or ""
+        except Exception:
+            return None, None
+
+    def _records(self, html):
+        out, seen = [], set()
+        for m in self.REC_RE.finditer(html):
+            vid_id = m.group(0)[5:-1]
+            if vid_id in seen:
+                continue
+            end = self._match_obj(html, m.start())
+            if end < 0:
+                continue
+            body = html[m.start():end + 1]
+            if "sources:" not in body:
+                continue  # 短剧/系列记录没有 sources，走 /s/ 系列页，先不接
+            name = re.search(r"nameZh:\"(.*?)\"", body) or re.search(r"name:\"(.*?)\"", body)
+            cover = re.search(r"coverImageUrl:\"(.*?)\"", body)
+            ext = re.search(r"vid:\"(.*?)\"", body)
+            dur = re.search(r"duration:([\d.]+)", body)
+            seen.add(vid_id)
+            out.append({
+                "id": vid_id,
+                "name": re.sub(r"\s+", " ", name.group(1)) if name else vid_id,
+                "cover": cover.group(1) if cover else "",
+                "vid": ext.group(1) if ext else "",
+                "duration": float(dur.group(1)) if dur else 0,
+            })
+        return out
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        html = self._page("/home" if page == 1 else "/home?page=%d" % page)
+        videos = []
+        for rec in self._records(html):
+            minutes = int(rec["duration"] // 60) if rec["duration"] else 0
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs("/v/" + rec["id"]),
+                "vod_name": rec["name"],
+                "vod_pic": self._abs(rec["cover"]),
+                "vod_remarks": rec["vid"] or ("%d 分" % minutes if minutes else ""),
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url)
+        title, pic = vid, ""
+        m = re.search(r"video:\$R\[\d+\]=\{id:\"cmw[0-9a-z]+\"", html)
+        if m:
+            end = self._match_obj(html, m.start())
+            body = html[m.start():end + 1]
+            name = re.search(r"nameZh:\"(.*?)\"", body) or re.search(r"name:\"(.*?)\"", body)
+            if name:
+                title = re.sub(r"\s+", " ", name.group(1))
+            cover = re.search(r"coverImageUrl:\"(.*?)\"", body)
+            if cover:
+                pic = cover.group(1)
+        video_url, _ = self._ev(html)
+        target = self._abs(video_url) if video_url else url
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title,
+            "vod_pic": self._abs(pic),
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], target),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_MOBILE, "Referer": self.host + "/"}}
 
 
 class _HanimeAdapter(_BaseAdapter):
@@ -871,6 +1189,8 @@ ADAPTERS = {
     "missav": _MissavAdapter,
     "hanime": _HanimeAdapter,
     "18av": _Av18Adapter,
+    "jable": _JableAdapter,
+    "rou": _RouAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
