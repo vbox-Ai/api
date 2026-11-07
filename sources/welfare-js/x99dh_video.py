@@ -308,7 +308,7 @@ class _MaccmsAdapter(_BaseAdapter):
 
     def _list_url(self, cate, page):
         href = ""
-        for item in self.p.get("classes") or []:
+        for item in self.s.cats_for(self.p):
             if item.get("type_id") == cate:
                 href = item.get("href") or ""
                 break
@@ -702,6 +702,84 @@ class Spider(SpiderBase):
                         self._test_map[line["url"]] = line.get("testUrl") or ""
         return self._test_map.get(line_url, "")
 
+    CLASS_RE = re.compile(
+        r'<a[^>]+href="([^"]*?(?:/vodtype/\d+|/index\.php/vod/type/id/\d+)[^"]*)"[^>]*>(.*?)</a>',
+        re.S)
+    CATS_TTL = 86400
+
+    def cats_for(self, platform):
+        """优先用后台刷新到的真实分类，否则用快照。"""
+        cached = self.cache_get("x99dh:cats:" + platform["key"])
+        if cached and time.time() - cached.get("ts", 0) < self.CATS_TTL:
+            cats = cached.get("cats") or []
+            if cats:
+                return cats
+        return platform.get("classes") or []
+
+    def scan_categories(self, platform, timeout=HTTP_TIMEOUT):
+        """抓 /enter 页解析分类，写缓存。"""
+        base = ""
+        lines = platform.get("lines") or []
+        if lines:
+            parts = urllib.parse.urlsplit(lines[0].get("url") or "")
+            base = parts.scheme + "://" + parts.netloc
+        if not base:
+            return []
+        html = self.http(base + "/enter") or ""
+        if "vodtype" not in html and "/vod/type/" not in html:
+            html = self.http(base + "/") or ""
+        cats, seen = [], set()
+        for href, label in self.CLASS_RE.findall(html):
+            match = re.search(r"(?:vodtype|vod/type/id)/(\d+)", href)
+            text = re.sub(r"<[^>]+>", "", label).strip()
+            if not match or not text or len(text) > 14:
+                continue
+            tid = match.group(1)
+            if tid in seen:
+                continue
+            seen.add(tid)
+            cats.append({"type_id": tid, "type_name": text, "href": href})
+        if cats:
+            self.cache_set("x99dh:cats:" + platform["key"], {"cats": cats, "ts": time.time()})
+        return cats
+
+    def kick_refresh(self):
+        """后台把各平台分类刷新一遍，不阻塞首屏。"""
+        if getattr(self, "_refreshing", False):
+            return
+        self._refreshing = True
+
+        def work():
+            try:
+                pending = []
+                for platform in self._snapshot.get("platforms") or []:
+                    if platform.get("adapter") == "missav":
+                        continue
+                    cached = self.cache_get("x99dh:cats:" + platform["key"])
+                    if not (cached and time.time() - cached.get("ts", 0) < self.CATS_TTL):
+                        pending.append(platform)
+                for index in range(0, len(pending), 4):
+                    threads = []
+                    for platform in pending[index:index + 4]:
+                        th = threading.Thread(target=self._safe_scan, args=(platform,))
+                        th.daemon = True
+                        th.start()
+                        threads.append(th)
+                    for th in threads:
+                        th.join(8)
+            finally:
+                self._refreshing = False
+
+        th = threading.Thread(target=work)
+        th.daemon = True
+        th.start()
+
+    def _safe_scan(self, platform):
+        try:
+            self.scan_categories(platform)
+        except Exception:
+            pass
+
     # ---------- 请求与响应（宿主契约要求的 fetch） ----------
     def headers(self):
         return {"User-Agent": UA, "Accept-Language": "zh-CN,zh;q=0.9"}
@@ -760,7 +838,7 @@ class Spider(SpiderBase):
             if platform.get("adapter") != "missav":
                 subs = [
                     {"type_id": platform["key"] + "|" + c["type_id"], "type_name": c["type_name"]}
-                    for c in (platform.get("classes") or [])
+                    for c in self.cats_for(platform)
                 ]
                 if subs:
                     item["sub_categories"] = subs
@@ -781,6 +859,7 @@ class Spider(SpiderBase):
                          [{"v": str(i + 1), "n": "线路 " + str(i + 1)} for i in range(len(lines))],
             })
             filters[platform["key"]] = chips
+        self.kick_refresh()
         return {"class": classes, "filters": filters, "list": []}
 
     def homeVideoContent(self):
