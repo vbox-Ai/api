@@ -2735,7 +2735,53 @@
       "visibleInNormalSpider": false,
       "visibleInGlobalSearch": false,
       "visibleInHome": false
+    },
+    {
+      "platformKey": "x99dh_video_py",
+      "name": "X99视频导航",
+      "category": "video",
+      "icon": "play.rectangle.fill",
+      "desc": "导航聚合 · 入口与线路自动优选",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://x99dh.net",
+        "https://x99dh.lat"
+      ],
+      "sortOrder": 5,
+      "defaultProxy": false,
+      "notes": "x99dh 导航聚合源：26 个视频平台，入口域名与平台线路均自动优选（策略 A，缓存 600s）。",
+      "api": "./sources/welfare-js/x99dh_video.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "video",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
+    },
+    {
+      "platformKey": "x99dh_comic_py",
+      "name": "X99漫画导航",
+      "category": "comic",
+      "icon": "books.vertical.fill",
+      "desc": "导航聚合 · 漫画阅读",
+      "serviceType": "python_spider",
+      "defaultHosts": [
+        "https://x99dh.net",
+        "https://x99dh.lat"
+      ],
+      "sortOrder": 6,
+      "defaultProxy": false,
+      "notes": "x99dh 导航聚合源：3 个漫画平台，播放返回 manga:// 图片序列。",
+      "api": "./sources/welfare-js/x99dh_comic.py",
+      "scriptType": "python",
+      "engine": "python",
+      "sslBypass": true,
+      "contentType": "comic",
+      "visibleInNormalSpider": false,
+      "visibleInGlobalSearch": false,
+      "visibleInHome": false
     }
   ],
-  "updatedAt": "2026-10-31T04:30:00Z"
+  "updatedAt": "2026-11-07T16:23:49+08:00"
 }

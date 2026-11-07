@@ -1,0 +1,2702 @@
+{
+  "schema": 1,
+  "version": "2026.11.07.1434",
+  "generatedAt": "2026-11-07T14:34:31+08:00",
+  "entry": [
+    "https://x99dh.net",
+    "https://x99dh.lat"
+  ],
+  "counts": {
+    "platforms": 29,
+    "lines": 361,
+    "alive": 331
+  },
+  "platforms": [
+    {
+      "key": "x99_be9dc0cd",
+      "name": "MissAV",
+      "kind": "video",
+      "adapter": "missav",
+      "desc": "著名亚洲视频站点",
+      "icon": "play.rectangle.fill",
+      "url": "https://www.thisav66.com/cn",
+      "lines": [
+        {
+          "url": "https://www.missav05.com/cn",
+          "testUrl": "https://www.missav05.com/status.html",
+          "ok": true,
+          "ms": 513.0
+        },
+        {
+          "url": "https://www.missav03.net/cn",
+          "testUrl": "https://www.missav03.net/status.html",
+          "ok": true,
+          "ms": 525.0
+        },
+        {
+          "url": "https://www.missav666.net/cn",
+          "testUrl": "https://www.missav666.net/status.html",
+          "ok": true,
+          "ms": 651.0
+        },
+        {
+          "url": "https://www.missav08.net/cn",
+          "testUrl": "https://www.missav08.net/status.html",
+          "ok": true,
+          "ms": 681.0
+        },
+        {
+          "url": "https://www.njavtv.my/cn",
+          "testUrl": "https://www.njavtv.my/status.html",
+          "ok": true,
+          "ms": 703.0
+        },
+        {
+          "url": "https://www.missav3.one/cn",
+          "testUrl": "https://www.missav3.one/status.html",
+          "ok": true,
+          "ms": 787.0
+        },
+        {
+          "url": "https://www.njav01.net/cn",
+          "testUrl": "https://www.njav01.net/status.html",
+          "ok": true,
+          "ms": 805.0
+        },
+        {
+          "url": "https://www.njavtv01.com/cn",
+          "testUrl": "https://www.njavtv01.com/status.html",
+          "ok": true,
+          "ms": 817.0
+        },
+        {
+          "url": "https://www.missav08.com/cn",
+          "testUrl": "https://www.missav08.com/status.html",
+          "ok": true,
+          "ms": 831.0
+        },
+        {
+          "url": "https://www.missav1.one/cn",
+          "testUrl": "https://www.missav1.one/status.html",
+          "ok": true,
+          "ms": 858.0
+        },
+        {
+          "url": "https://www.njav01.com/cn",
+          "testUrl": "https://www.njav01.com/status.html",
+          "ok": true,
+          "ms": 890.0
+        },
+        {
+          "url": "https://www.thisav33.net/cn",
+          "testUrl": "https://www.thisav33.net/status.html",
+          "ok": true,
+          "ms": 937.0
+        },
+        {
+          "url": "https://www.missav888.cc/cn",
+          "testUrl": "https://www.missav888.cc/status.html",
+          "ok": true,
+          "ms": 999.0
+        },
+        {
+          "url": "https://www.missav123.nl/cn",
+          "testUrl": "https://www.missav123.nl/status.html",
+          "ok": true,
+          "ms": 1013.0
+        },
+        {
+          "url": "https://www.thisav02.net/cn",
+          "testUrl": "https://www.thisav02.net/status.html",
+          "ok": true,
+          "ms": 1018.0
+        },
+        {
+          "url": "https://www.thisav01.net/cn",
+          "testUrl": "https://www.thisav01.net/status.html",
+          "ok": true,
+          "ms": 1089.0
+        },
+        {
+          "url": "https://www.thisav01.cc/cn",
+          "testUrl": "https://www.thisav01.cc/status.html",
+          "ok": true,
+          "ms": 1103.0
+        },
+        {
+          "url": "https://www.missav05.net/cn",
+          "testUrl": "https://www.missav05.net/status.html",
+          "ok": true,
+          "ms": 1105.0
+        },
+        {
+          "url": "https://www.njavtv.art/cn",
+          "testUrl": "https://www.njavtv.art/status.html",
+          "ok": true,
+          "ms": 1137.0
+        },
+        {
+          "url": "https://www.missav-ai.cc/cn",
+          "testUrl": "https://www.missav-ai.cc/status.html",
+          "ok": true,
+          "ms": 1148.0
+        },
+        {
+          "url": "https://www.missav.watch/cn",
+          "testUrl": "https://www.missav.watch/status.html",
+          "ok": true,
+          "ms": 1153.0
+        },
+        {
+          "url": "https://www.missav02.net/cn",
+          "testUrl": "https://www.missav02.net/status.html",
+          "ok": true,
+          "ms": 1179.0
+        },
+        {
+          "url": "https://www.missav666.cc/cn",
+          "testUrl": "https://www.missav666.cc/status.html",
+          "ok": true,
+          "ms": 1232.0
+        },
+        {
+          "url": "https://www.missav09.com/cn",
+          "testUrl": "https://www.missav09.com/status.html",
+          "ok": true,
+          "ms": 1266.0
+        },
+        {
+          "url": "https://www.thisav02.com/cn",
+          "testUrl": "https://www.thisav02.com/status.html",
+          "ok": true,
+          "ms": 1293.0
+        },
+        {
+          "url": "https://www.missav06.com/cn",
+          "testUrl": "https://www.missav06.com/status.html",
+          "ok": true,
+          "ms": 1416.0
+        },
+        {
+          "url": "https://www.missav07.net/cn",
+          "testUrl": "https://www.missav07.net/status.html",
+          "ok": true,
+          "ms": 1589.0
+        },
+        {
+          "url": "https://www.thisav.pw/cn",
+          "testUrl": "https://www.thisav.pw/status.html",
+          "ok": true,
+          "ms": 1665.0
+        },
+        {
+          "url": "https://www.thisav.sbs/cn",
+          "testUrl": "https://www.thisav.sbs/status.html",
+          "ok": true,
+          "ms": 1803.0
+        },
+        {
+          "url": "https://www.njavtv.nl/cn",
+          "testUrl": "https://www.njavtv.nl/status.html",
+          "ok": true,
+          "ms": 1875.0
+        },
+        {
+          "url": "https://www.missav888.net/cn",
+          "testUrl": "https://www.missav888.net/status.html",
+          "ok": true,
+          "ms": 1903.0
+        },
+        {
+          "url": "https://www.njav.one/cn",
+          "testUrl": "https://www.njav.one/status.html",
+          "ok": true,
+          "ms": 1980.0
+        },
+        {
+          "url": "https://www.missav123.life/cn",
+          "testUrl": "https://www.missav123.life/status.html",
+          "ok": true,
+          "ms": 2100.0
+        },
+        {
+          "url": "https://www.missav06.net/cn",
+          "testUrl": "https://www.missav06.net/status.html",
+          "ok": true,
+          "ms": 2173.0
+        },
+        {
+          "url": "https://www.thisav33.com/cn",
+          "testUrl": "https://www.thisav33.com/status.html",
+          "ok": true,
+          "ms": 2679.0
+        },
+        {
+          "url": "https://www.missav2.one/cn",
+          "testUrl": "https://www.missav2.one/status.html",
+          "ok": true,
+          "ms": 2906.0
+        },
+        {
+          "url": "https://www.missav01.net/cn",
+          "testUrl": "https://www.missav01.net/status.html",
+          "ok": true,
+          "ms": 3097.0
+        },
+        {
+          "url": "https://www.thisav66.com/cn",
+          "testUrl": "https://www.thisav66.com/status.html",
+          "ok": true,
+          "ms": 7358.0
+        },
+        {
+          "url": "https://www.missav1.vip/cn",
+          "testUrl": "https://www.missav1.vip/status.html",
+          "ok": false,
+          "ms": 1006.0
+        },
+        {
+          "url": "https://www.missav365.icu/cn",
+          "testUrl": "https://www.missav365.icu/status.html",
+          "ok": false,
+          "ms": 1714.0
+        },
+        {
+          "url": "https://www.missav365.one/cn",
+          "testUrl": "https://www.missav365.one/status.html",
+          "ok": false,
+          "ms": 1904.0
+        }
+      ],
+      "classes": [
+        {
+          "type_id": "20",
+          "type_name": "国产"
+        },
+        {
+          "type_id": "21",
+          "type_name": "日本有码"
+        },
+        {
+          "type_id": "22",
+          "type_name": "日本无码"
+        },
+        {
+          "type_id": "28",
+          "type_name": "中文字幕"
+        },
+        {
+          "type_id": "23",
+          "type_name": "欧美"
+        },
+        {
+          "type_id": "24",
+          "type_name": "动漫"
+        },
+        {
+          "type_id": "25",
+          "type_name": "伦理"
+        }
+      ]
+    },
+    {
+      "key": "x99_531d29bb",
+      "name": "Hanime1",
+      "kind": "video",
+      "adapter": "missav",
+      "desc": "著名动漫视频站点",
+      "icon": "play.rectangle.fill",
+      "url": "https://www.hanime16.com/enter",
+      "lines": [
+        {
+          "url": "https://www.hanime101.net/enter",
+          "testUrl": "https://www.hanime101.net/status.html",
+          "ok": true,
+          "ms": 344.0
+        },
+        {
+          "url": "https://www.hanime102.net/enter",
+          "testUrl": "https://www.hanime102.net/status.html",
+          "ok": true,
+          "ms": 440.0
+        },
+        {
+          "url": "https://www.hanime999.cc/enter",
+          "testUrl": "https://www.hanime999.cc/status.html",
+          "ok": true,
+          "ms": 594.0
+        },
+        {
+          "url": "https://www.hanime169.com/enter",
+          "testUrl": "https://www.hanime169.com/status.html",
+          "ok": true,
+          "ms": 803.0
+        },
+        {
+          "url": "https://www.hanime2.cfd/enter",
+          "testUrl": "https://www.hanime2.cfd/status.html",
+          "ok": true,
+          "ms": 808.0
+        },
+        {
+          "url": "https://www.hanime103.com/enter",
+          "testUrl": "https://www.hanime103.com/status.html",
+          "ok": true,
+          "ms": 808.0
+        },
+        {
+          "url": "https://www.hanime169.net/enter",
+          "testUrl": "https://www.hanime169.net/status.html",
+          "ok": true,
+          "ms": 811.0
+        },
+        {
+          "url": "https://www.hanime101.com/enter",
+          "testUrl": "https://www.hanime101.com/status.html",
+          "ok": true,
+          "ms": 854.0
+        },
+        {
+          "url": "https://www.hanime163.com/enter",
+          "testUrl": "https://www.hanime163.com/status.html",
+          "ok": true,
+          "ms": 860.0
+        },
+        {
+          "url": "https://www.hanime666.net/enter",
+          "testUrl": "https://www.hanime666.net/status.html",
+          "ok": true,
+          "ms": 864.0
+        },
+        {
+          "url": "https://www.hanime1.my/enter",
+          "testUrl": "https://www.hanime1.my/status.html",
+          "ok": true,
+          "ms": 1012.0
+        },
+        {
+          "url": "https://www.hanime169.cc/enter",
+          "testUrl": "https://www.hanime169.cc/status.html",
+          "ok": true,
+          "ms": 1080.0
+        },
+        {
+          "url": "https://www.hanime123.one/enter",
+          "testUrl": "https://www.hanime123.one/status.html",
+          "ok": true,
+          "ms": 1102.0
+        },
+        {
+          "url": "https://www.hanime999.net/enter",
+          "testUrl": "https://www.hanime999.net/status.html",
+          "ok": true,
+          "ms": 1114.0
+        },
+        {
+          "url": "https://www.hanime2.one/enter",
+          "testUrl": "https://www.hanime2.one/status.html",
+          "ok": true,
+          "ms": 1148.0
+        },
+        {
+          "url": "https://www.hanime163.net/enter",
+          "testUrl": "https://www.hanime163.net/status.html",
+          "ok": true,
+          "ms": 1165.0
+        },
+        {
+          "url": "https://www.hanime2.icu/enter",
+          "testUrl": "https://www.hanime2.icu/status.html",
+          "ok": true,
+          "ms": 1199.0
+        },
+        {
+          "url": "https://www.hanime123.org/enter",
+          "testUrl": "https://www.hanime123.org/status.html",
+          "ok": true,
+          "ms": 1384.0
+        },
+        {
+          "url": "https://www.hanime123.cc/enter",
+          "testUrl": "https://www.hanime123.cc/status.html",
+          "ok": true,
+          "ms": 1417.0
+        },
+        {
+          "url": "https://www.hanime123.sbs/enter",
+          "testUrl": "https://www.hanime123.sbs/status.html",
+          "ok": true,
+          "ms": 1565.0
+        },
+        {
+          "url": "https://www.hanime02.com/enter",
+          "testUrl": "https://www.hanime02.com/status.html",
+          "ok": true,
+          "ms": 1679.0
+        },
+        {
+          "url": "https://www.hanime1.art/enter",
+          "testUrl": "https://www.hanime1.art/status.html",
+          "ok": true,
+          "ms": 1711.0
+        },
+        {
+          "url": "https://www.hanime999.com/enter",
+          "testUrl": "https://www.hanime999.com/status.html",
+          "ok": true,
+          "ms": 1805.0
+        },
+        {
+          "url": "https://www.hanime103.net/enter",
+          "testUrl": "https://www.hanime103.net/status.html",
+          "ok": true,
+          "ms": 1994.0
+        },
+        {
+          "url": "https://www.hanime102.com/enter",
+          "testUrl": "https://www.hanime102.com/status.html",
+          "ok": true,
+          "ms": 2600.0
+        },
+        {
+          "url": "https://www.hanime1.life/enter",
+          "testUrl": "https://www.hanime1.life/status.html",
+          "ok": true,
+          "ms": 3269.0
+        },
+        {
+          "url": "https://www.hanime104.com/enter",
+          "testUrl": "https://www.hanime104.com/status.html",
+          "ok": true,
+          "ms": 4640.0
+        },
+        {
+          "url": "https://www.hanime16.com/enter",
+          "testUrl": "https://www.hanime16.com/status.html",
+          "ok": true,
+          "ms": 6543.0
+        },
+        {
+          "url": "https://www.hanime888.net/enter",
+          "testUrl": "https://www.hanime888.net/status.html",
+          "ok": false,
+          "ms": 1150.0
+        },
+        {
+          "url": "https://www.hanime1-me.cc/enter",
+          "testUrl": "https://www.hanime1-me.cc/status.html",
+          "ok": false,
+          "ms": 1185.0
+        },
+        {
+          "url": "https://www.hanime1.pw/enter",
+          "testUrl": "https://www.hanime1.pw/status.html",
+          "ok": false,
+          "ms": 1264.0
+        },
+        {
+          "url": "https://www.hanime2.org/enter",
+          "testUrl": "https://www.hanime2.org/status.html",
+          "ok": false,
+          "ms": 2970.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_5e2df580",
+      "name": "LissAV",
+      "kind": "video",
+      "adapter": "generic",
+      "desc": "最全日本AV站点",
+      "icon": "play.rectangle.fill",
+      "url": "https://huangguo04.net/asian/zh-CN",
+      "lines": [
+        {
+          "url": "https://huangguo02.net/asian/zh-CN",
+          "testUrl": "https://huangguo02.net/status.html",
+          "ok": true,
+          "ms": 649.0
+        },
+        {
+          "url": "https://lissav.net/asian/zh-CN",
+          "testUrl": "https://lissav.net/status.html",
+          "ok": true,
+          "ms": 705.0
+        },
+        {
+          "url": "https://tktube.vip/asian/zh-CN",
+          "testUrl": "https://tktube.vip/status.html",
+          "ok": true,
+          "ms": 744.0
+        },
+        {
+          "url": "https://lissav.nl/asian/zh-CN",
+          "testUrl": "https://lissav.nl/status.html",
+          "ok": true,
+          "ms": 879.0
+        },
+        {
+          "url": "https://lissav.one/asian/zh-CN",
+          "testUrl": "https://lissav.one/status.html",
+          "ok": true,
+          "ms": 881.0
+        },
+        {
+          "url": "https://huangguo01.net/asian/zh-CN",
+          "testUrl": "https://huangguo01.net/status.html",
+          "ok": true,
+          "ms": 994.0
+        },
+        {
+          "url": "https://lissav.ws/asian/zh-CN",
+          "testUrl": "https://lissav.ws/status.html",
+          "ok": true,
+          "ms": 1036.0
+        },
+        {
+          "url": "https://mdba8.com/asian/zh-CN",
+          "testUrl": "https://mdba8.com/status.html",
+          "ok": true,
+          "ms": 1281.0
+        },
+        {
+          "url": "https://madou666.net/asian/zh-CN",
+          "testUrl": "https://madou666.net/status.html",
+          "ok": true,
+          "ms": 1348.0
+        },
+        {
+          "url": "https://lissav.my/asian/zh-CN",
+          "testUrl": "https://lissav.my/status.html",
+          "ok": true,
+          "ms": 1370.0
+        },
+        {
+          "url": "https://lissav.vip/asian/zh-CN",
+          "testUrl": "https://lissav.vip/status.html",
+          "ok": true,
+          "ms": 1409.0
+        },
+        {
+          "url": "https://madou8.pw/asian/zh-CN",
+          "testUrl": "https://madou8.pw/status.html",
+          "ok": true,
+          "ms": 1410.0
+        },
+        {
+          "url": "https://lissav1.com/asian/zh-CN",
+          "testUrl": "https://lissav1.com/status.html",
+          "ok": true,
+          "ms": 1560.0
+        },
+        {
+          "url": "https://madou8.my/asian/zh-CN",
+          "testUrl": "https://madou8.my/status.html",
+          "ok": true,
+          "ms": 1580.0
+        },
+        {
+          "url": "https://tktube.nl/asian/zh-CN",
+          "testUrl": "https://tktube.nl/status.html",
+          "ok": true,
+          "ms": 1658.0
+        },
+        {
+          "url": "https://huangguo123.com/asian/zh-CN",
+          "testUrl": "https://huangguo123.com/status.html",
+          "ok": true,
+          "ms": 2041.0
+        },
+        {
+          "url": "https://javxx.sbs/asian/zh-CN",
+          "testUrl": "https://javxx.sbs/status.html",
+          "ok": true,
+          "ms": 2701.0
+        },
+        {
+          "url": "https://mdba8.net/asian/zh-CN",
+          "testUrl": "https://mdba8.net/status.html",
+          "ok": true,
+          "ms": 2736.0
+        },
+        {
+          "url": "https://madou8.ws/asian/zh-CN",
+          "testUrl": "https://madou8.ws/status.html",
+          "ok": true,
+          "ms": 3145.0
+        },
+        {
+          "url": "https://huangguo04.net/asian/zh-CN",
+          "testUrl": "https://huangguo04.net/status.html",
+          "ok": true,
+          "ms": 3249.0
+        },
+        {
+          "url": "https://huangguo03.net/asian/zh-CN",
+          "testUrl": "https://huangguo03.net/status.html",
+          "ok": true,
+          "ms": 6141.0
+        },
+        {
+          "url": "https://lissav.com/asian/zh-CN",
+          "testUrl": "https://lissav.com/status.html",
+          "ok": false,
+          "ms": 2186.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_2828ee09",
+      "name": "LissAV国产区",
+      "kind": "video",
+      "adapter": "generic",
+      "desc": "数十万精品AV",
+      "icon": "play.rectangle.fill",
+      "url": "https://huangguo04.net/domestic/zh-CN",
+      "lines": [
+        {
+          "url": "https://lissav.my/domestic/zh-CN",
+          "testUrl": "https://lissav.my/status.html",
+          "ok": true,
+          "ms": 190.0
+        },
+        {
+          "url": "https://lissav.nl/domestic/zh-CN",
+          "testUrl": "https://lissav.nl/status.html",
+          "ok": true,
+          "ms": 592.0
+        },
+        {
+          "url": "https://tktube.nl/domestic/zh-CN",
+          "testUrl": "https://tktube.nl/status.html",
+          "ok": true,
+          "ms": 612.0
+        },
+        {
+          "url": "https://mdba8.net/domestic/zh-CN",
+          "testUrl": "https://mdba8.net/status.html",
+          "ok": true,
+          "ms": 618.0
+        },
+        {
+          "url": "https://lissav.one/domestic/zh-CN",
+          "testUrl": "https://lissav.one/status.html",
+          "ok": true,
+          "ms": 729.0
+        },
+        {
+          "url": "https://huangguo123.com/domestic/zh-CN",
+          "testUrl": "https://huangguo123.com/status.html",
+          "ok": true,
+          "ms": 749.0
+        },
+        {
+          "url": "https://madou8.ws/domestic/zh-CN",
+          "testUrl": "https://madou8.ws/status.html",
+          "ok": true,
+          "ms": 768.0
+        },
+        {
+          "url": "https://madou8.pw/domestic/zh-CN",
+          "testUrl": "https://madou8.pw/status.html",
+          "ok": true,
+          "ms": 834.0
+        },
+        {
+          "url": "https://lissav.vip/domestic/zh-CN",
+          "testUrl": "https://lissav.vip/status.html",
+          "ok": true,
+          "ms": 842.0
+        },
+        {
+          "url": "https://javxx.sbs/domestic/zh-CN",
+          "testUrl": "https://javxx.sbs/status.html",
+          "ok": true,
+          "ms": 865.0
+        },
+        {
+          "url": "https://huangguo02.net/domestic/zh-CN",
+          "testUrl": "https://huangguo02.net/status.html",
+          "ok": true,
+          "ms": 992.0
+        },
+        {
+          "url": "https://tktube.vip/domestic/zh-CN",
+          "testUrl": "https://tktube.vip/status.html",
+          "ok": true,
+          "ms": 1146.0
+        },
+        {
+          "url": "https://lissav.ws/domestic/zh-CN",
+          "testUrl": "https://lissav.ws/status.html",
+          "ok": true,
+          "ms": 1150.0
+        },
+        {
+          "url": "https://lissav1.com/domestic/zh-CN",
+          "testUrl": "https://lissav1.com/status.html",
+          "ok": true,
+          "ms": 1172.0
+        },
+        {
+          "url": "https://mdba8.com/domestic/zh-CN",
+          "testUrl": "https://mdba8.com/status.html",
+          "ok": true,
+          "ms": 1225.0
+        },
+        {
+          "url": "https://madou8.my/domestic/zh-CN",
+          "testUrl": "https://madou8.my/status.html",
+          "ok": true,
+          "ms": 1453.0
+        },
+        {
+          "url": "https://lissav.net/domestic/zh-CN",
+          "testUrl": "https://lissav.net/status.html",
+          "ok": true,
+          "ms": 1799.0
+        },
+        {
+          "url": "https://huangguo01.net/domestic/zh-CN",
+          "testUrl": "https://huangguo01.net/status.html",
+          "ok": true,
+          "ms": 1844.0
+        },
+        {
+          "url": "https://madou666.net/domestic/zh-CN",
+          "testUrl": "https://madou666.net/status.html",
+          "ok": true,
+          "ms": 2411.0
+        },
+        {
+          "url": "https://huangguo04.net/domestic/zh-CN",
+          "testUrl": "https://huangguo04.net/status.html",
+          "ok": true,
+          "ms": 3185.0
+        },
+        {
+          "url": "https://huangguo03.net/domestic/zh-CN",
+          "testUrl": "https://huangguo03.net/status.html",
+          "ok": true,
+          "ms": 3965.0
+        },
+        {
+          "url": "https://lissav.com/domestic/zh-CN",
+          "testUrl": "https://lissav.com/status.html",
+          "ok": false,
+          "ms": 1941.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_2721419a",
+      "name": "Jable",
+      "kind": "video",
+      "adapter": "missav",
+      "desc": "另一个亚洲视频站点",
+      "icon": "play.rectangle.fill",
+      "url": "https://jable02.com/enter",
+      "lines": [
+        {
+          "url": "https://jable18.top/enter",
+          "testUrl": "https://jable18.top/status.html",
+          "ok": true,
+          "ms": 530.0
+        },
+        {
+          "url": "https://jable1.cc/enter",
+          "testUrl": "https://jable1.cc/status.html",
+          "ok": true,
+          "ms": 596.0
+        },
+        {
+          "url": "https://jable888.com/enter",
+          "testUrl": "https://jable888.com/status.html",
+          "ok": true,
+          "ms": 878.0
+        },
+        {
+          "url": "https://jable1.com/enter",
+          "testUrl": "https://jable1.com/status.html",
+          "ok": true,
+          "ms": 973.0
+        },
+        {
+          "url": "https://jable01.net/enter",
+          "testUrl": "https://jable01.net/status.html",
+          "ok": true,
+          "ms": 1187.0
+        },
+        {
+          "url": "https://jable1.xyz/enter",
+          "testUrl": "https://jable1.xyz/status.html",
+          "ok": true,
+          "ms": 1204.0
+        },
+        {
+          "url": "https://jable.cfd/enter",
+          "testUrl": "https://jable.cfd/status.html",
+          "ok": true,
+          "ms": 1255.0
+        },
+        {
+          "url": "https://91jable.icu/enter",
+          "testUrl": "https://91jable.icu/status.html",
+          "ok": true,
+          "ms": 1326.0
+        },
+        {
+          "url": "https://jable1.lat/enter",
+          "testUrl": "https://jable1.lat/status.html",
+          "ok": true,
+          "ms": 1430.0
+        },
+        {
+          "url": "https://91jable.top/enter",
+          "testUrl": "https://91jable.top/status.html",
+          "ok": true,
+          "ms": 1498.0
+        },
+        {
+          "url": "https://jable1.net/enter",
+          "testUrl": "https://jable1.net/status.html",
+          "ok": true,
+          "ms": 1536.0
+        },
+        {
+          "url": "https://jable888.net/enter",
+          "testUrl": "https://jable888.net/status.html",
+          "ok": true,
+          "ms": 1756.0
+        },
+        {
+          "url": "https://jable02.com/enter",
+          "testUrl": "https://jable02.com/status.html",
+          "ok": true,
+          "ms": 1808.0
+        },
+        {
+          "url": "https://jable1.vip/enter",
+          "testUrl": "https://jable1.vip/status.html",
+          "ok": true,
+          "ms": 1861.0
+        },
+        {
+          "url": "https://jable01.com/enter",
+          "testUrl": "https://jable01.com/status.html",
+          "ok": true,
+          "ms": 1863.0
+        },
+        {
+          "url": "https://jable666.net/enter",
+          "testUrl": "https://jable666.net/status.html",
+          "ok": true,
+          "ms": 1940.0
+        },
+        {
+          "url": "https://jable666.com/enter",
+          "testUrl": "https://jable666.com/status.html",
+          "ok": true,
+          "ms": 3694.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_f3faa727",
+      "name": "xhamster",
+      "kind": "video",
+      "adapter": "generic",
+      "desc": "著名视频站点",
+      "icon": "play.rectangle.fill",
+      "url": "https://zh.xhamster02.com/enter",
+      "lines": [
+        {
+          "url": "https://zh.xhamster1.nl/enter",
+          "testUrl": "https://zh.xhamster1.nl/status.html",
+          "ok": true,
+          "ms": 635.0
+        },
+        {
+          "url": "https://zh.xhamster01.net/enter",
+          "testUrl": "https://zh.xhamster01.net/status.html",
+          "ok": true,
+          "ms": 689.0
+        },
+        {
+          "url": "https://zh.xhamster1.icu/enter",
+          "testUrl": "https://zh.xhamster1.icu/status.html",
+          "ok": true,
+          "ms": 964.0
+        },
+        {
+          "url": "https://zh.xv123.icu/enter",
+          "testUrl": "https://zh.xv123.icu/status.html",
+          "ok": true,
+          "ms": 1289.0
+        },
+        {
+          "url": "https://zh.xhamster1.one/enter",
+          "testUrl": "https://zh.xhamster1.one/status.html",
+          "ok": true,
+          "ms": 1412.0
+        },
+        {
+          "url": "https://zh.xhamster1.net/enter",
+          "testUrl": "https://zh.xhamster1.net/status.html",
+          "ok": true,
+          "ms": 1501.0
+        },
+        {
+          "url": "https://zh.xv123.xyz/enter",
+          "testUrl": "https://zh.xv123.xyz/status.html",
+          "ok": true,
+          "ms": 1516.0
+        },
+        {
+          "url": "https://zh.xhamster1.top/enter",
+          "testUrl": "https://zh.xhamster1.top/status.html",
+          "ok": true,
+          "ms": 1564.0
+        },
+        {
+          "url": "https://zh.xhamster02.com/enter",
+          "testUrl": "https://zh.xhamster02.com/status.html",
+          "ok": true,
+          "ms": 1670.0
+        },
+        {
+          "url": "https://zh.xhamster1.cc/enter",
+          "testUrl": "https://zh.xhamster1.cc/status.html",
+          "ok": true,
+          "ms": 1776.0
+        },
+        {
+          "url": "https://zh.xhamster1.pw/enter",
+          "testUrl": "https://zh.xhamster1.pw/status.html",
+          "ok": true,
+          "ms": 1871.0
+        },
+        {
+          "url": "https://zh.xhamster1.art/enter",
+          "testUrl": "https://zh.xhamster1.art/status.html",
+          "ok": true,
+          "ms": 2142.0
+        },
+        {
+          "url": "https://zh.xhamster.ist/enter",
+          "testUrl": "https://zh.xhamster.ist/status.html",
+          "ok": true,
+          "ms": 2343.0
+        },
+        {
+          "url": "https://zh.xhamster1.vip/enter",
+          "testUrl": "https://zh.xhamster1.vip/status.html",
+          "ok": true,
+          "ms": 2700.0
+        },
+        {
+          "url": "https://zh.xv123.top/enter",
+          "testUrl": "https://zh.xv123.top/status.html",
+          "ok": true,
+          "ms": 2822.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_8be4dcd9",
+      "name": "肉视频",
+      "kind": "video",
+      "adapter": "missav",
+      "desc": "国产视频为主,AI短剧",
+      "icon": "play.rectangle.fill",
+      "url": "https://rou07.net/home",
+      "lines": [
+        {
+          "url": "https://rou168.com/home",
+          "testUrl": "https://rou168.com/status.html",
+          "ok": true,
+          "ms": 650.0
+        },
+        {
+          "url": "https://rou06.cc/home",
+          "testUrl": "https://rou06.cc/status.html",
+          "ok": true,
+          "ms": 791.0
+        },
+        {
+          "url": "https://rou01.cc/home",
+          "testUrl": "https://rou01.cc/status.html",
+          "ok": true,
+          "ms": 902.0
+        },
+        {
+          "url": "https://rou07.net/home",
+          "testUrl": "https://rou07.net/status.html",
+          "ok": true,
+          "ms": 926.0
+        },
+        {
+          "url": "https://rou1.pw/home",
+          "testUrl": "https://rou1.pw/status.html",
+          "ok": true,
+          "ms": 940.0
+        },
+        {
+          "url": "https://rou1.men/home",
+          "testUrl": "https://rou1.men/status.html",
+          "ok": true,
+          "ms": 1109.0
+        },
+        {
+          "url": "https://rou1.art/home",
+          "testUrl": "https://rou1.art/status.html",
+          "ok": true,
+          "ms": 1126.0
+        },
+        {
+          "url": "https://rou08.net/home",
+          "testUrl": "https://rou08.net/status.html",
+          "ok": true,
+          "ms": 1180.0
+        },
+        {
+          "url": "https://rou1.sbs/home",
+          "testUrl": "https://rou1.sbs/status.html",
+          "ok": true,
+          "ms": 1218.0
+        },
+        {
+          "url": "https://rou08.com/home",
+          "testUrl": "https://rou08.com/status.html",
+          "ok": true,
+          "ms": 1254.0
+        },
+        {
+          "url": "https://rou163.top/home",
+          "testUrl": "https://rou163.top/status.html",
+          "ok": true,
+          "ms": 1261.0
+        },
+        {
+          "url": "https://rou06.net/home",
+          "testUrl": "https://rou06.net/status.html",
+          "ok": true,
+          "ms": 1482.0
+        },
+        {
+          "url": "https://rou888.net/home",
+          "testUrl": "https://rou888.net/status.html",
+          "ok": true,
+          "ms": 1519.0
+        },
+        {
+          "url": "https://rouav.sbs/home",
+          "testUrl": "https://rouav.sbs/status.html",
+          "ok": true,
+          "ms": 1649.0
+        },
+        {
+          "url": "https://rouxxx.net/home",
+          "testUrl": "https://rouxxx.net/status.html",
+          "ok": true,
+          "ms": 1705.0
+        },
+        {
+          "url": "https://rou666.net/home",
+          "testUrl": "https://rou666.net/status.html",
+          "ok": true,
+          "ms": 1748.0
+        },
+        {
+          "url": "https://rou1.my/home",
+          "testUrl": "https://rou1.my/status.html",
+          "ok": true,
+          "ms": 2204.0
+        },
+        {
+          "url": "https://rouxxx.sbs/home",
+          "testUrl": "https://rouxxx.sbs/status.html",
+          "ok": true,
+          "ms": 2306.0
+        },
+        {
+          "url": "https://rou666.com/home",
+          "testUrl": "https://rou666.com/status.html",
+          "ok": true,
+          "ms": 3093.0
+        },
+        {
+          "url": "https://rou07.com/home",
+          "testUrl": "https://rou07.com/status.html",
+          "ok": true,
+          "ms": 3389.0
+        },
+        {
+          "url": "https://rouxxx.cc/home",
+          "testUrl": "https://rouxxx.cc/status.html",
+          "ok": false,
+          "ms": 1003.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_f642a3a3",
+      "name": "好色TV",
+      "kind": "video",
+      "adapter": "missav",
+      "desc": "国产中短精选视频",
+      "icon": "play.rectangle.fill",
+      "url": "https://hsex02.com/enter",
+      "lines": [
+        {
+          "url": "https://pb365.top/enter",
+          "testUrl": "https://pb365.top/status.html",
+          "ok": true,
+          "ms": 497.0
+        },
+        {
+          "url": "https://hsex1.vip/enter",
+          "testUrl": "https://hsex1.vip/status.html",
+          "ok": true,
+          "ms": 625.0
+        },
+        {
+          "url": "https://hsex1.top/enter",
+          "testUrl": "https://hsex1.top/status.html",
+          "ok": true,
+          "ms": 654.0
+        },
+        {
+          "url": "https://hsex.sbs/enter",
+          "testUrl": "https://hsex.sbs/status.html",
+          "ok": true,
+          "ms": 708.0
+        },
+        {
+          "url": "https://hsex.top/enter",
+          "testUrl": "https://hsex.top/status.html",
+          "ok": true,
+          "ms": 768.0
+        },
+        {
+          "url": "https://hsex1.cc/enter",
+          "testUrl": "https://hsex1.cc/status.html",
+          "ok": true,
+          "ms": 817.0
+        },
+        {
+          "url": "https://pb365.one/enter",
+          "testUrl": "https://pb365.one/status.html",
+          "ok": true,
+          "ms": 970.0
+        },
+        {
+          "url": "https://hsex1.sbs/enter",
+          "testUrl": "https://hsex1.sbs/status.html",
+          "ok": true,
+          "ms": 1004.0
+        },
+        {
+          "url": "https://hsex.nl/enter",
+          "testUrl": "https://hsex.nl/status.html",
+          "ok": true,
+          "ms": 1024.0
+        },
+        {
+          "url": "https://hsex01.net/enter",
+          "testUrl": "https://hsex01.net/status.html",
+          "ok": true,
+          "ms": 1027.0
+        },
+        {
+          "url": "https://hsex1.icu/enter",
+          "testUrl": "https://hsex1.icu/status.html",
+          "ok": true,
+          "ms": 1067.0
+        },
+        {
+          "url": "https://pb365.sbs/enter",
+          "testUrl": "https://pb365.sbs/status.html",
+          "ok": true,
+          "ms": 1170.0
+        },
+        {
+          "url": "https://hsex.one/enter",
+          "testUrl": "https://hsex.one/status.html",
+          "ok": true,
+          "ms": 1306.0
+        },
+        {
+          "url": "https://hsex.cfd/enter",
+          "testUrl": "https://hsex.cfd/status.html",
+          "ok": true,
+          "ms": 1313.0
+        },
+        {
+          "url": "https://hsex02.com/enter",
+          "testUrl": "https://hsex02.com/status.html",
+          "ok": true,
+          "ms": 1541.0
+        },
+        {
+          "url": "https://hsex01.com/enter",
+          "testUrl": "https://hsex01.com/status.html",
+          "ok": true,
+          "ms": 3202.0
+        },
+        {
+          "url": "https://pb365.nl/enter",
+          "testUrl": "https://pb365.nl/status.html",
+          "ok": false,
+          "ms": 987.0
+        },
+        {
+          "url": "https://hsex.mom/enter",
+          "testUrl": "https://hsex.mom/status.html",
+          "ok": false,
+          "ms": 1955.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_99fa5c38",
+      "name": "321AV",
+      "kind": "video",
+      "adapter": "maccms",
+      "desc": "视频站点，速度更快",
+      "icon": "play.rectangle.fill",
+      "url": "https://321av.art/enter",
+      "lines": [
+        {
+          "url": "https://321av.ws/enter",
+          "testUrl": "https://321av.ws/status.html",
+          "ok": true,
+          "ms": 181.0
+        },
+        {
+          "url": "https://321av.top/enter",
+          "testUrl": "https://321av.top/status.html",
+          "ok": true,
+          "ms": 676.0
+        },
+        {
+          "url": "https://321xav.cc/enter",
+          "testUrl": "https://321xav.cc/status.html",
+          "ok": true,
+          "ms": 683.0
+        },
+        {
+          "url": "https://321av.icu/enter",
+          "testUrl": "https://321av.icu/status.html",
+          "ok": true,
+          "ms": 694.0
+        },
+        {
+          "url": "https://321av.sbs/enter",
+          "testUrl": "https://321av.sbs/status.html",
+          "ok": true,
+          "ms": 738.0
+        },
+        {
+          "url": "https://321av.org/enter",
+          "testUrl": "https://321av.org/status.html",
+          "ok": true,
+          "ms": 754.0
+        },
+        {
+          "url": "https://321av.men/enter",
+          "testUrl": "https://321av.men/status.html",
+          "ok": true,
+          "ms": 856.0
+        },
+        {
+          "url": "https://321av.fans/enter",
+          "testUrl": "https://321av.fans/status.html",
+          "ok": true,
+          "ms": 951.0
+        },
+        {
+          "url": "https://321av.art/enter",
+          "testUrl": "https://321av.art/status.html",
+          "ok": true,
+          "ms": 1081.0
+        },
+        {
+          "url": "https://321av.xyz/enter",
+          "testUrl": "https://321av.xyz/status.html",
+          "ok": true,
+          "ms": 1091.0
+        },
+        {
+          "url": "https://321av.vip/enter",
+          "testUrl": "https://321av.vip/status.html",
+          "ok": false,
+          "ms": 1010.0
+        }
+      ],
+      "classes": [
+        {
+          "type_id": "20",
+          "type_name": "有码影片",
+          "href": "/vodtype/20.html"
+        },
+        {
+          "type_id": "21",
+          "type_name": "无码影片",
+          "href": "/vodtype/21.html"
+        },
+        {
+          "type_id": "22",
+          "type_name": "中文字幕",
+          "href": "/vodtype/22.html"
+        }
+      ]
+    },
+    {
+      "key": "x99_5b25e3c1",
+      "name": "rouAV",
+      "kind": "video",
+      "adapter": "maccms",
+      "desc": "高品质国产AV",
+      "icon": "play.rectangle.fill",
+      "url": "https://rou123.ws/enter",
+      "lines": [
+        {
+          "url": "https://rou123.org/enter",
+          "testUrl": "https://rou123.org/status.html",
+          "ok": true,
+          "ms": 623.0
+        },
+        {
+          "url": "https://rou123.one/enter",
+          "testUrl": "https://rou123.one/status.html",
+          "ok": true,
+          "ms": 642.0
+        },
+        {
+          "url": "https://rou123.ws/enter",
+          "testUrl": "https://rou123.ws/status.html",
+          "ok": true,
+          "ms": 680.0
+        },
+        {
+          "url": "https://rou123.cc/enter",
+          "testUrl": "https://rou123.cc/status.html",
+          "ok": true,
+          "ms": 988.0
+        },
+        {
+          "url": "https://rou123.cfd/enter",
+          "testUrl": "https://rou123.cfd/status.html",
+          "ok": true,
+          "ms": 1226.0
+        },
+        {
+          "url": "https://rou123.sbs/enter",
+          "testUrl": "https://rou123.sbs/status.html",
+          "ok": true,
+          "ms": 1333.0
+        },
+        {
+          "url": "https://rou123.vip/enter",
+          "testUrl": "https://rou123.vip/status.html",
+          "ok": false,
+          "ms": 849.0
+        },
+        {
+          "url": "https://rou123.top/enter",
+          "testUrl": "https://rou123.top/status.html",
+          "ok": false,
+          "ms": 1050.0
+        }
+      ],
+      "classes": [
+        {
+          "type_id": "7",
+          "type_name": "国产AV",
+          "href": "/vodtype/7.html"
+        },
+        {
+          "type_id": "3",
+          "type_name": "日本",
+          "href": "/vodtype/3.html"
+        },
+        {
+          "type_id": "6",
+          "type_name": "自拍流出",
+          "href": "/vodtype/6.html"
+        },
+        {
+          "type_id": "5",
+          "type_name": "探花",
+          "href": "/vodtype/5.html"
+        },
+        {
+          "type_id": "4",
+          "type_name": "OnlyFans",
+          "href": "/vodtype/4.html"
+        },
+        {
+          "type_id": "1",
+          "type_name": "其他",
+          "href": "/vodtype/1.html"
+        }
+      ]
+    },
+    {
+      "key": "x99_d7f940f5",
+      "name": "黄色仓库",
+      "kind": "video",
+      "adapter": "maccms",
+      "desc": "最新麻豆视频,麻豆视频在线观看,天美传媒,91制片厂,天美传媒,精东影业,蜜桃传媒,麻豆网",
+      "icon": "play.rectangle.fill",
+      "url": "https://www.hsck01.net/enter",
+      "lines": [
+        {
+          "url": "https://www.hsck01.net/enter",
+          "testUrl": "https://www.hsck01.net/status.html",
+          "ok": true,
+          "ms": 166.0
+        },
+        {
+          "url": "https://www.69ck1.com/enter",
+          "testUrl": "https://www.69ck1.com/status.html",
+          "ok": true,
+          "ms": 781.0
+        },
+        {
+          "url": "https://www.hsck.nl/enter",
+          "testUrl": "https://www.hsck.nl/status.html",
+          "ok": true,
+          "ms": 798.0
+        },
+        {
+          "url": "https://www.hsck.sbs/enter",
+          "testUrl": "https://www.hsck.sbs/status.html",
+          "ok": true,
+          "ms": 1005.0
+        },
+        {
+          "url": "https://www.69ck1.net/enter",
+          "testUrl": "https://www.69ck1.net/status.html",
+          "ok": true,
+          "ms": 1017.0
+        },
+        {
+          "url": "https://www.69ck.one/enter",
+          "testUrl": "https://www.69ck.one/status.html",
+          "ok": true,
+          "ms": 1206.0
+        },
+        {
+          "url": "https://www.69ck.ws/enter",
+          "testUrl": "https://www.69ck.ws/status.html",
+          "ok": true,
+          "ms": 1786.0
+        }
+      ],
+      "classes": [
+        {
+          "type_id": "1",
+          "type_name": "麻豆",
+          "href": "/index.php/vod/type/id/1.html"
+        },
+        {
+          "type_id": "2",
+          "type_name": "中字",
+          "href": "/index.php/vod/type/id/2.html"
+        },
+        {
+          "type_id": "3",
+          "type_name": "国产",
+          "href": "/index.php/vod/type/id/3.html"
+        },
+        {
+          "type_id": "4",
+          "type_name": "欧美",
+          "href": "/index.php/vod/type/id/4.html"
+        },
+        {
+          "type_id": "5",
+          "type_name": "日韩",
+          "href": "/index.php/vod/type/id/5.html"
+        }
+      ]
+    },
+    {
+      "key": "x99_2eb3f212",
+      "name": "18av",
+      "kind": "video",
+      "adapter": "18av",
+      "desc": "综合性成人站点，包含视频、小说、色图、漫画等",
+      "icon": "play.rectangle.fill",
+      "url": "https://www.18av02.com/enter",
+      "lines": [
+        {
+          "url": "https://www.18av.nl/enter",
+          "testUrl": "https://www.18av.nl/status.html",
+          "ok": true,
+          "ms": 546.0
+        },
+        {
+          "url": "https://www.18av01.cc/enter",
+          "testUrl": "https://www.18av01.cc/status.html",
+          "ok": true,
+          "ms": 699.0
+        },
+        {
+          "url": "https://www.18av.pw/enter",
+          "testUrl": "https://www.18av.pw/status.html",
+          "ok": true,
+          "ms": 890.0
+        },
+        {
+          "url": "https://www.18av01.net/enter",
+          "testUrl": "https://www.18av01.net/status.html",
+          "ok": true,
+          "ms": 1078.0
+        },
+        {
+          "url": "https://www.18av.ws/enter",
+          "testUrl": "https://www.18av.ws/status.html",
+          "ok": true,
+          "ms": 2166.0
+        },
+        {
+          "url": "https://www.18av02.com/enter",
+          "testUrl": "https://www.18av02.com/status.html",
+          "ok": true,
+          "ms": 2477.0
+        }
+      ],
+      "classes": [
+        {
+          "type_id": "chinese_list",
+          "type_name": "中文字幕"
+        },
+        {
+          "type_id": "censored_list",
+          "type_name": "有碼AV"
+        },
+        {
+          "type_id": "uncensored_list",
+          "type_name": "無碼AV"
+        },
+        {
+          "type_id": "amateurjav_list",
+          "type_name": "素人AV"
+        },
+        {
+          "type_id": "reducing-mosaic_list",
+          "type_name": "無碼破解"
+        },
+        {
+          "type_id": "animation_list",
+          "type_name": "H動畫"
+        },
+        {
+          "type_id": "dt_list",
+          "type_name": "國產自拍"
+        }
+      ]
+    },
+    {
+      "key": "x99_f7ba81a6",
+      "name": "大哥视频",
+      "kind": "video",
+      "adapter": "generic",
+      "desc": "最新各类国产、日韩、欧美等视频",
+      "icon": "play.rectangle.fill",
+      "url": "https://dage.one/enter",
+      "lines": [
+        {
+          "url": "https://dage.one/enter",
+          "testUrl": "https://dage.one/status.html",
+          "ok": true,
+          "ms": 627.0
+        },
+        {
+          "url": "https://dage01.net/enter",
+          "testUrl": "https://dage01.net/status.html",
+          "ok": true,
+          "ms": 2694.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_a4235f12",
+      "name": "Pornhub",
+      "kind": "video",
+      "adapter": "generic",
+      "desc": "P站",
+      "icon": "play.rectangle.fill",
+      "url": "https://cn.pornhub06.com/enter",
+      "lines": [
+        {
+          "url": "https://cn.pornhub365.com/enter",
+          "testUrl": "https://cn.pornhub365.com/status.html",
+          "ok": true,
+          "ms": 541.0
+        },
+        {
+          "url": "https://cn.pornhub666.com/enter",
+          "testUrl": "https://cn.pornhub666.com/status.html",
+          "ok": true,
+          "ms": 715.0
+        },
+        {
+          "url": "https://cn.pornhub06.com/enter",
+          "testUrl": "https://cn.pornhub06.com/status.html",
+          "ok": true,
+          "ms": 804.0
+        },
+        {
+          "url": "https://cn.pornhub02.com/enter",
+          "testUrl": "https://cn.pornhub02.com/status.html",
+          "ok": true,
+          "ms": 895.0
+        },
+        {
+          "url": "https://cn.pornhub03.net/enter",
+          "testUrl": "https://cn.pornhub03.net/status.html",
+          "ok": true,
+          "ms": 1017.0
+        },
+        {
+          "url": "https://cn.pornhub02.net/enter",
+          "testUrl": "https://cn.pornhub02.net/status.html",
+          "ok": true,
+          "ms": 1066.0
+        },
+        {
+          "url": "https://cn.pornhub365.sbs/enter",
+          "testUrl": "https://cn.pornhub365.sbs/status.html",
+          "ok": true,
+          "ms": 1098.0
+        },
+        {
+          "url": "https://cn.pornhub1.icu/enter",
+          "testUrl": "https://cn.pornhub1.icu/status.html",
+          "ok": true,
+          "ms": 1194.0
+        },
+        {
+          "url": "https://cn.pornhub666.cc/enter",
+          "testUrl": "https://cn.pornhub666.cc/status.html",
+          "ok": true,
+          "ms": 1284.0
+        },
+        {
+          "url": "https://cn.pornhub163.com/enter",
+          "testUrl": "https://cn.pornhub163.com/status.html",
+          "ok": true,
+          "ms": 1502.0
+        },
+        {
+          "url": "https://cn.pornhub03.com/enter",
+          "testUrl": "https://cn.pornhub03.com/status.html",
+          "ok": true,
+          "ms": 1767.0
+        },
+        {
+          "url": "https://cn.pornhub163.net/enter",
+          "testUrl": "https://cn.pornhub163.net/status.html",
+          "ok": true,
+          "ms": 3740.0
+        },
+        {
+          "url": "https://cn.pornhub365.top/enter",
+          "testUrl": "https://cn.pornhub365.top/status.html",
+          "ok": false,
+          "ms": 1370.0
+        },
+        {
+          "url": "https://cn.pornhub1.cc/enter",
+          "testUrl": "https://cn.pornhub1.cc/status.html",
+          "ok": false,
+          "ms": 1382.0
+        },
+        {
+          "url": "https://cn.pornhub365.mom/enter",
+          "testUrl": "https://cn.pornhub365.mom/status.html",
+          "ok": false,
+          "ms": 1484.0
+        },
+        {
+          "url": "https://cn.pornhub1.mom/enter",
+          "testUrl": "https://cn.pornhub1.mom/status.html",
+          "ok": false,
+          "ms": 2273.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_63401799",
+      "name": "XVIDEOS",
+      "kind": "video",
+      "adapter": "generic",
+      "desc": "X站",
+      "icon": "play.rectangle.fill",
+      "url": "https://www.xvideos163.top/enter",
+      "lines": [
+        {
+          "url": "https://www.91xvideos.top/enter",
+          "testUrl": "https://www.91xvideos.top/status.html",
+          "ok": true,
+          "ms": 870.0
+        },
+        {
+          "url": "https://www.xvideos1.icu/enter",
+          "testUrl": "https://www.xvideos1.icu/status.html",
+          "ok": true,
+          "ms": 1836.0
+        },
+        {
+          "url": "https://www.x123.xyz/enter",
+          "testUrl": "https://www.x123.xyz/status.html",
+          "ok": false,
+          "ms": 1334.0
+        },
+        {
+          "url": "https://www.x123.one/enter",
+          "testUrl": "https://www.x123.one/status.html",
+          "ok": false,
+          "ms": 1647.0
+        },
+        {
+          "url": "https://www.xvideos163.top/enter",
+          "testUrl": "https://www.xvideos163.top/status.html",
+          "ok": false,
+          "ms": 24587.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_a4cb289c",
+      "name": "Xanimu",
+      "kind": "video",
+      "adapter": "missav",
+      "desc": "免费2D、3D、动漫性爱、漫画、卡通",
+      "icon": "play.rectangle.fill",
+      "url": "https://xanimu.ws/zh-CN/",
+      "lines": [
+        {
+          "url": "https://xanimu.one/zh-CN/",
+          "testUrl": "https://xanimu.one/status.html",
+          "ok": true,
+          "ms": 695.0
+        },
+        {
+          "url": "https://xanimu.net/zh-CN/",
+          "testUrl": "https://xanimu.net/status.html",
+          "ok": true,
+          "ms": 793.0
+        },
+        {
+          "url": "https://xanimu.art/zh-CN/",
+          "testUrl": "https://xanimu.art/status.html",
+          "ok": true,
+          "ms": 800.0
+        },
+        {
+          "url": "https://xanimu.ws/zh-CN/",
+          "testUrl": "https://xanimu.ws/status.html",
+          "ok": true,
+          "ms": 1087.0
+        },
+        {
+          "url": "https://xanimu.sbs/zh-CN/",
+          "testUrl": "https://xanimu.sbs/status.html",
+          "ok": true,
+          "ms": 1420.0
+        },
+        {
+          "url": "https://xanimu.top/zh-CN/",
+          "testUrl": "https://xanimu.top/status.html",
+          "ok": true,
+          "ms": 1905.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_becefbcf",
+      "name": "avjoy",
+      "kind": "video",
+      "adapter": "missav",
+      "desc": "成人视频",
+      "icon": "play.rectangle.fill",
+      "url": "https://cn.avjoy.ws/enter",
+      "lines": [
+        {
+          "url": "https://cn.avjoy.ws/enter",
+          "testUrl": "https://cn.avjoy.ws/status.html",
+          "ok": true,
+          "ms": 171.0
+        },
+        {
+          "url": "https://cn.avjoy.nl/enter",
+          "testUrl": "https://cn.avjoy.nl/status.html",
+          "ok": true,
+          "ms": 594.0
+        },
+        {
+          "url": "https://cn.avjoy.top/enter",
+          "testUrl": "https://cn.avjoy.top/status.html",
+          "ok": true,
+          "ms": 2554.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_aa4a47f1",
+      "name": "SuperPorn",
+      "kind": "video",
+      "adapter": "missav",
+      "desc": "高质量海外视频",
+      "icon": "play.rectangle.fill",
+      "url": "https://cn.superporn.ws/enter",
+      "lines": [
+        {
+          "url": "https://cn.superporn.icu/enter",
+          "testUrl": "https://cn.superporn.icu/status.html",
+          "ok": false,
+          "ms": 1166.0
+        },
+        {
+          "url": "https://cn.superporn.ws/enter",
+          "testUrl": "https://cn.superporn.ws/status.html",
+          "ok": false,
+          "ms": 1664.0
+        },
+        {
+          "url": "https://cn.superporn.me/enter",
+          "testUrl": "https://cn.superporn.me/status.html",
+          "ok": false,
+          "ms": 1849.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_73234a95",
+      "name": "亚洲素人精选",
+      "kind": "video",
+      "adapter": "missav",
+      "desc": "亚洲素人精选AV",
+      "icon": "play.rectangle.fill",
+      "url": "https://591av.ws/enter",
+      "lines": [
+        {
+          "url": "https://591av.ws/enter",
+          "testUrl": "https://591av.ws/status.html",
+          "ok": true,
+          "ms": 461.0
+        },
+        {
+          "url": "https://91-av.one/enter",
+          "testUrl": "https://91-av.one/status.html",
+          "ok": true,
+          "ms": 485.0
+        },
+        {
+          "url": "https://91-av.men/enter",
+          "testUrl": "https://91-av.men/status.html",
+          "ok": true,
+          "ms": 960.0
+        },
+        {
+          "url": "https://591av.net/enter",
+          "testUrl": "https://591av.net/status.html",
+          "ok": true,
+          "ms": 1291.0
+        },
+        {
+          "url": "https://591av.sbs/enter",
+          "testUrl": "https://591av.sbs/status.html",
+          "ok": true,
+          "ms": 2221.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_52cd8432",
+      "name": "YesPorn",
+      "kind": "video",
+      "adapter": "missav",
+      "desc": "很多收费完整视频(免费)",
+      "icon": "play.rectangle.fill",
+      "url": "https://cn.yesporn.ws/enter",
+      "lines": [
+        {
+          "url": "https://cn.yesporn.ws/enter",
+          "testUrl": "https://cn.yesporn.ws/status.html",
+          "ok": true,
+          "ms": 303.0
+        },
+        {
+          "url": "https://cn.yesporn1.cc/enter",
+          "testUrl": "https://cn.yesporn1.cc/status.html",
+          "ok": true,
+          "ms": 1233.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_6cc00cf5",
+      "name": "禁漫天堂",
+      "kind": "comic",
+      "adapter": "comic",
+      "desc": "H漫画",
+      "icon": "books.vertical.fill",
+      "url": "https://18comic66.com/enter",
+      "lines": [
+        {
+          "url": "https://18comic888.cc/enter",
+          "testUrl": "https://18comic888.cc/status.html",
+          "ok": true,
+          "ms": 429.0
+        },
+        {
+          "url": "https://18comic01.cc/enter",
+          "testUrl": "https://18comic01.cc/status.html",
+          "ok": true,
+          "ms": 464.0
+        },
+        {
+          "url": "https://18comic01.net/enter",
+          "testUrl": "https://18comic01.net/status.html",
+          "ok": true,
+          "ms": 677.0
+        },
+        {
+          "url": "https://18comic1.top/enter",
+          "testUrl": "https://18comic1.top/status.html",
+          "ok": true,
+          "ms": 711.0
+        },
+        {
+          "url": "https://18comic6.net/enter",
+          "testUrl": "https://18comic6.net/status.html",
+          "ok": true,
+          "ms": 805.0
+        },
+        {
+          "url": "https://jmcomic.nl/enter",
+          "testUrl": "https://jmcomic.nl/status.html",
+          "ok": true,
+          "ms": 821.0
+        },
+        {
+          "url": "https://18comic1.nl/enter",
+          "testUrl": "https://18comic1.nl/status.html",
+          "ok": true,
+          "ms": 933.0
+        },
+        {
+          "url": "https://18comic.pw/enter",
+          "testUrl": "https://18comic.pw/status.html",
+          "ok": true,
+          "ms": 993.0
+        },
+        {
+          "url": "https://18comic04.net/enter",
+          "testUrl": "https://18comic04.net/status.html",
+          "ok": true,
+          "ms": 1136.0
+        },
+        {
+          "url": "https://18comic666.cc/enter",
+          "testUrl": "https://18comic666.cc/status.html",
+          "ok": true,
+          "ms": 1144.0
+        },
+        {
+          "url": "https://18comic888.ws/enter",
+          "testUrl": "https://18comic888.ws/status.html",
+          "ok": true,
+          "ms": 1168.0
+        },
+        {
+          "url": "https://18comic2.icu/enter",
+          "testUrl": "https://18comic2.icu/status.html",
+          "ok": true,
+          "ms": 1240.0
+        },
+        {
+          "url": "https://18comic666.net/enter",
+          "testUrl": "https://18comic666.net/status.html",
+          "ok": true,
+          "ms": 1292.0
+        },
+        {
+          "url": "https://18comic.nl/enter",
+          "testUrl": "https://18comic.nl/status.html",
+          "ok": true,
+          "ms": 1298.0
+        },
+        {
+          "url": "https://18comic03.net/enter",
+          "testUrl": "https://18comic03.net/status.html",
+          "ok": true,
+          "ms": 1384.0
+        },
+        {
+          "url": "https://18comic.cfd/enter",
+          "testUrl": "https://18comic.cfd/status.html",
+          "ok": true,
+          "ms": 1413.0
+        },
+        {
+          "url": "https://18comic1.cc/enter",
+          "testUrl": "https://18comic1.cc/status.html",
+          "ok": true,
+          "ms": 1431.0
+        },
+        {
+          "url": "https://18comic2.sbs/enter",
+          "testUrl": "https://18comic2.sbs/status.html",
+          "ok": true,
+          "ms": 1432.0
+        },
+        {
+          "url": "https://18comic.my/enter",
+          "testUrl": "https://18comic.my/status.html",
+          "ok": true,
+          "ms": 1631.0
+        },
+        {
+          "url": "https://mh99.ws/enter",
+          "testUrl": "https://mh99.ws/status.html",
+          "ok": true,
+          "ms": 1634.0
+        },
+        {
+          "url": "https://mh99.cfd/enter",
+          "testUrl": "https://mh99.cfd/status.html",
+          "ok": true,
+          "ms": 1683.0
+        },
+        {
+          "url": "https://18comic1.sbs/enter",
+          "testUrl": "https://18comic1.sbs/status.html",
+          "ok": true,
+          "ms": 1792.0
+        },
+        {
+          "url": "https://18comic1.icu/enter",
+          "testUrl": "https://18comic1.icu/status.html",
+          "ok": true,
+          "ms": 3055.0
+        },
+        {
+          "url": "https://18comic05.net/enter",
+          "testUrl": "https://18comic05.net/status.html",
+          "ok": true,
+          "ms": 3549.0
+        },
+        {
+          "url": "https://18comic66.com/enter",
+          "testUrl": "https://18comic66.com/status.html",
+          "ok": true,
+          "ms": 4421.0
+        },
+        {
+          "url": "https://18comic6.com/enter",
+          "testUrl": "https://18comic6.com/status.html",
+          "ok": true,
+          "ms": 4994.0
+        },
+        {
+          "url": "https://18comic02.net/enter",
+          "testUrl": "https://18comic02.net/status.html",
+          "ok": true,
+          "ms": 8785.0
+        },
+        {
+          "url": "https://18comic168.top/enter",
+          "testUrl": "https://18comic168.top/status.html",
+          "ok": false,
+          "ms": 825.0
+        },
+        {
+          "url": "https://18comic168.cc/enter",
+          "testUrl": "https://18comic168.cc/status.html",
+          "ok": false,
+          "ms": 886.0
+        },
+        {
+          "url": "https://18comic.sbs/enter",
+          "testUrl": "https://18comic.sbs/status.html",
+          "ok": false,
+          "ms": 1424.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_2f22a0a6",
+      "name": "99漫画",
+      "kind": "comic",
+      "adapter": "comic",
+      "desc": "另一个漫画站，资源多",
+      "icon": "books.vertical.fill",
+      "url": "https://www.wnacg02.net/enter",
+      "lines": [
+        {
+          "url": "https://wnacg.nl/enter",
+          "testUrl": "https://www.wnacg.nl/status.html",
+          "ok": true,
+          "ms": 433.0
+        },
+        {
+          "url": "https://www.wnacg02.com/enter",
+          "testUrl": "https://www.wnacg02.com/status.html",
+          "ok": true,
+          "ms": 511.0
+        },
+        {
+          "url": "https://wnacg.vip/enter",
+          "testUrl": "https://www.wnacg.vip/status.html",
+          "ok": true,
+          "ms": 596.0
+        },
+        {
+          "url": "https://wnacg.pw/enter",
+          "testUrl": "https://www.wnacg.pw/status.html",
+          "ok": true,
+          "ms": 623.0
+        },
+        {
+          "url": "https://99xmh.top/enter",
+          "testUrl": "https://www.99xmh.top/status.html",
+          "ok": true,
+          "ms": 625.0
+        },
+        {
+          "url": "https://99mh.one/enter",
+          "testUrl": "https://www.99mh.one/status.html",
+          "ok": true,
+          "ms": 662.0
+        },
+        {
+          "url": "https://wnacg666.com/enter",
+          "testUrl": "https://www.wnacg666.com/status.html",
+          "ok": true,
+          "ms": 717.0
+        },
+        {
+          "url": "https://www.wnacg01.net/enter",
+          "testUrl": "https://www.wnacg01.net/status.html",
+          "ok": true,
+          "ms": 1095.0
+        },
+        {
+          "url": "https://wnacg888.net/enter",
+          "testUrl": "https://www.wnacg888.net/status.html",
+          "ok": true,
+          "ms": 1116.0
+        },
+        {
+          "url": "https://www.wnacg02.net/enter",
+          "testUrl": "https://www.wnacg02.net/status.html",
+          "ok": true,
+          "ms": 1144.0
+        },
+        {
+          "url": "https://wnacg666.net/enter",
+          "testUrl": "https://www.wnacg666.net/status.html",
+          "ok": true,
+          "ms": 1160.0
+        },
+        {
+          "url": "https://wnacg888.com/enter",
+          "testUrl": "https://www.wnacg888.com/status.html",
+          "ok": true,
+          "ms": 1225.0
+        },
+        {
+          "url": "https://99mh.net/enter",
+          "testUrl": "https://www.99mh.net/status.html",
+          "ok": true,
+          "ms": 1476.0
+        },
+        {
+          "url": "https://99mh.nl/enter",
+          "testUrl": "https://www.99mh.nl/status.html",
+          "ok": true,
+          "ms": 1500.0
+        },
+        {
+          "url": "https://wnacg.my/enter",
+          "testUrl": "https://www.wnacg.my/status.html",
+          "ok": true,
+          "ms": 1759.0
+        },
+        {
+          "url": "https://wnacg.sbs/enter",
+          "testUrl": "https://www.wnacg.sbs/status.html",
+          "ok": true,
+          "ms": 1887.0
+        },
+        {
+          "url": "https://99mh.men/enter",
+          "testUrl": "https://www.99mh.men/status.html",
+          "ok": true,
+          "ms": 2115.0
+        },
+        {
+          "url": "https://wnacg.one/enter",
+          "testUrl": "https://www.wnacg.one/status.html",
+          "ok": false,
+          "ms": 1360.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_ecb3368e",
+      "name": "爱漫岛",
+      "kind": "comic",
+      "adapter": "maccms",
+      "desc": "免费中文汉化、日本漫画、韩国漫画、10万本、色情漫画等",
+      "icon": "books.vertical.fill",
+      "url": "https://www.amdcomic.art/enter",
+      "lines": [
+        {
+          "url": "https://www.amdcomic.art/enter",
+          "testUrl": "https://www.amdcomic.art/status.html",
+          "ok": true,
+          "ms": 224.0
+        },
+        {
+          "url": "https://www.amdcomic.one/enter",
+          "testUrl": "https://www.amdcomic.one/status.html",
+          "ok": true,
+          "ms": 844.0
+        },
+        {
+          "url": "https://www.amdcomic.ws/enter",
+          "testUrl": "https://www.amdcomic.ws/status.html",
+          "ok": true,
+          "ms": 1860.0
+        }
+      ],
+      "classes": [
+        {
+          "type_id": "1",
+          "type_name": "同人",
+          "href": "/vodtype/1.html"
+        },
+        {
+          "type_id": "2",
+          "type_name": "单本",
+          "href": "/vodtype/2.html"
+        },
+        {
+          "type_id": "3",
+          "type_name": "短篇",
+          "href": "/vodtype/3.html"
+        },
+        {
+          "type_id": "4",
+          "type_name": "韩漫",
+          "href": "/vodtype/4.html"
+        },
+        {
+          "type_id": "6",
+          "type_name": "校园",
+          "href": "/vodtype/6.html"
+        },
+        {
+          "type_id": "7",
+          "type_name": "幻想",
+          "href": "/vodtype/7.html"
+        },
+        {
+          "type_id": "8",
+          "type_name": "都市",
+          "href": "/vodtype/8.html"
+        },
+        {
+          "type_id": "9",
+          "type_name": "搞笑",
+          "href": "/vodtype/9.html"
+        }
+      ]
+    },
+    {
+      "key": "x99_e85133d7",
+      "name": "CartoonPorno",
+      "kind": "video",
+      "adapter": "missav",
+      "desc": "免费精品动漫卡通视频",
+      "icon": "play.rectangle.fill",
+      "url": "https://www.cartoonporno.vip/?hl=zh",
+      "lines": [
+        {
+          "url": "https://www.cartoonporno.vip/?hl=zh",
+          "testUrl": "https://www.cartoonporno.vip/status.html",
+          "ok": true,
+          "ms": 478.0
+        },
+        {
+          "url": "https://www.cartoonporno.cc/?hl=zh",
+          "testUrl": "https://www.cartoonporno.cc/status.html",
+          "ok": true,
+          "ms": 882.0
+        },
+        {
+          "url": "https://www.cartoonporno.top/?hl=zh",
+          "testUrl": "https://www.cartoonporno.top/status.html",
+          "ok": true,
+          "ms": 1300.0
+        },
+        {
+          "url": "https://www.cartoonporno.ws/?hl=zh",
+          "testUrl": "https://www.cartoonporno.ws/status.html",
+          "ok": true,
+          "ms": 1357.0
+        },
+        {
+          "url": "https://www.cartoonporno.art/?hl=zh",
+          "testUrl": "https://www.cartoonporno.art/status.html",
+          "ok": false,
+          "ms": 966.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_9364c1e5",
+      "name": "Hentai",
+      "kind": "video",
+      "adapter": "generic",
+      "desc": "提供 漫画、同人志、艺术图集、游戏CG、小说插图 等",
+      "icon": "play.rectangle.fill",
+      "url": "https://cn.acgmh.art/enter",
+      "lines": [
+        {
+          "url": "https://cn.acgmh.art/enter",
+          "testUrl": "https://cn.acgmh.art/status.html",
+          "ok": true,
+          "ms": 763.0
+        },
+        {
+          "url": "https://cn.acgmh.top/enter",
+          "testUrl": "https://cn.acgmh.top/status.html",
+          "ok": true,
+          "ms": 820.0
+        },
+        {
+          "url": "https://cn.acgmh.sbs/enter",
+          "testUrl": "https://cn.acgmh.sbs/status.html",
+          "ok": true,
+          "ms": 1079.0
+        },
+        {
+          "url": "https://cn.bato.icu/enter",
+          "testUrl": "https://cn.bato.icu/status.html",
+          "ok": true,
+          "ms": 1164.0
+        },
+        {
+          "url": "https://cn.acgmh.icu/enter",
+          "testUrl": "https://cn.acgmh.icu/status.html",
+          "ok": true,
+          "ms": 1249.0
+        },
+        {
+          "url": "https://cn.acgmh.vip/enter",
+          "testUrl": "https://cn.acgmh.vip/status.html",
+          "ok": true,
+          "ms": 1574.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_e8d1404a",
+      "name": "OKXXX",
+      "kind": "video",
+      "adapter": "generic",
+      "desc": "OKXXX",
+      "icon": "play.rectangle.fill",
+      "url": "https://okav.art/enter",
+      "lines": [
+        {
+          "url": "https://okav.art/enter",
+          "testUrl": "https://okav.art/status.html",
+          "ok": true,
+          "ms": 431.0
+        },
+        {
+          "url": "https://okxxx.icu/enter",
+          "testUrl": "https://okxxx.icu/status.html",
+          "ok": true,
+          "ms": 1200.0
+        },
+        {
+          "url": "https://okxxxx.net/enter",
+          "testUrl": "https://okxxxx.net/status.html",
+          "ok": true,
+          "ms": 1270.0
+        },
+        {
+          "url": "https://okx18.icu/enter",
+          "testUrl": "https://okx18.icu/status.html",
+          "ok": true,
+          "ms": 1490.0
+        },
+        {
+          "url": "https://okx18.cc/enter",
+          "testUrl": "https://okx18.cc/status.html",
+          "ok": true,
+          "ms": 1792.0
+        },
+        {
+          "url": "https://okxxx.ws/enter",
+          "testUrl": "https://okxxx.ws/status.html",
+          "ok": true,
+          "ms": 2365.0
+        },
+        {
+          "url": "https://okx18.vip/enter",
+          "testUrl": "https://okx18.vip/status.html",
+          "ok": true,
+          "ms": 2369.0
+        },
+        {
+          "url": "https://okxxx.win/enter",
+          "testUrl": "https://okxxx.win/status.html",
+          "ok": true,
+          "ms": 2571.0
+        },
+        {
+          "url": "https://okxxx.men/enter",
+          "testUrl": "https://okxxx.men/status.html",
+          "ok": true,
+          "ms": 2926.0
+        },
+        {
+          "url": "https://okxxx.one/enter",
+          "testUrl": "https://okxxx.one/status.html",
+          "ok": true,
+          "ms": 2969.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_86c9c1d3",
+      "name": "VJAV",
+      "kind": "video",
+      "adapter": "generic",
+      "desc": "VJAV",
+      "icon": "play.rectangle.fill",
+      "url": "https://vjav1.sbs/enter",
+      "lines": [
+        {
+          "url": "https://vjav-com.top/enter",
+          "testUrl": "https://vjav-com.top/status.html",
+          "ok": true,
+          "ms": 581.0
+        },
+        {
+          "url": "https://vjav.icu/enter",
+          "testUrl": "https://vjav.icu/status.html",
+          "ok": true,
+          "ms": 848.0
+        },
+        {
+          "url": "https://vjav1.sbs/enter",
+          "testUrl": "https://vjav1.sbs/status.html",
+          "ok": true,
+          "ms": 1591.0
+        },
+        {
+          "url": "https://vjav-com.icu/enter",
+          "testUrl": "https://vjav-com.icu/status.html",
+          "ok": true,
+          "ms": 1828.0
+        },
+        {
+          "url": "https://vjav1.top/enter",
+          "testUrl": "https://vjav1.top/status.html",
+          "ok": true,
+          "ms": 2013.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_30b320d4",
+      "name": "成人影片数据库",
+      "kind": "video",
+      "adapter": "generic",
+      "desc": "不错的下片站点，巨多高清无广告资源，完全免费，下片爱好者进",
+      "icon": "play.rectangle.fill",
+      "url": "https://javdb02.com/?locale=zh",
+      "lines": [
+        {
+          "url": "https://javdb1.top/?locale=zh",
+          "testUrl": "https://javdb1.top/status.html",
+          "ok": true,
+          "ms": 634.0
+        },
+        {
+          "url": "https://javdb02.com/?locale=zh",
+          "testUrl": "https://javdb02.com/status.html",
+          "ok": true,
+          "ms": 661.0
+        },
+        {
+          "url": "https://javdb.nl/?locale=zh",
+          "testUrl": "https://javdb.nl/status.html",
+          "ok": true,
+          "ms": 936.0
+        },
+        {
+          "url": "https://javdb1.art/?locale=zh",
+          "testUrl": "https://javdb1.art/status.html",
+          "ok": true,
+          "ms": 1016.0
+        },
+        {
+          "url": "https://javdb01.net/?locale=zh",
+          "testUrl": "https://javdb01.net/status.html",
+          "ok": true,
+          "ms": 1269.0
+        },
+        {
+          "url": "https://javdb.sbs/?locale=zh",
+          "testUrl": "https://javdb.sbs/status.html",
+          "ok": true,
+          "ms": 1328.0
+        },
+        {
+          "url": "https://javdb1.sbs/?locale=zh",
+          "testUrl": "https://javdb1.sbs/status.html",
+          "ok": true,
+          "ms": 1386.0
+        },
+        {
+          "url": "https://javdb.pw/?locale=zh",
+          "testUrl": "https://javdb.pw/status.html",
+          "ok": true,
+          "ms": 1987.0
+        },
+        {
+          "url": "https://javdb.icu/?locale=zh",
+          "testUrl": "https://javdb.icu/status.html",
+          "ok": true,
+          "ms": 2691.0
+        }
+      ],
+      "classes": []
+    },
+    {
+      "key": "x99_a5b6d0eb",
+      "name": "三级片资源，稀缺资源",
+      "kind": "video",
+      "adapter": "generic",
+      "desc": "最新最热门的电影电视剧动漫综艺台湾剧大陆剧日剧韩剧美剧，完全免费",
+      "icon": "play.rectangle.fill",
+      "url": "https://ptt03.net/p/1",
+      "lines": [
+        {
+          "url": "https://ptt2.one/p/1",
+          "testUrl": "https://ptt2.one/status.html",
+          "ok": true,
+          "ms": 820.0
+        },
+        {
+          "url": "https://ptt01.com/p/1",
+          "testUrl": "https://ptt01.com/status.html",
+          "ok": true,
+          "ms": 849.0
+        },
+        {
+          "url": "https://ptt02.com/p/1",
+          "testUrl": "https://ptt02.com/status.html",
+          "ok": true,
+          "ms": 940.0
+        },
+        {
+          "url": "https://ptt02.net/p/1",
+          "testUrl": "https://ptt02.net/status.html",
+          "ok": true,
+          "ms": 944.0
+        },
+        {
+          "url": "https://ptt03.com/p/1",
+          "testUrl": "https://ptt03.com/status.html",
+          "ok": true,
+          "ms": 976.0
+        },
+        {
+          "url": "https://ptt2.nl/p/1",
+          "testUrl": "https://ptt2.nl/status.html",
+          "ok": true,
+          "ms": 998.0
+        },
+        {
+          "url": "https://ptt2.my/p/1",
+          "testUrl": "https://ptt2.my/status.html",
+          "ok": true,
+          "ms": 1008.0
+        },
+        {
+          "url": "https://ptt02.nl/p/1",
+          "testUrl": "https://ptt02.nl/status.html",
+          "ok": true,
+          "ms": 1098.0
+        },
+        {
+          "url": "https://ptt02.cc/p/1",
+          "testUrl": "https://ptt02.cc/status.html",
+          "ok": true,
+          "ms": 1349.0
+        },
+        {
+          "url": "https://ptt01.ws/p/1",
+          "testUrl": "https://ptt01.ws/status.html",
+          "ok": true,
+          "ms": 1567.0
+        },
+        {
+          "url": "https://ptt2.art/p/1",
+          "testUrl": "https://ptt2.art/status.html",
+          "ok": true,
+          "ms": 1594.0
+        },
+        {
+          "url": "https://ptt03.net/p/1",
+          "testUrl": "https://ptt03.net/status.html",
+          "ok": true,
+          "ms": 2019.0
+        },
+        {
+          "url": "https://ptt2.top/p/1",
+          "testUrl": "https://ptt2.top/status.html",
+          "ok": true,
+          "ms": 2157.0
+        }
+      ],
+      "classes": []
+    }
+  ]
+}
