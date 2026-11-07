@@ -2504,7 +2504,7 @@
       "key": "x99_86c9c1d3",
       "name": "VJAV",
       "kind": "video",
-      "adapter": "generic",
+      "adapter": "vjav",
       "desc": "VJAV",
       "icon": "play.rectangle.fill",
       "url": "https://vjav1.sbs/enter",

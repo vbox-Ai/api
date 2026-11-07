@@ -1020,6 +1020,92 @@ class _XhamsterAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _VjavAdapter(_BaseAdapter):
+    """VJAV：JSON API（列表/详情/videofile），video_url 是西里尔同形字 base64。
+    解码：АВСЕМ→AB CEM、.→+、,→/、~→空，再补 =。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    B64MAP = {"А": "A", "В": "B", "С": "C", "Е": "E", "М": "M", ".": "+", ",": "/", "~": ""}
+
+    def _page(self, path, referer=None):
+        for attempt in range(2):
+            html = self.s.http(self._url(path), referer=referer,
+                               headers={"User-Agent": self.UA_DESKTOP,
+                                        "Accept": "application/json"}) or ""
+            if len(html) > 200:
+                return html
+        return html
+
+    def _json(self, path, referer=None):
+        html = self._page(path, referer=referer)
+        try:
+            return json.loads(html)
+        except Exception:
+            return None
+
+    @staticmethod
+    def _decode_b64(raw):
+        s = "".join(_VjavAdapter.B64MAP.get(c, c) for c in raw or "")
+        s += "=" * ((4 - len(s) % 4) % 4)
+        try:
+            return base64.b64decode(s).decode("utf-8", "replace")
+        except Exception:
+            return ""
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        path = "/api/json/videos2/86400/str/latest-updates/60/..%d.all...json" % page
+        data = self._json(path, referer=self.host + "/")
+        videos = []
+        for it in (data or {}).get("videos") or []:
+            vid = str(it.get("video_id") or "")
+            if not vid:
+                continue
+            title = it.get("title") or it.get("title_jp") or vid
+            videos.append({
+                "vod_id": self.p["key"] + "::" + vid,
+                "vod_name": str(title)[:120],
+                "vod_pic": self._abs(it.get("thumb") or ""),
+                "vod_remarks": str(it.get("duration") or ""),
+            })
+        total = int((data or {}).get("pages") or 0)
+        return {"list": videos, "page": page, "pagecount": total or page + 1}
+
+    def detail(self, vid):
+        vid = vid.split("::")[-1].strip("/")
+        if not vid.isdigit():
+            return {"list": []}
+        vid_i = int(vid)
+        shard = "%d/%d" % (1000000 * (vid_i // 1000000), 1000 * (vid_i // 1000))
+        data = self._json("/api/json/video/86400/%s/%s.json" % (shard, vid), referer=self.host + "/")
+        v = (data or {}).get("video") or {}
+        title = str(v.get("title") or v.get("title_jp") or vid)
+        pic = self._abs(v.get("thumb") or "")
+        vod = {
+            "vod_id": self.p["key"] + "::" + vid,
+            "vod_name": title[:120],
+            "vod_pic": pic,
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], vid),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        data = self._json("/api/videofile.php?video_id=%s&lifetime=8640000" % url,
+                          referer=self.host + "/")
+        target = ""
+        for item in (data or []) if isinstance(data, list) else []:
+            raw = item.get("video_url") or ""
+            path = self._decode_b64(raw)
+            if path.startswith("/"):
+                target = self._abs(path)
+                break
+        return {"parse": "0", "url": target,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _HanimeAdapter(_BaseAdapter):
     """hanime999.cc：/watch?v={id} 详情页直接带 mp4 直链。"""
 
@@ -1282,6 +1368,7 @@ ADAPTERS = {
     "jable": _JableAdapter,
     "rou": _RouAdapter,
     "xhamster": _XhamsterAdapter,
+    "vjav": _VjavAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
