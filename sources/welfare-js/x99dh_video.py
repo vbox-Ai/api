@@ -766,6 +766,38 @@ class Spider(SpiderBase):
             store = dict(newest[:self.LIST_MAX])
         self.cache_set("x99dh:lists", store)
 
+    def _prefetch(self, platform, cate):
+        """返回列表后，后台把同平台接下来的 1-2 个分类也抓一遍。"""
+        now = time.time()
+        seen = getattr(self, "_prefetched", None)
+        if seen is None:
+            seen = self._prefetched = {}
+        key = platform["key"]
+        if now - seen.get(key, 0) < 600:
+            return
+        seen[key] = now
+
+        others = [c["type_id"] for c in self.cats_for(platform) if c["type_id"] != str(cate)][:2]
+        if not others:
+            return
+
+        def work():
+            adapter_cls = ADAPTERS.get(platform.get("adapter") or "generic", _GenericAdapter)
+            for other in others:
+                if self._list_get("%s|%s|1" % (key, other)) is not None:
+                    continue
+                try:
+                    host = self._picker.pick(platform)
+                    res = adapter_cls(self, platform, host).list(other, 1)
+                    if res.get("list"):
+                        self._list_put("%s|%s|1" % (key, other), res)
+                except Exception:
+                    continue
+
+        th = threading.Thread(target=work)
+        th.daemon = True
+        th.start()
+
     def kick_refresh(self):
         """后台把各平台分类刷新一遍，不阻塞首屏。"""
         if getattr(self, "_refreshing", False):
@@ -946,6 +978,7 @@ class Spider(SpiderBase):
             result = adapter_cls(self, platform, host).list(cate, pg)
             if result.get("list"):
                 self._list_put(cache_key, result)
+                self._prefetch(platform, cate)
             return result
         except Exception:
             return {"list": []}
