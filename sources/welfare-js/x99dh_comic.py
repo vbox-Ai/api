@@ -1106,6 +1106,241 @@ class _VjavAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _91avAdapter(_BaseAdapter):
+    """亚洲素人精选(91-av/591av)：/pp1/ 首页 card-video 卡片；详情 /v/{slug}/ 页内 jmpres m3u8。
+    取流需 Referer + gzip（无 Referer 返回 143 字节 tip.ts 提示页）。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<div class="item card-video[^"]*"[^>]*>.*?<a href="([^"]+/v/[a-z0-9\-]+/)"[^>]*>.*?data-src="([^"]+)"[^>]*>.*?<figcaption[^>]*>([^<]+)</figcaption>.*?<h4 class="card-video__title">\s*<a[^>]*>(.*?)</a>',
+        re.S)
+
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        html = self._page("/pp1/" if page == 1 else "/pp1/%d/" % page)
+        videos, seen = [], set()
+        for href, img, dur, title in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", title)).strip(),
+                "vod_pic": self._abs(img),
+                "vod_remarks": dur.strip(),
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url, referer=self.host + "/")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+            title = re.split(r"\s*-\s*PPP\.Porn", title)[0]
+        hls = ""
+        for u in re.findall(r'https?://[^"\'\s<>]+\.m3u8', html):
+            if "preview.m3u8" not in u and ".jpg" not in u:
+                hls = u
+                break
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], hls or url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
+class _YespornAdapter(_BaseAdapter):
+    """YesPorn：/enter 首页 /video/{id}/{slug}/ 卡片；详情页 kt_player 配置里 video_url/
+    video_alt_url2 给 get_file mp4 直链（1080p/720p/trim）。CDN 可能挡（返回 gif），待复验。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<div class="thumb[^"]*"[^>]*>\s*<a href="([^"]+/video/\d+/[a-z0-9\-]+/)"[^>]*title="([^"]*)"[^>]*>.*?<img[^>]+src="([^"]+)"',
+        re.S)
+
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        html = self._page("/enter")
+        videos, seen = [], set()
+        for href, title, img in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": title.strip(),
+                "vod_pic": self._abs(img),
+                "vod_remarks": "",
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url, referer=self.host + "/")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+        def grab(key):
+            m = re.search(re.escape(key) + r":\s*'function/0/([^']+)'", html)
+            return m.group(1) if m else ""
+        mp4 = grab("video_alt_url2") or grab("video_alt_url") or grab("video_url")
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], mp4 or url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
+class _CartoonAdapter(_BaseAdapter):
+    """CartoonPorno：/videos?hl=zh 列表 lnk 卡片（data-s/data-i/data-u 拼详情 URL）；
+    详情页第一个 jmpres 签名 mp4 即正片（其余是推荐预览 p320-180）。
+    取流需 Referer（根即可）+ Range。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r"<a class='[^']*lnk[^']*' data-s='/v/' data-i='(\d+)' data-u='([^']+)'[^>]*title=\"([^\"]+)\"[^>]*>.*?<img[^>]+data-src=\"([^\"]+)\"",
+        re.S)
+
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        html = self._page("/videos?hl=zh")
+        videos, seen = [], set()
+        for vid, slug, title, img in self.CARD_RE.findall(html):
+            href = "/v/%s%s?hl=zh" % (vid, slug)
+            if href in seen:
+                continue
+            seen.add(href)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": title.strip(),
+                "vod_pic": self._abs(img),
+                "vod_remarks": "",
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url, referer=self.host + "/")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+        mp4 = ""
+        for u in re.findall(r'https?://[^"\'\s<>]+\.mp4[^"\'\s<>]*', html):
+            if "jmpres" in u and "p320-180" not in u:
+                mp4 = u
+                break
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], mp4 or url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
+class _HsexAdapter(_BaseAdapter):
+    """好色TV(hsex)：/enter 列表 video-{id}.htm 卡片；详情页 player.html?video_url=<m3u8>，
+    取流需站点 Referer + gzip（无 Referer 返回 143 字节提示页）。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(r'<a[^>]+href="(video-\d+\.htm)"[^>]*>\s*<div class="image"[^>]*title="([^"]*)"', re.S)
+
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        if cate and str(cate).strip():
+            html = self._page("/%s.htm" % str(cate).strip())
+        else:
+            html = self._page("/enter")
+        videos, seen = [], set()
+        for href, title in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            img = re.search(r'background-image:\s*url\(["\']([^"\']+)["\']\s*\)[^>]*title="%s"' % re.escape(title), html, re.S)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": title.strip(),
+                "vod_pic": self._abs(img.group(1)) if img else "",
+                "vod_remarks": "",
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url, referer=self.host + "/")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+            title = re.split(r"\s*-\s*片吧|-\s*Tv", title)[0]
+        hls = ""
+        m = re.search(r"player\.html\?video_url=([^&\s\"']+)", html)
+        if m:
+            try:
+                hls = urllib.parse.unquote(m.group(1))
+            except Exception:
+                hls = ""
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], hls or url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _HanimeAdapter(_BaseAdapter):
     """hanime999.cc：/watch?v={id} 详情页直接带 mp4 直链。"""
 
@@ -1369,6 +1604,10 @@ ADAPTERS = {
     "rou": _RouAdapter,
     "xhamster": _XhamsterAdapter,
     "vjav": _VjavAdapter,
+    "hsex": _HsexAdapter,
+    "91av": _91avAdapter,
+    "yesporn": _YespornAdapter,
+    "cartoon": _CartoonAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
