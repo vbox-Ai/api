@@ -5,6 +5,7 @@
 类型: video    快照: 2026.11.07.1434
 """
 import base64
+import http.client
 import json
 import re
 import ssl
@@ -53,31 +54,82 @@ _SSL.check_hostname = False
 _SSL.verify_mode = ssl.CERT_NONE
 
 
+_POOL = threading.local()
+
+
+def _pool():
+    pool = getattr(_POOL, "map", None)
+    if pool is None:
+        pool = _POOL.map = {}
+    return pool
+
+
+def _drop(host):
+    conn = _pool().pop(host, None)
+    if conn is not None:
+        try:
+            conn.close()
+        except Exception:
+            pass
+
+
+def _request_once(url, timeout, hdrs):
+    parts = urllib.parse.urlsplit(url)
+    host = parts.netloc
+    path = parts.path or "/"
+    if parts.query:
+        path += "?" + parts.query
+
+    conn = _pool().get(host)
+    if conn is None:
+        conn = http.client.HTTPSConnection(host, timeout=timeout, context=_SSL)
+        _pool()[host] = conn
+
+    conn.request("GET", path, headers=hdrs)
+    resp = conn.getresponse()
+    raw = resp.read()
+    if resp.will_close:
+        _drop(host)
+    return resp.status, raw, resp.getheader("Location"), dict(resp.getheaders())
+
+
 def _http(url, timeout=HTTP_TIMEOUT, headers=None):
-    """返回 (status, text)。4xx/5xx 也读 body —— 这些站常 500 但页面完整。"""
+    """连接复用版 GET：同域名复用 TLS（keep-alive），4xx/5xx 也读 body。"""
     hdrs = {
         "User-Agent": UA,
         "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
         "Accept-Language": "zh-CN,zh;q=0.9",
         "Cache-Control": "no-cache",
         "Accept-Encoding": "gzip",
+        "Connection": "keep-alive",
     }
     if headers:
         hdrs.update(headers)
-    request = urllib.request.Request(url, headers=hdrs)
-    try:
-        with urllib.request.urlopen(request, timeout=timeout, context=_SSL) as response:
-            raw = response.read()
-            if raw[:2] == b"\x1f\x8b":
+
+    current = url
+    for hop in range(3):
+        for attempt in (0, 1):
+            try:
+                status, raw, location, _ = _request_once(current, timeout, hdrs)
+                break
+            except Exception:
+                _drop(urllib.parse.urlsplit(current).netloc)
+                if attempt == 0:
+                    continue
+                return None, ""
+
+        if status in (301, 302, 303, 307, 308) and location and hop < 2:
+            current = urllib.parse.urljoin(current, location)
+            continue
+
+        if raw[:2] == b"\x1f\x8b":
+            try:
                 import gzip as _gz
                 raw = _gz.decompress(raw)
-            return response.status, raw.decode("utf-8", errors="replace")
-    except urllib.error.HTTPError as exc:
-        body = exc.read() if exc.fp else b""
-        return exc.code, body.decode("utf-8", errors="replace")
-    except Exception:
-        return None, ""
-
+            except Exception:
+                pass
+        return status, raw.decode("utf-8", errors="replace")
+    return None, ""
 
 class _Response(object):
     """给宿主/脚本使用的轻量响应对象（requests 兼容的最小子集）。"""
