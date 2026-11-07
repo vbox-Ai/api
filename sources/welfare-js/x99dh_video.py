@@ -60,13 +60,18 @@ def _http(url, timeout=HTTP_TIMEOUT, headers=None):
         "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
         "Accept-Language": "zh-CN,zh;q=0.9",
         "Cache-Control": "no-cache",
+        "Accept-Encoding": "gzip",
     }
     if headers:
         hdrs.update(headers)
     request = urllib.request.Request(url, headers=hdrs)
     try:
         with urllib.request.urlopen(request, timeout=timeout, context=_SSL) as response:
-            return response.status, response.read().decode("utf-8", errors="replace")
+            raw = response.read()
+            if raw[:2] == b"\x1f\x8b":
+                import gzip as _gz
+                raw = _gz.decompress(raw)
+            return response.status, raw.decode("utf-8", errors="replace")
     except urllib.error.HTTPError as exc:
         body = exc.read() if exc.fp else b""
         return exc.code, body.decode("utf-8", errors="replace")
@@ -117,6 +122,13 @@ class _LinePicker(object):
         hit = self.s.cache_get(key)
         if hit and time.time() - hit.get("ts", 0) < CACHE_TTL:
             return hit["host"]
+
+        # 快照里的线路是构建时实测过的（ok 优先、按 ms 升序），直接用，不再现场探测
+        ranked = [l for l in (platform.get("lines") or []) if l.get("ok")] or (platform.get("lines") or [])
+        if ranked and ranked[0].get("url"):
+            host = ranked[0]["url"]
+            self.remember(platform, host)
+            return host
 
         dead = self.s.cache_get("x99dh:dead:" + platform["key"]) or {}
         now = time.time()
