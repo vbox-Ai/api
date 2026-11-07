@@ -55,6 +55,7 @@ _SSL.verify_mode = ssl.CERT_NONE
 
 
 _POOL = threading.local()
+_COOKIES = {}
 
 
 def _pool():
@@ -88,6 +89,14 @@ def _request_once(url, timeout, hdrs):
     conn.request("GET", path, headers=hdrs)
     resp = conn.getresponse()
     raw = resp.read()
+    try:
+        for line in (resp.headers.get_all("Set-Cookie") or []):
+            kv = line.split(";", 1)[0]
+            if "=" in kv:
+                k, v = kv.split("=", 1)
+                _COOKIES.setdefault(host, {})[k.strip()] = v.strip()
+    except Exception:
+        pass
     if resp.will_close:
         _drop(host)
     return resp.status, raw, resp.getheader("Location"), dict(resp.getheaders())
@@ -103,6 +112,9 @@ def _http(url, timeout=HTTP_TIMEOUT, headers=None):
         "Accept-Encoding": "gzip",
         "Connection": "keep-alive",
     }
+    host0 = urllib.parse.urlsplit(url).netloc
+    if _COOKIES.get(host0):
+        hdrs["Cookie"] = "; ".join("%s=%s" % kv for kv in _COOKIES[host0].items())
     if headers:
         hdrs.update(headers)
 
@@ -542,6 +554,82 @@ class _MaccmsAdapter(_BaseAdapter):
         return ""
 
 
+class _ComicAdapter(_BaseAdapter):
+    """18comic 类：/enter 列表 -> /album/{id} 章节(/photo) -> 图片 -> manga://"""
+
+    ALBUM_RE = re.compile(r'href="(/album/\d+/[^"]*)"[^>]*>(.*?)</a>', re.S)
+    PHOTO_RE = re.compile(r'href="(/photo/\d+[^"]*)"')
+    IMG_RE = re.compile(r'data-original="([^"]+)"')
+
+    def _warm(self):
+        cached = getattr(self, "_entry_html", "")
+        if cached:
+            return cached
+        self._entry_html = self.s.http(self._url("/enter")) or ""
+        return self._entry_html
+
+    def list(self, cate, page):
+        html = self._warm()
+        videos, seen = [], set()
+        for href, inner in self.ALBUM_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            text = re.sub(r"<[^>]+>", " ", inner)
+            title = re.sub(r"\s+", " ", text).strip()[:60]
+            img = ""
+            found = re.search(r'(?:data-original|data-src|src)="([^"]+)"', inner)
+            if found:
+                img = found.group(1)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + href,
+                "vod_name": title or href,
+                "vod_pic": self._abs(img),
+                "vod_remarks": "漫画",
+            })
+        return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+
+    def detail(self, vid):
+        self._warm()
+        html = self.s.http(self._abs(vid), referer=self._url("/enter")) or ""
+        title = ""
+        found = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if found:
+            title = re.sub(r"\s+", " ", found.group(1)).strip()
+        chapters, seen = [], set()
+        for path in self.PHOTO_RE.findall(html):
+            if path in seen:
+                continue
+            seen.add(path)
+            chapters.append(path)
+        if not chapters:
+            return {"list": []}
+        eps = "#".join("第%d话$%s::%s" % (i + 1, self.p["key"], path)
+                       for i, path in enumerate(chapters))
+        vod = {
+            "vod_id": self.p["key"] + "::" + vid,
+            "vod_name": title or vid,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "漫画",
+            "vod_play_url": eps,
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        self._warm()
+        html = self.s.http(self._abs(url), referer=self._url("/enter")) or ""
+        imgs, seen = [], set()
+        for src in self.IMG_RE.findall(html):
+            full = self._abs(src)
+            if full and full not in seen:
+                seen.add(full)
+                imgs.append(full)
+        if not imgs:
+            return {"parse": "0", "url": ""}
+        return {"parse": "0", "url": "manga://" + "&&".join(imgs),
+                "header": self.s.headers()}
+
 class _MissavAdapter(_BaseAdapter):
     """MissAV 模板：/dm{id}/cn/{slug} 列表 + /private-test/{slug}/play 播放。"""
 
@@ -655,7 +743,7 @@ ADAPTERS = {
     "maccms": _MaccmsAdapter,
     "missav": _MissavAdapter,
     "18av": _GenericAdapter,
-    "comic": _GenericAdapter,
+    "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
 
