@@ -303,7 +303,7 @@
       "key": "x99_531d29bb",
       "name": "Hanime1",
       "kind": "video",
-      "adapter": "missav",
+      "adapter": "hanime",
       "desc": "著名动漫视频站点",
       "icon": "play.rectangle.fill",
       "url": "https://www.hanime16.com/enter",

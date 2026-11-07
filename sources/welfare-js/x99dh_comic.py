@@ -554,6 +554,75 @@ class _MaccmsAdapter(_BaseAdapter):
         return ""
 
 
+class _HanimeAdapter(_BaseAdapter):
+    """hanime999.cc：/watch?v={id} 详情页直接带 mp4 直链。"""
+
+    WATCH_RE = re.compile(r'href="(?:https?://[^"]+)?(/watch\?v=(\d+))"[^>]*>(.*?)</a>', re.S)
+
+    BASE = "https://www.hanime999.cc"
+    COOKIE = {'UGVyc2lzdFN0b3JhZ2U': '%7B%7D', '__PPU_ppucnt': '1', 'bnState_2059795': '%7B%22impressions%22%3A2%2C%22delayStarted%22%3A0%7D', 'bnState_2062499': '%7B%22impressions%22%3A1%2C%22delayStarted%22%3A0%7D', 'bnState_2066934': '%7B%22impressions%22%3A1%2C%22delayStarted%22%3A0%7D', 'bnState_2066936': '%7B%22impressions%22%3A1%2C%22delayStarted%22%3A0%7D', '__suvt': '5-e9cfdc823f5258129d35581306e15d24', '_pk_id.65.e23b': '7537686f6b234b99.1794056566.', '_pk_ses.65.e23b': '1', '_pk_ref.65.e23b': '%5B%22%22%2C%22%22%2C1794056566%2C%22https%3A%2F%2Fx99dh.lat%2F%22%5D'}
+    MOBILE_UA = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
+                 "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1")
+
+    def _page(self, path):
+        if self.COOKIE:
+            _COOKIES.setdefault("www.hanime999.cc", dict(self.COOKIE))
+        return self.s.http(self.BASE + path, headers={"User-Agent": self.MOBILE_UA}) or ""
+
+    def list(self, cate, page):
+        html = self._page("/")
+        if "/watch?v=" not in html:
+            # 首页被"继续访问"挡住时，用任一详情页当列表种子（该页含 300+ 推荐链接）
+            html = self._page("/watch?v=407765")
+        if int(page) > 1:
+            more = self._page("/?page=%d" % int(page))
+            if "/watch?v=" in more:
+                html = more
+        videos, seen = [], set()
+        for href, vid, inner in self.WATCH_RE.findall(html):
+            if vid in seen:
+                continue
+            seen.add(vid)
+            title = re.sub(r"<[^>]+>", " ", inner)
+            title = re.sub(r"\s+", " ", title).strip()[:60] or ("视频 " + vid)
+            img = ""
+            found = re.search(r'(?:data-src|data-original|src)="([^"]+)"', inner)
+            if found:
+                img = found.group(1)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + vid,
+                "vod_name": title,
+                "vod_pic": self._abs(img),
+                "vod_remarks": "",
+            })
+        return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+
+    def detail(self, vid):
+        html = self._page("/watch?v=" + str(vid))
+        title = ""
+        found = re.search(r'property="og:title"\s+content="([^"]+)"', html)
+        if found:
+            title = found.group(1).strip()
+        elif re.search(r"<title[^>]*>(.*?)</title>", html, re.S):
+            title = re.sub(r"\s+", " ", re.search(r"<title[^>]*>(.*?)</title>", html, re.S).group(1)).strip()
+        direct = ""
+        found = re.search(r'href="([^"]*?(?:-720p\.mp4|\.m3u8)[^"]*)"', html)
+        if found:
+            direct = found.group(1)
+        vod = {
+            "vod_id": self.p["key"] + "::" + str(vid),
+            "vod_name": title or ("视频 " + str(vid)),
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$" + self.p["key"] + "::" + direct,
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url, "header": self.s.headers()}
+
+
 class _ComicAdapter(_BaseAdapter):
     """18comic 类：/enter 列表 -> /album/{id} 章节(/photo) -> 图片 -> manga://"""
 
@@ -742,6 +811,7 @@ class _GenericAdapter(_BaseAdapter):
 ADAPTERS = {
     "maccms": _MaccmsAdapter,
     "missav": _MissavAdapter,
+    "hanime": _HanimeAdapter,
     "18av": _GenericAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
@@ -953,10 +1023,12 @@ class Spider(SpiderBase):
     def headers(self):
         return {"User-Agent": UA, "Accept-Language": "zh-CN,zh;q=0.9"}
 
-    def http(self, url, referer=None):
+    def http(self, url, referer=None, headers=None):
         hdrs = self.headers()
         if referer:
             hdrs["Referer"] = referer
+        if headers:
+            hdrs.update(headers)
         return _http(url, timeout=HTTP_TIMEOUT, headers=hdrs)[1]
 
     def fetch(self, url, headers=None, **kw):
