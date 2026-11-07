@@ -814,7 +814,8 @@ class Spider(SpiderBase):
 
         def work():
             time.sleep(1)
-            for platform in (self._snapshot.get("platforms") or [])[:3]:
+            # 只预热"有分类"的平台（当前 6 个），每个抓首个分类，约 360KB
+            for platform in (self._snapshot.get("platforms") or []):
                 cats = self.cats_for(platform)
                 if cats:
                     self._prefetch_worker(platform, [cats[0]["type_id"]])
