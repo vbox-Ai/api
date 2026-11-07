@@ -930,6 +930,96 @@ class _RouAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_MOBILE, "Referer": self.host + "/"}}
 
 
+class _XhamsterAdapter(_BaseAdapter):
+    """xhamster：/enter 拿 cookie 后纯 HTML 列表；详情页 window 数据里的
+    mp4/hls 签名直链；正片取 hls 主播放列表（_TPL_.h264.mp4.m3u8，比 AV1 兼容性好）。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<a class="video-thumb__image-container[^"]*"[^>]*href="([^"]+)"[^>]*aria-label="([^"]+)"',
+        re.S)
+    IMG_RE = re.compile(r'<img class="tnum-[^"]* thumb-image-container__image" src="([^"]+)"')
+    SHELL_RE = re.compile(r"继续访问|Continue|Just a moment", re.I)
+
+    def _page(self, path, referer=None):
+        """带 cookie 访问；偶发反爬壳（<3KB）时先过 /enter 拿 cookie 再重试。"""
+        for attempt in range(2):
+            html = self.s.http(self._url(path), referer=referer,
+                               headers={"User-Agent": self.UA_DESKTOP}) or ""
+            if len(html) > 4000 or not self.SHELL_RE.search(html):
+                return html
+            self.s.http(self._url("/enter"), headers={"User-Agent": self.UA_DESKTOP}) or ""
+        return html
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        html = self._page("/" if page <= 1 else "/%d" % page)
+        anchors = self.CARD_RE.findall(html)
+        imgs = self.IMG_RE.findall(html)
+        videos, seen = [], set()
+        for i, (href, label) in enumerate(anchors):
+            if href in seen:
+                continue
+            seen.add(href)
+            name = re.sub(r"\s+", " ", label).strip()
+            pic = imgs[i] if i < len(imgs) else ""
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": name or href,
+                "vod_pic": self._abs(pic),
+                "vod_remarks": "",
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url, referer=self.host + "/")
+        title = ""
+        m = re.search(r'"videoTitle":"((?:[^"\\]|\\.)*)"', html)
+        if m:
+            try:
+                title = json.loads('"%s"' % m.group(1))
+            except Exception:
+                title = m.group(1)
+        if not title:
+            m = re.search(r'property="og:title" content="([^"]+)"', html)
+            if m:
+                title = m.group(1)
+        if not title:
+            m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+            if m:
+                title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+        pic = ""
+        m = re.search(r'"videoImage":"((?:[^"\\]|\\.)*)"', html)
+        if m:
+            try:
+                pic = json.loads('"%s"' % m.group(1))
+            except Exception:
+                pic = m.group(1)
+        if not pic:
+            m = re.search(r'property="og:image" content="([^"]+)"', html)
+            if m:
+                pic = m.group(1)
+        master = ""
+        m = re.search(r'<link rel="preload" href="(https?:[^"]+?_TPL_\.av1\.mp4\.m3u8)"', html)
+        if m:
+            master = m.group(1).replace("\\/", "/").replace("_TPL_.av1.mp4.m3u8", "_TPL_.h264.mp4.m3u8")
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": pic,
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], master),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _HanimeAdapter(_BaseAdapter):
     """hanime999.cc：/watch?v={id} 详情页直接带 mp4 直链。"""
 
@@ -1191,6 +1281,7 @@ ADAPTERS = {
     "18av": _Av18Adapter,
     "jable": _JableAdapter,
     "rou": _RouAdapter,
+    "xhamster": _XhamsterAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }

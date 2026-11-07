@@ -909,7 +909,7 @@
       "key": "x99_f3faa727",
       "name": "xhamster",
       "kind": "video",
-      "adapter": "generic",
+      "adapter": "xhamster",
       "desc": "著名视频站点",
       "icon": "play.rectangle.fill",
       "url": "https://zh.xhamster02.com/enter",
