@@ -668,7 +668,16 @@ class Spider(SpiderBase):
         classes = []
         filters = {}
         for platform in self._snapshot.get("platforms") or []:
-            classes.append({"type_id": platform["key"], "type_name": platform["name"]})
+            item = {"type_id": platform["key"], "type_name": platform["name"]}
+            # 客户端读 class[].sub_categories（国色天香同款约定），选中后回传 "平台key|分类id"
+            if platform.get("adapter") != "missav":
+                subs = [
+                    {"type_id": platform["key"] + "|" + c["type_id"], "type_name": c["type_name"]}
+                    for c in (platform.get("classes") or [])
+                ]
+                if subs:
+                    item["sub_categories"] = subs
+            classes.append(item)
             chips = []
             cats = platform.get("classes") or []
             if cats:
@@ -691,10 +700,17 @@ class Spider(SpiderBase):
         return {"list": []}
 
     def categoryContent(self, tid, pg, filter, extend):
+        # 二级分类：tid = "平台key|分类id"
+        tid = str(tid or "")
+        sub_cate = ""
+        if "|" in tid:
+            tid, _, sub_cate = tid.partition("|")
         platform = self._index.get(tid)
         if not platform:
             return {"list": []}
-        extend = extend or {}
+        extend = dict(extend or {})
+        if sub_cate:
+            extend.setdefault("cate", sub_cate)
         line_no = str(extend.get("line") or "0")
         if line_no.isdigit() and int(line_no) > 0:
             lines = platform.get("lines") or []
