@@ -560,7 +560,7 @@ class _HanimeAdapter(_BaseAdapter):
     WATCH_RE = re.compile(r'href="(?:https?://[^"]+)?(/watch\?v=(\d+))"[^>]*>(.*?)</a>', re.S)
 
     BASE = "https://www.hanime999.cc"
-    COOKIE = {'UGVyc2lzdFN0b3JhZ2U': '%7B%7D', '__PPU_ppucnt': '1', 'bnState_2059795': '%7B%22impressions%22%3A2%2C%22delayStarted%22%3A0%7D', 'bnState_2062499': '%7B%22impressions%22%3A1%2C%22delayStarted%22%3A0%7D', 'bnState_2066934': '%7B%22impressions%22%3A1%2C%22delayStarted%22%3A0%7D', 'bnState_2066936': '%7B%22impressions%22%3A1%2C%22delayStarted%22%3A0%7D', '__suvt': '5-e9cfdc823f5258129d35581306e15d24', '_pk_id.65.e23b': '7537686f6b234b99.1794056566.', '_pk_ses.65.e23b': '1', '_pk_ref.65.e23b': '%5B%22%22%2C%22%22%2C1794056566%2C%22https%3A%2F%2Fx99dh.lat%2F%22%5D'}
+    COOKIE = {}   # 实测无需 Cookie：iPhone UA + /watch?v= 即可
     MOBILE_UA = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
                  "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1")
 
