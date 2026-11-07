@@ -219,6 +219,25 @@ class _MaccmsAdapter(_BaseAdapter):
     TITLE_RE = re.compile(r'class="[^"]*(?:title|name)[^"]*"[^>]*>(.*?)<', re.S)
     IMG_RE = re.compile(r'(?:data-original|data-src|src)="([^"]+)"')
 
+    def _scan_class(self, cate):
+        """运行时抓 /enter 页的分类链接，补上快照里没有的分类（24h 缓存）。"""
+        key = "x99dh:classes:" + self.p["key"]
+        cached = self.s.cache_get(key)
+        if not (cached and time.time() - cached.get("ts", 0) < 86400):
+            html = self.s.http(self._url("/enter")) or ""
+            found = {}
+            for href, label in re.findall(
+                r'<a[^>]+href="([^"]*?(?:/vodtype/\d+|/index\.php/vod/type/id/\d+)[^"]*)"[^>]*>(.*?)</a>',
+                html, re.S):
+                match = re.search(r"(?:vodtype|vod/type/id)/(\d+)", href)
+                text = re.sub(r"<[^>]+>", "", label).strip()
+                if match and text and len(text) < 14:
+                    found.setdefault(match.group(1), {"href": href, "name": text})
+            cached = {"map": found, "ts": time.time()}
+            if found:
+                self.s.cache_set(key, cached)
+        return ((cached or {}).get("map") or {}).get(str(cate), {}).get("href", "")
+
     def _list_url(self, cate, page):
         href = ""
         for item in self.p.get("classes") or []:
@@ -226,7 +245,7 @@ class _MaccmsAdapter(_BaseAdapter):
                 href = item.get("href") or ""
                 break
         if not href:
-            href = "/vodtype/%s.html" % cate
+            href = self._scan_class(cate) or ("/vodtype/%s.html" % cate)
         base = href.rsplit(".html", 1)[0]
         if "/page/" in href or "/index.php" in href:
             return self._url(base + "/page/%d.html" % int(page))
@@ -699,6 +718,24 @@ class Spider(SpiderBase):
     def homeVideoContent(self):
         return {"list": []}
 
+    @staticmethod
+    def _norm_extend(extend, filter):
+        data = {}
+        for src in (extend, filter):
+            if isinstance(src, str):
+                try:
+                    src = json.loads(src)
+                except Exception:
+                    continue
+            if isinstance(src, dict):
+                for k, v in src.items():
+                    data[str(k)] = v
+            elif isinstance(src, list):
+                for item in src:
+                    if isinstance(item, dict) and item.get("key"):
+                        data[str(item["key"])] = item.get("value")
+        return data
+
     def categoryContent(self, tid, pg, filter, extend):
         # 二级分类：tid = "平台key|分类id"
         tid = str(tid or "")
@@ -708,7 +745,7 @@ class Spider(SpiderBase):
         platform = self._index.get(tid)
         if not platform:
             return {"list": []}
-        extend = dict(extend or {})
+        extend = self._norm_extend(extend, filter)
         if sub_cate:
             extend.setdefault("cate", sub_cate)
         line_no = str(extend.get("line") or "0")
@@ -726,9 +763,17 @@ class Spider(SpiderBase):
             cats = platform.get("classes") or []
             cate = cats[0]["type_id"] if cats else "0"
 
+        cache_key = "x99dh:list:%s:%s:%s" % (platform["key"], cate, pg)
+        hit = self.cache_get(cache_key)
+        if hit and time.time() - hit.get("ts", 0) < 180:
+            return hit["data"]
+
         adapter_cls = ADAPTERS.get(platform.get("adapter") or "generic", _GenericAdapter)
         try:
-            return adapter_cls(self, platform, host).list(cate, pg)
+            result = adapter_cls(self, platform, host).list(cate, pg)
+            if result.get("list"):
+                self.cache_set(cache_key, {"data": result, "ts": time.time()})
+            return result
         except Exception:
             return {"list": []}
 
