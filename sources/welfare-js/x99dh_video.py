@@ -743,6 +743,29 @@ class Spider(SpiderBase):
             self.cache_set("x99dh:cats:" + platform["key"], {"cats": cats, "ts": time.time()})
         return cats
 
+    LIST_TTL = 180
+    LIST_MAX = 40
+
+    def _lists(self):
+        store = self.cache_get("x99dh:lists")
+        return store if isinstance(store, dict) else {}
+
+    def _list_get(self, key):
+        item = self._lists().get(key)
+        if item and time.time() - item.get("ts", 0) < self.LIST_TTL:
+            return item.get("data")
+        return None
+
+    def _list_put(self, key, data):
+        now = time.time()
+        store = {k: v for k, v in self._lists().items()
+                 if isinstance(v, dict) and now - v.get("ts", 0) < self.LIST_TTL}
+        store[key] = {"data": data, "ts": now}
+        if len(store) > self.LIST_MAX:
+            newest = sorted(store.items(), key=lambda kv: kv[1].get("ts", 0), reverse=True)
+            store = dict(newest[:self.LIST_MAX])
+        self.cache_set("x99dh:lists", store)
+
     def kick_refresh(self):
         """后台把各平台分类刷新一遍，不阻塞首屏。"""
         if getattr(self, "_refreshing", False):
@@ -913,16 +936,16 @@ class Spider(SpiderBase):
             cats = platform.get("classes") or []
             cate = cats[0]["type_id"] if cats else "0"
 
-        cache_key = "x99dh:list:%s:%s:%s" % (platform["key"], cate, pg)
-        hit = self.cache_get(cache_key)
-        if hit and time.time() - hit.get("ts", 0) < 180:
-            return hit["data"]
+        cache_key = "%s|%s|%s" % (platform["key"], cate, pg)
+        hit = self._list_get(cache_key)
+        if hit is not None:
+            return hit
 
         adapter_cls = ADAPTERS.get(platform.get("adapter") or "generic", _GenericAdapter)
         try:
             result = adapter_cls(self, platform, host).list(cate, pg)
             if result.get("list"):
-                self.cache_set(cache_key, {"data": result, "ts": time.time()})
+                self._list_put(cache_key, result)
             return result
         except Exception:
             return {"list": []}
