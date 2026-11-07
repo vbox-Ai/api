@@ -40,8 +40,8 @@ SNAPSHOT = json.loads('{"version":"2026.11.07.1434","entry":["https://x99dh.net"
 CACHE_TTL = 600          # 线路/入口胜者缓存
 DEAD_COOLDOWN = 1800     # 死亡线路冷却
 BATCH = 3                # 每批并发探测条数
-PROBE_TIMEOUT = 4        # 单条探测超时
-PROBE_BUDGET = 12        # 单平台探测总预算
+PROBE_TIMEOUT = 3        # 单条探测超时
+PROBE_BUDGET = 6         # 单平台探测总预算
 HTTP_TIMEOUT = 7         # 业务请求超时（App 单次调用上限 20s，探测预算 12s + 本值需留余量）
 NAV_TTL = 21600          # 快照刷新
 
@@ -107,6 +107,10 @@ class _LinePicker(object):
 
     def __init__(self, spider):
         self.s = spider
+
+    def remember(self, platform, host):
+        if host:
+            self.s.cache_set("x99dh:line:" + platform["key"], {"host": host, "ts": time.time()})
 
     def pick(self, platform):
         key = "x99dh:line:" + platform["key"]
@@ -753,6 +757,9 @@ class Spider(SpiderBase):
             lines = platform.get("lines") or []
             index = int(line_no) - 1
             host = lines[index]["url"] if index < len(lines) else ""
+            if host:
+                # 显式选的线路直接记为胜者，后续自动模式不再探测
+                self._picker.remember(platform, host)
         else:
             host = self._picker.pick(platform)
         if not host:
