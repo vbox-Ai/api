@@ -554,6 +554,64 @@ class _MaccmsAdapter(_BaseAdapter):
         return ""
 
 
+class _Av18Adapter(_BaseAdapter):
+    """18av：/zh/{cate}/all/{page}.html 列表，详情 video[data-src] 直链。"""
+
+    UA_MOBILE = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
+                 "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1")
+    CARD_RE = re.compile(r'<a[^>]+href="(/zh/[^"]+)"[^>]*class="[^"]*post[^"]*"[^>]*>(.*?)</a>',
+                         re.S | re.I)
+
+    def _page(self, path):
+        return self.s.http(self._url(path), headers={"User-Agent": self.UA_MOBILE}) or ""
+
+    def list(self, cate, page):
+        slug = cate if cate and not str(cate).isdigit() else "chinese_list"
+        html = self._page("/zh/%s/all/%d.html" % (slug, int(page)))
+        videos, seen = [], set()
+        for href, inner in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            title = re.search(r'<h[23][^>]*>(.*?)</h[23]>', inner, re.S)
+            name = re.sub(r"<[^>]+>", " ", title.group(1)).strip() if title else ""
+            img = re.search(r'(?:data-src|data-original|src)="([^"]+)"', inner)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + href,
+                "vod_name": name or href,
+                "vod_pic": self._abs(img.group(1)) if img else "",
+                "vod_remarks": "",
+            })
+        if not videos:
+            for href in sorted(set(re.findall(r'href="(/zh/[a-z0-9_\-]+/[a-z0-9_\-]+)"', html)))[:40]:
+                videos.append({"vod_id": self.p["key"] + "::" + href,
+                               "vod_name": href, "vod_pic": "", "vod_remarks": ""})
+        return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+
+    def detail(self, vid):
+        html = self._page(vid)
+        title = ""
+        found = re.search(r'<h1[^>]*>(.*?)</h1>', html, re.S) or re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if found:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", found.group(1))).strip()
+        direct = ""
+        found = re.search(r'<video[^>]+data-src="([^"]+)"', html)
+        if found:
+            direct = found.group(1)
+        vod = {
+            "vod_id": self.p["key"] + "::" + vid,
+            "vod_name": title or vid,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$" + self.p["key"] + "::" + direct,
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url, "header": self.s.headers()}
+
+
 class _HanimeAdapter(_BaseAdapter):
     """hanime999.cc：/watch?v={id} 详情页直接带 mp4 直链。"""
 
@@ -812,7 +870,7 @@ ADAPTERS = {
     "maccms": _MaccmsAdapter,
     "missav": _MissavAdapter,
     "hanime": _HanimeAdapter,
-    "18av": _GenericAdapter,
+    "18av": _Av18Adapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
