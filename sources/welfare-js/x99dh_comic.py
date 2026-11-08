@@ -46,6 +46,23 @@ PROBE_BUDGET = 6         # 单平台探测总预算
 HTTP_TIMEOUT = 7         # 业务请求超时（App 单次调用上限 20s，探测预算 12s + 本值需留余量）
 NAV_TTL = 21600          # 快照刷新
 
+# ---- 全平台搜索（福利专区「搜索」Tab）----
+# 只收「实测有可用搜索接口且一次请求就出结果」的平台；客户端硬超时 8s，留余量。
+# 实测被排除的：三级片资源（?search= 不过滤，返回与首页相同）、LissAV/国产区（无搜索入口）、
+#               18av、99漫画（试过的形态全 4xx/壳页）。
+SEARCH_PLATFORMS = frozenset((
+    "MissAV", "Pornhub", "Jable", "xhamster", "avjoy", "Hentai",   # 视频蜘蛛
+    "禁漫天堂", "爱漫岛",                                             # 漫画蜘蛛
+))
+SEARCH_BUDGET = 6.0      # 并行搜索总预算（秒）；客户端 8s 超时，留 2s 回传
+SEARCH_PER_PLATFORM = 12  # 单平台最多贡献条数，避免一家刷屏
+
+# 这几家在「关键词无匹配」时**不回空，而是给一套默认推荐**（实测乱码关键词也返回
+# xhamster 46 / avjoy 8 / 禁漫 12 / 爱漫岛 6 条），所以额外要求「至少一条结果标题含关键词」，
+# 否则整家丢弃。其余平台（MissAV/Pornhub/Jable/Hentai）无匹配时本来就返回 0，不需要守卫——
+# 而且**不能加**：MissAV 搜「巨乳」结果是 slug 标题（12 条里 0 条含中文），加了会误杀。
+SEARCH_TITLE_GUARD = frozenset(("xhamster", "avjoy", "禁漫天堂", "爱漫岛"))
+
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
 
@@ -278,6 +295,16 @@ class _BaseAdapter(object):
 
     def categories(self):
         return self.p.get("classes") or []
+
+    def search(self, keyword, page):
+        """平台搜索（可选）：返回 [vod…]。**只有实现了它的平台才在 SEARCH_PLATFORMS 里**。
+
+        福利专区的「搜索」Tab 会调 `Spider.searchContent(key, quick, pg)`，那个入口
+        只给关键词和页码，不给平台 id，所以由 `Spider.searchContent` 挑一批平台并行搜。
+        客户端对搜索有 **8 秒硬超时**（`PythonSpiderEngine.callSearchContentAsync`），
+        所以这里每个实现都要「一次请求拿到结果」，不做多线路轮询。
+        """
+        return []
 
     def list(self, cate, page):
         return {"list": [], "page": int(page), "pagecount": int(page) + 1}
@@ -817,6 +844,25 @@ class _JableAdapter(_BaseAdapter):
                 cats.append({"type_id": slug, "type_name": text[:24]})
         return cats[:60] or (self.p.get("classes") or [])
 
+    def _parse(self, html):
+        html = html or ""
+        videos, seen = [], set()
+        for href, inner in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            name = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", inner)).strip()
+            ctx = html[max(0, html.find(href) - 800):html.find(href) + 100]
+            img = re.search(r'<img[^>]+data-src="([^"]+)"', ctx)
+            label = re.search(r'<span class="label">([^<]+)</span>', ctx)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": name or href,
+                "vod_pic": self._abs(img.group(1)) if img else "",
+                "vod_remarks": label.group(1).strip() if label else "",
+            })
+        return videos
+
     def list(self, cate, page):
         page = max(1, int(page))
         cid = str(cate or "").strip()
@@ -825,25 +871,18 @@ class _JableAdapter(_BaseAdapter):
             html = self._page(path, referer=self.host + "/categories/")
         else:
             html = self._page("/latest-updates/%d/" % page)
-        videos, seen = [], set()
-        for href, inner in self.CARD_RE.findall(html):
-            if href in seen:
-                continue
-            seen.add(href)
-            name = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", inner)).strip()
-            img = re.search(r'<img[^>]+data-src="([^"]+)"', html[max(0, html.find(href) - 800):html.find(href) + 100])
-            label = re.search(r'<span class="label">([^<]+)</span>',
-                              html[max(0, html.find(href) - 800):html.find(href) + 100])
-            videos.append({
-                "vod_id": self.p["key"] + "::" + self._abs(href),
-                "vod_name": name or href,
-                "vod_pic": self._abs(img.group(1)) if img else "",
-                "vod_remarks": label.group(1).strip() if label else "",
-            })
+        videos = self._parse(html)
         total = 0
-        for num in re.findall(r"/latest-updates/(\d+)/", html):
+        for num in re.findall(r"/latest-updates/(\d+)/", html or ""):
             total = max(total, int(num))
         return {"list": videos, "page": page, "pagecount": total or page + 1}
+
+    def search(self, keyword, page):
+        """Jable 搜索：/search/{关键词}/{页码}/（末尾斜杠必须有，不带会回壳页；实测 26 条）。"""
+        page = max(1, int(page))
+        return self._parse(self._page(
+            "/search/%s/%d/" % (urllib.parse.quote(str(keyword)), page),
+            referer=self.host + "/"))
 
     def detail(self, vid):
         url = self._abs(vid)
@@ -1049,14 +1088,7 @@ class _XhamsterAdapter(_BaseAdapter):
                 cats.append({"type_id": slug, "type_name": text[:20]})
         return cats[:60] or (self.p.get("classes") or [])
 
-    def list(self, cate, page):
-        page = max(1, int(page))
-        cid = str(cate or "").strip()
-        if cid and not cid.isdigit():
-            html = self._page("/categories/" + cid + ("/%d" % page if page > 1 else ""),
-                              referer=self.host + "/categories")
-        else:
-            html = self._page("/" if page <= 1 else "/%d" % page)
+    def _parse(self, html):
         anchors = self.CARD_RE.findall(html)
         imgs = self.IMG_RE.findall(html)
         videos, seen = [], set()
@@ -1072,7 +1104,24 @@ class _XhamsterAdapter(_BaseAdapter):
                 "vod_pic": self._abs(pic),
                 "vod_remarks": "",
             })
-        return {"list": videos, "page": page, "pagecount": page + 1}
+        return videos
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        cid = str(cate or "").strip()
+        if cid and not cid.isdigit():
+            html = self._page("/categories/" + cid + ("/%d" % page if page > 1 else ""),
+                              referer=self.host + "/categories")
+        else:
+            html = self._page("/" if page <= 1 else "/%d" % page)
+        return {"list": self._parse(html), "page": page, "pagecount": page + 1}
+
+    def search(self, keyword, page):
+        """xhamster 搜索：/search/{关键词}/{页码}（实测 49 条）。"""
+        page = max(1, int(page))
+        return self._parse(self._page(
+            "/search/%s/%d" % (urllib.parse.quote(str(keyword)), page),
+            referer=self.host + "/"))
 
     def detail(self, vid):
         url = self._abs(vid)
@@ -1808,22 +1857,9 @@ class _KvsAdapter(_BaseAdapter):
                 break
         return cats or (self.p.get("classes") or [])
 
-    def list(self, cate, page):
-        page = max(1, int(page))
-        entry = (self.p.get("lines") or [{}])[0].get("url", "")
-        base = self._kvs_base(entry)
-        # 首页列表要用完整入口路径（avjoy 的 /enter 才有卡片，剥掉会拿到 2337 壳页）
-        home = urllib.parse.urlsplit(entry).path.rstrip("/") or "/"
-        cid = str(cate or "").strip()
-        if cid.startswith("/search/videos/"):
-            path = cid if page <= 1 else "%s?page=%d" % (cid, page)
-        elif cid.startswith("/") and "/videos/genre/" in cid:
-            path = cid if page <= 1 else "%s?page=%d" % (cid, page)
-        else:
-            path = home if page <= 1 else "%s?page=%d" % (home, page)
-        html = self._page(path, referer=entry)
+    def _parse(self, html):
         videos, seen = [], set()
-        for href, attrs, inner in self.CARD_RE.findall(html):
+        for href, attrs, inner in self.CARD_RE.findall(html or ""):
             if href in seen:
                 continue
             seen.add(href)
@@ -1839,7 +1875,37 @@ class _KvsAdapter(_BaseAdapter):
                 "vod_pic": self._abs(pic),
                 "vod_remarks": "",
             })
-        return {"list": videos, "page": page, "pagecount": page + 1}
+        return videos
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        entry = (self.p.get("lines") or [{}])[0].get("url", "")
+        base = self._kvs_base(entry)
+        # 首页列表要用完整入口路径（avjoy 的 /enter 才有卡片，剥掉会拿到 2337 壳页）
+        home = urllib.parse.urlsplit(entry).path.rstrip("/") or "/"
+        cid = str(cate or "").strip()
+        if cid.startswith("/search/videos/"):
+            path = cid if page <= 1 else "%s?page=%d" % (cid, page)
+        elif cid.startswith("/") and "/videos/genre/" in cid:
+            path = cid if page <= 1 else "%s?page=%d" % (cid, page)
+        else:
+            path = home if page <= 1 else "%s?page=%d" % (home, page)
+        return {"list": self._parse(self._page(path, referer=entry)),
+                "page": page, "pagecount": page + 1}
+
+    def search(self, keyword, page):
+        """KVS 系搜索：{内容根}/search/videos/{关键词}。
+
+        实测 **avjoy 有结果（146 条候选）**；LissAV/国产区 的同一路径回壳页，
+        所以那两家会返回空（保留实现，站点开了就自动生效）。
+        """
+        page = max(1, int(page))
+        entry = (self.p.get("lines") or [{}])[0].get("url", "")
+        base = self._kvs_base(entry)
+        path = "%s/search/videos/%s" % (base, urllib.parse.quote(str(keyword)))
+        if page > 1:
+            path += "?page=%d" % page
+        return self._parse(self._page(path, referer=entry))
 
     @staticmethod
     def _detail_title(html):
@@ -1987,6 +2053,20 @@ class _PornhubAdapter(_BaseAdapter):
             cats.append({"type_id": "c=" + cid, "type_name": name[:24]})
         return cats[:60] or (self.p.get("classes") or [])
 
+    def _parse(self, html):
+        videos, seen = [], set()
+        for href, title, img in self.CARD_RE.findall(html or ""):
+            if href in seen:
+                continue
+            seen.add(href)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": title.strip()[:120],
+                "vod_pic": self._abs(img),
+                "vod_remarks": "",
+            })
+        return videos
+
     def list(self, cate, page):
         page = max(1, int(page))
         cid = str(cate or "").strip()
@@ -1997,18 +2077,15 @@ class _PornhubAdapter(_BaseAdapter):
             html = self._page(q, referer=self.host + "/categories")
         else:
             html = self._page("/enter")
-        videos, seen = [], set()
-        for href, title, img in self.CARD_RE.findall(html):
-            if href in seen:
-                continue
-            seen.add(href)
-            videos.append({
-                "vod_id": self.p["key"] + "::" + self._abs(href),
-                "vod_name": title.strip()[:120],
-                "vod_pic": self._abs(img),
-                "vod_remarks": "",
-            })
-        return {"list": videos, "page": page, "pagecount": page + 1}
+        return {"list": self._parse(html), "page": page, "pagecount": page + 1}
+
+    def search(self, keyword, page):
+        """Pornhub 搜索：/video/search?search={关键词}&page=N（实测 70 条）。"""
+        page = max(1, int(page))
+        q = "/video/search?search=" + urllib.parse.quote(str(keyword))
+        if page > 1:
+            q += "&page=%d" % page
+        return self._parse(self._page(q, referer=self.host + "/enter"))
 
     def detail(self, vid):
         url = self._abs(vid)
@@ -2088,6 +2165,20 @@ class _AcgmhAdapter(_BaseAdapter):
                 break
         return cats or (self.p.get("classes") or [])
 
+    def _parse(self, html):
+        videos, seen = [], set()
+        for href, img, title in self.CARD_RE.findall(html or ""):
+            if href in seen:
+                continue
+            seen.add(href)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": title.strip(),
+                "vod_pic": self._abs(img),
+                "vod_remarks": "",
+            })
+        return videos
+
     def list(self, cate, page):
         page = max(1, int(page))
         cid = str(cate or "").strip()
@@ -2098,18 +2189,15 @@ class _AcgmhAdapter(_BaseAdapter):
             html = self._page(path, referer=self.host + "/tags/")
         else:
             html = self._page("/enter")
-        videos, seen = [], set()
-        for href, img, title in self.CARD_RE.findall(html):
-            if href in seen:
-                continue
-            seen.add(href)
-            videos.append({
-                "vod_id": self.p["key"] + "::" + self._abs(href),
-                "vod_name": title.strip(),
-                "vod_pic": self._abs(img),
-                "vod_remarks": "",
-            })
-        return {"list": videos, "page": page, "pagecount": page + 1}
+        return {"list": self._parse(html), "page": page, "pagecount": page + 1}
+
+    def search(self, keyword, page):
+        """Hentai(acgmh/nhentai 镜像) 搜索：/search/?q={关键词}（实测 25 条，与画廊页同结构）。"""
+        page = max(1, int(page))
+        path = "/search/?q=" + urllib.parse.quote(str(keyword))
+        if page > 1:
+            path += "&page=%d" % page
+        return self._parse(self._page(path, referer=self.host + "/"))
 
     @staticmethod
     def _fix_cover(url):
@@ -2553,7 +2641,6 @@ class _JmAdapter(_BaseAdapter):
             if path in seen:
                 continue
             seen.add(path)
-            aid = re.search(r"/album/(\d+)", path)
             slug = urllib.parse.unquote(path.rsplit("/", 1)[-1])
             videos.append({
                 "vod_id": self.p["key"] + "::" + path,
@@ -2562,6 +2649,27 @@ class _JmAdapter(_BaseAdapter):
                 "vod_remarks": "漫画",
             })
         return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+
+    def search(self, keyword, page):
+        """禁漫天堂搜索：/search/photos?search_query={关键词}（实测 106 个相册链接，同 /album/ 结构）。"""
+        page = max(1, int(page))
+        path = "/search/photos?main_tag=0&search_query=" + urllib.parse.quote(str(keyword))
+        if page > 1:
+            path += "&page=%d" % page
+        html = self._page(path, referer=self.host + "/enter")
+        videos, seen = [], set()
+        for album in self.ALBUM_RE.findall(html or ""):
+            if album in seen:
+                continue
+            seen.add(album)
+            slug = urllib.parse.unquote(album.rsplit("/", 1)[-1])
+            videos.append({
+                "vod_id": self.p["key"] + "::" + album,
+                "vod_name": slug.replace("-", " ")[:60],
+                "vod_pic": "",
+                "vod_remarks": "漫画",
+            })
+        return videos
 
     def detail(self, vid):
         path = vid if vid.startswith("/") else "/" + vid.lstrip("/")
@@ -2924,6 +3032,21 @@ class _AmdAdapter(_BaseAdapter):
             self.s.cache_set(key, {"cats": cats, "ts": time.time()})
         return cats or (self.p.get("classes") or [])
 
+    def _cards(self, html):
+        videos, seen = [], set()
+        found = self.CARD_RE.findall(html or "") or self.CARD_RE2.findall(html or "")
+        for href, title, img in found:
+            if href in seen:
+                continue
+            seen.add(href)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + href,
+                "vod_name": title.strip()[:80],
+                "vod_pic": self._abs(img),
+                "vod_remarks": "漫画",
+            })
+        return videos
+
     def _page(self, path, referer=None):
         url = path if path.startswith("http") else self._url(path)
         html = self.s.http(url, referer=referer, headers={"User-Agent": self.UA_DESKTOP}) or ""
@@ -2954,19 +3077,15 @@ class _AmdAdapter(_BaseAdapter):
                               referer=self.host + "/enter")
         else:
             html = self._page("/enter")
-        videos, seen = [], set()
-        found = self.CARD_RE.findall(html) or self.CARD_RE2.findall(html)
-        for href, title, img in found:
-            if href in seen:
-                continue
-            seen.add(href)
-            videos.append({
-                "vod_id": self.p["key"] + "::" + href,
-                "vod_name": title.strip()[:80],
-                "vod_pic": self._abs(img),
-                "vod_remarks": "漫画",
-            })
-        return {"list": videos, "page": page, "pagecount": page + 1}
+        return {"list": self._cards(html), "page": page, "pagecount": page + 1}
+
+    def search(self, keyword, page):
+        """爱漫岛搜索：/vodsearch/{关键词}-------------.html（苹果CMS 搜索页，实测 47 条）。"""
+        page = max(1, int(page))
+        path = "/vodsearch/%s-------------.html" % urllib.parse.quote(str(keyword))
+        if page > 1:
+            path = "/vodsearch/%s--------%d---.html" % (urllib.parse.quote(str(keyword)), page)
+        return self._cards(self._page(path, referer=self.host + "/enter"))
 
     def detail(self, vid):
         path = vid if vid.startswith("/") else "/" + vid.lstrip("/")
@@ -3258,17 +3377,12 @@ class _MissavAdapter(_BaseAdapter):
                 return cate
         return cats[0]["type_id"] if cats else ""
 
-    def list(self, cate, page):
-        path = self._resolve_cate(cate)
-        if not path:
-            return {"list": [], "page": int(page), "pagecount": int(page) + 1}
-        url = self._url("/" + path)
-        if int(page) > 1:
-            url += "?page=%d" % int(page)
-        html = self.s.http(url)
-        cdn = self._cdn(html or "")
+    def _parse(self, html):
+        """结果页/分类页共用：卡片 → [vod]。搜索页与分类页结构一致（实测 33 条）。"""
+        html = html or ""
+        cdn = self._cdn(html)
         videos, seen = [], set()
-        for href, slug in self.CARD_RE.findall(html or ""):
+        for href, slug in self.CARD_RE.findall(html):
             if slug in seen:
                 continue
             seen.add(slug)
@@ -3283,7 +3397,25 @@ class _MissavAdapter(_BaseAdapter):
                 "vod_pic": (cdn + "/" + slug + "/cover-t.jpg") if cdn else "",
                 "vod_remarks": "",
             })
-        return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+        return videos
+
+    def list(self, cate, page):
+        path = self._resolve_cate(cate)
+        if not path:
+            return {"list": [], "page": int(page), "pagecount": int(page) + 1}
+        url = self._url("/" + path)
+        if int(page) > 1:
+            url += "?page=%d" % int(page)
+        return {"list": self._parse(self.s.http(url)),
+                "page": int(page), "pagecount": int(page) + 1}
+
+    def search(self, keyword, page):
+        """MissAV 搜索：/cn/search/{关键词}（实测 155KB，33 条结果）。"""
+        page = max(1, int(page))
+        url = self._url("/cn/search/" + urllib.parse.quote(str(keyword)))
+        if page > 1:
+            url += "?page=%d" % page
+        return self._parse(self.s.http(url, referer=self.host + "/cn/"))
 
     def detail(self, vid):
         page_url = self._abs(vid)
@@ -3797,7 +3929,85 @@ class Spider(SpiderBase):
             return {"parse": "0", "url": ""}
 
     def searchContent(self, key, quick, pg="1"):
-        return {"list": []}
+        """福利专区「搜索」Tab 入口：并行搜一批平台，合并去重。
+
+        约束（来自客户端）：调用只给 `key` / 页码，**不给平台 id**，且 **8 秒硬超时**
+        （`PythonSpiderEngine.callSearchContentAsync`）。所以：并行发起、总预算
+        `SEARCH_BUDGET`，到点就回已经拿到的部分；线程设 daemon，超时的线程不阻塞返回。
+        """
+        kw = str(key or "").strip()
+        if not kw:
+            return {"list": [], "page": 1, "pagecount": 0}
+        try:
+            page = max(1, int(pg or 1))
+        except Exception:
+            page = 1
+
+        targets = [p for p in (self._snapshot.get("platforms") or [])
+                   if p.get("name") in SEARCH_PLATFORMS]
+        if not targets:
+            return {"list": [], "page": page, "pagecount": 0}
+
+        found, lock = [], threading.Lock()
+
+        def work(platform):
+            try:
+                host = self._fast_host(platform)
+                if not host:
+                    return
+                cls = ADAPTERS.get(platform.get("adapter") or "generic", _GenericAdapter)
+                got = cls(self, platform, host).search(kw, page) or []
+            except Exception:
+                return
+            if not got:
+                return
+            # 无匹配时会给默认推荐的那几家：只保留标题里真的含关键词的条目
+            # （全有全无的守卫不够——xhamster 搜 ssis 是 46 条里只有 2 条真命中）
+            if platform.get("name") in SEARCH_TITLE_GUARD:
+                needle = kw.lower()
+                got = [v for v in got if needle in str(v.get("vod_name") or "").lower()]
+                if not got:
+                    return
+            with lock:
+                for vod in got[:SEARCH_PER_PLATFORM]:
+                    tag = platform["name"]
+                    remark = str(vod.get("vod_remarks") or "").strip()
+                    vod["vod_remarks"] = (tag + " " + remark).strip()
+                    found.append(vod)
+
+        threads = []
+        for platform in targets:
+            th = threading.Thread(target=work, args=(platform,))
+            th.daemon = True
+            th.start()
+            threads.append(th)
+        deadline = time.time() + SEARCH_BUDGET
+        for th in threads:
+            th.join(max(0.05, deadline - time.time()))
+            if time.time() >= deadline:
+                break
+
+        out, seen = [], set()
+        for vod in found:
+            vid = vod.get("vod_id") or ""
+            if vid and vid not in seen:
+                seen.add(vid)
+                out.append(vod)
+        return {"list": out, "page": page, "pagecount": page + 1}
+
+    def searchContentPage(self, key, quick, pg="1"):
+        return self.searchContent(key, quick, pg)
+
+    def _fast_host(self, platform):
+        """搜索用最快的已知线路：快照里 lines 已按 (可用, 延时) 排好，取第一条 ok 的。
+
+        不用 `_picker.pick()`——冷启动时会去并发探测，搜索场景不允许这个延迟。
+        """
+        for line in platform.get("lines") or []:
+            if line.get("ok") and line.get("url"):
+                return line["url"]
+        lines = platform.get("lines") or []
+        return lines[0].get("url", "") if lines else ""
 
     def localProxy(self, param):
         return None
