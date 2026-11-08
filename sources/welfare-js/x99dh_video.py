@@ -1565,9 +1565,25 @@ class _PttAdapter(_BaseAdapter):
         return self.s.http(self._url(path), referer=referer,
                            headers={"User-Agent": self.UA_DESKTOP}) or ""
 
+    def categories(self):
+        """从 /p/{n} 页取类型导航（/p/{n}/c/{cid}）。"""
+        html = self._page("/p/1")
+        cats, seen = [], set()
+        for m in re.finditer(r'href="/p/\d+/c/(\d+)"[^>]*>\s*([^<]{1,12})', html, re.S):
+            cid, name = m.group(1), re.sub(r"\s+", " ", m.group(2)).strip()
+            if cid in seen or not name or name == "全部":
+                continue
+            seen.add(cid)
+            cats.append({"type_id": cid, "type_name": name[:12]})
+        return cats or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        html = self._page("/p/%d" % page)
+        cid = str(cate or "").strip()
+        if cid.isdigit() and cid != "0":
+            html = self._page("/p/%d/c/%s" % (page, cid), referer=self.host + "/p/1")
+        else:
+            html = self._page("/p/%d" % page)
         videos, seen = [], set()
         for vid, img, title in self.CARD_RE.findall(html):
             if vid in seen:
@@ -1629,8 +1645,8 @@ class _XanimuAdapter(_BaseAdapter):
                   "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
     CARD_RE = re.compile(
         r'<div class="video-block[^"]*"[^>]*data-post-id="(\d+)"[^>]*>.*?'
-        r'<a class="thumb" href="([^"]+)"[^>]*>.*?<img[^>]+src="([^"]+)".*?'
-        r'<a class="infos"[^>]*>.*?<span class="title">([^<]+)</span>',
+        r'<a class="thumb[^"]*" href="([^"]+)"[^>]*>.*?<img[^>]+(?:src|data-src)="([^"]+)".*?'
+        r'<a class="infos[^"]*"[^>]*>.*?<span class="title">([^<]+)</span>',
         re.S)
 
     def _page(self, path, referer=None):
@@ -1639,11 +1655,31 @@ class _XanimuAdapter(_BaseAdapter):
         return self.s.http(self._url(path or "/"), referer=referer,
                            headers={"User-Agent": self.UA_DESKTOP}) or ""
 
+    def categories(self):
+        """从首页 cat-name-mobile 导航取分类（/zh-CN/{id}-{slug}/ + img title）。"""
+        html = self._page("/zh-CN/")
+        cats, seen = [], set()
+        for m in re.finditer(
+                r'<a class="cat-name-mobile" href="(?:https?://[^"]+)?(/zh-CN/[^"]+/)">'
+                r'<img[^>]+title="([^"]+)"',
+                html, re.S):
+            path, name = m.group(1), m.group(2).strip()
+            if path in seen or not name:
+                continue
+            seen.add(path)
+            cats.append({"type_id": path, "type_name": name[:20]})
+        return cats[:60] or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        base = urllib.parse.urlsplit((self.p.get("lines") or [{}])[0].get("url", "")).path or "/zh-CN/"
-        path = base if page <= 1 else "%s/page/%d/" % (base.rstrip("/"), page)
-        html = self._page(path)
+        cid = str(cate or "").strip()
+        if cid.startswith("/zh-CN/"):
+            path = cid if page <= 1 else cid.rstrip("/") + "/page/%d/" % page
+            html = self._page(path, referer=self.host + "/zh-CN/")
+        else:
+            base = urllib.parse.urlsplit((self.p.get("lines") or [{}])[0].get("url", "")).path or "/zh-CN/"
+            path = base if page <= 1 else "%s/page/%d/" % (base.rstrip("/"), page)
+            html = self._page(path)
         videos, seen = [], set()
         for _pid, href, img, title in self.CARD_RE.findall(html):
             if href in seen:
