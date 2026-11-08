@@ -1751,10 +1751,19 @@ class _KvsAdapter(_BaseAdapter):
         return self.s.http(url, referer=referer,
                            headers={"User-Agent": self.UA_DESKTOP}) or ""
 
+    @staticmethod
+    def _kvs_base(entry):
+        """入口路径可能是 /enter 或 /asian/zh-CN；后者才是内容根。"""
+        path = urllib.parse.urlsplit(entry or "").path.rstrip("/") or ""
+        if not path or path.endswith("/enter") or path == "/enter":
+            return ""
+        return path
+
     def categories(self):
-        """从 {entry}/genres 取类型（/videos/genre/{urlencoded 中文名}）。"""
+        """从 {entry}/genres 取类型（/videos/genre/{urlencoded 中文名}）；
+        没有 genres 页的站（avjoy）改用 /tags 页的 /search/videos/{标签}。"""
         entry = (self.p.get("lines") or [{}])[0].get("url", "")
-        base = urllib.parse.urlsplit(entry).path.rstrip("/") or "/"
+        base = self._kvs_base(entry)
         html = self._page(base + "/genres", referer=entry)
         cats, seen = [], set()
         for m in re.finditer(
@@ -1767,14 +1776,30 @@ class _KvsAdapter(_BaseAdapter):
             cats.append({"type_id": path, "type_name": name[:14]})
             if len(cats) >= 60:
                 break
+        if cats:
+            return cats
+        # 备用：/tags 页的搜索标签
+        tag_html = self._page(base + "/tags", referer=entry)
+        for m in re.finditer(
+                r'href="/search/videos/([^"]+)"[^>]*>(.*?)</a>', tag_html, re.S):
+            kw = m.group(1)
+            name = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(2))).strip()
+            if kw in seen or not name or len(name) > 14:
+                continue
+            seen.add(kw)
+            cats.append({"type_id": "/search/videos/" + kw, "type_name": name[:14]})
+            if len(cats) >= 60:
+                break
         return cats or (self.p.get("classes") or [])
 
     def list(self, cate, page):
         page = max(1, int(page))
         entry = (self.p.get("lines") or [{}])[0].get("url", "")
-        base = urllib.parse.urlsplit(entry).path.rstrip("/") or "/"
+        base = self._kvs_base(entry)
         cid = str(cate or "").strip()
-        if cid.startswith("/") and "/videos/genre/" in cid:
+        if cid.startswith("/search/videos/"):
+            path = cid if page <= 1 else "%s?page=%d" % (cid, page)
+        elif cid.startswith("/") and "/videos/genre/" in cid:
             path = cid if page <= 1 else "%s?page=%d" % (cid, page)
         else:
             path = base if page <= 1 else "%s?page=%d" % (base, page)
