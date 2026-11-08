@@ -2951,7 +2951,6 @@ class _WnacgAdapter(_BaseAdapter):
     CARD_RE = re.compile(
         r'<a href="(/photos-index-aid-\d+\.html)" title="([^"]*)"[^>]*>\s*<img[^>]+src="([^"]+)"',
         re.S)
-    VIEW_RE = re.compile(r'href="(/photos-view-(?:id|aid)-\d+[^"]*)"')
     ITEM_RE = re.compile(r'"(https?://[^"]+?\.(?:webp|jpg|jpeg|png)\?verify=[^"]*)"')
 
     def _page(self, path, referer=None):
