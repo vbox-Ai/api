@@ -2,7 +2,7 @@
 """X99漫画导航 — vbox 远程源 python 蜘蛛
 
 由 build_nav_source.py 生成，请勿手改。
-类型: comic    快照: 2026.11.07.2251
+类型: comic    快照: 2026.11.08.2053
 """
 import base64
 import http.client
@@ -34,8 +34,8 @@ except ImportError:  # 本地调试
 KIND = "comic"
 PLATFORM_KEY = "x99dh_comic_py"
 TITLE = "X99漫画导航"
-SNAPSHOT_VERSION = "2026.11.07.2251"
-SNAPSHOT = json.loads('{"version":"2026.11.07.2251","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_6cc00cf5","name":"禁漫天堂","kind":"comic","adapter":"jm","desc":"H漫画","icon":"books.vertical.fill","url":"https://18comic66.com/enter","lines":[{"url":"https://18comic1.nl/enter","testUrl":"https://18comic1.nl/status.html","ok":true,"ms":162.0},{"url":"https://18comic888.cc/enter","testUrl":"https://18comic888.cc/status.html","ok":true,"ms":177.0},{"url":"https://18comic168.cc/enter","testUrl":"https://18comic168.cc/status.html","ok":true,"ms":191.0},{"url":"https://18comic1.top/enter","testUrl":"https://18comic1.top/status.html","ok":true,"ms":809.0},{"url":"https://18comic04.net/enter","testUrl":"https://18comic04.net/status.html","ok":true,"ms":821.0},{"url":"https://18comic666.cc/enter","testUrl":"https://18comic666.cc/status.html","ok":true,"ms":1046.0},{"url":"https://18comic1.cc/enter","testUrl":"https://18comic1.cc/status.html","ok":true,"ms":1138.0},{"url":"https://18comic03.net/enter","testUrl":"https://18comic03.net/status.html","ok":true,"ms":1290.0},{"url":"https://18comic168.top/enter","testUrl":"https://18comic168.top/status.html","ok":true,"ms":1410.0},{"url":"https://18comic666.net/enter","testUrl":"https://18comic666.net/status.html","ok":true,"ms":1461.0},{"url":"https://18comic05.net/enter","testUrl":"https://18comic05.net/status.html","ok":true,"ms":1503.0},{"url":"https://18comic1.sbs/enter","testUrl":"https://18comic1.sbs/status.html","ok":true,"ms":1511.0},{"url":"https://18comic2.sbs/enter","testUrl":"https://18comic2.sbs/status.html","ok":true,"ms":1542.0},{"url":"https://18comic02.net/enter","testUrl":"https://18comic02.net/status.html","ok":true,"ms":1848.0},{"url":"https://18comic.pw/enter","testUrl":"https://18comic.pw/status.html","ok":true,"ms":2270.0},{"url":"https://18comic.cfd/enter","testUrl":"https://18comic.cfd/status.html","ok":true,"ms":2300.0},{"url":"https://18comic01.net/enter","testUrl":"https://18comic01.net/status.html","ok":true,"ms":2516.0},{"url":"https://18comic6.net/enter","testUrl":"https://18comic6.net/status.html","ok":true,"ms":2527.0},{"url":"https://18comic888.ws/enter","testUrl":"https://18comic888.ws/status.html","ok":true,"ms":2819.0},{"url":"https://18comic.nl/enter","testUrl":"https://18comic.nl/status.html","ok":true,"ms":3025.0},{"url":"https://18comic01.cc/enter","testUrl":"https://18comic01.cc/status.html","ok":true,"ms":3862.0},{"url":"https://18comic.my/enter","testUrl":"https://18comic.my/status.html","ok":true,"ms":4591.0},{"url":"https://mh99.ws/enter","testUrl":"https://mh99.ws/status.html","ok":true,"ms":5161.0},{"url":"https://18comic6.com/enter","testUrl":"https://18comic6.com/status.html","ok":true,"ms":6672.0},{"url":"https://jmcomic.nl/enter","testUrl":"https://jmcomic.nl/status.html","ok":true,"ms":8681.0},{"url":"https://18comic2.icu/enter","testUrl":"https://18comic2.icu/status.html","ok":true,"ms":11085.0},{"url":"https://18comic66.com/enter","testUrl":"https://18comic66.com/status.html","ok":true,"ms":12620.0},{"url":"https://mh99.cfd/enter","testUrl":"https://mh99.cfd/status.html","ok":false,"ms":714.0},{"url":"https://18comic1.icu/enter","testUrl":"https://18comic1.icu/status.html","ok":false,"ms":4477.0},{"url":"https://18comic.sbs/enter","testUrl":"https://18comic.sbs/status.html","ok":false,"ms":5079.0}],"classes":[]},{"key":"x99_2f22a0a6","name":"99漫画","kind":"comic","adapter":"wnacg","desc":"另一个漫画站，资源多","icon":"books.vertical.fill","url":"https://www.wnacg02.net/enter","lines":[{"url":"https://99mh.men/enter","testUrl":"https://www.99mh.men/status.html","ok":true,"ms":1025.0},{"url":"https://wnacg888.com/enter","testUrl":"https://www.wnacg888.com/status.html","ok":true,"ms":1221.0},{"url":"https://wnacg.my/enter","testUrl":"https://www.wnacg.my/status.html","ok":true,"ms":1395.0},{"url":"https://wnacg.nl/enter","testUrl":"https://www.wnacg.nl/status.html","ok":true,"ms":1572.0},{"url":"https://99mh.net/enter","testUrl":"https://www.99mh.net/status.html","ok":true,"ms":1636.0},{"url":"https://www.wnacg02.com/enter","testUrl":"https://www.wnacg02.com/status.html","ok":true,"ms":2337.0},{"url":"https://wnacg666.com/enter","testUrl":"https://www.wnacg666.com/status.html","ok":true,"ms":2588.0},{"url":"https://wnacg666.net/enter","testUrl":"https://www.wnacg666.net/status.html","ok":true,"ms":2682.0},{"url":"https://99mh.one/enter","testUrl":"https://www.99mh.one/status.html","ok":true,"ms":2869.0},{"url":"https://wnacg888.net/enter","testUrl":"https://www.wnacg888.net/status.html","ok":true,"ms":2873.0},{"url":"https://99mh.nl/enter","testUrl":"https://www.99mh.nl/status.html","ok":true,"ms":3074.0},{"url":"https://wnacg.sbs/enter","testUrl":"https://www.wnacg.sbs/status.html","ok":true,"ms":3155.0},{"url":"https://wnacg.pw/enter","testUrl":"https://www.wnacg.pw/status.html","ok":true,"ms":3574.0},{"url":"https://99xmh.top/enter","testUrl":"https://www.99xmh.top/status.html","ok":true,"ms":3879.0},{"url":"https://www.wnacg02.net/enter","testUrl":"https://www.wnacg02.net/status.html","ok":true,"ms":4269.0},{"url":"https://wnacg.vip/enter","testUrl":"https://www.wnacg.vip/status.html","ok":true,"ms":5053.0},{"url":"https://www.wnacg01.net/enter","testUrl":"https://www.wnacg01.net/status.html","ok":true,"ms":5693.0},{"url":"https://wnacg.one/enter","testUrl":"https://www.wnacg.one/status.html","ok":false,"ms":3509.0}],"classes":[]},{"key":"x99_ecb3368e","name":"爱漫岛","kind":"comic","adapter":"amd","desc":"免费中文汉化、日本漫画、韩国漫画、10万本、色情漫画等","icon":"books.vertical.fill","url":"https://www.amdcomic.art/enter","lines":[{"url":"https://www.amdcomic.art/enter","testUrl":"https://www.amdcomic.art/status.html","ok":true,"ms":281.0},{"url":"https://www.amdcomic.one/enter","testUrl":"https://www.amdcomic.one/status.html","ok":true,"ms":1742.0},{"url":"https://www.amdcomic.ws/enter","testUrl":"https://www.amdcomic.ws/status.html","ok":true,"ms":1932.0}],"classes":[{"type_id":"1","type_name":"同人","href":"/vodtype/1.html"},{"type_id":"2","type_name":"单本","href":"/vodtype/2.html"},{"type_id":"3","type_name":"短篇","href":"/vodtype/3.html"},{"type_id":"4","type_name":"韩漫","href":"/vodtype/4.html"},{"type_id":"6","type_name":"校园","href":"/vodtype/6.html"},{"type_id":"7","type_name":"幻想","href":"/vodtype/7.html"},{"type_id":"8","type_name":"都市","href":"/vodtype/8.html"},{"type_id":"9","type_name":"搞笑","href":"/vodtype/9.html"}]}]}')
+SNAPSHOT_VERSION = "2026.11.08.2053"
+SNAPSHOT = json.loads('{"version":"2026.11.08.2053","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_6cc00cf5","name":"禁漫天堂","kind":"comic","adapter":"jm","desc":"H漫画","icon":"books.vertical.fill","url":"https://18comic66.com/enter","lines":[{"url":"https://18comic888.cc/enter","testUrl":"https://18comic888.cc/status.html","ok":true,"ms":185.0},{"url":"https://18comic04.net/enter","testUrl":"https://18comic04.net/status.html","ok":true,"ms":242.0},{"url":"https://mh99.ws/enter","testUrl":"https://mh99.ws/status.html","ok":true,"ms":291.0},{"url":"https://18comic.pw/enter","testUrl":"https://18comic.pw/status.html","ok":true,"ms":626.0},{"url":"https://18comic2.icu/enter","testUrl":"https://18comic2.icu/status.html","ok":true,"ms":627.0},{"url":"https://18comic05.net/enter","testUrl":"https://18comic05.net/status.html","ok":true,"ms":746.0},{"url":"https://18comic168.top/enter","testUrl":"https://18comic168.top/status.html","ok":true,"ms":767.0},{"url":"https://18comic03.net/enter","testUrl":"https://18comic03.net/status.html","ok":true,"ms":860.0},{"url":"https://18comic66.com/enter","testUrl":"https://18comic66.com/status.html","ok":true,"ms":927.0},{"url":"https://18comic666.net/enter","testUrl":"https://18comic666.net/status.html","ok":true,"ms":956.0},{"url":"https://18comic02.net/enter","testUrl":"https://18comic02.net/status.html","ok":true,"ms":1068.0},{"url":"https://18comic1.top/enter","testUrl":"https://18comic1.top/status.html","ok":true,"ms":1139.0},{"url":"https://18comic888.ws/enter","testUrl":"https://18comic888.ws/status.html","ok":true,"ms":1187.0},{"url":"https://18comic01.cc/enter","testUrl":"https://18comic01.cc/status.html","ok":true,"ms":1221.0},{"url":"https://18comic1.cc/enter","testUrl":"https://18comic1.cc/status.html","ok":true,"ms":1248.0},{"url":"https://18comic6.com/enter","testUrl":"https://18comic6.com/status.html","ok":true,"ms":1285.0},{"url":"https://18comic.cfd/enter","testUrl":"https://18comic.cfd/status.html","ok":true,"ms":1307.0},{"url":"https://18comic1.sbs/enter","testUrl":"https://18comic1.sbs/status.html","ok":true,"ms":1416.0},{"url":"https://18comic2.sbs/enter","testUrl":"https://18comic2.sbs/status.html","ok":true,"ms":1663.0},{"url":"https://18comic666.cc/enter","testUrl":"https://18comic666.cc/status.html","ok":true,"ms":1762.0},{"url":"https://18comic01.net/enter","testUrl":"https://18comic01.net/status.html","ok":true,"ms":1829.0},{"url":"https://18comic.my/enter","testUrl":"https://18comic.my/status.html","ok":true,"ms":1975.0},{"url":"https://18comic6.net/enter","testUrl":"https://18comic6.net/status.html","ok":true,"ms":2578.0},{"url":"https://jmcomic.nl/enter","testUrl":"https://jmcomic.nl/status.html","ok":true,"ms":3958.0},{"url":"https://18comic.nl/enter","testUrl":"https://18comic.nl/status.html","ok":true,"ms":5154.0},{"url":"https://18comic1.nl/enter","testUrl":"https://18comic1.nl/status.html","ok":false,"ms":746.0},{"url":"https://18comic168.cc/enter","testUrl":"https://18comic168.cc/status.html","ok":false,"ms":779.0},{"url":"https://18comic1.icu/enter","testUrl":"https://18comic1.icu/status.html","ok":false,"ms":1009.0},{"url":"https://mh99.cfd/enter","testUrl":"https://mh99.cfd/status.html","ok":false,"ms":1542.0},{"url":"https://18comic.sbs/enter","testUrl":"https://18comic.sbs/status.html","ok":false,"ms":1781.0}],"classes":[]},{"key":"x99_2f22a0a6","name":"99漫画","kind":"comic","adapter":"wnacg","desc":"另一个漫画站，资源多","icon":"books.vertical.fill","url":"https://www.wnacg02.net/enter","lines":[{"url":"https://99mh.men/enter","testUrl":"https://www.99mh.men/status.html","ok":true,"ms":137.0},{"url":"https://wnacg888.com/enter","testUrl":"https://www.wnacg888.com/status.html","ok":true,"ms":243.0},{"url":"https://99xmh.top/enter","testUrl":"https://www.99xmh.top/status.html","ok":true,"ms":265.0},{"url":"https://wnacg888.net/enter","testUrl":"https://www.wnacg888.net/status.html","ok":true,"ms":274.0},{"url":"https://www.wnacg02.net/enter","testUrl":"https://www.wnacg02.net/status.html","ok":true,"ms":279.0},{"url":"https://wnacg666.com/enter","testUrl":"https://www.wnacg666.com/status.html","ok":true,"ms":282.0},{"url":"https://99mh.net/enter","testUrl":"https://www.99mh.net/status.html","ok":true,"ms":383.0},{"url":"https://wnacg.sbs/enter","testUrl":"https://www.wnacg.sbs/status.html","ok":true,"ms":413.0},{"url":"https://99mh.nl/enter","testUrl":"https://www.99mh.nl/status.html","ok":true,"ms":455.0},{"url":"https://wnacg.vip/enter","testUrl":"https://www.wnacg.vip/status.html","ok":true,"ms":471.0},{"url":"https://99mh.one/enter","testUrl":"https://www.99mh.one/status.html","ok":true,"ms":514.0},{"url":"https://wnacg666.net/enter","testUrl":"https://www.wnacg666.net/status.html","ok":true,"ms":514.0},{"url":"https://www.wnacg01.net/enter","testUrl":"https://www.wnacg01.net/status.html","ok":true,"ms":606.0},{"url":"https://www.wnacg02.com/enter","testUrl":"https://www.wnacg02.com/status.html","ok":true,"ms":656.0},{"url":"https://wnacg.nl/enter","testUrl":"https://www.wnacg.nl/status.html","ok":true,"ms":1114.0},{"url":"https://wnacg.my/enter","testUrl":"https://www.wnacg.my/status.html","ok":true,"ms":1563.0},{"url":"https://wnacg.pw/enter","testUrl":"https://www.wnacg.pw/status.html","ok":true,"ms":1987.0},{"url":"https://wnacg.one/enter","testUrl":"https://www.wnacg.one/status.html","ok":false,"ms":543.0}],"classes":[]},{"key":"x99_ecb3368e","name":"爱漫岛","kind":"comic","adapter":"amd","desc":"免费中文汉化、日本漫画、韩国漫画、10万本、色情漫画等","icon":"books.vertical.fill","url":"https://www.amdcomic.art/enter","lines":[{"url":"https://www.amdcomic.art/enter","testUrl":"https://www.amdcomic.art/status.html","ok":true,"ms":137.0},{"url":"https://www.amdcomic.one/enter","testUrl":"https://www.amdcomic.one/status.html","ok":true,"ms":1213.0},{"url":"https://www.amdcomic.ws/enter","testUrl":"https://www.amdcomic.ws/status.html","ok":true,"ms":2682.0}],"classes":[]}]}')
 
 # ---- 运行参数（方案 v8 定稿）----
 CACHE_TTL = 600          # 线路/入口胜者缓存
@@ -2313,7 +2313,13 @@ class _XvideosAdapter(_BaseAdapter):
             href = self.HREF_RE.search(block)
             if not href or href.group(1) in seen:
                 continue
+            # 约 1/3 卡片的分页段是字面量 THUMBNUM（站点用 JS 替换成缩略图序号）；
+            # 直接请求会拿到 321 字节错误页，换成 0 即得正常详情页（实测 0/1/6 等价）
+            path = href.group(1).replace("/THUMBNUM/", "/0/")
+            if path in seen:
+                continue
             seen.add(href.group(1))
+            seen.add(path)
             title = self.TITLE_RE.search(block)
             name = self._text(title.group(1)) if title else ""
             if not name:
@@ -2326,7 +2332,7 @@ class _XvideosAdapter(_BaseAdapter):
             marks = [x for x in (self._text(hd.group(1)) if hd else "",
                                  self._text(dur.group(1)) if dur else "") if x]
             videos.append({
-                "vod_id": self.p["key"] + "::" + self._abs(href.group(1)),
+                "vod_id": self.p["key"] + "::" + self._abs(path),
                 "vod_name": name,
                 "vod_pic": self._abs(img.group(1)) if img else "",
                 "vod_remarks": " · ".join(marks),
@@ -2881,6 +2887,11 @@ class _AmdAdapter(_BaseAdapter):
     列表 /voddetail/{id}.html → 章节 /vodplay-{id}-{sid}-{pid}.html（连字符版苹果CMS）；
     阅读页图片由页内 JS 拼接：/jmpimg/cdn-msp.{dom_string}/media/photos/{aid}/{page:05d}.webp
     （aid 与总页数 s2 来自 player_aaaa.url 的 JSON 串，dom_string 取最后一次赋值）。
+
+    分类（第十二轮补）：首页导航给 `/vodtype/{id}.html` + 中文名（同人/单本/短篇/韩漫/校园/…）。
+    注意 **`/vodtype/{id}-{n}.html` 不做分页**——返回的和第 1 页逐字相同（实测 id 集合完全一致）；
+    真正分页的是 `/vodshow/{id}--------{n}---.html`（每页 60 条，第 2/3 页各 48 条新内容）。
+    所以分类列表走 vodshow，首页列表仍走 `/enter`。
     """
 
     UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -2893,6 +2904,25 @@ class _AmdAdapter(_BaseAdapter):
         r'<a[^>]+href="(/voddetail/\d+\.html)"[^>]*?title="([^"]*)"[^>]*>\s*(?:<[^>]+>\s*)*<img[^>]+src="([^"]+)"',
         re.S)
     EP_RE = re.compile(r'href="(/vodplay-\d+-\d+-\d+\.html)"')
+    CAT_RE = re.compile(r'<a[^>]+href="/vodtype/(\d+)\.html"[^>]*>\s*([^<>]{1,10})\s*</a>')
+
+    def categories(self):
+        """首页导航的 /vodtype/{id}.html + 中文名。"""
+        key = "x99dh:amd:cats:" + self.host
+        hit = self.s.cache_get(key)
+        if hit and time.time() - hit.get("ts", 0) < self.CATS_TTL:
+            return hit["cats"]
+        html = self._page("/enter", referer=self.host + "/")
+        cats, seen = [], set()
+        for tid, label in self.CAT_RE.findall(html or ""):
+            name = re.sub(r"\s+", " ", label).strip()
+            if not name or tid in seen:
+                continue
+            seen.add(tid)
+            cats.append({"type_id": tid, "type_name": name[:12]})
+        if cats:
+            self.s.cache_set(key, {"cats": cats, "ts": time.time()})
+        return cats or (self.p.get("classes") or [])
 
     def _page(self, path, referer=None):
         url = path if path.startswith("http") else self._url(path)
@@ -2916,7 +2946,14 @@ class _AmdAdapter(_BaseAdapter):
         return html
 
     def list(self, cate, page):
-        html = self._page("/enter")
+        page = max(1, int(page))
+        cid = str(cate or "").strip()
+        if cid.isdigit() and cid != "0":
+            # 分类列表：苹果CMS 连字符模板的分页路径
+            html = self._page("/vodshow/%s--------%d---.html" % (cid, page),
+                              referer=self.host + "/enter")
+        else:
+            html = self._page("/enter")
         videos, seen = [], set()
         found = self.CARD_RE.findall(html) or self.CARD_RE2.findall(html)
         for href, title, img in found:
@@ -2929,7 +2966,7 @@ class _AmdAdapter(_BaseAdapter):
                 "vod_pic": self._abs(img),
                 "vod_remarks": "漫画",
             })
-        return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+        return {"list": videos, "page": page, "pagecount": page + 1}
 
     def detail(self, vid):
         path = vid if vid.startswith("/") else "/" + vid.lstrip("/")
@@ -3183,7 +3220,8 @@ class _ComicAdapter(_BaseAdapter):
 class _MissavAdapter(_BaseAdapter):
     """MissAV 模板：/dm{id}/cn/{slug} 列表 + /private-test/{slug}/play 播放。"""
 
-    CAT_RE = re.compile(r'href="[^"]*/(dm\d+/cn/[a-z0-9\-]+)"')
+    CAT_RE = re.compile(
+        r'href="[^"]*?/(dm\d+/cn/[a-z0-9\-]+)"[^>]*>\s*([^<]{1,18}?)\s*</a>')
     CARD_RE = re.compile(
         r'<a[^>]+href="([^"]*/cn/[a-z0-9\-]+)"[^>]*alt="([^"]*)"', re.S)
     TITLE_RE = re.compile(r'class="text-secondary[^"]*"[^>]*>(.*?)</a>', re.S)
@@ -3199,11 +3237,13 @@ class _MissavAdapter(_BaseAdapter):
             return hit["cats"]
         html = self.s.http(self._url("/cn/"))
         cats, seen = [], set()
-        for path in self.CAT_RE.findall(html or ""):
+        # 导航锚点形如 <a href="…/dm278/cn/chinese-subtitle"> 中文字幕 </a>，取中文标签
+        for path, label in self.CAT_RE.findall(html or ""):
             if path in seen:
                 continue
             seen.add(path)
-            cats.append({"type_id": path, "type_name": path.split("/cn/")[-1]})
+            name = re.sub(r"\s+", " ", label).strip()
+            cats.append({"type_id": path, "type_name": name[:12] or path.split("/cn/")[-1]})
         if cats:
             self.s.cache_set(key, {"cats": cats, "ts": time.time()})
         return cats
@@ -3368,7 +3408,7 @@ class Spider(SpiderBase):
     CATS_TTL = 86400
 
     def cats_for(self, platform):
-        """分类来源优先级：运行时缓存 → 快照 classes → 适配器自实现 categories()。"""
+        """分类来源优先级：运行时缓存 → 快照 classes → 适配器自实现 categories()（**会联网**）。"""
         cached = self.cache_get("x99dh:cats:" + platform["key"])
         if cached and time.time() - cached.get("ts", 0) < self.CATS_TTL:
             cats = cached.get("cats") or []
@@ -3393,8 +3433,26 @@ class Spider(SpiderBase):
         except Exception:
             return []
 
+    def cats_cached_for(self, platform):
+        """**不联网**版：只读缓存 → 快照 classes。
+
+        `homeContent` 必须用它：首屏要 <50ms。20 个平台要联网取分类，
+        冷启动时逐个同步抓会让首屏卡 30s+（实测 37.6s）——App 会一直停在加载态。
+        真正的抓取交给 `kick_refresh()` 后台补齐，写完缓存后下次 homeContent 就有二级分类了。
+        """
+        cached = self.cache_get("x99dh:cats:" + platform["key"])
+        if cached and time.time() - cached.get("ts", 0) < self.CATS_TTL:
+            cats = cached.get("cats") or []
+            if cats:
+                return cats
+        return platform.get("classes") or []
+
     def scan_categories(self, platform, timeout=HTTP_TIMEOUT):
-        """抓 /enter 页解析分类，写缓存。"""
+        """抓 /enter 页解析**老式 vodtype** 分类并写缓存；扫不到就问适配器 `categories()`。
+
+        注意：只做 vodtype 扫描的话，20 个新式路径的平台永远扫不到（第十一轮的老问题），
+        `kick_refresh()` 走的就是这里 —— 后台补分类全靠这条兜底，缺了它首屏就永远没有二级分类。
+        """
         base = ""
         lines = platform.get("lines") or []
         if lines:
@@ -3418,7 +3476,9 @@ class Spider(SpiderBase):
             cats.append({"type_id": tid, "type_name": text, "href": href})
         if cats:
             self.cache_set("x99dh:cats:" + platform["key"], {"cats": cats, "ts": time.time()})
-        return cats
+            return cats
+        # 老式路径扫不到 → 交给适配器（各平台入口形态不同，适配器最清楚），顺带写缓存
+        return self.cats_for(platform)
 
     LIST_TTL = 180
     LIST_MAX = 40
@@ -3542,18 +3602,34 @@ class Spider(SpiderBase):
     def headers(self):
         return {"User-Agent": UA, "Accept-Language": "zh-CN,zh;q=0.9"}
 
+    def _with_proxy(self, url):
+        """基类的**平台级代理注入**（`_vbox_proxy_enabled` / `_vbox_proxy_url`）。
+
+        我们的 `http()/fetch()` 走的是自带的 urllib 连接池（要用 keep-alive 与 gzip），
+        会绕过基类 `fetch()` 里的代理与备用域名逻辑。代理必须显式补上，
+        否则用户在设置里给这个源开代理时不生效。
+        """
+        apply = getattr(self, "_apply_proxy", None)
+        if callable(apply):
+            try:
+                return apply(url) or url
+            except Exception:
+                return url
+        return url
+
     def http(self, url, referer=None, headers=None):
         hdrs = self.headers()
         if referer:
             hdrs["Referer"] = referer
         if headers:
             hdrs.update(headers)
-        return _http(url, timeout=HTTP_TIMEOUT, headers=hdrs)[1]
+        return _http(self._with_proxy(url), timeout=HTTP_TIMEOUT, headers=hdrs)[1]
 
     def fetch(self, url, headers=None, **kw):
         """基类 fetch 在 iSH 环境不可用，必须自带；返回 requests 兼容对象。"""
         kw.pop("timeout", None)
-        status, text = _http(url, timeout=HTTP_TIMEOUT, headers=headers or self.headers())
+        status, text = _http(self._with_proxy(url), timeout=HTTP_TIMEOUT,
+                             headers=headers or self.headers())
         return _Response(status, text)
 
     # ---------- 蜘蛛接口 ----------
@@ -3595,13 +3671,14 @@ class Spider(SpiderBase):
         for platform in self._snapshot.get("platforms") or []:
             item = {"type_id": platform["key"], "type_name": platform["name"]}
             # 客户端读 class[].sub_categories（国色天香同款约定），选中后回传 "平台key|分类id"
-            if platform.get("adapter") != "missav":
-                subs = [
-                    {"type_id": platform["key"] + "|" + c["type_id"], "type_name": c["type_name"]}
-                    for c in self.cats_for(platform)
-                ]
-                if subs:
-                    item["sub_categories"] = subs
+            # MissAV 以前被排除在外（它的快照分类是过期的数字 id）；第十二轮改成从页面实时抓
+            # （/dm{N}/cn/{slug} + 中文标签），所以它也一起走 sub_categories。
+            subs = [
+                {"type_id": platform["key"] + "|" + c["type_id"], "type_name": c["type_name"]}
+                for c in self.cats_cached_for(platform)
+            ]
+            if subs:
+                item["sub_categories"] = subs
             classes.append(item)
             chips = []
             cats = platform.get("classes") or []
