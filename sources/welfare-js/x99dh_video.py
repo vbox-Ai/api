@@ -3692,19 +3692,31 @@ class Spider(SpiderBase):
         for th in threads:
             th.join(6)
 
-    def warm_first_tabs(self):
-        """首屏后台预热前 3 个平台的首个分类（约 180KB 流量），本次进程只做一次。"""
-        if getattr(self, "_warmed", False):
-            return
-        self._warmed = True
+    def warm_first_tabs(self, platforms=None):
+        """首屏后台预热各平台的**首个分类列表**，让用户第一次点分类就是热的。
+
+        这里**只用不联网的 `cats_cached_for()`**：分类抓取归 `kick_refresh()` 管
+        （4 并发 + 節流）。两处都联网会对同一批站点重复发请求——好几个站有频率限制
+        （99漫画/MissAV/avjoy 都吃过 321 字节壳页），重复打容易踩雷。
+        冷启动时只有快照带 classes 的几家能预热；其余等 `kick_refresh()` 抓完分类后
+        会再调一次本方法补上（按平台去重，不会重复预热）。
+        """
+        done = getattr(self, "_warmed_keys", None)
+        if done is None:
+            done = self._warmed_keys = set()
+        targets = list(platforms or (self._snapshot.get("platforms") or []))
 
         def work():
             time.sleep(1)
-            # 只预热"有分类"的平台（当前 6 个），每个抓首个分类，约 360KB
-            for platform in (self._snapshot.get("platforms") or []):
-                cats = self.cats_for(platform)
-                if cats:
-                    self._prefetch_worker(platform, [cats[0]["type_id"]])
+            for platform in targets:
+                key = platform["key"]
+                if key in done:
+                    continue
+                cats = self.cats_cached_for(platform)
+                if not cats:
+                    continue     # 分类还没抓到，等 kick_refresh 之后再热
+                done.add(key)
+                self._prefetch_worker(platform, [cats[0]["type_id"]])
 
         th = threading.Thread(target=work)
         th.daemon = True
@@ -3734,6 +3746,8 @@ class Spider(SpiderBase):
                         threads.append(th)
                     for th in threads:
                         th.join(8)
+                # 分类抓到之后再补一轮首tab预热（warm_first_tabs 只读缓存，不重复联网）
+                self.warm_first_tabs()
             finally:
                 self._refreshing = False
 
