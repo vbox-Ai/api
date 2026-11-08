@@ -35,7 +35,7 @@ KIND = "comic"
 PLATFORM_KEY = "x99dh_comic_py"
 TITLE = "X99漫画导航"
 SNAPSHOT_VERSION = "2026.11.07.2251"
-SNAPSHOT = json.loads('{"version":"2026.11.07.2251","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_6cc00cf5","name":"禁漫天堂","kind":"comic","adapter":"comic","desc":"H漫画","icon":"books.vertical.fill","url":"https://18comic66.com/enter","lines":[{"url":"https://18comic1.nl/enter","testUrl":"https://18comic1.nl/status.html","ok":true,"ms":162.0},{"url":"https://18comic888.cc/enter","testUrl":"https://18comic888.cc/status.html","ok":true,"ms":177.0},{"url":"https://18comic168.cc/enter","testUrl":"https://18comic168.cc/status.html","ok":true,"ms":191.0},{"url":"https://18comic1.top/enter","testUrl":"https://18comic1.top/status.html","ok":true,"ms":809.0},{"url":"https://18comic04.net/enter","testUrl":"https://18comic04.net/status.html","ok":true,"ms":821.0},{"url":"https://18comic666.cc/enter","testUrl":"https://18comic666.cc/status.html","ok":true,"ms":1046.0},{"url":"https://18comic1.cc/enter","testUrl":"https://18comic1.cc/status.html","ok":true,"ms":1138.0},{"url":"https://18comic03.net/enter","testUrl":"https://18comic03.net/status.html","ok":true,"ms":1290.0},{"url":"https://18comic168.top/enter","testUrl":"https://18comic168.top/status.html","ok":true,"ms":1410.0},{"url":"https://18comic666.net/enter","testUrl":"https://18comic666.net/status.html","ok":true,"ms":1461.0},{"url":"https://18comic05.net/enter","testUrl":"https://18comic05.net/status.html","ok":true,"ms":1503.0},{"url":"https://18comic1.sbs/enter","testUrl":"https://18comic1.sbs/status.html","ok":true,"ms":1511.0},{"url":"https://18comic2.sbs/enter","testUrl":"https://18comic2.sbs/status.html","ok":true,"ms":1542.0},{"url":"https://18comic02.net/enter","testUrl":"https://18comic02.net/status.html","ok":true,"ms":1848.0},{"url":"https://18comic.pw/enter","testUrl":"https://18comic.pw/status.html","ok":true,"ms":2270.0},{"url":"https://18comic.cfd/enter","testUrl":"https://18comic.cfd/status.html","ok":true,"ms":2300.0},{"url":"https://18comic01.net/enter","testUrl":"https://18comic01.net/status.html","ok":true,"ms":2516.0},{"url":"https://18comic6.net/enter","testUrl":"https://18comic6.net/status.html","ok":true,"ms":2527.0},{"url":"https://18comic888.ws/enter","testUrl":"https://18comic888.ws/status.html","ok":true,"ms":2819.0},{"url":"https://18comic.nl/enter","testUrl":"https://18comic.nl/status.html","ok":true,"ms":3025.0},{"url":"https://18comic01.cc/enter","testUrl":"https://18comic01.cc/status.html","ok":true,"ms":3862.0},{"url":"https://18comic.my/enter","testUrl":"https://18comic.my/status.html","ok":true,"ms":4591.0},{"url":"https://mh99.ws/enter","testUrl":"https://mh99.ws/status.html","ok":true,"ms":5161.0},{"url":"https://18comic6.com/enter","testUrl":"https://18comic6.com/status.html","ok":true,"ms":6672.0},{"url":"https://jmcomic.nl/enter","testUrl":"https://jmcomic.nl/status.html","ok":true,"ms":8681.0},{"url":"https://18comic2.icu/enter","testUrl":"https://18comic2.icu/status.html","ok":true,"ms":11085.0},{"url":"https://18comic66.com/enter","testUrl":"https://18comic66.com/status.html","ok":true,"ms":12620.0},{"url":"https://mh99.cfd/enter","testUrl":"https://mh99.cfd/status.html","ok":false,"ms":714.0},{"url":"https://18comic1.icu/enter","testUrl":"https://18comic1.icu/status.html","ok":false,"ms":4477.0},{"url":"https://18comic.sbs/enter","testUrl":"https://18comic.sbs/status.html","ok":false,"ms":5079.0}],"classes":[]},{"key":"x99_2f22a0a6","name":"99漫画","kind":"comic","adapter":"comic","desc":"另一个漫画站，资源多","icon":"books.vertical.fill","url":"https://www.wnacg02.net/enter","lines":[{"url":"https://99mh.men/enter","testUrl":"https://www.99mh.men/status.html","ok":true,"ms":1025.0},{"url":"https://wnacg888.com/enter","testUrl":"https://www.wnacg888.com/status.html","ok":true,"ms":1221.0},{"url":"https://wnacg.my/enter","testUrl":"https://www.wnacg.my/status.html","ok":true,"ms":1395.0},{"url":"https://wnacg.nl/enter","testUrl":"https://www.wnacg.nl/status.html","ok":true,"ms":1572.0},{"url":"https://99mh.net/enter","testUrl":"https://www.99mh.net/status.html","ok":true,"ms":1636.0},{"url":"https://www.wnacg02.com/enter","testUrl":"https://www.wnacg02.com/status.html","ok":true,"ms":2337.0},{"url":"https://wnacg666.com/enter","testUrl":"https://www.wnacg666.com/status.html","ok":true,"ms":2588.0},{"url":"https://wnacg666.net/enter","testUrl":"https://www.wnacg666.net/status.html","ok":true,"ms":2682.0},{"url":"https://99mh.one/enter","testUrl":"https://www.99mh.one/status.html","ok":true,"ms":2869.0},{"url":"https://wnacg888.net/enter","testUrl":"https://www.wnacg888.net/status.html","ok":true,"ms":2873.0},{"url":"https://99mh.nl/enter","testUrl":"https://www.99mh.nl/status.html","ok":true,"ms":3074.0},{"url":"https://wnacg.sbs/enter","testUrl":"https://www.wnacg.sbs/status.html","ok":true,"ms":3155.0},{"url":"https://wnacg.pw/enter","testUrl":"https://www.wnacg.pw/status.html","ok":true,"ms":3574.0},{"url":"https://99xmh.top/enter","testUrl":"https://www.99xmh.top/status.html","ok":true,"ms":3879.0},{"url":"https://www.wnacg02.net/enter","testUrl":"https://www.wnacg02.net/status.html","ok":true,"ms":4269.0},{"url":"https://wnacg.vip/enter","testUrl":"https://www.wnacg.vip/status.html","ok":true,"ms":5053.0},{"url":"https://www.wnacg01.net/enter","testUrl":"https://www.wnacg01.net/status.html","ok":true,"ms":5693.0},{"url":"https://wnacg.one/enter","testUrl":"https://www.wnacg.one/status.html","ok":false,"ms":3509.0}],"classes":[]},{"key":"x99_ecb3368e","name":"爱漫岛","kind":"comic","adapter":"maccms","desc":"免费中文汉化、日本漫画、韩国漫画、10万本、色情漫画等","icon":"books.vertical.fill","url":"https://www.amdcomic.art/enter","lines":[{"url":"https://www.amdcomic.art/enter","testUrl":"https://www.amdcomic.art/status.html","ok":true,"ms":281.0},{"url":"https://www.amdcomic.one/enter","testUrl":"https://www.amdcomic.one/status.html","ok":true,"ms":1742.0},{"url":"https://www.amdcomic.ws/enter","testUrl":"https://www.amdcomic.ws/status.html","ok":true,"ms":1932.0}],"classes":[{"type_id":"1","type_name":"同人","href":"/vodtype/1.html"},{"type_id":"2","type_name":"单本","href":"/vodtype/2.html"},{"type_id":"3","type_name":"短篇","href":"/vodtype/3.html"},{"type_id":"4","type_name":"韩漫","href":"/vodtype/4.html"},{"type_id":"6","type_name":"校园","href":"/vodtype/6.html"},{"type_id":"7","type_name":"幻想","href":"/vodtype/7.html"},{"type_id":"8","type_name":"都市","href":"/vodtype/8.html"},{"type_id":"9","type_name":"搞笑","href":"/vodtype/9.html"}]}]}')
+SNAPSHOT = json.loads('{"version":"2026.11.07.2251","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_6cc00cf5","name":"禁漫天堂","kind":"comic","adapter":"jm","desc":"H漫画","icon":"books.vertical.fill","url":"https://18comic66.com/enter","lines":[{"url":"https://18comic1.nl/enter","testUrl":"https://18comic1.nl/status.html","ok":true,"ms":162.0},{"url":"https://18comic888.cc/enter","testUrl":"https://18comic888.cc/status.html","ok":true,"ms":177.0},{"url":"https://18comic168.cc/enter","testUrl":"https://18comic168.cc/status.html","ok":true,"ms":191.0},{"url":"https://18comic1.top/enter","testUrl":"https://18comic1.top/status.html","ok":true,"ms":809.0},{"url":"https://18comic04.net/enter","testUrl":"https://18comic04.net/status.html","ok":true,"ms":821.0},{"url":"https://18comic666.cc/enter","testUrl":"https://18comic666.cc/status.html","ok":true,"ms":1046.0},{"url":"https://18comic1.cc/enter","testUrl":"https://18comic1.cc/status.html","ok":true,"ms":1138.0},{"url":"https://18comic03.net/enter","testUrl":"https://18comic03.net/status.html","ok":true,"ms":1290.0},{"url":"https://18comic168.top/enter","testUrl":"https://18comic168.top/status.html","ok":true,"ms":1410.0},{"url":"https://18comic666.net/enter","testUrl":"https://18comic666.net/status.html","ok":true,"ms":1461.0},{"url":"https://18comic05.net/enter","testUrl":"https://18comic05.net/status.html","ok":true,"ms":1503.0},{"url":"https://18comic1.sbs/enter","testUrl":"https://18comic1.sbs/status.html","ok":true,"ms":1511.0},{"url":"https://18comic2.sbs/enter","testUrl":"https://18comic2.sbs/status.html","ok":true,"ms":1542.0},{"url":"https://18comic02.net/enter","testUrl":"https://18comic02.net/status.html","ok":true,"ms":1848.0},{"url":"https://18comic.pw/enter","testUrl":"https://18comic.pw/status.html","ok":true,"ms":2270.0},{"url":"https://18comic.cfd/enter","testUrl":"https://18comic.cfd/status.html","ok":true,"ms":2300.0},{"url":"https://18comic01.net/enter","testUrl":"https://18comic01.net/status.html","ok":true,"ms":2516.0},{"url":"https://18comic6.net/enter","testUrl":"https://18comic6.net/status.html","ok":true,"ms":2527.0},{"url":"https://18comic888.ws/enter","testUrl":"https://18comic888.ws/status.html","ok":true,"ms":2819.0},{"url":"https://18comic.nl/enter","testUrl":"https://18comic.nl/status.html","ok":true,"ms":3025.0},{"url":"https://18comic01.cc/enter","testUrl":"https://18comic01.cc/status.html","ok":true,"ms":3862.0},{"url":"https://18comic.my/enter","testUrl":"https://18comic.my/status.html","ok":true,"ms":4591.0},{"url":"https://mh99.ws/enter","testUrl":"https://mh99.ws/status.html","ok":true,"ms":5161.0},{"url":"https://18comic6.com/enter","testUrl":"https://18comic6.com/status.html","ok":true,"ms":6672.0},{"url":"https://jmcomic.nl/enter","testUrl":"https://jmcomic.nl/status.html","ok":true,"ms":8681.0},{"url":"https://18comic2.icu/enter","testUrl":"https://18comic2.icu/status.html","ok":true,"ms":11085.0},{"url":"https://18comic66.com/enter","testUrl":"https://18comic66.com/status.html","ok":true,"ms":12620.0},{"url":"https://mh99.cfd/enter","testUrl":"https://mh99.cfd/status.html","ok":false,"ms":714.0},{"url":"https://18comic1.icu/enter","testUrl":"https://18comic1.icu/status.html","ok":false,"ms":4477.0},{"url":"https://18comic.sbs/enter","testUrl":"https://18comic.sbs/status.html","ok":false,"ms":5079.0}],"classes":[]},{"key":"x99_2f22a0a6","name":"99漫画","kind":"comic","adapter":"comic","desc":"另一个漫画站，资源多","icon":"books.vertical.fill","url":"https://www.wnacg02.net/enter","lines":[{"url":"https://99mh.men/enter","testUrl":"https://www.99mh.men/status.html","ok":true,"ms":1025.0},{"url":"https://wnacg888.com/enter","testUrl":"https://www.wnacg888.com/status.html","ok":true,"ms":1221.0},{"url":"https://wnacg.my/enter","testUrl":"https://www.wnacg.my/status.html","ok":true,"ms":1395.0},{"url":"https://wnacg.nl/enter","testUrl":"https://www.wnacg.nl/status.html","ok":true,"ms":1572.0},{"url":"https://99mh.net/enter","testUrl":"https://www.99mh.net/status.html","ok":true,"ms":1636.0},{"url":"https://www.wnacg02.com/enter","testUrl":"https://www.wnacg02.com/status.html","ok":true,"ms":2337.0},{"url":"https://wnacg666.com/enter","testUrl":"https://www.wnacg666.com/status.html","ok":true,"ms":2588.0},{"url":"https://wnacg666.net/enter","testUrl":"https://www.wnacg666.net/status.html","ok":true,"ms":2682.0},{"url":"https://99mh.one/enter","testUrl":"https://www.99mh.one/status.html","ok":true,"ms":2869.0},{"url":"https://wnacg888.net/enter","testUrl":"https://www.wnacg888.net/status.html","ok":true,"ms":2873.0},{"url":"https://99mh.nl/enter","testUrl":"https://www.99mh.nl/status.html","ok":true,"ms":3074.0},{"url":"https://wnacg.sbs/enter","testUrl":"https://www.wnacg.sbs/status.html","ok":true,"ms":3155.0},{"url":"https://wnacg.pw/enter","testUrl":"https://www.wnacg.pw/status.html","ok":true,"ms":3574.0},{"url":"https://99xmh.top/enter","testUrl":"https://www.99xmh.top/status.html","ok":true,"ms":3879.0},{"url":"https://www.wnacg02.net/enter","testUrl":"https://www.wnacg02.net/status.html","ok":true,"ms":4269.0},{"url":"https://wnacg.vip/enter","testUrl":"https://www.wnacg.vip/status.html","ok":true,"ms":5053.0},{"url":"https://www.wnacg01.net/enter","testUrl":"https://www.wnacg01.net/status.html","ok":true,"ms":5693.0},{"url":"https://wnacg.one/enter","testUrl":"https://www.wnacg.one/status.html","ok":false,"ms":3509.0}],"classes":[]},{"key":"x99_ecb3368e","name":"爱漫岛","kind":"comic","adapter":"maccms","desc":"免费中文汉化、日本漫画、韩国漫画、10万本、色情漫画等","icon":"books.vertical.fill","url":"https://www.amdcomic.art/enter","lines":[{"url":"https://www.amdcomic.art/enter","testUrl":"https://www.amdcomic.art/status.html","ok":true,"ms":281.0},{"url":"https://www.amdcomic.one/enter","testUrl":"https://www.amdcomic.one/status.html","ok":true,"ms":1742.0},{"url":"https://www.amdcomic.ws/enter","testUrl":"https://www.amdcomic.ws/status.html","ok":true,"ms":1932.0}],"classes":[{"type_id":"1","type_name":"同人","href":"/vodtype/1.html"},{"type_id":"2","type_name":"单本","href":"/vodtype/2.html"},{"type_id":"3","type_name":"短篇","href":"/vodtype/3.html"},{"type_id":"4","type_name":"韩漫","href":"/vodtype/4.html"},{"type_id":"6","type_name":"校园","href":"/vodtype/6.html"},{"type_id":"7","type_name":"幻想","href":"/vodtype/7.html"},{"type_id":"8","type_name":"都市","href":"/vodtype/8.html"},{"type_id":"9","type_name":"搞笑","href":"/vodtype/9.html"}]}]}')
 
 # ---- 运行参数（方案 v8 定稿）----
 CACHE_TTL = 600          # 线路/入口胜者缓存
@@ -1833,6 +1833,98 @@ class _HanimeAdapter(_BaseAdapter):
         return {"parse": "0", "url": url, "header": self.s.headers()}
 
 
+class _JmAdapter(_BaseAdapter):
+    """禁漫天堂(18comic)：/enter 列表 → /album/{id}/{slug} 章节(/photo/{pid}) →
+    阅读页 media/photos/{aid}/{page}.webp 图片序列 → pics://。
+
+    注意：URL 含中文，必须 quote；线路上游抖动大，需多线路重试。
+    """
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    ALBUM_RE = re.compile(r'href="(/album/\d+/[^"]*)"')
+    PHOTO_RE = re.compile(r'href="(/photo/\d+[^"]*)"')
+    PAGE_RE = re.compile(r'https?://[^"\'\s<>]*?/media/photos/[^"\'\<>]*?\.(?:webp|jpg|jpeg|png)')
+
+    def _page(self, path, referer=None):
+        """多线路兜底：当前线路失败时换平台其余线路重试。"""
+        if path.startswith("http"):
+            url = path
+        else:
+            url = self._url(path)
+        html = self.s.http(url, referer=referer, headers={"User-Agent": self.UA_DESKTOP}) or ""
+        if html:
+            return html
+        for line in (self.p.get("lines") or []):
+            other = (line.get("url") or "").rstrip("/")
+            if not other or other == self.line.rstrip("/"):
+                continue
+            root = other
+            if path and not path.startswith("http"):
+                root = other.split("://")[0] + "://" + other.split("://")[1].split("/")[0]
+                url2 = root + "/" + path.lstrip("/")
+            else:
+                url2 = path
+            html = self.s.http(urllib.parse.quote(url2, safe=":/?&=%#"),
+                               headers={"User-Agent": self.UA_DESKTOP}) or ""
+            if html:
+                return html
+        return html
+
+    def list(self, cate, page):
+        html = self._page("/enter")
+        videos, seen = [], set()
+        for path in self.ALBUM_RE.findall(html):
+            if path in seen:
+                continue
+            seen.add(path)
+            aid = re.search(r"/album/(\d+)", path)
+            slug = urllib.parse.unquote(path.rsplit("/", 1)[-1])
+            videos.append({
+                "vod_id": self.p["key"] + "::" + path,
+                "vod_name": slug.replace("-", " ")[:60],
+                "vod_pic": "",
+                "vod_remarks": "漫画",
+            })
+        return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+
+    def detail(self, vid):
+        path = vid if vid.startswith("/") else "/" + vid.lstrip("/")
+        html = self._page(urllib.parse.quote(path, safe="/"))
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+        chapters = list(dict.fromkeys(self.PHOTO_RE.findall(html)))
+        if not chapters:
+            return {"list": []}
+        eps = "#".join("第%d話$%s::%s" % (i + 1, self.p["key"], p)
+                       for i, p in enumerate(chapters))
+        vod = {
+            "vod_id": self.p["key"] + "::" + path,
+            "vod_name": title or path,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "漫画",
+            "vod_play_url": eps,
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        path = url if url.startswith("/") else "/" + url.lstrip("/")
+        html = self._page(urllib.parse.quote(path, safe="/"))
+        imgs, seen = [], set()
+        for src in self.PAGE_RE.findall(html):
+            full = self._abs(src)
+            if full and full not in seen:
+                seen.add(full)
+                imgs.append(full)
+        if not imgs:
+            return {"parse": "0", "url": ""}
+        return {"parse": "0", "url": "pics://" + "&&".join(imgs),
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _ComicAdapter(_BaseAdapter):
     """18comic 类：/enter 列表 -> /album/{id} 章节(/photo) -> 图片 -> manga://"""
 
@@ -2037,6 +2129,7 @@ ADAPTERS = {
     "kvs": _KvsAdapter,
     "xanimu": _XanimuAdapter,
     "ptt": _PttAdapter,
+    "jm": _JmAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
