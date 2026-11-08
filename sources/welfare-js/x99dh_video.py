@@ -1925,6 +1925,91 @@ class _JmAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _WnacgAdapter(_BaseAdapter):
+    """99漫画(wnacg)：/enter 列表 /photos-index-aid-{aid}.html 卡片；
+    详情同路径（含章节），阅读页 /photos-view-aid-{aid}-pid-{pid}.html。
+    站点抖动大（500/403），列表已通，详情/阅读为兜底实现。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<a href="(/photos-index-aid-\d+\.html)" title="([^"]*)"[^>]*>\s*<img[^>]+src="([^"]+)"',
+        re.S)
+    VIEW_RE = re.compile(r'href="(/photos-view-aid-\d+[^"]*)"')
+
+    def _page(self, path, referer=None):
+        url = path if path.startswith("http") else self._url(path)
+        html = self.s.http(url, referer=referer, headers={"User-Agent": self.UA_DESKTOP}) or ""
+        if len(html) > 4000:
+            return html
+        for line in (self.p.get("lines") or []):
+            other = (line.get("url") or "")
+            if not other:
+                continue
+            root = other.split("://")[0] + "://" + other.split("://")[1].split("/")[0]
+            if root == self.host:
+                continue
+            html = self.s.http(root + path, referer=root + "/",
+                               headers={"User-Agent": self.UA_DESKTOP}) or ""
+            if len(html) > 4000:
+                self.host = root
+                return html
+        return html
+
+    def list(self, cate, page):
+        html = self._page("/enter")
+        videos, seen = [], set()
+        for href, title, img in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + href,
+                "vod_name": title.strip()[:80],
+                "vod_pic": self._abs(img),
+                "vod_remarks": "漫画",
+            })
+        return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+
+    def detail(self, vid):
+        path = vid if vid.startswith("/") else "/" + vid.lstrip("/")
+        html = self._page(path, referer=self.host + "/enter")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+        views = list(dict.fromkeys(self.VIEW_RE.findall(html)))
+        if not views:
+            return {"list": []}
+        eps = "#".join("第%d話$%s::%s" % (i + 1, self.p["key"], p)
+                       for i, p in enumerate(views))
+        vod = {
+            "vod_id": self.p["key"] + "::" + path,
+            "vod_name": title or path,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "漫画",
+            "vod_play_url": eps,
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        path = url if url.startswith("/") else "/" + url.lstrip("/")
+        html = self._page(path, referer=self.host + "/enter")
+        imgs, seen = [], set()
+        for src in re.findall(r'(?:data-original|src)="(https?://[^"]+?\.(?:webp|jpg|jpeg|png))"', html):
+            if any(k in src for k in ("themes/", "logo", "blank", "ico", "icon")):
+                continue
+            full = self._abs(src)
+            if full and full not in seen:
+                seen.add(full)
+                imgs.append(full)
+        if not imgs:
+            return {"parse": "0", "url": ""}
+        return {"parse": "0", "url": "pics://" + "&&".join(imgs),
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _ComicAdapter(_BaseAdapter):
     """18comic 类：/enter 列表 -> /album/{id} 章节(/photo) -> 图片 -> manga://"""
 
@@ -2130,6 +2215,7 @@ ADAPTERS = {
     "xanimu": _XanimuAdapter,
     "ptt": _PttAdapter,
     "jm": _JmAdapter,
+    "wnacg": _WnacgAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }

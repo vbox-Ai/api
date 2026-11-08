@@ -2151,7 +2151,7 @@
       "key": "x99_2f22a0a6",
       "name": "99漫画",
       "kind": "comic",
-      "adapter": "comic",
+      "adapter": "wnacg",
       "desc": "另一个漫画站，资源多",
       "icon": "books.vertical.fill",
       "url": "https://www.wnacg02.net/enter",
