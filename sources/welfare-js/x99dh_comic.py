@@ -2034,14 +2034,32 @@ class _PornhubAdapter(_BaseAdapter):
 
 
 class _AcgmhAdapter(_BaseAdapter):
-    """Hentai(acgmh)：首页 /g/{id}/ 画廊卡片；详情页 reader 图片数组 → pics:// 图集。
-    API 被 403，纯 HTML 解析。"""
+    """Hentai(acgmh / nhentai 镜像)：/enter 画廊卡片 → 整册 pics:// 图集。
+
+    第十二轮改动（旧实现是坏的）：旧 `detail` 从详情页抽 `<img src>` 当图集，
+    但详情页里只有 **200×283 缩略图**（`…/galleries/{media_id}/{n}t.webp`），
+    且 6 条线路**全部 404** → 客户端拿到一串打不开的图。
+    详情页的封面同样是坏链（镜像给了双后缀 `cover.webp.webp`，去掉重复的 `.webp` 才是 200）。
+
+    原图只在阅读页 `/g/{id}/{page}/` 里 `…/galleries/{media_id}/{page}.webp`（实测 200，160~300KB）。
+    关键实测结论（第十二轮，已用 sha256 逐页比对验证）：
+      · 镜像不代理 nhentai 的 `/api/*`（`/api/gallery/{id}` → 403、`/api/v2/…` → 404），
+        阅读页内嵌的 SvelteKit 数据块里也没有 pages 数组 —— **没有批量接口**；
+      · 但**CDN token 在全册内是通用的**：page1 的 token 拿去取 page 2/33/64，
+        内容与各页自己的 token 取到的**逐字节相同**（sha256 一致）；
+        阅读页里 token 每页变一下只是 CDN 分片噪声，**不是逐页签名**；
+      · 同册内每页后缀一致（两个画廊、31 页抽样全是 `.webp`），`media_id` 也恒定。
+    ⇒ 因此只需 **2 次请求**即可拿全册：详情页给页数、阅读页第 1 页给 token+media_id+后缀，
+    其余页由页号拼出来。`detail` 出「全集」单集，`play` 现取现拼（多册图集不预生成）。
+    """
 
     UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                   "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
     CARD_RE = re.compile(
         r'<a href="(/g/[0-9a-f]+/)" class="cover"[^>]*>.*?<img[^>]+src="([^"]+)"[^>]*>.*?<div class="caption">([^<]+)</div>',
         re.S)
+    PAGE_RE = re.compile(r'href="/g/(\d+)/(\d+)/"')
+    FULL_IMG_RE = re.compile(r'<img[^>]+src="(https?://[^"]+/galleries/[^"]+)"')
 
     def _page(self, path, referer=None):
         html = self.s.http(self._url(path), referer=referer,
@@ -2093,6 +2111,12 @@ class _AcgmhAdapter(_BaseAdapter):
             })
         return {"list": videos, "page": page, "pagecount": page + 1}
 
+    @staticmethod
+    def _fix_cover(url):
+        """镜像的封面给了双后缀（cover.webp.webp → 404），去掉重复的那节才是真图。"""
+        url = (url or "").replace("&amp;", "&")
+        return re.sub(r"(\.[a-z0-9]{2,5})\1$", r"\1", url)
+
     def detail(self, vid):
         url = self._abs(vid)
         html = self._page(url, referer=self.host + "/")
@@ -2100,24 +2124,53 @@ class _AcgmhAdapter(_BaseAdapter):
         m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
         if m:
             title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
-        imgs = []
-        for u in re.findall(r'<img[^>]+src="(https?://[^"]+\.(?:webp|png|jpg))"', html):
-            if "cover" in u or "thumb" in u:
-                continue
-            imgs.append(u)
+        pic = ""
+        m = re.search(r'<div id="cover"[^>]*>.*?<img[^>]+src="([^"]+)"', html, re.S)
+        if m:
+            pic = self._fix_cover(m.group(1))
+        gid_m = re.search(r"/g/(\d+)/", url)
+        gid = gid_m.group(1) if gid_m else ""
+        # 详情页里的 gallerythumb 锚点 = 全册页号（实测与总页数一致）
+        pages = sorted({int(p) for g, p in self.PAGE_RE.findall(html) if g == gid})
+        if not pages:
+            return {"list": []}
         vod = {
             "vod_id": self.p["key"] + "::" + url,
             "vod_name": title or vid,
-            "vod_pic": "",
-            "vod_content": "pics:%d" % len(imgs),
+            "vod_pic": pic,
+            "vod_content": "共 %d 页" % len(pages),
             "vod_play_from": "图集",
-            "vod_play_url": "图集$%s::pics://%s" % (self.p["key"], "&&".join(imgs[:20])) if imgs else "正片$%s::%s" % (self.p["key"], url),
+            # 一册就是一个 vod：存画廊地址，play() 两次请求拼出全套原图
+            "vod_play_url": "全集$%s::%s" % (self.p["key"], url),
         }
         return {"list": [vod]}
 
     def play(self, flag, url):
-        return {"parse": "0", "url": url,
-                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+        """详情页拿页数 + 阅读页第 1 页拿 CDN token/media_id/后缀 → 拼全套 pics://。
+
+        token 全册通用（sha256 验证过），后缀同册一致，所以不必逐页抓。
+        """
+        target = str(url or "")
+        page = target if target.startswith("http") else self._url("/" + target.lstrip("/"))
+        m = re.search(r"/g/(\d+)/", page)
+        if not m:
+            return {"parse": "0", "url": ""}
+        gid = m.group(1)
+        gallery = page.split("/g/%s/" % gid)[0] + "/g/%s/" % gid
+
+        pages = sorted({int(p) for g, p in self.PAGE_RE.findall(
+            self._page(gallery, referer=self.host + "/")) if g == gid})
+        first = self.s.http(gallery + "1/", referer=gallery,
+                            headers={"User-Agent": self.UA_DESKTOP}) or ""
+        hit = self.FULL_IMG_RE.search(first)
+        if not pages or not hit:
+            return {"parse": "0", "url": ""}
+        sample = hit.group(1).replace("&amp;", "&")
+        prefix, _, fname = sample.rpartition("/")
+        ext = fname.rsplit(".", 1)[-1] if "." in fname else "webp"
+        return {"parse": "0", "url": "pics://" + "&&".join(
+            "%s/%d.%s" % (prefix, n, ext) for n in pages),
+            "header": {"User-Agent": self.UA_DESKTOP, "Referer": gallery}}
 
 
 class _HsexAdapter(_BaseAdapter):
