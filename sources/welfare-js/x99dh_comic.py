@@ -2,7 +2,7 @@
 """X99漫画导航 — vbox 远程源 python 蜘蛛
 
 由 build_nav_source.py 生成，请勿手改。
-类型: comic    快照: 2026.11.08.2053
+类型: comic    快照: 2026.11.09.0041
 """
 import base64
 import http.client
@@ -34,8 +34,8 @@ except ImportError:  # 本地调试
 KIND = "comic"
 PLATFORM_KEY = "x99dh_comic_py"
 TITLE = "X99漫画导航"
-SNAPSHOT_VERSION = "2026.11.08.2053"
-SNAPSHOT = json.loads('{"version":"2026.11.08.2053","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_6cc00cf5","name":"禁漫天堂","kind":"comic","adapter":"jm","desc":"H漫画","icon":"books.vertical.fill","url":"https://18comic66.com/enter","lines":[{"url":"https://18comic888.cc/enter","testUrl":"https://18comic888.cc/status.html","ok":true,"ms":185.0},{"url":"https://18comic04.net/enter","testUrl":"https://18comic04.net/status.html","ok":true,"ms":242.0},{"url":"https://mh99.ws/enter","testUrl":"https://mh99.ws/status.html","ok":true,"ms":291.0},{"url":"https://18comic.pw/enter","testUrl":"https://18comic.pw/status.html","ok":true,"ms":626.0},{"url":"https://18comic2.icu/enter","testUrl":"https://18comic2.icu/status.html","ok":true,"ms":627.0},{"url":"https://18comic05.net/enter","testUrl":"https://18comic05.net/status.html","ok":true,"ms":746.0},{"url":"https://18comic168.top/enter","testUrl":"https://18comic168.top/status.html","ok":true,"ms":767.0},{"url":"https://18comic03.net/enter","testUrl":"https://18comic03.net/status.html","ok":true,"ms":860.0},{"url":"https://18comic66.com/enter","testUrl":"https://18comic66.com/status.html","ok":true,"ms":927.0},{"url":"https://18comic666.net/enter","testUrl":"https://18comic666.net/status.html","ok":true,"ms":956.0},{"url":"https://18comic02.net/enter","testUrl":"https://18comic02.net/status.html","ok":true,"ms":1068.0},{"url":"https://18comic1.top/enter","testUrl":"https://18comic1.top/status.html","ok":true,"ms":1139.0},{"url":"https://18comic888.ws/enter","testUrl":"https://18comic888.ws/status.html","ok":true,"ms":1187.0},{"url":"https://18comic01.cc/enter","testUrl":"https://18comic01.cc/status.html","ok":true,"ms":1221.0},{"url":"https://18comic1.cc/enter","testUrl":"https://18comic1.cc/status.html","ok":true,"ms":1248.0},{"url":"https://18comic6.com/enter","testUrl":"https://18comic6.com/status.html","ok":true,"ms":1285.0},{"url":"https://18comic.cfd/enter","testUrl":"https://18comic.cfd/status.html","ok":true,"ms":1307.0},{"url":"https://18comic1.sbs/enter","testUrl":"https://18comic1.sbs/status.html","ok":true,"ms":1416.0},{"url":"https://18comic2.sbs/enter","testUrl":"https://18comic2.sbs/status.html","ok":true,"ms":1663.0},{"url":"https://18comic666.cc/enter","testUrl":"https://18comic666.cc/status.html","ok":true,"ms":1762.0},{"url":"https://18comic01.net/enter","testUrl":"https://18comic01.net/status.html","ok":true,"ms":1829.0},{"url":"https://18comic.my/enter","testUrl":"https://18comic.my/status.html","ok":true,"ms":1975.0},{"url":"https://18comic6.net/enter","testUrl":"https://18comic6.net/status.html","ok":true,"ms":2578.0},{"url":"https://jmcomic.nl/enter","testUrl":"https://jmcomic.nl/status.html","ok":true,"ms":3958.0},{"url":"https://18comic.nl/enter","testUrl":"https://18comic.nl/status.html","ok":true,"ms":5154.0},{"url":"https://18comic1.nl/enter","testUrl":"https://18comic1.nl/status.html","ok":false,"ms":746.0},{"url":"https://18comic168.cc/enter","testUrl":"https://18comic168.cc/status.html","ok":false,"ms":779.0},{"url":"https://18comic1.icu/enter","testUrl":"https://18comic1.icu/status.html","ok":false,"ms":1009.0},{"url":"https://mh99.cfd/enter","testUrl":"https://mh99.cfd/status.html","ok":false,"ms":1542.0},{"url":"https://18comic.sbs/enter","testUrl":"https://18comic.sbs/status.html","ok":false,"ms":1781.0}],"classes":[]},{"key":"x99_2f22a0a6","name":"99漫画","kind":"comic","adapter":"wnacg","desc":"另一个漫画站，资源多","icon":"books.vertical.fill","url":"https://www.wnacg02.net/enter","lines":[{"url":"https://99mh.men/enter","testUrl":"https://www.99mh.men/status.html","ok":true,"ms":137.0},{"url":"https://wnacg888.com/enter","testUrl":"https://www.wnacg888.com/status.html","ok":true,"ms":243.0},{"url":"https://99xmh.top/enter","testUrl":"https://www.99xmh.top/status.html","ok":true,"ms":265.0},{"url":"https://wnacg888.net/enter","testUrl":"https://www.wnacg888.net/status.html","ok":true,"ms":274.0},{"url":"https://www.wnacg02.net/enter","testUrl":"https://www.wnacg02.net/status.html","ok":true,"ms":279.0},{"url":"https://wnacg666.com/enter","testUrl":"https://www.wnacg666.com/status.html","ok":true,"ms":282.0},{"url":"https://99mh.net/enter","testUrl":"https://www.99mh.net/status.html","ok":true,"ms":383.0},{"url":"https://wnacg.sbs/enter","testUrl":"https://www.wnacg.sbs/status.html","ok":true,"ms":413.0},{"url":"https://99mh.nl/enter","testUrl":"https://www.99mh.nl/status.html","ok":true,"ms":455.0},{"url":"https://wnacg.vip/enter","testUrl":"https://www.wnacg.vip/status.html","ok":true,"ms":471.0},{"url":"https://99mh.one/enter","testUrl":"https://www.99mh.one/status.html","ok":true,"ms":514.0},{"url":"https://wnacg666.net/enter","testUrl":"https://www.wnacg666.net/status.html","ok":true,"ms":514.0},{"url":"https://www.wnacg01.net/enter","testUrl":"https://www.wnacg01.net/status.html","ok":true,"ms":606.0},{"url":"https://www.wnacg02.com/enter","testUrl":"https://www.wnacg02.com/status.html","ok":true,"ms":656.0},{"url":"https://wnacg.nl/enter","testUrl":"https://www.wnacg.nl/status.html","ok":true,"ms":1114.0},{"url":"https://wnacg.my/enter","testUrl":"https://www.wnacg.my/status.html","ok":true,"ms":1563.0},{"url":"https://wnacg.pw/enter","testUrl":"https://www.wnacg.pw/status.html","ok":true,"ms":1987.0},{"url":"https://wnacg.one/enter","testUrl":"https://www.wnacg.one/status.html","ok":false,"ms":543.0}],"classes":[]},{"key":"x99_ecb3368e","name":"爱漫岛","kind":"comic","adapter":"amd","desc":"免费中文汉化、日本漫画、韩国漫画、10万本、色情漫画等","icon":"books.vertical.fill","url":"https://www.amdcomic.art/enter","lines":[{"url":"https://www.amdcomic.art/enter","testUrl":"https://www.amdcomic.art/status.html","ok":true,"ms":137.0},{"url":"https://www.amdcomic.one/enter","testUrl":"https://www.amdcomic.one/status.html","ok":true,"ms":1213.0},{"url":"https://www.amdcomic.ws/enter","testUrl":"https://www.amdcomic.ws/status.html","ok":true,"ms":2682.0}],"classes":[]}]}')
+SNAPSHOT_VERSION = "2026.11.09.0041"
+SNAPSHOT = json.loads('{"version":"2026.11.09.0041","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_6cc00cf5","name":"禁漫天堂","kind":"comic","adapter":"jm","desc":"H漫画","icon":"books.vertical.fill","url":"https://18comic66.com/enter","lines":[{"url":"https://18comic66.com/enter","testUrl":"https://18comic66.com/status.html","ok":true,"ms":12620.0},{"url":"https://18comic6.com/enter","testUrl":"https://18comic6.com/status.html","ok":true,"ms":6672.0},{"url":"https://18comic05.net/enter","testUrl":"https://18comic05.net/status.html","ok":true,"ms":1503.0},{"url":"https://18comic04.net/enter","testUrl":"https://18comic04.net/status.html","ok":true,"ms":821.0},{"url":"https://18comic03.net/enter","testUrl":"https://18comic03.net/status.html","ok":true,"ms":1290.0},{"url":"https://18comic02.net/enter","testUrl":"https://18comic02.net/status.html","ok":true,"ms":1848.0},{"url":"https://18comic01.net/enter","testUrl":"https://18comic01.net/status.html","ok":true,"ms":2516.0},{"url":"https://18comic01.cc/enter","testUrl":"https://18comic01.cc/status.html","ok":true,"ms":3862.0},{"url":"https://18comic.my/enter","testUrl":"https://18comic.my/status.html","ok":true,"ms":4591.0},{"url":"https://mh99.ws/enter","testUrl":"https://mh99.ws/status.html","ok":true,"ms":5161.0},{"url":"https://18comic666.cc/enter","testUrl":"https://18comic666.cc/status.html","ok":true,"ms":1046.0},{"url":"https://18comic666.net/enter","testUrl":"https://18comic666.net/status.html","ok":true,"ms":1461.0},{"url":"https://18comic888.cc/enter","testUrl":"https://18comic888.cc/status.html","ok":true,"ms":177.0},{"url":"https://18comic.pw/enter","testUrl":"https://18comic.pw/status.html","ok":true,"ms":2270.0},{"url":"https://jmcomic.nl/enter","testUrl":"https://jmcomic.nl/status.html","ok":true,"ms":8681.0},{"url":"https://18comic1.nl/enter","testUrl":"https://18comic1.nl/status.html","ok":true,"ms":162.0},{"url":"https://18comic.nl/enter","testUrl":"https://18comic.nl/status.html","ok":true,"ms":3025.0},{"url":"https://18comic6.net/enter","testUrl":"https://18comic6.net/status.html","ok":true,"ms":2527.0},{"url":"https://18comic1.sbs/enter","testUrl":"https://18comic1.sbs/status.html","ok":true,"ms":1511.0},{"url":"https://18comic.sbs/enter","testUrl":"https://18comic.sbs/status.html","ok":false,"ms":5079.0},{"url":"https://18comic2.sbs/enter","testUrl":"https://18comic2.sbs/status.html","ok":true,"ms":1542.0},{"url":"https://18comic2.icu/enter","testUrl":"https://18comic2.icu/status.html","ok":true,"ms":11085.0},{"url":"https://18comic168.cc/enter","testUrl":"https://18comic168.cc/status.html","ok":true,"ms":191.0},{"url":"https://18comic168.top/enter","testUrl":"https://18comic168.top/status.html","ok":true,"ms":1410.0},{"url":"https://18comic.cfd/enter","testUrl":"https://18comic.cfd/status.html","ok":true,"ms":2300.0},{"url":"https://18comic888.ws/enter","testUrl":"https://18comic888.ws/status.html","ok":true,"ms":2819.0},{"url":"https://mh99.cfd/enter","testUrl":"https://mh99.cfd/status.html","ok":false,"ms":714.0},{"url":"https://18comic1.icu/enter","testUrl":"https://18comic1.icu/status.html","ok":false,"ms":4477.0},{"url":"https://18comic1.top/enter","testUrl":"https://18comic1.top/status.html","ok":true,"ms":809.0},{"url":"https://18comic1.cc/enter","testUrl":"https://18comic1.cc/status.html","ok":true,"ms":1138.0}],"classes":[]},{"key":"x99_2f22a0a6","name":"99漫画","kind":"comic","adapter":"wnacg","desc":"另一个漫画站，资源多","icon":"books.vertical.fill","url":"https://www.wnacg02.net/enter","lines":[{"url":"https://www.wnacg02.net/enter","testUrl":"https://www.wnacg02.net/status.html","ok":true,"ms":4269.0},{"url":"https://www.wnacg02.com/enter","testUrl":"https://www.wnacg02.com/status.html","ok":true,"ms":2337.0},{"url":"https://www.wnacg01.net/enter","testUrl":"https://www.wnacg01.net/status.html","ok":true,"ms":5693.0},{"url":"https://wnacg.my/enter","testUrl":"https://www.wnacg.my/status.html","ok":true,"ms":1395.0},{"url":"https://wnacg888.net/enter","testUrl":"https://www.wnacg888.net/status.html","ok":true,"ms":2873.0},{"url":"https://wnacg888.com/enter","testUrl":"https://www.wnacg888.com/status.html","ok":true,"ms":1221.0},{"url":"https://wnacg666.net/enter","testUrl":"https://www.wnacg666.net/status.html","ok":true,"ms":2682.0},{"url":"https://wnacg666.com/enter","testUrl":"https://www.wnacg666.com/status.html","ok":true,"ms":2588.0},{"url":"https://99mh.nl/enter","testUrl":"https://www.99mh.nl/status.html","ok":true,"ms":3074.0},{"url":"https://wnacg.pw/enter","testUrl":"https://www.wnacg.pw/status.html","ok":true,"ms":3574.0},{"url":"https://wnacg.one/enter","testUrl":"https://www.wnacg.one/status.html","ok":false,"ms":3509.0},{"url":"https://wnacg.nl/enter","testUrl":"https://www.wnacg.nl/status.html","ok":true,"ms":1572.0},{"url":"https://wnacg.sbs/enter","testUrl":"https://www.wnacg.sbs/status.html","ok":true,"ms":3155.0},{"url":"https://wnacg.vip/enter","testUrl":"https://www.wnacg.vip/status.html","ok":true,"ms":5053.0},{"url":"https://99mh.one/enter","testUrl":"https://www.99mh.one/status.html","ok":true,"ms":2869.0},{"url":"https://99mh.men/enter","testUrl":"https://www.99mh.men/status.html","ok":true,"ms":1025.0},{"url":"https://99mh.net/enter","testUrl":"https://www.99mh.net/status.html","ok":true,"ms":1636.0},{"url":"https://99xmh.top/enter","testUrl":"https://www.99xmh.top/status.html","ok":true,"ms":3879.0}],"classes":[]},{"key":"x99_ecb3368e","name":"爱漫岛","kind":"comic","adapter":"amd","desc":"免费中文汉化、日本漫画、韩国漫画、10万本、色情漫画等","icon":"books.vertical.fill","url":"https://www.amdcomic.art/enter","lines":[{"url":"https://www.amdcomic.art/enter","testUrl":"https://www.amdcomic.art/status.html","ok":true,"ms":281.0},{"url":"https://www.amdcomic.one/enter","testUrl":"https://www.amdcomic.one/status.html","ok":true,"ms":1742.0},{"url":"https://www.amdcomic.ws/enter","testUrl":"https://www.amdcomic.ws/status.html","ok":true,"ms":1932.0}],"classes":[{"type_id":"1","type_name":"同人","href":"/vodtype/1.html"},{"type_id":"2","type_name":"单本","href":"/vodtype/2.html"},{"type_id":"3","type_name":"短篇","href":"/vodtype/3.html"},{"type_id":"4","type_name":"韩漫","href":"/vodtype/4.html"},{"type_id":"6","type_name":"校园","href":"/vodtype/6.html"},{"type_id":"7","type_name":"幻想","href":"/vodtype/7.html"},{"type_id":"8","type_name":"都市","href":"/vodtype/8.html"},{"type_id":"9","type_name":"搞笑","href":"/vodtype/9.html"}]}]}')
 
 # ---- 运行参数（方案 v8 定稿）----
 CACHE_TTL = 600          # 线路/入口胜者缓存
@@ -120,8 +120,14 @@ def _request_once(url, timeout, hdrs):
     return resp.status, raw, resp.getheader("Location"), dict(resp.getheaders())
 
 
-def _http(url, timeout=HTTP_TIMEOUT, headers=None):
-    """连接复用版 GET：同域名复用 TLS（keep-alive），4xx/5xx 也读 body。"""
+def _http(url, timeout=HTTP_TIMEOUT, headers=None, fast=False):
+    """连接复用版 GET：同域名复用 TLS（keep-alive），4xx/5xx 也读 body。
+
+    `fast=True` 是**搜索专用**通道：1 次请求、最多 1 跳重定向。
+    默认路径是「2 次重试 × 最多 3 跳」，最坏 6 次请求——超时 3s 就会变成 18s，
+    实测 MissAV 搜索正是这样把 9 家并行的总预算吃光（一次搜索只回 26 条，
+    快的几家全被挤掉）。搜索宁可少一个来源，也不能让一家拖垮整次。
+    """
     hdrs = {
         "User-Agent": UA,
         "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
@@ -136,19 +142,21 @@ def _http(url, timeout=HTTP_TIMEOUT, headers=None):
     if headers:
         hdrs.update(headers)
 
+    attempts = (0,) if fast else (0, 1)
+    max_hops = 1 if fast else 3
     current = url
-    for hop in range(3):
-        for attempt in (0, 1):
+    for hop in range(max_hops):
+        for attempt in attempts:
             try:
                 status, raw, location, _ = _request_once(current, timeout, hdrs)
                 break
             except Exception:
                 _drop(urllib.parse.urlsplit(current).netloc)
-                if attempt == 0:
+                if attempt == 0 and not fast:
                     continue
                 return None, ""
 
-        if status in (301, 302, 303, 307, 308) and location and hop < 2:
+        if status in (301, 302, 303, 307, 308) and location and hop < max_hops - 1:
             current = urllib.parse.urljoin(current, location)
             continue
 
@@ -297,13 +305,61 @@ class _BaseAdapter(object):
     def categories(self):
         return self.p.get("classes") or []
 
+    SEARCH_TIMEOUT = 4.0     # 搜索单次请求超时（客户端总预算 8s，9 家并行）
+
+    def _search_page(self, path, referer=None):
+        """搜索专用取页：**单次请求 + 短超时 + 1 跳重定向**，不退避、不换线路（壳页除外）。
+
+        搜索是 9 家并行的 best-effort，一家慢就会把总预算吃光、连带把快的挤掉。
+        实测：走普通通道时 MissAV 要 18.8s（`_http` 默认 2 次重试 × 3 跳 = 最多 6 次请求）、
+        禁漫退避重试要 8.9s → `ssis` 只收到 26 条，MissAV/Pornhub/avjoy/禁漫全被挤掉。
+
+        超时定 4.0s：实测各家正常耗时是 Jable 1.7s / avjoy 2.7s / MissAV 2.8s /
+        Pornhub 2.9s / 禁漫 3.9s，定 2.5s 会把这几家**正常**的也掐掉。
+
+        壳页（<1500 字节，多为止流/维护/该线路不提供搜索）**换线路再试，最多换 3 条**——
+        实测禁漫只有部分线路支持搜索（`18comic05.net` 80 条，另两条 0 条），
+        不换就永远收不到。换线路的线程是 daemon，超出总预算只会"少一条来源"，
+        不会拖慢响应（派发侧到点就返回已收到的）。
+        额外尝试用更短超时（2.0s），避免最坏情况翻倍。
+        """
+        url = path if path.startswith("http") else self._url(path)
+        try:
+            body = self.s.http(url, referer=referer,
+                               timeout=self.SEARCH_TIMEOUT, fast=True) or ""
+        except Exception:
+            body = ""
+        if len(body) >= 1500:
+            return body
+        swaps = 0
+        for line in (self.p.get("lines") or []):
+            if swaps >= 3:
+                break
+            other = (line.get("url") or "").rstrip("/")
+            if not other or not line.get("ok"):
+                continue
+            root = other.split("://")[0] + "://" + other.split("://")[1].split("/")[0]
+            if root == self.host.rstrip("/"):
+                continue
+            swaps += 1
+            target = path if path.startswith("http") else root + "/" + path.lstrip("/")
+            try:
+                retry = self.s.http(target, referer=root + "/", timeout=2.0, fast=True) or ""
+            except Exception:
+                continue
+            if len(retry) >= 1500:
+                self.host = root     # 记住能用的线路，下次搜索直接用它
+                return retry
+        return body
+
     def search(self, keyword, page):
         """平台搜索（可选）：返回 [vod…]。**只有实现了它的平台才在 SEARCH_PLATFORMS 里**。
 
         福利专区的「搜索」Tab 会调 `Spider.searchContent(key, quick, pg)`，那个入口
         只给关键词和页码，不给平台 id，所以由 `Spider.searchContent` 挑一批平台并行搜。
         客户端对搜索有 **8 秒硬超时**（`PythonSpiderEngine.callSearchContentAsync`），
-        所以这里每个实现都要「一次请求拿到结果」，不做多线路轮询。
+        所以这里每个实现都要「一次请求拿到结果」，用 `_search_page()`，
+        不要用 `_page()`（那个带退避与多线路兜底，会把预算耗光）。
         """
         return []
 
@@ -755,13 +811,25 @@ class _Av18Adapter(_BaseAdapter):
         streams.sort(reverse=True)
         return streams
 
-    def _parse(self, html, page):
+    def _href_re(self, slug):
+        """按分类 slug 生成内容页正则。
+
+        **不能用一个写死 chinese_content 的正则**：那样选「有碼AV」拿到的仍是页面侧栏里的
+        中文字幕条目，表现为「7 个分类 6 个空、剩下一个和首页一样」（2026-11-08 实测发现）。
+        内容页形态是 `/zh/{slug}/{id}/{name}.html`，列表页形态是 `/zh/{slug}/{page}/all/1.html`，
+        用 `/all/` 把它们排除掉。
+        """
+        return re.compile(r"href=['\"]([^'\"]*?/zh/%s/[^'\"]+?)['\"]" % re.escape(slug))
+
+    def _parse(self, html, page, slug):
+        href_re = self._href_re(slug)
         videos = []
         for block in self.POST_SPLIT.split(html or "")[1:]:
-            href = self.CONTENT_HREF.search(block)
+            href = next((m.group(1) for m in href_re.finditer(block)
+                         if "/all/" not in m.group(1)), None)
             if not href:
                 continue
-            url = self._abs_url(self.host, href.group(1))
+            url = self._abs_url(self.host, href)
             title = re.search(r"<h3[^>]*>.*?<a[^>]*>(.*?)</a>", block, re.S)
             name = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", title.group(1))).strip() if title else ""
             img = re.search(r"<img[^>]+src=['\"]([^'\"]+)['\"]", block)
@@ -772,28 +840,37 @@ class _Av18Adapter(_BaseAdapter):
                 "vod_pic": self._abs_url(self.host, img.group(1)) if img else "",
                 "vod_remarks": re.sub(r"<[^>]+>", "", meta.group(1)).strip() if meta else "",
             })
-        total = 0
-        for num in re.findall(r"/all/(\d+)\.html", html or ""):
-            total = max(total, int(num))
-        return videos, (total or page + 1)
+        # 站点没给总页数，用「本页拿满 31 条」判断还有下一页
+        return videos, (page + 1 if len(videos) >= 20 else page)
+
+    @staticmethod
+    def _slug_of(cate):
+        c = str(cate or "").strip()
+        return c if c and not c.isdigit() else "chinese_content"
 
     def list(self, cate, page):
-        slug = cate if cate and not str(cate).isdigit() else "chinese_list"
+        """分类列表：`/zh/{slug}/{页码}/all/1.html`。
+
+        注意真实分页形态是 **`{slug}/{页码}/all/1.html`**，不是 `{slug}/all/{页码}.html`
+        ——后者第 1/2/3/5 页返回**完全相同**的内容（实测逐页比对首条相同），
+        也就是旧实现「翻页」是假的、永远只有第一页。
+        """
+        slug = self._slug_of(cate)
         page = max(1, int(page))
-        html = self._page("/zh/%s/all/%d.html" % (slug, page))
-        videos, pagecount = self._parse(html, page)
+        html = self._page("/zh/%s/%d/all/1.html" % (slug, page))
+        videos, pagecount = self._parse(html, page, slug)
         return {"list": videos, "page": page, "pagecount": pagecount}
 
     def search(self, keyword, page):
-        """18av 视频区搜索：/zh/chinese_search/all/{关键词}/{页码}.html（实测 24 个可解析块）。
+        """18av 视频区搜索：/zh/chinese_search/all/{关键词}/{页码}.html。
 
         注意区分：首页里出现的 `cg_search` 是**看板娘/写真区**（内容是图片相册，
         href 走 /zh/cg_content/），不是本适配器播的视频区；视频区的 slug 是 `chinese_`。
         """
         page = max(1, int(page))
-        html = self._page("/zh/chinese_search/all/%s/%d.html"
+        html = self._search_page("/zh/chinese_search/all/%s/%d.html"
                           % (urllib.parse.quote(str(keyword)), page))
-        videos, _ = self._parse(html, page)
+        videos, _ = self._parse(html, page, "chinese_content")
         return videos
 
     def detail(self, vid):
@@ -897,7 +974,7 @@ class _JableAdapter(_BaseAdapter):
     def search(self, keyword, page):
         """Jable 搜索：/search/{关键词}/{页码}/（末尾斜杠必须有，不带会回壳页；实测 26 条）。"""
         page = max(1, int(page))
-        return self._parse(self._page(
+        return self._parse(self._search_page(
             "/search/%s/%d/" % (urllib.parse.quote(str(keyword)), page),
             referer=self.host + "/"))
 
@@ -1136,7 +1213,7 @@ class _XhamsterAdapter(_BaseAdapter):
     def search(self, keyword, page):
         """xhamster 搜索：/search/{关键词}/{页码}（实测 49 条）。"""
         page = max(1, int(page))
-        return self._parse(self._page(
+        return self._parse(self._search_page(
             "/search/%s/%d" % (urllib.parse.quote(str(keyword)), page),
             referer=self.host + "/"))
 
@@ -1922,7 +1999,7 @@ class _KvsAdapter(_BaseAdapter):
         path = "%s/search/videos/%s" % (base, urllib.parse.quote(str(keyword)))
         if page > 1:
             path += "?page=%d" % page
-        return self._parse(self._page(path, referer=entry))
+        return self._parse(self._search_page(path, referer=entry))
 
     @staticmethod
     def _detail_title(html):
@@ -2102,7 +2179,7 @@ class _PornhubAdapter(_BaseAdapter):
         q = "/video/search?search=" + urllib.parse.quote(str(keyword))
         if page > 1:
             q += "&page=%d" % page
-        return self._parse(self._page(q, referer=self.host + "/enter"))
+        return self._parse(self._search_page(q, referer=self.host + "/enter"))
 
     def detail(self, vid):
         url = self._abs(vid)
@@ -2214,7 +2291,7 @@ class _AcgmhAdapter(_BaseAdapter):
         path = "/search/?q=" + urllib.parse.quote(str(keyword))
         if page > 1:
             path += "&page=%d" % page
-        return self._parse(self._page(path, referer=self.host + "/"))
+        return self._parse(self._search_page(path, referer=self.host + "/"))
 
     @staticmethod
     def _fix_cover(url):
@@ -2634,19 +2711,15 @@ class _JmAdapter(_BaseAdapter):
             return len(text) > 4000 and "站点维护中" not in text
 
         def fetch(u, ref):
+            # fast=True：1 次请求 + 1 跳。默认通道是 2 次重试 × 3 跳 = 最坏 6 次请求，
+            # 单次 fetch 就能拖到 42s（7s×6），下面那个总时限根本拦不住（2026-11-08 实测 39s）。
             return self.s.http(urllib.parse.quote(u, safe=":/?&=%#"), referer=ref,
                                headers={"User-Agent": self.UA_DESKTOP}) or ""
 
-        # ① 本线路最多 3 次，退避 1.2s / 2.4s（限流是瞬时的，等一等就好）
-        html = ""
-        for attempt in range(3):
-            html = fetch(url, referer)
-            if usable(html):
-                return html
-            if attempt < 2:
-                time.sleep(1.2 * (attempt + 1))
-
-        # ② 仍不行再换线路（维护页/线路故障才走这里）
+        # 一次本线路；不行就换线路（限流是按 IP 的，换线路不一定有用，但很便宜）
+        html = fetch(url, referer)
+        if usable(html):
+            return html
         tried = 0
         for line in (self.p.get("lines") or []):
             other = (line.get("url") or "").rstrip("/")
@@ -2660,6 +2733,10 @@ class _JmAdapter(_BaseAdapter):
             html = fetch(url2, root + "/")
             if usable(html):
                 self.host = root
+                try:                       # 记住能用的线路，下次直接用它（省掉首屏探测）
+                    self.s._picker.remember(self.p, root)
+                except Exception:
+                    pass
                 return html
         return ""
 
@@ -2685,7 +2762,7 @@ class _JmAdapter(_BaseAdapter):
         path = "/search/photos?main_tag=0&search_query=" + urllib.parse.quote(str(keyword))
         if page > 1:
             path += "&page=%d" % page
-        html = self._page(path, referer=self.host + "/enter")
+        html = self._search_page(path, referer=self.host + "/enter")
         videos, seen = [], set()
         for album in self.ALBUM_RE.findall(html or ""):
             if album in seen:
@@ -3114,7 +3191,7 @@ class _AmdAdapter(_BaseAdapter):
         path = "/vodsearch/%s-------------.html" % urllib.parse.quote(str(keyword))
         if page > 1:
             path = "/vodsearch/%s--------%d---.html" % (urllib.parse.quote(str(keyword)), page)
-        return self._cards(self._page(path, referer=self.host + "/enter"))
+        return self._cards(self._search_page(path, referer=self.host + "/enter"))
 
     def detail(self, vid):
         path = vid if vid.startswith("/") else "/" + vid.lstrip("/")
@@ -3207,6 +3284,7 @@ class _WnacgAdapter(_BaseAdapter):
             return len(text) > 4000 and "站点维护中" not in text
 
         def fetch(u, ref):
+            # fast=True：1 次请求 + 1 跳（默认通道最坏 6 次请求，单次 fetch 能拖到 42s）
             return self.s.http(u, referer=ref, headers={"User-Agent": self.UA_DESKTOP}) or ""
 
         for attempt in range(3):
@@ -3218,9 +3296,10 @@ class _WnacgAdapter(_BaseAdapter):
             time.sleep(1.2 * (attempt + 1))
 
         tried = 0
+        started = time.time()
         for line in (self.p.get("lines") or []):
             other = (line.get("url") or "")
-            if not other or tried >= 5:
+            if not other or tried >= 4:
                 break
             root = other.split("://")[0] + "://" + other.split("://")[1].split("/")[0]
             if root == self.host:
@@ -3229,6 +3308,10 @@ class _WnacgAdapter(_BaseAdapter):
             html = fetch(root + path, root + "/")
             if usable(html):
                 self.host = root     # 记住可用线路，后续调用直接用
+                try:
+                    self.s._picker.remember(self.p, root)
+                except Exception:
+                    pass
                 return html
         return ""
 
@@ -3479,7 +3562,7 @@ class _MissavAdapter(_BaseAdapter):
         url = self._url("/cn/search/" + urllib.parse.quote(str(keyword)))
         if page > 1:
             url += "?page=%d" % page
-        return self._parse(self.s.http(url, referer=self.host + "/cn/"))
+        return self._parse(self._search_page(url, referer=self.host + "/cn/"))
 
     def detail(self, vid):
         page_url = self._abs(vid)
@@ -3827,13 +3910,14 @@ class Spider(SpiderBase):
                 return url
         return url
 
-    def http(self, url, referer=None, headers=None):
+    def http(self, url, referer=None, headers=None, timeout=None, fast=False):
         hdrs = self.headers()
         if referer:
             hdrs["Referer"] = referer
         if headers:
             hdrs.update(headers)
-        return _http(self._with_proxy(url), timeout=HTTP_TIMEOUT, headers=hdrs)[1]
+        return _http(self._with_proxy(url), timeout=timeout or HTTP_TIMEOUT,
+                     headers=hdrs, fast=fast)[1]
 
     def fetch(self, url, headers=None, **kw):
         """基类 fetch 在 iSH 环境不可用，必须自带；返回 requests 兼容对象。"""
