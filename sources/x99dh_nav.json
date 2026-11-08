@@ -1611,7 +1611,7 @@
       "key": "x99_f7ba81a6",
       "name": "大哥视频",
       "kind": "video",
-      "adapter": "generic",
+      "adapter": "dage",
       "desc": "最新各类国产、日韩、欧美等视频",
       "icon": "play.rectangle.fill",
       "url": "https://dage.one/enter",

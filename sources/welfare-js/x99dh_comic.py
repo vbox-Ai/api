@@ -1957,6 +1957,103 @@ class _JmAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _DageAdapter(_BaseAdapter):
+    """大哥视频(dage)：Vue SPA + JSON API（baseURL /api，返回 data 字段混淆）。
+
+    解密：data.replace('/','0').replace('@','/').replace('.','+') → 反转 → 补 '=' → base64 → JSON。
+    接口：/api/core.json（配置+菜单）、/api/index.json（首页）、/api/lists/{id}/{page}/{limit}.json、
+    /api/play/{id}.json（player[0].play 即 m3u8 直链）。
+    """
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+
+    @staticmethod
+    def _decode(data):
+        """复刻前端解密：链式字符替换 → 反转 → 补齐 → base64 → JSON。"""
+        if not data:
+            return None
+        t = data.replace("/", "0").replace("@", "/").replace(".", "+")[::-1]
+        pad = len(t) % 4
+        if pad:
+            t = t + "=" * (4 - pad)
+        try:
+            return json.loads(base64.b64decode(t).decode("utf-8", "replace"))
+        except Exception:
+            return None
+
+    def _api(self, path, referer=None):
+        root = self.host.rstrip("/")
+        ref = referer or (root + "/")
+        head = {"User-Agent": self.UA_DESKTOP,
+                "Accept": "application/json, text/plain, */*"}
+        body = self.s.http(root + path, referer=ref, headers=head) or ""
+        try:
+            obj = json.loads(body)
+        except Exception:
+            return None
+        if isinstance(obj, dict) and "data" in obj:
+            return self._decode(obj.get("data"))
+        return obj
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        data = None
+        cid = str(cate or "").strip()
+        if cid and cid.isdigit():
+            data = self._api("/api/lists/%s/%d/24.json" % (cid, page))
+        if not data:
+            data = self._api("/api/index.json")
+        items = []
+        if isinstance(data, dict):
+            for key in ("items", "list", "videos"):
+                if isinstance(data.get(key), list):
+                    items = data[key]
+                    break
+            if not items and isinstance(data.get("new"), dict):
+                items = data["new"].get("items") or []
+        videos, seen = [], set()
+        for it in items or []:
+            url = str(it.get("url") or "")
+            vid = url.rstrip(".html").replace("/play/", "").strip("/")
+            if not vid or vid in seen:
+                continue
+            seen.add(vid)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + vid,
+                "vod_name": str(it.get("title") or vid)[:110],
+                "vod_pic": self._abs(it.get("img") or ""),
+                "vod_remarks": str(it.get("duration") or it.get("time") or ""),
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        vid = str(vid).rstrip(".html").strip("/")
+        data = self._api("/api/play/%s.json" % vid)
+        if not isinstance(data, dict):
+            return {"list": []}
+        players = data.get("player") or []
+        url = ""
+        for p in players:
+            if p.get("play"):
+                url = p["play"]
+                break
+        name = str(data.get("title") or vid)
+        vod = {
+            "vod_id": self.p["key"] + "::" + vid,
+            "vod_name": name[:110],
+            "vod_pic": self._abs(data.get("img") or ""),
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], url or ("https://%s/play/%s.html" % (self.host.split("://")[-1], vid))),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _SuperpornAdapter(_BaseAdapter):
     """SuperPorn：thumb-video 卡片；详情页 <source src="…jmpres/…mp4?secure=…"> 直链。
     坑：快照线路是 cn.superporn.*（本地网络全拒连），实际可用入口是 www.superporn.me，
@@ -2439,6 +2536,7 @@ ADAPTERS = {
     "wnacg": _WnacgAdapter,
     "amd": _AmdAdapter,
     "superporn": _SuperpornAdapter,
+    "dage": _DageAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
