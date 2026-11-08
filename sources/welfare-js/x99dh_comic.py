@@ -1346,6 +1346,68 @@ class _OkxxxAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _KvsAdapter(_BaseAdapter):
+    """KVS 系（TKTube / avjoy）：列表 /video/… 卡片；播放需 streamitUser 登录态，
+    详情页无可用直链，play 返回空（列表仍可用）。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<a[^>]+href="([^"]*?/video/[^"]+)"([^>]*)>(.*?)</a>', re.S)
+    TITLE_RE = re.compile(r'(?:aria-label|title)="([^"]+)"', re.S)
+    THUMB_RE = re.compile(
+        r'(?:background-image:\s*url\(([^)]+)\)|<img[^>]+(?:data-original|src)="([^"]+)")',
+        re.S)
+
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        entry = (self.p.get("lines") or [{}])[0].get("url", "")
+        path = urllib.parse.urlsplit(entry).path or "/enter"
+        html = self._page(path)
+        videos, seen = [], set()
+        for href, attrs, inner in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            tm = self.TITLE_RE.search(attrs) or self.TITLE_RE.search(inner)
+            title = tm.group(1) if tm else ""
+            pic = ""
+            tb = self.THUMB_RE.search(attrs) or self.THUMB_RE.search(inner)
+            if tb:
+                pic = tb.group(1) or tb.group(2) or ""
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": title.strip()[:120],
+                "vod_pic": self._abs(pic),
+                "vod_remarks": "",
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url, referer=self.host + "/")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "",  # KVS 播放需登录态，无直链
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": ""}
+
+
 class _PornhubAdapter(_BaseAdapter):
     """Pornhub：/enter 首页 videoblock 卡片（viewkey）；详情页 mediaDefinitions
     里的 hls 多画质（1080/720/480/240）；取流需站点 Referer + gzip。"""
@@ -1832,6 +1894,7 @@ ADAPTERS = {
     "acgmh": _AcgmhAdapter,
     "pornhub": _PornhubAdapter,
     "okxxx": _OkxxxAdapter,
+    "kvs": _KvsAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
