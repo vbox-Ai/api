@@ -1279,6 +1279,97 @@ class _CartoonAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _PornhubAdapter(_BaseAdapter):
+    """Pornhub：/enter 首页 videoblock 卡片（viewkey）；详情页 mediaDefinitions
+    里的 hls 多画质（1080/720/480/240）；取流需站点 Referer + gzip。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<a\s+href="(/view_video\.php\?viewkey=[a-z0-9]+)"\s+title="([^"]*)"[^>]*>.*?<img[^>]+src="([^"]+)"',
+        re.S)
+
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    @staticmethod
+    def _balanced(text, start):
+        """从 text[start] 的 [ 或 { 起做括号配平，返回完整片段。"""
+        depth, in_str, i = 0, False, start
+        while i < len(text):
+            c = text[i]
+            if in_str:
+                if c == "\\":
+                    i += 2
+                    continue
+                if c == '"':
+                    in_str = False
+            else:
+                if c == '"':
+                    in_str = True
+                elif c in "[{":
+                    depth += 1
+                elif c in "]}":
+                    depth -= 1
+                    if depth == 0:
+                        return text[start:i + 1]
+            i += 1
+        return ""
+
+    def _hls(self, html):
+        """取 mediaDefinitions 里 hls 的最高画质直链。"""
+        idx = html.find('"mediaDefinitions"')
+        if idx < 0:
+            return ""
+        blob = self._balanced(html, html.find("[", idx))
+        try:
+            defs = json.loads(blob)
+        except Exception:
+            return ""
+        hls = sorted([x for x in defs if x.get("format") == "hls"],
+                     key=lambda y: -int(y.get("quality") or 0))
+        return hls[0]["videoUrl"].replace("\\/", "/") if hls else ""
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        html = self._page("/enter")
+        videos, seen = [], set()
+        for href, title, img in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": title.strip()[:120],
+                "vod_pic": self._abs(img),
+                "vod_remarks": "",
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url, referer=self.host + "/")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+            title = re.split(r"\s*-\s*Pornhub", title)[0]
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], self._hls(html) or url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _AcgmhAdapter(_BaseAdapter):
     """Hentai(acgmh)：首页 /g/{id}/ 画廊卡片；详情页 reader 图片数组 → pics:// 图集。
     API 被 403，纯 HTML 解析。"""
@@ -1672,6 +1763,7 @@ ADAPTERS = {
     "yesporn": _YespornAdapter,
     "cartoon": _CartoonAdapter,
     "acgmh": _AcgmhAdapter,
+    "pornhub": _PornhubAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }

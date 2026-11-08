@@ -1635,7 +1635,7 @@
       "key": "x99_a4235f12",
       "name": "Pornhub",
       "kind": "video",
-      "adapter": "generic",
+      "adapter": "pornhub",
       "desc": "P站",
       "icon": "play.rectangle.fill",
       "url": "https://cn.pornhub06.com/enter",
