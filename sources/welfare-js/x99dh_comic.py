@@ -1957,6 +1957,79 @@ class _JmAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _SuperpornAdapter(_BaseAdapter):
+    """SuperPorn：thumb-video 卡片；详情页 <source src="…jmpres/…mp4?secure=…"> 直链。
+    坑：快照线路是 cn.superporn.*（本地网络全拒连），实际可用入口是 www.superporn.me，
+    适配器内部做域名修正。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<a href="((?:https?://[^"]+)?/video/[^"]+)"[^>]*class="thumb-duracion"[^>]*>\s*'
+        r'<img[^>]+alt="([^"]*)"[^>]*data-src="([^"]+)"',
+        re.S)
+    SRC_RE = re.compile(r'<source\s+src="([^"]+\.mp4[^"]*)"', re.I)
+
+    def _root(self):
+        """cn.* 入口在本网被拒，统一用 www 入口。"""
+        host = self.host.replace("://cn.", "://www.")
+        if "superporn" in host:
+            host = re.sub(r"://[^/]*superporn[^/]*", "://www.superporn.me", host)
+        return host.rstrip("/")
+
+    def _page(self, path, referer=None):
+        root = self._root()
+        url = path if path.startswith("http") else root + "/" + path.lstrip("/")
+        return self.s.http(url, referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def list(self, cate, page):
+        html = self._page("/")
+        videos, seen = [], set()
+        for href, title, img in self.CARD_RE.findall(html):
+            full = self._abs(href)
+            if full in seen:
+                continue
+            seen.add(full)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + full,
+                "vod_name": title.strip()[:110],
+                "vod_pic": self._abs(img),
+                "vod_remarks": "",
+            })
+        return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url, referer=self._root() + "/")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+            title = re.split(r"\s*-\s*SuperPorn", title)[0]
+        pic = ""
+        m = re.search(r'<video[^>]+poster="([^"]+)"', html)
+        if m:
+            pic = m.group(1)
+        mp4 = ""
+        m = self.SRC_RE.search(html)
+        if m:
+            mp4 = m.group(1).replace("&amp;", "&")
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": pic,
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], mp4 or url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self._root() + "/"}}
+
+
 class _AmdAdapter(_BaseAdapter):
     """爱漫岛(amdcomic)：苹果CMS 漫画站。
 
@@ -2365,6 +2438,7 @@ ADAPTERS = {
     "jm": _JmAdapter,
     "wnacg": _WnacgAdapter,
     "amd": _AmdAdapter,
+    "superporn": _SuperpornAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }

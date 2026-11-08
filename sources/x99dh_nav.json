@@ -1863,7 +1863,7 @@
       "key": "x99_aa4a47f1",
       "name": "SuperPorn",
       "kind": "video",
-      "adapter": "kvs",
+      "adapter": "superporn",
       "desc": "高质量海外视频",
       "icon": "play.rectangle.fill",
       "url": "https://cn.superporn.ws/enter",
