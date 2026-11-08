@@ -2621,16 +2621,32 @@ class _JmAdapter(_BaseAdapter):
     PAGE_RE = re.compile(r'https?://[^"\'\s<>]*?/media/photos/[^"\'\<>]*?\.(?:webp|jpg|jpeg|png)')
 
     def _page(self, path, referer=None):
-        """多线路兜底：当前线路失败时换平台其余线路重试（最多 4 条，避免长拖）。"""
-        if path.startswith("http"):
-            url = path
-        else:
-            url = self._url(path)
-        html = self.s.http(url, referer=referer, headers={"User-Agent": self.UA_DESKTOP}) or ""
-        if len(html) > 4000:
-            return html
-        if "站点维护中" in html:
-            return ""
+        """壳页/维护页 → 先退避重试本线路，再换线路（最多 4 条）。
+
+        禁漫的 2337 字节壳页是**按 IP 的限流**，换线路没用（同一出口），所以顺序必须是
+        「退避重试 → 再换线路」，否则一限流就整页空（实测偶发 list 返回 0 条，
+        连测 3 次其实是 70/70/69，就是缺这次退避）。
+        维护页是按线路的，**不能直接 return**，要换下一条试。
+        """
+        url = path if path.startswith("http") else self._url(path)
+
+        def usable(text):
+            return len(text) > 4000 and "站点维护中" not in text
+
+        def fetch(u, ref):
+            return self.s.http(urllib.parse.quote(u, safe=":/?&=%#"), referer=ref,
+                               headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+        # ① 本线路最多 3 次，退避 1.2s / 2.4s（限流是瞬时的，等一等就好）
+        html = ""
+        for attempt in range(3):
+            html = fetch(url, referer)
+            if usable(html):
+                return html
+            if attempt < 2:
+                time.sleep(1.2 * (attempt + 1))
+
+        # ② 仍不行再换线路（维护页/线路故障才走这里）
         tried = 0
         for line in (self.p.get("lines") or []):
             other = (line.get("url") or "").rstrip("/")
@@ -2641,15 +2657,11 @@ class _JmAdapter(_BaseAdapter):
                 continue
             tried += 1
             url2 = path if path.startswith("http") else root + "/" + path.lstrip("/")
-            html = self.s.http(urllib.parse.quote(url2, safe=":/?&=%#"),
-                               referer=root + "/",
-                               headers={"User-Agent": self.UA_DESKTOP}) or ""
-            if len(html) > 4000:
+            html = fetch(url2, root + "/")
+            if usable(html):
                 self.host = root
                 return html
-            if "站点维护中" in html:
-                return ""
-        return html
+        return ""
 
     def list(self, cate, page):
         html = self._page("/enter")
