@@ -1279,6 +1279,73 @@ class _CartoonAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _OkxxxAdapter(_BaseAdapter):
+    """OKXXX.MEN：/enter 列表 /video/{id}/ 卡片；详情页 get_file mp4 直链
+    （实际返回 master m3u8，多画质 720p/360p/full）。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<a href="(/video/\d+/)"[^>]*title="([^"]*)"[^>]*>.*?<img[^>]+data-original="([^"]+)"',
+        re.S)
+
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        html = self._page("/enter")
+        videos, seen = [], set()
+        for href, title, img in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": title.strip()[:120],
+                "vod_pic": self._abs(img),
+                "vod_remarks": "",
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url, referer=self.host + "/")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+            title = re.split(r"\s*-\s*OKXXX", title)[0]
+        mp4 = ""
+        links = list(dict.fromkeys(
+            re.findall(r'https?://[^"\'\s<>]+?get_file[^"\'\s<>]*?\.mp4[^"\'\s<>]*', html)))
+        for u in links:
+            if "_preview" in u:
+                continue
+            if "_720p" in u:
+                mp4 = u
+                break
+        if not mp4:
+            for u in links:
+                if "_preview" not in u:
+                    mp4 = u
+                    break
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], mp4 or url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _PornhubAdapter(_BaseAdapter):
     """Pornhub：/enter 首页 videoblock 卡片（viewkey）；详情页 mediaDefinitions
     里的 hls 多画质（1080/720/480/240）；取流需站点 Referer + gzip。"""
@@ -1764,6 +1831,7 @@ ADAPTERS = {
     "cartoon": _CartoonAdapter,
     "acgmh": _AcgmhAdapter,
     "pornhub": _PornhubAdapter,
+    "okxxx": _OkxxxAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }

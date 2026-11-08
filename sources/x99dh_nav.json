@@ -2432,7 +2432,7 @@
       "key": "x99_e8d1404a",
       "name": "OKXXX",
       "kind": "video",
-      "adapter": "generic",
+      "adapter": "okxxx",
       "desc": "OKXXX",
       "icon": "play.rectangle.fill",
       "url": "https://okav.art/enter",
