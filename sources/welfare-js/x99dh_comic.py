@@ -2,7 +2,7 @@
 """X99漫画导航 — vbox 远程源 python 蜘蛛
 
 由 build_nav_source.py 生成，请勿手改。
-类型: comic    快照: 2026.11.09.0041
+类型: comic    快照: 2026.11.09.0520
 """
 import base64
 import http.client
@@ -34,8 +34,8 @@ except ImportError:  # 本地调试
 KIND = "comic"
 PLATFORM_KEY = "x99dh_comic_py"
 TITLE = "X99漫画导航"
-SNAPSHOT_VERSION = "2026.11.09.0041"
-SNAPSHOT = json.loads('{"version":"2026.11.09.0041","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_6cc00cf5","name":"禁漫天堂","kind":"comic","adapter":"jm","desc":"H漫画","icon":"books.vertical.fill","url":"https://18comic66.com/enter","lines":[{"url":"https://18comic66.com/enter","testUrl":"https://18comic66.com/status.html","ok":true,"ms":12620.0},{"url":"https://18comic6.com/enter","testUrl":"https://18comic6.com/status.html","ok":true,"ms":6672.0},{"url":"https://18comic05.net/enter","testUrl":"https://18comic05.net/status.html","ok":true,"ms":1503.0},{"url":"https://18comic04.net/enter","testUrl":"https://18comic04.net/status.html","ok":true,"ms":821.0},{"url":"https://18comic03.net/enter","testUrl":"https://18comic03.net/status.html","ok":true,"ms":1290.0},{"url":"https://18comic02.net/enter","testUrl":"https://18comic02.net/status.html","ok":true,"ms":1848.0},{"url":"https://18comic01.net/enter","testUrl":"https://18comic01.net/status.html","ok":true,"ms":2516.0},{"url":"https://18comic01.cc/enter","testUrl":"https://18comic01.cc/status.html","ok":true,"ms":3862.0},{"url":"https://18comic.my/enter","testUrl":"https://18comic.my/status.html","ok":true,"ms":4591.0},{"url":"https://mh99.ws/enter","testUrl":"https://mh99.ws/status.html","ok":true,"ms":5161.0},{"url":"https://18comic666.cc/enter","testUrl":"https://18comic666.cc/status.html","ok":true,"ms":1046.0},{"url":"https://18comic666.net/enter","testUrl":"https://18comic666.net/status.html","ok":true,"ms":1461.0},{"url":"https://18comic888.cc/enter","testUrl":"https://18comic888.cc/status.html","ok":true,"ms":177.0},{"url":"https://18comic.pw/enter","testUrl":"https://18comic.pw/status.html","ok":true,"ms":2270.0},{"url":"https://jmcomic.nl/enter","testUrl":"https://jmcomic.nl/status.html","ok":true,"ms":8681.0},{"url":"https://18comic1.nl/enter","testUrl":"https://18comic1.nl/status.html","ok":true,"ms":162.0},{"url":"https://18comic.nl/enter","testUrl":"https://18comic.nl/status.html","ok":true,"ms":3025.0},{"url":"https://18comic6.net/enter","testUrl":"https://18comic6.net/status.html","ok":true,"ms":2527.0},{"url":"https://18comic1.sbs/enter","testUrl":"https://18comic1.sbs/status.html","ok":true,"ms":1511.0},{"url":"https://18comic.sbs/enter","testUrl":"https://18comic.sbs/status.html","ok":false,"ms":5079.0},{"url":"https://18comic2.sbs/enter","testUrl":"https://18comic2.sbs/status.html","ok":true,"ms":1542.0},{"url":"https://18comic2.icu/enter","testUrl":"https://18comic2.icu/status.html","ok":true,"ms":11085.0},{"url":"https://18comic168.cc/enter","testUrl":"https://18comic168.cc/status.html","ok":true,"ms":191.0},{"url":"https://18comic168.top/enter","testUrl":"https://18comic168.top/status.html","ok":true,"ms":1410.0},{"url":"https://18comic.cfd/enter","testUrl":"https://18comic.cfd/status.html","ok":true,"ms":2300.0},{"url":"https://18comic888.ws/enter","testUrl":"https://18comic888.ws/status.html","ok":true,"ms":2819.0},{"url":"https://mh99.cfd/enter","testUrl":"https://mh99.cfd/status.html","ok":false,"ms":714.0},{"url":"https://18comic1.icu/enter","testUrl":"https://18comic1.icu/status.html","ok":false,"ms":4477.0},{"url":"https://18comic1.top/enter","testUrl":"https://18comic1.top/status.html","ok":true,"ms":809.0},{"url":"https://18comic1.cc/enter","testUrl":"https://18comic1.cc/status.html","ok":true,"ms":1138.0}],"classes":[]},{"key":"x99_2f22a0a6","name":"99漫画","kind":"comic","adapter":"wnacg","desc":"另一个漫画站，资源多","icon":"books.vertical.fill","url":"https://www.wnacg02.net/enter","lines":[{"url":"https://www.wnacg02.net/enter","testUrl":"https://www.wnacg02.net/status.html","ok":true,"ms":4269.0},{"url":"https://www.wnacg02.com/enter","testUrl":"https://www.wnacg02.com/status.html","ok":true,"ms":2337.0},{"url":"https://www.wnacg01.net/enter","testUrl":"https://www.wnacg01.net/status.html","ok":true,"ms":5693.0},{"url":"https://wnacg.my/enter","testUrl":"https://www.wnacg.my/status.html","ok":true,"ms":1395.0},{"url":"https://wnacg888.net/enter","testUrl":"https://www.wnacg888.net/status.html","ok":true,"ms":2873.0},{"url":"https://wnacg888.com/enter","testUrl":"https://www.wnacg888.com/status.html","ok":true,"ms":1221.0},{"url":"https://wnacg666.net/enter","testUrl":"https://www.wnacg666.net/status.html","ok":true,"ms":2682.0},{"url":"https://wnacg666.com/enter","testUrl":"https://www.wnacg666.com/status.html","ok":true,"ms":2588.0},{"url":"https://99mh.nl/enter","testUrl":"https://www.99mh.nl/status.html","ok":true,"ms":3074.0},{"url":"https://wnacg.pw/enter","testUrl":"https://www.wnacg.pw/status.html","ok":true,"ms":3574.0},{"url":"https://wnacg.one/enter","testUrl":"https://www.wnacg.one/status.html","ok":false,"ms":3509.0},{"url":"https://wnacg.nl/enter","testUrl":"https://www.wnacg.nl/status.html","ok":true,"ms":1572.0},{"url":"https://wnacg.sbs/enter","testUrl":"https://www.wnacg.sbs/status.html","ok":true,"ms":3155.0},{"url":"https://wnacg.vip/enter","testUrl":"https://www.wnacg.vip/status.html","ok":true,"ms":5053.0},{"url":"https://99mh.one/enter","testUrl":"https://www.99mh.one/status.html","ok":true,"ms":2869.0},{"url":"https://99mh.men/enter","testUrl":"https://www.99mh.men/status.html","ok":true,"ms":1025.0},{"url":"https://99mh.net/enter","testUrl":"https://www.99mh.net/status.html","ok":true,"ms":1636.0},{"url":"https://99xmh.top/enter","testUrl":"https://www.99xmh.top/status.html","ok":true,"ms":3879.0}],"classes":[]},{"key":"x99_ecb3368e","name":"爱漫岛","kind":"comic","adapter":"amd","desc":"免费中文汉化、日本漫画、韩国漫画、10万本、色情漫画等","icon":"books.vertical.fill","url":"https://www.amdcomic.art/enter","lines":[{"url":"https://www.amdcomic.art/enter","testUrl":"https://www.amdcomic.art/status.html","ok":true,"ms":281.0},{"url":"https://www.amdcomic.one/enter","testUrl":"https://www.amdcomic.one/status.html","ok":true,"ms":1742.0},{"url":"https://www.amdcomic.ws/enter","testUrl":"https://www.amdcomic.ws/status.html","ok":true,"ms":1932.0}],"classes":[{"type_id":"1","type_name":"同人","href":"/vodtype/1.html"},{"type_id":"2","type_name":"单本","href":"/vodtype/2.html"},{"type_id":"3","type_name":"短篇","href":"/vodtype/3.html"},{"type_id":"4","type_name":"韩漫","href":"/vodtype/4.html"},{"type_id":"6","type_name":"校园","href":"/vodtype/6.html"},{"type_id":"7","type_name":"幻想","href":"/vodtype/7.html"},{"type_id":"8","type_name":"都市","href":"/vodtype/8.html"},{"type_id":"9","type_name":"搞笑","href":"/vodtype/9.html"}]}]}')
+SNAPSHOT_VERSION = "2026.11.09.0520"
+SNAPSHOT = json.loads('{"version":"2026.11.09.0520","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_6cc00cf5","name":"禁漫天堂","kind":"comic","adapter":"jm","desc":"H漫画","icon":"books.vertical.fill","url":"https://18comic66.com/enter","lines":[{"url":"https://18comic66.com/enter","testUrl":"https://18comic66.com/status.html","ok":true,"ms":12620.0},{"url":"https://18comic6.com/enter","testUrl":"https://18comic6.com/status.html","ok":true,"ms":6672.0},{"url":"https://18comic05.net/enter","testUrl":"https://18comic05.net/status.html","ok":true,"ms":1503.0},{"url":"https://18comic04.net/enter","testUrl":"https://18comic04.net/status.html","ok":true,"ms":821.0},{"url":"https://18comic03.net/enter","testUrl":"https://18comic03.net/status.html","ok":true,"ms":1290.0},{"url":"https://18comic02.net/enter","testUrl":"https://18comic02.net/status.html","ok":true,"ms":1848.0},{"url":"https://18comic01.net/enter","testUrl":"https://18comic01.net/status.html","ok":true,"ms":2516.0},{"url":"https://18comic01.cc/enter","testUrl":"https://18comic01.cc/status.html","ok":true,"ms":3862.0},{"url":"https://18comic.my/enter","testUrl":"https://18comic.my/status.html","ok":true,"ms":4591.0},{"url":"https://mh99.ws/enter","testUrl":"https://mh99.ws/status.html","ok":true,"ms":5161.0},{"url":"https://18comic666.cc/enter","testUrl":"https://18comic666.cc/status.html","ok":true,"ms":1046.0},{"url":"https://18comic666.net/enter","testUrl":"https://18comic666.net/status.html","ok":true,"ms":1461.0},{"url":"https://18comic888.cc/enter","testUrl":"https://18comic888.cc/status.html","ok":true,"ms":177.0},{"url":"https://18comic.pw/enter","testUrl":"https://18comic.pw/status.html","ok":true,"ms":2270.0},{"url":"https://jmcomic.nl/enter","testUrl":"https://jmcomic.nl/status.html","ok":true,"ms":8681.0},{"url":"https://18comic1.nl/enter","testUrl":"https://18comic1.nl/status.html","ok":true,"ms":162.0},{"url":"https://18comic.nl/enter","testUrl":"https://18comic.nl/status.html","ok":true,"ms":3025.0},{"url":"https://18comic6.net/enter","testUrl":"https://18comic6.net/status.html","ok":true,"ms":2527.0},{"url":"https://18comic1.sbs/enter","testUrl":"https://18comic1.sbs/status.html","ok":true,"ms":1511.0},{"url":"https://18comic.sbs/enter","testUrl":"https://18comic.sbs/status.html","ok":false,"ms":5079.0},{"url":"https://18comic2.sbs/enter","testUrl":"https://18comic2.sbs/status.html","ok":true,"ms":1542.0},{"url":"https://18comic2.icu/enter","testUrl":"https://18comic2.icu/status.html","ok":true,"ms":11085.0},{"url":"https://18comic168.cc/enter","testUrl":"https://18comic168.cc/status.html","ok":true,"ms":191.0},{"url":"https://18comic168.top/enter","testUrl":"https://18comic168.top/status.html","ok":true,"ms":1410.0},{"url":"https://18comic.cfd/enter","testUrl":"https://18comic.cfd/status.html","ok":true,"ms":2300.0},{"url":"https://18comic888.ws/enter","testUrl":"https://18comic888.ws/status.html","ok":true,"ms":2819.0},{"url":"https://mh99.cfd/enter","testUrl":"https://mh99.cfd/status.html","ok":false,"ms":714.0},{"url":"https://18comic1.icu/enter","testUrl":"https://18comic1.icu/status.html","ok":false,"ms":4477.0},{"url":"https://18comic1.top/enter","testUrl":"https://18comic1.top/status.html","ok":true,"ms":809.0},{"url":"https://18comic1.cc/enter","testUrl":"https://18comic1.cc/status.html","ok":true,"ms":1138.0}],"classes":[]},{"key":"x99_2f22a0a6","name":"99漫画","kind":"comic","adapter":"wnacg","desc":"另一个漫画站，资源多","icon":"books.vertical.fill","url":"https://www.wnacg02.net/enter","lines":[{"url":"https://www.wnacg02.net/enter","testUrl":"https://www.wnacg02.net/status.html","ok":true,"ms":4269.0},{"url":"https://www.wnacg02.com/enter","testUrl":"https://www.wnacg02.com/status.html","ok":true,"ms":2337.0},{"url":"https://www.wnacg01.net/enter","testUrl":"https://www.wnacg01.net/status.html","ok":true,"ms":5693.0},{"url":"https://wnacg.my/enter","testUrl":"https://www.wnacg.my/status.html","ok":true,"ms":1395.0},{"url":"https://wnacg888.net/enter","testUrl":"https://www.wnacg888.net/status.html","ok":true,"ms":2873.0},{"url":"https://wnacg888.com/enter","testUrl":"https://www.wnacg888.com/status.html","ok":true,"ms":1221.0},{"url":"https://wnacg666.net/enter","testUrl":"https://www.wnacg666.net/status.html","ok":true,"ms":2682.0},{"url":"https://wnacg666.com/enter","testUrl":"https://www.wnacg666.com/status.html","ok":true,"ms":2588.0},{"url":"https://99mh.nl/enter","testUrl":"https://www.99mh.nl/status.html","ok":true,"ms":3074.0},{"url":"https://wnacg.pw/enter","testUrl":"https://www.wnacg.pw/status.html","ok":true,"ms":3574.0},{"url":"https://wnacg.one/enter","testUrl":"https://www.wnacg.one/status.html","ok":false,"ms":3509.0},{"url":"https://wnacg.nl/enter","testUrl":"https://www.wnacg.nl/status.html","ok":true,"ms":1572.0},{"url":"https://wnacg.sbs/enter","testUrl":"https://www.wnacg.sbs/status.html","ok":true,"ms":3155.0},{"url":"https://wnacg.vip/enter","testUrl":"https://www.wnacg.vip/status.html","ok":true,"ms":5053.0},{"url":"https://99mh.one/enter","testUrl":"https://www.99mh.one/status.html","ok":true,"ms":2869.0},{"url":"https://99mh.men/enter","testUrl":"https://www.99mh.men/status.html","ok":true,"ms":1025.0},{"url":"https://99mh.net/enter","testUrl":"https://www.99mh.net/status.html","ok":true,"ms":1636.0},{"url":"https://99xmh.top/enter","testUrl":"https://www.99xmh.top/status.html","ok":true,"ms":3879.0}],"classes":[]},{"key":"x99_ecb3368e","name":"爱漫岛","kind":"comic","adapter":"amd","desc":"免费中文汉化、日本漫画、韩国漫画、10万本、色情漫画等","icon":"books.vertical.fill","url":"https://www.amdcomic.art/enter","lines":[{"url":"https://www.amdcomic.art/enter","testUrl":"https://www.amdcomic.art/status.html","ok":true,"ms":281.0},{"url":"https://www.amdcomic.one/enter","testUrl":"https://www.amdcomic.one/status.html","ok":true,"ms":1742.0},{"url":"https://www.amdcomic.ws/enter","testUrl":"https://www.amdcomic.ws/status.html","ok":true,"ms":1932.0}],"classes":[{"type_id":"1","type_name":"同人","href":"/vodtype/1.html"},{"type_id":"2","type_name":"单本","href":"/vodtype/2.html"},{"type_id":"3","type_name":"短篇","href":"/vodtype/3.html"},{"type_id":"4","type_name":"韩漫","href":"/vodtype/4.html"},{"type_id":"6","type_name":"校园","href":"/vodtype/6.html"},{"type_id":"7","type_name":"幻想","href":"/vodtype/7.html"},{"type_id":"8","type_name":"都市","href":"/vodtype/8.html"},{"type_id":"9","type_name":"搞笑","href":"/vodtype/9.html"}]}]}')
 
 # ---- 运行参数（方案 v8 定稿）----
 CACHE_TTL = 600          # 线路/入口胜者缓存
@@ -1142,8 +1142,58 @@ class _RouAdapter(_BaseAdapter):
         return {"list": [vod]}
 
     def play(self, flag, url):
-        return {"parse": "0", "url": url,
-                "header": {"User-Agent": self.UA_MOBILE, "Referer": self.host + "/"}}
+        """把 `/api/hls/{id}` 跳板解析成**能用的 CDN 直链**。
+
+        两个坑，都实测过：
+
+        1. 这个地址每次随机 302 到不同 CDN 域名（vcheetah.mom / vcdenet7.top /
+           vcdenet9.sbs / vcidhive.sbs …），其中一部分会回 500/401，所以要跟一次、
+           验一下，不行就重新要一个，最多 3 次。
+        2. **CDN 是 Referer 防盗链伪装的**：带 Referer 请求返回的是一张 **PNG 图片**
+           （`\\x89PNG…`，HTTP 206，看着"成功"但根本播不了）；**不带 Referer** 才返回真
+           `#EXTM3U` 播放列表。所以返回给播放器的 header **必须不带 Referer**
+           ——之前一直带着站内 Referer，所以这家永远拿不到可播地址。
+        """
+        jump = {"User-Agent": self.UA_MOBILE, "Referer": self.host + "/"}
+        plain = {"User-Agent": self.UA_MOBILE}          # 取流必须无 Referer
+        target = ""
+        last = ""
+        for _ in range(5):
+            location = self.s.location_of(url, timeout=6.0, headers=jump)
+            if not location:
+                break
+            last = location
+            if self._alive(location, plain):
+                target = location
+                break
+        # 都没验过就退回最后一次拿到的 CDN 地址（比退回跳板强：播放器可能自己能播）
+        return {"parse": "0", "url": target or last or url, "header": plain}
+
+    def _alive(self, url, headers):
+        """限读取 2 字节确认直链可用；**必须是真 m3u8/mp4，PNG 是防盗链伪装的假成功**。"""
+        current = url
+        for _ in range(4):
+            parts = urllib.parse.urlsplit(current)
+            cls = http.client.HTTPSConnection if parts.scheme == "https" else http.client.HTTPConnection
+            try:
+                conn = cls(parts.netloc, port=parts.port, timeout=8,
+                           **({"context": _SSL} if parts.scheme == "https" else {}))
+                conn.request("GET", parts.path + ("?" + parts.query if parts.query else ""),
+                             headers=dict(headers, Range="bytes=0-183"))
+                resp = conn.getresponse()
+                body = resp.read(184)
+                status = resp.status
+                nxt = resp.getheader("Location")
+                conn.close()
+            except Exception:
+                return False
+            if status in (301, 302, 303, 307, 308) and nxt:
+                current = urllib.parse.urljoin(current, nxt)
+                continue
+            if status not in (200, 206) or not body:
+                return False
+            return body[:7] == b"#EXTM3U" or body[4:8] == b"ftyp"
+        return False
 
 
 class _XhamsterAdapter(_BaseAdapter):
@@ -3925,6 +3975,32 @@ class Spider(SpiderBase):
         status, text = _http(self._with_proxy(url), timeout=HTTP_TIMEOUT,
                              headers=headers or self.headers())
         return _Response(status, text)
+
+    def location_of(self, url, timeout=None, headers=None):
+        """只取 302 的 Location，**不跟跳**。
+
+        有些站的「直链」其实是个跳板：每次请求随机 302 到不同 CDN 域名，其中一部分是坏的
+        （实测肉视频 `/api/hls/{id}` 5 次跳到 5 个不同域名，有回 500 的）。
+        这种必须在 `play()` 里自己跟一次、挑一个能用的再交给播放器。
+        """
+        class _NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, req, fp, code, msg, hdrs, newurl):
+                return None
+
+        opener = urllib.request.build_opener(
+            _NoRedirect, urllib.request.HTTPSHandler(context=_SSL))
+        hdrs = self.headers()
+        if headers:
+            hdrs.update(headers)
+        try:
+            req = urllib.request.Request(self._with_proxy(url), headers=hdrs, method="GET")
+            with opener.open(req, timeout=timeout or HTTP_TIMEOUT) as resp:
+                return resp.headers.get("Location") or ""
+        except urllib.error.HTTPError as exc:
+            # 3xx 会以 HTTPError 形式抛出（redirect_request 返回 None）
+            return exc.headers.get("Location") or ""
+        except Exception:
+            return ""
 
     # ---------- 蜘蛛接口 ----------
     def init(self, extend=""):
