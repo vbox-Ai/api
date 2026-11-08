@@ -1346,6 +1346,77 @@ class _OkxxxAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _PttAdapter(_BaseAdapter):
+    """三级片资源(ptt2.one)：/p/{page} 列表 /{id} 卡片；详情页 JSON-LD
+    VideoObject.contentUrl 给 m3u8 直链（v.gsuus.com，无 Referer 也能拉）。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<a class="visited" href="/(\d+)"[^>]*>\s*<img[^>]+(?:src|data-src)="([^"]+)"'
+        r'.*?<a class="visited" href="/\1"[^>]*>\s*(?:<i[^>]*></i>)?\s*([^<]+)</a>',
+        re.S)
+
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        html = self._page("/p/%d" % page)
+        videos, seen = [], set()
+        for vid, img, title in self.CARD_RE.findall(html):
+            if vid in seen:
+                continue
+            seen.add(vid)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + vid,
+                "vod_name": title.strip()[:120],
+                "vod_pic": self._abs(img),
+                "vod_remarks": "",
+            })
+        if not videos:
+            for vid in list(dict.fromkeys(re.findall(r'<a class="visited" href="/(\d+)"', html))):
+                videos.append({"vod_id": self.p["key"] + "::" + vid,
+                               "vod_name": vid, "vod_pic": "", "vod_remarks": ""})
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        vid = vid.strip("/").split("/")[0]
+        url = self._url("/" + vid)
+        html = self._page("/" + vid, referer=self.host + "/")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+            title = re.split(r"\s*-\s*线上看", title)[0]
+        pic = ""
+        m = re.search(r'"thumbnailUrl"\s*:\s*"([^"]+)"', html)
+        if m:
+            pic = m.group(1).replace("\\/", "/")
+        hls = ""
+        m = re.search(r'"contentUrl"\s*:\s*"([^"]+)"', html)
+        if m:
+            hls = m.group(1).replace("\\/", "/")
+        if not hls:
+            m = re.search(r'https?://[^"\'\s<>]+\.m3u8[^"\'\s<>]*', html)
+            if m:
+                hls = m.group(0)
+        vod = {
+            "vod_id": self.p["key"] + "::" + vid,
+            "vod_name": title or vid,
+            "vod_pic": pic,
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], hls or url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _XanimuAdapter(_BaseAdapter):
     """Xanimu（WP 系动漫站）：列表 video-block 卡片；详情页 _high.mp4/_low.mp4
     正片直链（nosofiles CDN，带 verify 签名）。trailer/preview 要排除。"""
@@ -1965,6 +2036,7 @@ ADAPTERS = {
     "okxxx": _OkxxxAdapter,
     "kvs": _KvsAdapter,
     "xanimu": _XanimuAdapter,
+    "ptt": _PttAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
