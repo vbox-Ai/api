@@ -2546,7 +2546,7 @@
       "key": "x99_30b320d4",
       "name": "成人影片数据库",
       "kind": "video",
-      "adapter": "generic",
+      "adapter": "javdb",
       "desc": "不错的下片站点，巨多高清无广告资源，完全免费，下片爱好者进",
       "icon": "play.rectangle.fill",
       "url": "https://javdb02.com/?locale=zh",

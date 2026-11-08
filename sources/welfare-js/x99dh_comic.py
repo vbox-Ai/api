@@ -2409,6 +2409,85 @@ class _DageAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _JavdbAdapter(_BaseAdapter):
+    """成人影片数据库(javdb)：**数据库站，无正片流**，只有磁力/云盘。
+
+    可提供列表 + 详情（标题/封面/番号/评分），播放返回空。
+    入口必须用 /enter（其他路径一律 2337 壳页或 500）；列表另有
+    /rankings/movies?p=weekly&t=censored（60 条）、/tags?c10=1（40 条）。
+    """
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<a href="(/v/[A-Za-z0-9]+)"[^>]*title="([^"]*)"[^>]*>\s*<div class="cover[^"]*">\s*'
+        r'<img[^>]+src="([^"]+)"[^>]*>\s*</div>\s*<div class="video-title">(.*?)</div>',
+        re.S)
+
+    def _page(self, path, referer=None):
+        url = path if path.startswith("http") else self._url(path)
+        return self.s.http(url, referer=referer or (self.host + "/enter"),
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def categories(self):
+        """固定用站内已验证的 3 个列表入口（/enter 每周推荐、周榜、有码标签）。"""
+        return [
+            {"type_id": "recommend", "type_name": "每周推荐"},
+            {"type_id": "weekly", "type_name": "周榜"},
+            {"type_id": "censored", "type_name": "有码"},
+        ]
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        cid = str(cate or "").strip()
+        if cid == "weekly":
+            path = "/rankings/movies?p=weekly&t=censored"
+        elif cid == "censored":
+            path = "/tags?c10=1"
+        else:
+            path = "/enter"
+        html = self._page(path)
+        videos, seen = [], set()
+        for href, title, img, vtitle in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            name = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", vtitle)).strip()
+            videos.append({
+                "vod_id": self.p["key"] + "::" + href,
+                "vod_name": (name or title.strip())[:110],
+                "vod_pic": self._abs(img),
+                "vod_remarks": "数据库",
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        path = vid if vid.startswith("/") else "/" + vid.lstrip("/")
+        html = self._page(path)
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+            title = re.split(r"\s*\|", title)[0]
+        pic = ""
+        m = re.search(r'<img[^>]+class="[^"]*video-cover[^"]*"[^>]+src="([^"]+)"', html) or \
+            re.search(r'"thumbnailUrl"\s*:\s*"([^"]+)"', html)
+        if m:
+            pic = m.group(1)
+        vod = {
+            "vod_id": self.p["key"] + "::" + path,
+            "vod_name": title or vid,
+            "vod_pic": pic,
+            "vod_content": "数据库收录（无在线播放，仅磁力/云盘信息）",
+            "vod_play_from": "数据库",
+            "vod_play_url": "",
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": ""}
+
+
 class _SuperpornAdapter(_BaseAdapter):
     """SuperPorn：thumb-video 卡片；详情页 <source src="…jmpres/…mp4?secure=…"> 直链。
     坑：快照线路是 cn.superporn.*（本地网络全拒连），实际可用入口是 www.superporn.me，
@@ -2908,6 +2987,7 @@ ADAPTERS = {
     "amd": _AmdAdapter,
     "superporn": _SuperpornAdapter,
     "dage": _DageAdapter,
+    "javdb": _JavdbAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
