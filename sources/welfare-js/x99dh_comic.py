@@ -978,9 +978,28 @@ class _XhamsterAdapter(_BaseAdapter):
             self.s.http(self._url("/enter"), headers={"User-Agent": self.UA_DESKTOP}) or ""
         return html
 
+    def categories(self):
+        """从 /categories 页取分类（slug 作 type_id，list 时走 /categories/{slug}）。"""
+        html = self._page("/categories")
+        cats, seen = [], set()
+        for m in re.finditer(r'href="[^"]*/categories/([a-z0-9\-]+)"[^>]*>(.*?)</a>', html, re.S):
+            slug = m.group(1)
+            if slug in seen:
+                continue
+            seen.add(slug)
+            text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(2))).strip()
+            if text and 1 < len(text) < 20:
+                cats.append({"type_id": slug, "type_name": text[:20]})
+        return cats[:60] or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        html = self._page("/" if page <= 1 else "/%d" % page)
+        cid = str(cate or "").strip()
+        if cid and not cid.isdigit():
+            html = self._page("/categories/" + cid + ("/%d" % page if page > 1 else ""),
+                              referer=self.host + "/categories")
+        else:
+            html = self._page("/" if page <= 1 else "/%d" % page)
         anchors = self.CARD_RE.findall(html)
         imgs = self.IMG_RE.findall(html)
         videos, seen = [], set()
@@ -1146,9 +1165,30 @@ class _91avAdapter(_BaseAdapter):
         return self.s.http(self._url(path), referer=referer,
                            headers={"User-Agent": self.UA_DESKTOP}) or ""
 
+    def categories(self):
+        """从 /categories/ 取分类（slug 作 type_id，list 走 /categories/{slug}/）。"""
+        html = self._page("/categories/")
+        cats, seen = [], set()
+        for m in re.finditer(
+                r'href="[^"]*/categories/([a-z0-9\-]+)/"[^>]*>.*?card-cat-v2__title[^>]*>(.*?)<',
+                html, re.S):
+            slug, name = m.group(1), re.sub(r"\s+", " ", m.group(2)).strip()
+            if slug in seen or not name:
+                continue
+            seen.add(slug)
+            cats.append({"type_id": slug, "type_name": name[:20]})
+        return cats[:60] or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        html = self._page("/pp1/" if page == 1 else "/pp1/%d/" % page)
+        cid = str(cate or "").strip()
+        if cid and not cid.isdigit():
+            path = "/categories/%s/" % cid
+            if page > 1:
+                path = "/categories/%s/%d/" % (cid, page)
+            html = self._page(path, referer=self.host + "/")
+        else:
+            html = self._page("/pp1/" if page == 1 else "/pp1/%d/" % page)
         videos, seen = [], set()
         for href, img, dur, title in self.CARD_RE.findall(html):
             if href in seen:
@@ -1626,9 +1666,30 @@ class _PornhubAdapter(_BaseAdapter):
                      key=lambda y: -int(y.get("quality") or 0))
         return hls[0]["videoUrl"].replace("\\/", "/") if hls else ""
 
+    def categories(self):
+        """从 /categories 取分类（type_id 形如 "c=27"，list 走 /video?c=27）。"""
+        html = self._page("/categories")
+        cats, seen = [], set()
+        for m in re.finditer(
+                r'href="/video\?c=(\d+)"[^>]*>.*?<span>\s*([^<]{1,24}?)\s*</span>',
+                html, re.S):
+            cid, name = m.group(1), re.sub(r"\s+", " ", m.group(2)).strip()
+            if cid in seen or not name:
+                continue
+            seen.add(cid)
+            cats.append({"type_id": "c=" + cid, "type_name": name[:24]})
+        return cats[:60] or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        html = self._page("/enter")
+        cid = str(cate or "").strip()
+        if cid.startswith("c="):
+            q = "/video?" + cid
+            if page > 1:
+                q += "&page=%d" % page
+            html = self._page(q, referer=self.host + "/categories")
+        else:
+            html = self._page("/enter")
         videos, seen = [], set()
         for href, title, img in self.CARD_RE.findall(html):
             if href in seen:
@@ -1996,6 +2057,22 @@ class _DageAdapter(_BaseAdapter):
             return self._decode(obj.get("data"))
         return obj
 
+    def categories(self):
+        """从 /api/core.json 的 menu 取 vod 分区的子分类（约 32 个）。"""
+        core = self._api("/api/core.json")
+        cats = []
+        for menu in (core or {}).get("menu") or []:
+            if menu.get("type") != "vod":
+                continue
+            zone = str(menu.get("name") or "")
+            for child in menu.get("children") or []:
+                cid = str(child.get("id") or "")
+                name = str(child.get("name") or "")
+                if cid and name:
+                    cats.append({"type_id": cid,
+                                 "type_name": ("%s·%s" % (zone, name)) if zone else name})
+        return cats or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
         data = None
@@ -2081,7 +2158,8 @@ class _SuperpornAdapter(_BaseAdapter):
                            headers={"User-Agent": self.UA_DESKTOP}) or ""
 
     def list(self, cate, page):
-        html = self._page("/")
+        cid = str(cate or "").strip()
+        html = self._page("/" + cid if cid else "/")
         videos, seen = [], set()
         for href, title, img in self.CARD_RE.findall(html):
             full = self._abs(href)
@@ -2095,6 +2173,21 @@ class _SuperpornAdapter(_BaseAdapter):
                 "vod_remarks": "",
             })
         return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+
+    def categories(self):
+        """从 /categories 取标签（slug 作 type_id，list 时走 /{slug}）。"""
+        html = self._page("/categories")
+        cats, seen = [], set()
+        for m in re.finditer(
+                r'href="(?:https?://[^"]+)?/([a-z0-9\-]+)"[^>]*>\s*([A-Za-z][^<]{1,24})</a>',
+                html, re.S):
+            slug, name = m.group(1), m.group(2).strip()
+            if slug in seen or slug in ("categories", "series", "pornstars", "channels",
+                                        "enter", "video", "videos", "tags", "login"):
+                continue
+            seen.add(slug)
+            cats.append({"type_id": slug, "type_name": name[:24]})
+        return cats[:60] or (self.p.get("classes") or [])
 
     def detail(self, vid):
         url = self._abs(vid)
@@ -2590,13 +2683,30 @@ class Spider(SpiderBase):
     CATS_TTL = 86400
 
     def cats_for(self, platform):
-        """优先用后台刷新到的真实分类，否则用快照。"""
+        """分类来源优先级：运行时缓存 → 快照 classes → 适配器自实现 categories()。"""
         cached = self.cache_get("x99dh:cats:" + platform["key"])
         if cached and time.time() - cached.get("ts", 0) < self.CATS_TTL:
             cats = cached.get("cats") or []
             if cats:
                 return cats
-        return platform.get("classes") or []
+        cats = platform.get("classes") or []
+        if cats:
+            return cats
+        # 快照没带分类时，问适配器要（各平台入口形态不同，适配器最清楚）
+        try:
+            lines = [l["url"] for l in (platform.get("lines") or []) if l.get("ok")] or \
+                    [l["url"] for l in (platform.get("lines") or [])]
+            if not lines:
+                return []
+            cls = ADAPTERS.get(platform.get("adapter") or "generic", _GenericAdapter)
+            adapter = cls(self, platform, lines[0])
+            got = adapter.categories() or []
+            if got:
+                self.cache_set("x99dh:cats:" + platform["key"],
+                               {"cats": got, "ts": time.time()})
+            return got
+        except Exception:
+            return []
 
     def scan_categories(self, platform, timeout=HTTP_TIMEOUT):
         """抓 /enter 页解析分类，写缓存。"""
