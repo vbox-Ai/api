@@ -1743,11 +1743,42 @@ class _KvsAdapter(_BaseAdapter):
         return self.s.http(self._url(path), referer=referer,
                            headers={"User-Agent": self.UA_DESKTOP}) or ""
 
+    def _page(self, path, referer=None):
+        # 分类路径可能含中文（/videos/genre/探花），需按 UTF-8 百分号编码
+        url = self._url(path)
+        if any(ord(ch) > 127 for ch in url):
+            url = urllib.parse.quote(url, safe=":/?&=%#")
+        return self.s.http(url, referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def categories(self):
+        """从 {entry}/genres 取类型（/videos/genre/{urlencoded 中文名}）。"""
+        entry = (self.p.get("lines") or [{}])[0].get("url", "")
+        base = urllib.parse.urlsplit(entry).path.rstrip("/") or "/"
+        html = self._page(base + "/genres", referer=entry)
+        cats, seen = [], set()
+        for m in re.finditer(
+                r'href="([^"]*/videos/genre/[^"]+)"[^>]*>(.*?)</a>', html, re.S):
+            path = m.group(1)
+            name = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(2))).strip()
+            if path in seen or not name or len(name) > 14:
+                continue
+            seen.add(path)
+            cats.append({"type_id": path, "type_name": name[:14]})
+            if len(cats) >= 60:
+                break
+        return cats or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
         entry = (self.p.get("lines") or [{}])[0].get("url", "")
-        path = urllib.parse.urlsplit(entry).path or "/enter"
-        html = self._page(path)
+        base = urllib.parse.urlsplit(entry).path.rstrip("/") or "/"
+        cid = str(cate or "").strip()
+        if cid.startswith("/") and "/videos/genre/" in cid:
+            path = cid if page <= 1 else "%s?page=%d" % (cid, page)
+        else:
+            path = base if page <= 1 else "%s?page=%d" % (base, page)
+        html = self._page(path, referer=entry)
         videos, seen = [], set()
         for href, attrs, inner in self.CARD_RE.findall(html):
             if href in seen:
