@@ -3737,7 +3737,7 @@
         ],
         "sortOrder": 5,
         "defaultProxy": false,
-        "notes": "x99dh 导航聚合源：26 个视频平台，入口域名与平台线路均自动优选（策略 A，缓存 600s）。",
+        "notes": "x99dh 导航聚合源：26 个视频平台全部有列表与分类（25 家可出播放直链），入口域名与平台线路均自动优选（策略 A，缓存 600s）。",
         "api": "./sources/welfare-js/x99dh_video.py",
         "scriptType": "python",
         "engine": "python",
@@ -3760,7 +3760,7 @@
         ],
         "sortOrder": 6,
         "defaultProxy": false,
-        "notes": "x99dh 导航聚合源：3 个漫画平台，播放返回 manga:// 图片序列。",
+        "notes": "x99dh 导航聚合源：3 个漫画平台，播放返回 pics:// 图片序列。",
         "api": "./sources/welfare-js/x99dh_comic.py",
         "scriptType": "python",
         "engine": "python",
@@ -3771,6 +3771,6 @@
         "visibleInHome": false
       }
     ],
-    "updatedAt": "2026-11-08T17:43:27+08:00"
+    "updatedAt": "2026-11-08T19:09:36+08:00"
   }
 }

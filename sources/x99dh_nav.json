@@ -1743,7 +1743,7 @@
       "key": "x99_63401799",
       "name": "XVIDEOS",
       "kind": "video",
-      "adapter": "generic",
+      "adapter": "xvideos",
       "desc": "X站",
       "icon": "play.rectangle.fill",
       "url": "https://www.xvideos163.top/enter",

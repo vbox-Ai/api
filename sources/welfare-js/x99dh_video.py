@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""X99视频导航 — vbox 远程源 python 蜘蛛（P0 骨架）
+"""X99视频导航 — vbox 远程源 python 蜘蛛
 
 由 build_nav_source.py 生成，请勿手改。
 类型: video    快照: 2026.11.07.2251
@@ -35,7 +35,7 @@ KIND = "video"
 PLATFORM_KEY = "x99dh_video_py"
 TITLE = "X99视频导航"
 SNAPSHOT_VERSION = "2026.11.07.2251"
-SNAPSHOT = json.loads('{"version":"2026.11.07.2251","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_be9dc0cd","name":"MissAV","kind":"video","adapter":"missav","desc":"著名亚洲视频站点","icon":"play.rectangle.fill","url":"https://www.thisav66.com/cn","lines":[{"url":"https://www.missav666.net/cn","testUrl":"https://www.missav666.net/status.html","ok":true,"ms":189.0},{"url":"https://www.missav03.net/cn","testUrl":"https://www.missav03.net/status.html","ok":true,"ms":194.0},{"url":"https://www.missav05.net/cn","testUrl":"https://www.missav05.net/status.html","ok":true,"ms":202.0},{"url":"https://www.thisav01.net/cn","testUrl":"https://www.thisav01.net/status.html","ok":true,"ms":207.0},{"url":"https://www.missav02.net/cn","testUrl":"https://www.missav02.net/status.html","ok":true,"ms":280.0},{"url":"https://www.missav.watch/cn","testUrl":"https://www.missav.watch/status.html","ok":true,"ms":397.0},{"url":"https://www.njavtv01.com/cn","testUrl":"https://www.njavtv01.com/status.html","ok":true,"ms":435.0},{"url":"https://www.missav08.net/cn","testUrl":"https://www.missav08.net/status.html","ok":true,"ms":497.0},{"url":"https://www.missav888.net/cn","testUrl":"https://www.missav888.net/status.html","ok":true,"ms":690.0},{"url":"https://www.missav09.com/cn","testUrl":"https://www.missav09.com/status.html","ok":true,"ms":775.0},{"url":"https://www.thisav01.cc/cn","testUrl":"https://www.thisav01.cc/status.html","ok":true,"ms":809.0},{"url":"https://www.njav01.com/cn","testUrl":"https://www.njav01.com/status.html","ok":true,"ms":873.0},{"url":"https://www.thisav.pw/cn","testUrl":"https://www.thisav.pw/status.html","ok":true,"ms":988.0},{"url":"https://www.njavtv.nl/cn","testUrl":"https://www.njavtv.nl/status.html","ok":true,"ms":994.0},{"url":"https://www.njav.one/cn","testUrl":"https://www.njav.one/status.html","ok":true,"ms":1001.0},{"url":"https://www.missav123.life/cn","testUrl":"https://www.missav123.life/status.html","ok":true,"ms":1047.0},{"url":"https://www.missav-ai.cc/cn","testUrl":"https://www.missav-ai.cc/status.html","ok":true,"ms":1167.0},{"url":"https://www.missav666.cc/cn","testUrl":"https://www.missav666.cc/status.html","ok":true,"ms":1203.0},{"url":"https://www.missav01.net/cn","testUrl":"https://www.missav01.net/status.html","ok":true,"ms":1273.0},{"url":"https://www.missav05.com/cn","testUrl":"https://www.missav05.com/status.html","ok":true,"ms":1327.0},{"url":"https://www.njav01.net/cn","testUrl":"https://www.njav01.net/status.html","ok":true,"ms":1376.0},{"url":"https://www.missav06.com/cn","testUrl":"https://www.missav06.com/status.html","ok":true,"ms":1439.0},{"url":"https://www.missav06.net/cn","testUrl":"https://www.missav06.net/status.html","ok":true,"ms":1628.0},{"url":"https://www.missav888.cc/cn","testUrl":"https://www.missav888.cc/status.html","ok":true,"ms":1657.0},{"url":"https://www.thisav02.com/cn","testUrl":"https://www.thisav02.com/status.html","ok":true,"ms":1757.0},{"url":"https://www.missav2.one/cn","testUrl":"https://www.missav2.one/status.html","ok":true,"ms":1824.0},{"url":"https://www.missav1.one/cn","testUrl":"https://www.missav1.one/status.html","ok":true,"ms":1862.0},{"url":"https://www.missav07.net/cn","testUrl":"https://www.missav07.net/status.html","ok":true,"ms":1900.0},{"url":"https://www.thisav02.net/cn","testUrl":"https://www.thisav02.net/status.html","ok":true,"ms":1977.0},{"url":"https://www.thisav33.net/cn","testUrl":"https://www.thisav33.net/status.html","ok":true,"ms":2302.0},{"url":"https://www.missav123.nl/cn","testUrl":"https://www.missav123.nl/status.html","ok":true,"ms":2343.0},{"url":"https://www.missav08.com/cn","testUrl":"https://www.missav08.com/status.html","ok":true,"ms":3544.0},{"url":"https://www.thisav66.com/cn","testUrl":"https://www.thisav66.com/status.html","ok":true,"ms":3662.0},{"url":"https://www.thisav33.com/cn","testUrl":"https://www.thisav33.com/status.html","ok":true,"ms":4127.0},{"url":"https://www.njavtv.my/cn","testUrl":"https://www.njavtv.my/status.html","ok":false,"ms":651.0},{"url":"https://www.missav1.vip/cn","testUrl":"https://www.missav1.vip/status.html","ok":false,"ms":784.0},{"url":"https://www.missav3.one/cn","testUrl":"https://www.missav3.one/status.html","ok":false,"ms":1010.0},{"url":"https://www.missav365.icu/cn","testUrl":"https://www.missav365.icu/status.html","ok":false,"ms":1659.0},{"url":"https://www.thisav.sbs/cn","testUrl":"https://www.thisav.sbs/status.html","ok":false,"ms":1688.0},{"url":"https://www.missav365.one/cn","testUrl":"https://www.missav365.one/status.html","ok":false,"ms":1908.0},{"url":"https://www.njavtv.art/cn","testUrl":"https://www.njavtv.art/status.html","ok":false,"ms":1950.0}],"classes":[{"type_id":"20","type_name":"国产"},{"type_id":"21","type_name":"日本有码"},{"type_id":"22","type_name":"日本无码"},{"type_id":"28","type_name":"中文字幕"},{"type_id":"23","type_name":"欧美"},{"type_id":"24","type_name":"动漫"},{"type_id":"25","type_name":"伦理"}]},{"key":"x99_531d29bb","name":"Hanime1","kind":"video","adapter":"hanime","desc":"著名动漫视频站点","icon":"play.rectangle.fill","url":"https://www.hanime16.com/enter","lines":[{"url":"https://www.hanime169.net/enter","testUrl":"https://www.hanime169.net/status.html","ok":true,"ms":464.0},{"url":"https://www.hanime101.com/enter","testUrl":"https://www.hanime101.com/status.html","ok":true,"ms":527.0},{"url":"https://www.hanime101.net/enter","testUrl":"https://www.hanime101.net/status.html","ok":true,"ms":593.0},{"url":"https://www.hanime163.com/enter","testUrl":"https://www.hanime163.com/status.html","ok":true,"ms":606.0},{"url":"https://www.hanime666.net/enter","testUrl":"https://www.hanime666.net/status.html","ok":true,"ms":629.0},{"url":"https://www.hanime02.com/enter","testUrl":"https://www.hanime02.com/status.html","ok":true,"ms":641.0},{"url":"https://www.hanime123.org/enter","testUrl":"https://www.hanime123.org/status.html","ok":true,"ms":749.0},{"url":"https://www.hanime169.cc/enter","testUrl":"https://www.hanime169.cc/status.html","ok":true,"ms":797.0},{"url":"https://www.hanime169.com/enter","testUrl":"https://www.hanime169.com/status.html","ok":true,"ms":816.0},{"url":"https://www.hanime999.com/enter","testUrl":"https://www.hanime999.com/status.html","ok":true,"ms":849.0},{"url":"https://www.hanime2.icu/enter","testUrl":"https://www.hanime2.icu/status.html","ok":true,"ms":863.0},{"url":"https://www.hanime103.com/enter","testUrl":"https://www.hanime103.com/status.html","ok":true,"ms":1015.0},{"url":"https://www.hanime999.cc/enter","testUrl":"https://www.hanime999.cc/status.html","ok":true,"ms":1017.0},{"url":"https://www.hanime1.my/enter","testUrl":"https://www.hanime1.my/status.html","ok":true,"ms":1020.0},{"url":"https://www.hanime102.net/enter","testUrl":"https://www.hanime102.net/status.html","ok":true,"ms":1031.0},{"url":"https://www.hanime123.cc/enter","testUrl":"https://www.hanime123.cc/status.html","ok":true,"ms":1158.0},{"url":"https://www.hanime1.life/enter","testUrl":"https://www.hanime1.life/status.html","ok":true,"ms":1239.0},{"url":"https://www.hanime999.net/enter","testUrl":"https://www.hanime999.net/status.html","ok":true,"ms":1449.0},{"url":"https://www.hanime102.com/enter","testUrl":"https://www.hanime102.com/status.html","ok":true,"ms":1516.0},{"url":"https://www.hanime103.net/enter","testUrl":"https://www.hanime103.net/status.html","ok":true,"ms":1681.0},{"url":"https://www.hanime123.sbs/enter","testUrl":"https://www.hanime123.sbs/status.html","ok":true,"ms":1723.0},{"url":"https://www.hanime123.one/enter","testUrl":"https://www.hanime123.one/status.html","ok":true,"ms":2281.0},{"url":"https://www.hanime16.com/enter","testUrl":"https://www.hanime16.com/status.html","ok":true,"ms":3426.0},{"url":"https://www.hanime1.art/enter","testUrl":"https://www.hanime1.art/status.html","ok":true,"ms":3966.0},{"url":"https://www.hanime104.com/enter","testUrl":"https://www.hanime104.com/status.html","ok":true,"ms":9369.0},{"url":"https://www.hanime163.net/enter","testUrl":"https://www.hanime163.net/status.html","ok":true,"ms":11410.0},{"url":"https://www.hanime1-me.cc/enter","testUrl":"https://www.hanime1-me.cc/status.html","ok":false,"ms":945.0},{"url":"https://www.hanime2.one/enter","testUrl":"https://www.hanime2.one/status.html","ok":false,"ms":1022.0},{"url":"https://www.hanime1.pw/enter","testUrl":"https://www.hanime1.pw/status.html","ok":false,"ms":1096.0},{"url":"https://www.hanime888.net/enter","testUrl":"https://www.hanime888.net/status.html","ok":false,"ms":1139.0},{"url":"https://www.hanime2.org/enter","testUrl":"https://www.hanime2.org/status.html","ok":false,"ms":1332.0},{"url":"https://www.hanime2.cfd/enter","testUrl":"https://www.hanime2.cfd/status.html","ok":false,"ms":2362.0}],"classes":[]},{"key":"x99_5e2df580","name":"LissAV","kind":"video","adapter":"kvs","desc":"最全日本AV站点","icon":"play.rectangle.fill","url":"https://huangguo04.net/asian/zh-CN","lines":[{"url":"https://tktube.vip/asian/zh-CN","testUrl":"https://tktube.vip/status.html","ok":true,"ms":484.0},{"url":"https://huangguo01.net/asian/zh-CN","testUrl":"https://huangguo01.net/status.html","ok":true,"ms":810.0},{"url":"https://lissav.nl/asian/zh-CN","testUrl":"https://lissav.nl/status.html","ok":true,"ms":915.0},{"url":"https://lissav.vip/asian/zh-CN","testUrl":"https://lissav.vip/status.html","ok":true,"ms":954.0},{"url":"https://tktube.nl/asian/zh-CN","testUrl":"https://tktube.nl/status.html","ok":true,"ms":1042.0},{"url":"https://lissav.my/asian/zh-CN","testUrl":"https://lissav.my/status.html","ok":true,"ms":1073.0},{"url":"https://lissav.ws/asian/zh-CN","testUrl":"https://lissav.ws/status.html","ok":true,"ms":1176.0},{"url":"https://madou8.ws/asian/zh-CN","testUrl":"https://madou8.ws/status.html","ok":true,"ms":1332.0},{"url":"https://madou666.net/asian/zh-CN","testUrl":"https://madou666.net/status.html","ok":true,"ms":1602.0},{"url":"https://lissav.net/asian/zh-CN","testUrl":"https://lissav.net/status.html","ok":true,"ms":1719.0},{"url":"https://mdba8.com/asian/zh-CN","testUrl":"https://mdba8.com/status.html","ok":true,"ms":1908.0},{"url":"https://madou8.pw/asian/zh-CN","testUrl":"https://madou8.pw/status.html","ok":true,"ms":2182.0},{"url":"https://lissav1.com/asian/zh-CN","testUrl":"https://lissav1.com/status.html","ok":true,"ms":2215.0},{"url":"https://madou8.my/asian/zh-CN","testUrl":"https://madou8.my/status.html","ok":true,"ms":2566.0},{"url":"https://huangguo04.net/asian/zh-CN","testUrl":"https://huangguo04.net/status.html","ok":true,"ms":2960.0},{"url":"https://huangguo02.net/asian/zh-CN","testUrl":"https://huangguo02.net/status.html","ok":true,"ms":4656.0},{"url":"https://huangguo123.com/asian/zh-CN","testUrl":"https://huangguo123.com/status.html","ok":true,"ms":4716.0},{"url":"https://huangguo03.net/asian/zh-CN","testUrl":"https://huangguo03.net/status.html","ok":true,"ms":4726.0},{"url":"https://mdba8.net/asian/zh-CN","testUrl":"https://mdba8.net/status.html","ok":true,"ms":5592.0},{"url":"https://javxx.sbs/asian/zh-CN","testUrl":"https://javxx.sbs/status.html","ok":true,"ms":13261.0},{"url":"https://lissav.one/asian/zh-CN","testUrl":"https://lissav.one/status.html","ok":true,"ms":16098.0},{"url":"https://lissav.com/asian/zh-CN","testUrl":"https://lissav.com/status.html","ok":false,"ms":1897.0}],"classes":[]},{"key":"x99_2828ee09","name":"LissAV国产区","kind":"video","adapter":"kvs","desc":"数十万精品AV","icon":"play.rectangle.fill","url":"https://huangguo04.net/domestic/zh-CN","lines":[{"url":"https://huangguo01.net/domestic/zh-CN","testUrl":"https://huangguo01.net/status.html","ok":true,"ms":130.0},{"url":"https://lissav1.com/domestic/zh-CN","testUrl":"https://lissav1.com/status.html","ok":true,"ms":175.0},{"url":"https://huangguo123.com/domestic/zh-CN","testUrl":"https://huangguo123.com/status.html","ok":true,"ms":204.0},{"url":"https://madou8.ws/domestic/zh-CN","testUrl":"https://madou8.ws/status.html","ok":true,"ms":222.0},{"url":"https://mdba8.net/domestic/zh-CN","testUrl":"https://mdba8.net/status.html","ok":true,"ms":417.0},{"url":"https://tktube.nl/domestic/zh-CN","testUrl":"https://tktube.nl/status.html","ok":true,"ms":482.0},{"url":"https://huangguo02.net/domestic/zh-CN","testUrl":"https://huangguo02.net/status.html","ok":true,"ms":509.0},{"url":"https://lissav.one/domestic/zh-CN","testUrl":"https://lissav.one/status.html","ok":true,"ms":547.0},{"url":"https://lissav.nl/domestic/zh-CN","testUrl":"https://lissav.nl/status.html","ok":true,"ms":567.0},{"url":"https://lissav.net/domestic/zh-CN","testUrl":"https://lissav.net/status.html","ok":true,"ms":1088.0},{"url":"https://madou8.pw/domestic/zh-CN","testUrl":"https://madou8.pw/status.html","ok":true,"ms":1088.0},{"url":"https://tktube.vip/domestic/zh-CN","testUrl":"https://tktube.vip/status.html","ok":true,"ms":1114.0},{"url":"https://lissav.my/domestic/zh-CN","testUrl":"https://lissav.my/status.html","ok":true,"ms":1133.0},{"url":"https://madou8.my/domestic/zh-CN","testUrl":"https://madou8.my/status.html","ok":true,"ms":1353.0},{"url":"https://madou666.net/domestic/zh-CN","testUrl":"https://madou666.net/status.html","ok":true,"ms":1668.0},{"url":"https://mdba8.com/domestic/zh-CN","testUrl":"https://mdba8.com/status.html","ok":true,"ms":3124.0},{"url":"https://huangguo03.net/domestic/zh-CN","testUrl":"https://huangguo03.net/status.html","ok":true,"ms":3202.0},{"url":"https://lissav.ws/domestic/zh-CN","testUrl":"https://lissav.ws/status.html","ok":true,"ms":4031.0},{"url":"https://huangguo04.net/domestic/zh-CN","testUrl":"https://huangguo04.net/status.html","ok":true,"ms":4073.0},{"url":"https://javxx.sbs/domestic/zh-CN","testUrl":"https://javxx.sbs/status.html","ok":true,"ms":7681.0},{"url":"https://lissav.vip/domestic/zh-CN","testUrl":"https://lissav.vip/status.html","ok":true,"ms":13332.0},{"url":"https://lissav.com/domestic/zh-CN","testUrl":"https://lissav.com/status.html","ok":false,"ms":1900.0}],"classes":[]},{"key":"x99_2721419a","name":"Jable","kind":"video","adapter":"jable","desc":"另一个亚洲视频站点","icon":"play.rectangle.fill","url":"https://jable02.com/enter","lines":[{"url":"https://jable02.com/enter","testUrl":"https://jable02.com/status.html","ok":true,"ms":176.0},{"url":"https://jable1.cc/enter","testUrl":"https://jable1.cc/status.html","ok":true,"ms":507.0},{"url":"https://jable888.com/enter","testUrl":"https://jable888.com/status.html","ok":true,"ms":599.0},{"url":"https://jable666.net/enter","testUrl":"https://jable666.net/status.html","ok":true,"ms":760.0},{"url":"https://jable.cfd/enter","testUrl":"https://jable.cfd/status.html","ok":true,"ms":848.0},{"url":"https://jable666.com/enter","testUrl":"https://jable666.com/status.html","ok":true,"ms":874.0},{"url":"https://jable18.top/enter","testUrl":"https://jable18.top/status.html","ok":true,"ms":915.0},{"url":"https://jable01.net/enter","testUrl":"https://jable01.net/status.html","ok":true,"ms":1049.0},{"url":"https://jable1.xyz/enter","testUrl":"https://jable1.xyz/status.html","ok":true,"ms":1337.0},{"url":"https://91jable.top/enter","testUrl":"https://91jable.top/status.html","ok":true,"ms":1537.0},{"url":"https://91jable.icu/enter","testUrl":"https://91jable.icu/status.html","ok":true,"ms":1579.0},{"url":"https://jable1.vip/enter","testUrl":"https://jable1.vip/status.html","ok":true,"ms":1847.0},{"url":"https://jable01.com/enter","testUrl":"https://jable01.com/status.html","ok":true,"ms":2295.0},{"url":"https://jable1.net/enter","testUrl":"https://jable1.net/status.html","ok":true,"ms":2776.0},{"url":"https://jable888.net/enter","testUrl":"https://jable888.net/status.html","ok":true,"ms":4790.0},{"url":"https://jable1.lat/enter","testUrl":"https://jable1.lat/status.html","ok":true,"ms":7908.0},{"url":"https://jable1.com/enter","testUrl":"https://jable1.com/status.html","ok":false,"ms":1557.0}],"classes":[]},{"key":"x99_f3faa727","name":"xhamster","kind":"video","adapter":"xhamster","desc":"著名视频站点","icon":"play.rectangle.fill","url":"https://zh.xhamster02.com/enter","lines":[{"url":"https://zh.xv123.top/enter","testUrl":"https://zh.xv123.top/status.html","ok":true,"ms":561.0},{"url":"https://zh.xhamster1.cc/enter","testUrl":"https://zh.xhamster1.cc/status.html","ok":true,"ms":662.0},{"url":"https://zh.xhamster02.com/enter","testUrl":"https://zh.xhamster02.com/status.html","ok":true,"ms":730.0},{"url":"https://zh.xhamster1.art/enter","testUrl":"https://zh.xhamster1.art/status.html","ok":true,"ms":776.0},{"url":"https://zh.xhamster1.one/enter","testUrl":"https://zh.xhamster1.one/status.html","ok":true,"ms":1576.0},{"url":"https://zh.xhamster01.net/enter","testUrl":"https://zh.xhamster01.net/status.html","ok":true,"ms":1582.0},{"url":"https://zh.xhamster1.net/enter","testUrl":"https://zh.xhamster1.net/status.html","ok":true,"ms":1705.0},{"url":"https://zh.xhamster1.top/enter","testUrl":"https://zh.xhamster1.top/status.html","ok":true,"ms":1721.0},{"url":"https://zh.xhamster1.vip/enter","testUrl":"https://zh.xhamster1.vip/status.html","ok":true,"ms":1870.0},{"url":"https://zh.xhamster.ist/enter","testUrl":"https://zh.xhamster.ist/status.html","ok":true,"ms":1959.0},{"url":"https://zh.xv123.icu/enter","testUrl":"https://zh.xv123.icu/status.html","ok":true,"ms":2082.0},{"url":"https://zh.xhamster1.nl/enter","testUrl":"https://zh.xhamster1.nl/status.html","ok":true,"ms":3138.0},{"url":"https://zh.xhamster1.pw/enter","testUrl":"https://zh.xhamster1.pw/status.html","ok":true,"ms":3212.0},{"url":"https://zh.xhamster1.icu/enter","testUrl":"https://zh.xhamster1.icu/status.html","ok":true,"ms":3388.0},{"url":"https://zh.xv123.xyz/enter","testUrl":"https://zh.xv123.xyz/status.html","ok":true,"ms":5012.0}],"classes":[]},{"key":"x99_8be4dcd9","name":"肉视频","kind":"video","adapter":"rou","desc":"国产视频为主,AI短剧","icon":"play.rectangle.fill","url":"https://rou07.net/home","lines":[{"url":"https://rou07.net/home","testUrl":"https://rou07.net/status.html","ok":true,"ms":173.0},{"url":"https://rou08.com/home","testUrl":"https://rou08.com/status.html","ok":true,"ms":519.0},{"url":"https://rou163.top/home","testUrl":"https://rou163.top/status.html","ok":true,"ms":852.0},{"url":"https://rouav.sbs/home","testUrl":"https://rouav.sbs/status.html","ok":true,"ms":945.0},{"url":"https://rou08.net/home","testUrl":"https://rou08.net/status.html","ok":true,"ms":1010.0},{"url":"https://rou07.com/home","testUrl":"https://rou07.com/status.html","ok":true,"ms":1102.0},{"url":"https://rou1.men/home","testUrl":"https://rou1.men/status.html","ok":true,"ms":1285.0},{"url":"https://rou01.cc/home","testUrl":"https://rou01.cc/status.html","ok":true,"ms":1299.0},{"url":"https://rou168.com/home","testUrl":"https://rou168.com/status.html","ok":true,"ms":1827.0},{"url":"https://rou1.art/home","testUrl":"https://rou1.art/status.html","ok":true,"ms":1888.0},{"url":"https://rou1.my/home","testUrl":"https://rou1.my/status.html","ok":true,"ms":1895.0},{"url":"https://rou888.net/home","testUrl":"https://rou888.net/status.html","ok":true,"ms":1970.0},{"url":"https://rou1.sbs/home","testUrl":"https://rou1.sbs/status.html","ok":true,"ms":1982.0},{"url":"https://rou666.com/home","testUrl":"https://rou666.com/status.html","ok":true,"ms":2343.0},{"url":"https://rou666.net/home","testUrl":"https://rou666.net/status.html","ok":true,"ms":2458.0},{"url":"https://rou06.cc/home","testUrl":"https://rou06.cc/status.html","ok":true,"ms":2546.0},{"url":"https://rou1.pw/home","testUrl":"https://rou1.pw/status.html","ok":true,"ms":3323.0},{"url":"https://rouxxx.net/home","testUrl":"https://rouxxx.net/status.html","ok":true,"ms":3423.0},{"url":"https://rou06.net/home","testUrl":"https://rou06.net/status.html","ok":true,"ms":8858.0},{"url":"https://rouxxx.sbs/home","testUrl":"https://rouxxx.sbs/status.html","ok":false,"ms":611.0},{"url":"https://rouxxx.cc/home","testUrl":"https://rouxxx.cc/status.html","ok":false,"ms":1707.0}],"classes":[]},{"key":"x99_f642a3a3","name":"好色TV","kind":"video","adapter":"hsex","desc":"国产中短精选视频","icon":"play.rectangle.fill","url":"https://hsex02.com/enter","lines":[{"url":"https://pb365.top/enter","testUrl":"https://pb365.top/status.html","ok":true,"ms":472.0},{"url":"https://hsex02.com/enter","testUrl":"https://hsex02.com/status.html","ok":true,"ms":573.0},{"url":"https://hsex.nl/enter","testUrl":"https://hsex.nl/status.html","ok":true,"ms":785.0},{"url":"https://hsex01.net/enter","testUrl":"https://hsex01.net/status.html","ok":true,"ms":896.0},{"url":"https://pb365.one/enter","testUrl":"https://pb365.one/status.html","ok":true,"ms":1019.0},{"url":"https://hsex.top/enter","testUrl":"https://hsex.top/status.html","ok":true,"ms":1031.0},{"url":"https://hsex1.sbs/enter","testUrl":"https://hsex1.sbs/status.html","ok":true,"ms":1056.0},{"url":"https://hsex01.com/enter","testUrl":"https://hsex01.com/status.html","ok":true,"ms":1057.0},{"url":"https://hsex1.cc/enter","testUrl":"https://hsex1.cc/status.html","ok":true,"ms":1214.0},{"url":"https://hsex1.icu/enter","testUrl":"https://hsex1.icu/status.html","ok":true,"ms":1253.0},{"url":"https://hsex1.top/enter","testUrl":"https://hsex1.top/status.html","ok":true,"ms":1319.0},{"url":"https://hsex.cfd/enter","testUrl":"https://hsex.cfd/status.html","ok":true,"ms":1330.0},{"url":"https://hsex.sbs/enter","testUrl":"https://hsex.sbs/status.html","ok":true,"ms":1643.0},{"url":"https://hsex.one/enter","testUrl":"https://hsex.one/status.html","ok":true,"ms":2051.0},{"url":"https://pb365.sbs/enter","testUrl":"https://pb365.sbs/status.html","ok":true,"ms":2253.0},{"url":"https://hsex1.vip/enter","testUrl":"https://hsex1.vip/status.html","ok":true,"ms":2985.0},{"url":"https://hsex.mom/enter","testUrl":"https://hsex.mom/status.html","ok":false,"ms":1402.0},{"url":"https://pb365.nl/enter","testUrl":"https://pb365.nl/status.html","ok":false,"ms":2197.0}],"classes":[]},{"key":"x99_99fa5c38","name":"321AV","kind":"video","adapter":"maccms","desc":"视频站点，速度更快","icon":"play.rectangle.fill","url":"https://321av.art/enter","lines":[{"url":"https://321xav.cc/enter","testUrl":"https://321xav.cc/status.html","ok":true,"ms":193.0},{"url":"https://321av.men/enter","testUrl":"https://321av.men/status.html","ok":true,"ms":332.0},{"url":"https://321av.org/enter","testUrl":"https://321av.org/status.html","ok":true,"ms":409.0},{"url":"https://321av.xyz/enter","testUrl":"https://321av.xyz/status.html","ok":true,"ms":595.0},{"url":"https://321av.fans/enter","testUrl":"https://321av.fans/status.html","ok":true,"ms":1035.0},{"url":"https://321av.ws/enter","testUrl":"https://321av.ws/status.html","ok":true,"ms":1056.0},{"url":"https://321av.sbs/enter","testUrl":"https://321av.sbs/status.html","ok":true,"ms":2066.0},{"url":"https://321av.icu/enter","testUrl":"https://321av.icu/status.html","ok":true,"ms":2870.0},{"url":"https://321av.art/enter","testUrl":"https://321av.art/status.html","ok":true,"ms":3070.0},{"url":"https://321av.top/enter","testUrl":"https://321av.top/status.html","ok":true,"ms":6460.0},{"url":"https://321av.vip/enter","testUrl":"https://321av.vip/status.html","ok":false,"ms":1767.0}],"classes":[{"type_id":"20","type_name":"有码影片","href":"/vodtype/20.html"},{"type_id":"21","type_name":"无码影片","href":"/vodtype/21.html"},{"type_id":"22","type_name":"中文字幕","href":"/vodtype/22.html"}]},{"key":"x99_5b25e3c1","name":"rouAV","kind":"video","adapter":"maccms","desc":"高品质国产AV","icon":"play.rectangle.fill","url":"https://rou123.ws/enter","lines":[{"url":"https://rou123.cc/enter","testUrl":"https://rou123.cc/status.html","ok":true,"ms":273.0},{"url":"https://rou123.cfd/enter","testUrl":"https://rou123.cfd/status.html","ok":true,"ms":1031.0},{"url":"https://rou123.ws/enter","testUrl":"https://rou123.ws/status.html","ok":true,"ms":1179.0},{"url":"https://rou123.org/enter","testUrl":"https://rou123.org/status.html","ok":true,"ms":1474.0},{"url":"https://rou123.top/enter","testUrl":"https://rou123.top/status.html","ok":true,"ms":1753.0},{"url":"https://rou123.sbs/enter","testUrl":"https://rou123.sbs/status.html","ok":true,"ms":1793.0},{"url":"https://rou123.one/enter","testUrl":"https://rou123.one/status.html","ok":false,"ms":1161.0},{"url":"https://rou123.vip/enter","testUrl":"https://rou123.vip/status.html","ok":false,"ms":1376.0}],"classes":[{"type_id":"7","type_name":"国产AV","href":"/vodtype/7.html"},{"type_id":"3","type_name":"日本","href":"/vodtype/3.html"},{"type_id":"6","type_name":"自拍流出","href":"/vodtype/6.html"},{"type_id":"5","type_name":"探花","href":"/vodtype/5.html"},{"type_id":"4","type_name":"OnlyFans","href":"/vodtype/4.html"},{"type_id":"1","type_name":"其他","href":"/vodtype/1.html"}]},{"key":"x99_d7f940f5","name":"黄色仓库","kind":"video","adapter":"maccms","desc":"最新麻豆视频,麻豆视频在线观看,天美传媒,91制片厂,天美传媒,精东影业,蜜桃传媒,麻豆网","icon":"play.rectangle.fill","url":"https://www.hsck01.net/enter","lines":[{"url":"https://www.69ck1.net/enter","testUrl":"https://www.69ck1.net/status.html","ok":true,"ms":551.0},{"url":"https://www.69ck1.com/enter","testUrl":"https://www.69ck1.com/status.html","ok":true,"ms":680.0},{"url":"https://www.hsck.nl/enter","testUrl":"https://www.hsck.nl/status.html","ok":true,"ms":840.0},{"url":"https://www.69ck.one/enter","testUrl":"https://www.69ck.one/status.html","ok":true,"ms":841.0},{"url":"https://www.hsck.sbs/enter","testUrl":"https://www.hsck.sbs/status.html","ok":true,"ms":1004.0},{"url":"https://www.hsck01.net/enter","testUrl":"https://www.hsck01.net/status.html","ok":true,"ms":1365.0},{"url":"https://www.69ck.ws/enter","testUrl":"https://www.69ck.ws/status.html","ok":true,"ms":2140.0}],"classes":[{"type_id":"1","type_name":"麻豆","href":"/index.php/vod/type/id/1.html"},{"type_id":"2","type_name":"中字","href":"/index.php/vod/type/id/2.html"},{"type_id":"3","type_name":"国产","href":"/index.php/vod/type/id/3.html"},{"type_id":"4","type_name":"欧美","href":"/index.php/vod/type/id/4.html"},{"type_id":"5","type_name":"日韩","href":"/index.php/vod/type/id/5.html"}]},{"key":"x99_2eb3f212","name":"18av","kind":"video","adapter":"18av","desc":"综合性成人站点，包含视频、小说、色图、漫画等","icon":"play.rectangle.fill","url":"https://www.18av02.com/enter","lines":[{"url":"https://www.18av.ws/enter","testUrl":"https://www.18av.ws/status.html","ok":true,"ms":513.0},{"url":"https://www.18av.nl/enter","testUrl":"https://www.18av.nl/status.html","ok":true,"ms":798.0},{"url":"https://www.18av01.cc/enter","testUrl":"https://www.18av01.cc/status.html","ok":true,"ms":939.0},{"url":"https://www.18av02.com/enter","testUrl":"https://www.18av02.com/status.html","ok":true,"ms":1127.0},{"url":"https://www.18av01.net/enter","testUrl":"https://www.18av01.net/status.html","ok":true,"ms":1681.0},{"url":"https://www.18av.pw/enter","testUrl":"https://www.18av.pw/status.html","ok":true,"ms":2571.0}],"classes":[{"type_id":"chinese_list","type_name":"中文字幕"},{"type_id":"censored_list","type_name":"有碼AV"},{"type_id":"uncensored_list","type_name":"無碼AV"},{"type_id":"amateurjav_list","type_name":"素人AV"},{"type_id":"reducing-mosaic_list","type_name":"無碼破解"},{"type_id":"animation_list","type_name":"H動畫"},{"type_id":"dt_list","type_name":"國產自拍"}]},{"key":"x99_f7ba81a6","name":"大哥视频","kind":"video","adapter":"dage","desc":"最新各类国产、日韩、欧美等视频","icon":"play.rectangle.fill","url":"https://dage.one/enter","lines":[{"url":"https://dage.one/enter","testUrl":"https://dage.one/status.html","ok":true,"ms":192.0},{"url":"https://dage01.net/enter","testUrl":"https://dage01.net/status.html","ok":true,"ms":692.0}],"classes":[]},{"key":"x99_a4235f12","name":"Pornhub","kind":"video","adapter":"pornhub","desc":"P站","icon":"play.rectangle.fill","url":"https://cn.pornhub06.com/enter","lines":[{"url":"https://cn.pornhub06.com/enter","testUrl":"https://cn.pornhub06.com/status.html","ok":true,"ms":406.0},{"url":"https://cn.pornhub03.net/enter","testUrl":"https://cn.pornhub03.net/status.html","ok":true,"ms":940.0},{"url":"https://cn.pornhub02.net/enter","testUrl":"https://cn.pornhub02.net/status.html","ok":true,"ms":1187.0},{"url":"https://cn.pornhub163.com/enter","testUrl":"https://cn.pornhub163.com/status.html","ok":true,"ms":1281.0},{"url":"https://cn.pornhub163.net/enter","testUrl":"https://cn.pornhub163.net/status.html","ok":true,"ms":1465.0},{"url":"https://cn.pornhub365.com/enter","testUrl":"https://cn.pornhub365.com/status.html","ok":true,"ms":1604.0},{"url":"https://cn.pornhub03.com/enter","testUrl":"https://cn.pornhub03.com/status.html","ok":true,"ms":1636.0},{"url":"https://cn.pornhub365.sbs/enter","testUrl":"https://cn.pornhub365.sbs/status.html","ok":true,"ms":2526.0},{"url":"https://cn.pornhub02.com/enter","testUrl":"https://cn.pornhub02.com/status.html","ok":true,"ms":2650.0},{"url":"https://cn.pornhub666.com/enter","testUrl":"https://cn.pornhub666.com/status.html","ok":true,"ms":2803.0},{"url":"https://cn.pornhub666.cc/enter","testUrl":"https://cn.pornhub666.cc/status.html","ok":true,"ms":2991.0},{"url":"https://cn.pornhub1.icu/enter","testUrl":"https://cn.pornhub1.icu/status.html","ok":true,"ms":3134.0},{"url":"https://cn.pornhub365.top/enter","testUrl":"https://cn.pornhub365.top/status.html","ok":false,"ms":1876.0},{"url":"https://cn.pornhub1.mom/enter","testUrl":"https://cn.pornhub1.mom/status.html","ok":false,"ms":1945.0},{"url":"https://cn.pornhub1.cc/enter","testUrl":"https://cn.pornhub1.cc/status.html","ok":false,"ms":2617.0},{"url":"https://cn.pornhub365.mom/enter","testUrl":"https://cn.pornhub365.mom/status.html","ok":false,"ms":2873.0}],"classes":[]},{"key":"x99_63401799","name":"XVIDEOS","kind":"video","adapter":"generic","desc":"X站","icon":"play.rectangle.fill","url":"https://www.xvideos163.top/enter","lines":[{"url":"https://www.91xvideos.top/enter","testUrl":"https://www.91xvideos.top/status.html","ok":true,"ms":1292.0},{"url":"https://www.xvideos1.icu/enter","testUrl":"https://www.xvideos1.icu/status.html","ok":true,"ms":2319.0},{"url":"https://www.x123.xyz/enter","testUrl":"https://www.x123.xyz/status.html","ok":false,"ms":1378.0},{"url":"https://www.x123.one/enter","testUrl":"https://www.x123.one/status.html","ok":false,"ms":1685.0},{"url":"https://www.xvideos163.top/enter","testUrl":"https://www.xvideos163.top/status.html","ok":false,"ms":12684.0}],"classes":[]},{"key":"x99_a4cb289c","name":"Xanimu","kind":"video","adapter":"xanimu","desc":"免费2D、3D、动漫性爱、漫画、卡通","icon":"play.rectangle.fill","url":"https://xanimu.ws/zh-CN/","lines":[{"url":"https://xanimu.one/zh-CN/","testUrl":"https://xanimu.one/status.html","ok":true,"ms":473.0},{"url":"https://xanimu.net/zh-CN/","testUrl":"https://xanimu.net/status.html","ok":true,"ms":515.0},{"url":"https://xanimu.sbs/zh-CN/","testUrl":"https://xanimu.sbs/status.html","ok":true,"ms":884.0},{"url":"https://xanimu.art/zh-CN/","testUrl":"https://xanimu.art/status.html","ok":true,"ms":926.0},{"url":"https://xanimu.ws/zh-CN/","testUrl":"https://xanimu.ws/status.html","ok":true,"ms":1610.0},{"url":"https://xanimu.top/zh-CN/","testUrl":"https://xanimu.top/status.html","ok":true,"ms":2387.0}],"classes":[]},{"key":"x99_becefbcf","name":"avjoy","kind":"video","adapter":"kvs","desc":"成人视频","icon":"play.rectangle.fill","url":"https://cn.avjoy.ws/enter","lines":[{"url":"https://cn.avjoy.nl/enter","testUrl":"https://cn.avjoy.nl/status.html","ok":true,"ms":197.0},{"url":"https://cn.avjoy.top/enter","testUrl":"https://cn.avjoy.top/status.html","ok":true,"ms":1341.0},{"url":"https://cn.avjoy.ws/enter","testUrl":"https://cn.avjoy.ws/status.html","ok":true,"ms":2714.0}],"classes":[]},{"key":"x99_aa4a47f1","name":"SuperPorn","kind":"video","adapter":"superporn","desc":"高质量海外视频","icon":"play.rectangle.fill","url":"https://cn.superporn.ws/enter","lines":[{"url":"https://cn.superporn.me/enter","testUrl":"https://cn.superporn.me/status.html","ok":false,"ms":1628.0},{"url":"https://cn.superporn.ws/enter","testUrl":"https://cn.superporn.ws/status.html","ok":false,"ms":1733.0},{"url":"https://cn.superporn.icu/enter","testUrl":"https://cn.superporn.icu/status.html","ok":false,"ms":1857.0}],"classes":[]},{"key":"x99_73234a95","name":"亚洲素人精选","kind":"video","adapter":"91av","desc":"亚洲素人精选AV","icon":"play.rectangle.fill","url":"https://591av.ws/enter","lines":[{"url":"https://91-av.one/enter","testUrl":"https://91-av.one/status.html","ok":true,"ms":1188.0},{"url":"https://591av.sbs/enter","testUrl":"https://591av.sbs/status.html","ok":true,"ms":1778.0},{"url":"https://591av.ws/enter","testUrl":"https://591av.ws/status.html","ok":true,"ms":1910.0},{"url":"https://91-av.men/enter","testUrl":"https://91-av.men/status.html","ok":true,"ms":2140.0},{"url":"https://591av.net/enter","testUrl":"https://591av.net/status.html","ok":true,"ms":2243.0}],"classes":[]},{"key":"x99_52cd8432","name":"YesPorn","kind":"video","adapter":"yesporn","desc":"很多收费完整视频(免费)","icon":"play.rectangle.fill","url":"https://cn.yesporn.ws/enter","lines":[{"url":"https://cn.yesporn1.cc/enter","testUrl":"https://cn.yesporn1.cc/status.html","ok":true,"ms":1871.0},{"url":"https://cn.yesporn.ws/enter","testUrl":"https://cn.yesporn.ws/status.html","ok":true,"ms":2390.0}],"classes":[]},{"key":"x99_e85133d7","name":"CartoonPorno","kind":"video","adapter":"cartoon","desc":"免费精品动漫卡通视频","icon":"play.rectangle.fill","url":"https://www.cartoonporno.vip/?hl=zh","lines":[{"url":"https://www.cartoonporno.ws/?hl=zh","testUrl":"https://www.cartoonporno.ws/status.html","ok":true,"ms":1056.0},{"url":"https://www.cartoonporno.vip/?hl=zh","testUrl":"https://www.cartoonporno.vip/status.html","ok":true,"ms":1359.0},{"url":"https://www.cartoonporno.cc/?hl=zh","testUrl":"https://www.cartoonporno.cc/status.html","ok":false,"ms":752.0},{"url":"https://www.cartoonporno.top/?hl=zh","testUrl":"https://www.cartoonporno.top/status.html","ok":false,"ms":1011.0},{"url":"https://www.cartoonporno.art/?hl=zh","testUrl":"https://www.cartoonporno.art/status.html","ok":false,"ms":1055.0}],"classes":[]},{"key":"x99_9364c1e5","name":"Hentai","kind":"video","adapter":"acgmh","desc":"提供 漫画、同人志、艺术图集、游戏CG、小说插图 等","icon":"play.rectangle.fill","url":"https://cn.acgmh.art/enter","lines":[{"url":"https://cn.acgmh.icu/enter","testUrl":"https://cn.acgmh.icu/status.html","ok":true,"ms":361.0},{"url":"https://cn.acgmh.art/enter","testUrl":"https://cn.acgmh.art/status.html","ok":true,"ms":833.0},{"url":"https://cn.bato.icu/enter","testUrl":"https://cn.bato.icu/status.html","ok":true,"ms":1152.0},{"url":"https://cn.acgmh.top/enter","testUrl":"https://cn.acgmh.top/status.html","ok":true,"ms":1796.0},{"url":"https://cn.acgmh.vip/enter","testUrl":"https://cn.acgmh.vip/status.html","ok":true,"ms":1832.0},{"url":"https://cn.acgmh.sbs/enter","testUrl":"https://cn.acgmh.sbs/status.html","ok":true,"ms":4701.0}],"classes":[]},{"key":"x99_e8d1404a","name":"OKXXX","kind":"video","adapter":"okxxx","desc":"OKXXX","icon":"play.rectangle.fill","url":"https://okav.art/enter","lines":[{"url":"https://okx18.icu/enter","testUrl":"https://okx18.icu/status.html","ok":true,"ms":1076.0},{"url":"https://okxxx.win/enter","testUrl":"https://okxxx.win/status.html","ok":true,"ms":1497.0},{"url":"https://okav.art/enter","testUrl":"https://okav.art/status.html","ok":true,"ms":1708.0},{"url":"https://okx18.vip/enter","testUrl":"https://okx18.vip/status.html","ok":true,"ms":1721.0},{"url":"https://okxxxx.net/enter","testUrl":"https://okxxxx.net/status.html","ok":true,"ms":1836.0},{"url":"https://okxxx.one/enter","testUrl":"https://okxxx.one/status.html","ok":true,"ms":1876.0},{"url":"https://okxxx.ws/enter","testUrl":"https://okxxx.ws/status.html","ok":true,"ms":1934.0},{"url":"https://okxxx.men/enter","testUrl":"https://okxxx.men/status.html","ok":true,"ms":2201.0},{"url":"https://okxxx.icu/enter","testUrl":"https://okxxx.icu/status.html","ok":true,"ms":2204.0},{"url":"https://okx18.cc/enter","testUrl":"https://okx18.cc/status.html","ok":true,"ms":2911.0}],"classes":[]},{"key":"x99_86c9c1d3","name":"VJAV","kind":"video","adapter":"vjav","desc":"VJAV","icon":"play.rectangle.fill","url":"https://vjav1.sbs/enter","lines":[{"url":"https://vjav-com.icu/enter","testUrl":"https://vjav-com.icu/status.html","ok":true,"ms":434.0},{"url":"https://vjav1.top/enter","testUrl":"https://vjav1.top/status.html","ok":true,"ms":630.0},{"url":"https://vjav-com.top/enter","testUrl":"https://vjav-com.top/status.html","ok":true,"ms":805.0},{"url":"https://vjav.icu/enter","testUrl":"https://vjav.icu/status.html","ok":true,"ms":1634.0},{"url":"https://vjav1.sbs/enter","testUrl":"https://vjav1.sbs/status.html","ok":true,"ms":2048.0}],"classes":[]},{"key":"x99_30b320d4","name":"成人影片数据库","kind":"video","adapter":"javdb","desc":"不错的下片站点，巨多高清无广告资源，完全免费，下片爱好者进","icon":"play.rectangle.fill","url":"https://javdb02.com/?locale=zh","lines":[{"url":"https://javdb.nl/?locale=zh","testUrl":"https://javdb.nl/status.html","ok":true,"ms":541.0},{"url":"https://javdb1.art/?locale=zh","testUrl":"https://javdb1.art/status.html","ok":true,"ms":586.0},{"url":"https://javdb.icu/?locale=zh","testUrl":"https://javdb.icu/status.html","ok":true,"ms":728.0},{"url":"https://javdb02.com/?locale=zh","testUrl":"https://javdb02.com/status.html","ok":true,"ms":735.0},{"url":"https://javdb1.top/?locale=zh","testUrl":"https://javdb1.top/status.html","ok":true,"ms":819.0},{"url":"https://javdb.sbs/?locale=zh","testUrl":"https://javdb.sbs/status.html","ok":true,"ms":820.0},{"url":"https://javdb.pw/?locale=zh","testUrl":"https://javdb.pw/status.html","ok":true,"ms":1076.0},{"url":"https://javdb1.sbs/?locale=zh","testUrl":"https://javdb1.sbs/status.html","ok":true,"ms":1768.0},{"url":"https://javdb01.net/?locale=zh","testUrl":"https://javdb01.net/status.html","ok":true,"ms":2835.0}],"classes":[]},{"key":"x99_a5b6d0eb","name":"三级片资源，稀缺资源","kind":"video","adapter":"ptt","desc":"最新最热门的电影电视剧动漫综艺台湾剧大陆剧日剧韩剧美剧，完全免费","icon":"play.rectangle.fill","url":"https://ptt03.net/p/1","lines":[{"url":"https://ptt2.one/p/1","testUrl":"https://ptt2.one/status.html","ok":true,"ms":140.0},{"url":"https://ptt2.nl/p/1","testUrl":"https://ptt2.nl/status.html","ok":true,"ms":180.0},{"url":"https://ptt01.com/p/1","testUrl":"https://ptt01.com/status.html","ok":true,"ms":430.0},{"url":"https://ptt01.ws/p/1","testUrl":"https://ptt01.ws/status.html","ok":true,"ms":573.0},{"url":"https://ptt02.cc/p/1","testUrl":"https://ptt02.cc/status.html","ok":true,"ms":621.0},{"url":"https://ptt02.com/p/1","testUrl":"https://ptt02.com/status.html","ok":true,"ms":730.0},{"url":"https://ptt2.my/p/1","testUrl":"https://ptt2.my/status.html","ok":true,"ms":1074.0},{"url":"https://ptt03.net/p/1","testUrl":"https://ptt03.net/status.html","ok":true,"ms":1254.0},{"url":"https://ptt02.nl/p/1","testUrl":"https://ptt02.nl/status.html","ok":true,"ms":1608.0},{"url":"https://ptt2.top/p/1","testUrl":"https://ptt2.top/status.html","ok":true,"ms":1779.0},{"url":"https://ptt03.com/p/1","testUrl":"https://ptt03.com/status.html","ok":true,"ms":2254.0},{"url":"https://ptt02.net/p/1","testUrl":"https://ptt02.net/status.html","ok":true,"ms":2643.0},{"url":"https://ptt2.art/p/1","testUrl":"https://ptt2.art/status.html","ok":true,"ms":2854.0}],"classes":[]}]}')
+SNAPSHOT = json.loads('{"version":"2026.11.07.2251","entry":["https://x99dh.net","https://x99dh.lat"],"platforms":[{"key":"x99_be9dc0cd","name":"MissAV","kind":"video","adapter":"missav","desc":"著名亚洲视频站点","icon":"play.rectangle.fill","url":"https://www.thisav66.com/cn","lines":[{"url":"https://www.missav666.net/cn","testUrl":"https://www.missav666.net/status.html","ok":true,"ms":189.0},{"url":"https://www.missav03.net/cn","testUrl":"https://www.missav03.net/status.html","ok":true,"ms":194.0},{"url":"https://www.missav05.net/cn","testUrl":"https://www.missav05.net/status.html","ok":true,"ms":202.0},{"url":"https://www.thisav01.net/cn","testUrl":"https://www.thisav01.net/status.html","ok":true,"ms":207.0},{"url":"https://www.missav02.net/cn","testUrl":"https://www.missav02.net/status.html","ok":true,"ms":280.0},{"url":"https://www.missav.watch/cn","testUrl":"https://www.missav.watch/status.html","ok":true,"ms":397.0},{"url":"https://www.njavtv01.com/cn","testUrl":"https://www.njavtv01.com/status.html","ok":true,"ms":435.0},{"url":"https://www.missav08.net/cn","testUrl":"https://www.missav08.net/status.html","ok":true,"ms":497.0},{"url":"https://www.missav888.net/cn","testUrl":"https://www.missav888.net/status.html","ok":true,"ms":690.0},{"url":"https://www.missav09.com/cn","testUrl":"https://www.missav09.com/status.html","ok":true,"ms":775.0},{"url":"https://www.thisav01.cc/cn","testUrl":"https://www.thisav01.cc/status.html","ok":true,"ms":809.0},{"url":"https://www.njav01.com/cn","testUrl":"https://www.njav01.com/status.html","ok":true,"ms":873.0},{"url":"https://www.thisav.pw/cn","testUrl":"https://www.thisav.pw/status.html","ok":true,"ms":988.0},{"url":"https://www.njavtv.nl/cn","testUrl":"https://www.njavtv.nl/status.html","ok":true,"ms":994.0},{"url":"https://www.njav.one/cn","testUrl":"https://www.njav.one/status.html","ok":true,"ms":1001.0},{"url":"https://www.missav123.life/cn","testUrl":"https://www.missav123.life/status.html","ok":true,"ms":1047.0},{"url":"https://www.missav-ai.cc/cn","testUrl":"https://www.missav-ai.cc/status.html","ok":true,"ms":1167.0},{"url":"https://www.missav666.cc/cn","testUrl":"https://www.missav666.cc/status.html","ok":true,"ms":1203.0},{"url":"https://www.missav01.net/cn","testUrl":"https://www.missav01.net/status.html","ok":true,"ms":1273.0},{"url":"https://www.missav05.com/cn","testUrl":"https://www.missav05.com/status.html","ok":true,"ms":1327.0},{"url":"https://www.njav01.net/cn","testUrl":"https://www.njav01.net/status.html","ok":true,"ms":1376.0},{"url":"https://www.missav06.com/cn","testUrl":"https://www.missav06.com/status.html","ok":true,"ms":1439.0},{"url":"https://www.missav06.net/cn","testUrl":"https://www.missav06.net/status.html","ok":true,"ms":1628.0},{"url":"https://www.missav888.cc/cn","testUrl":"https://www.missav888.cc/status.html","ok":true,"ms":1657.0},{"url":"https://www.thisav02.com/cn","testUrl":"https://www.thisav02.com/status.html","ok":true,"ms":1757.0},{"url":"https://www.missav2.one/cn","testUrl":"https://www.missav2.one/status.html","ok":true,"ms":1824.0},{"url":"https://www.missav1.one/cn","testUrl":"https://www.missav1.one/status.html","ok":true,"ms":1862.0},{"url":"https://www.missav07.net/cn","testUrl":"https://www.missav07.net/status.html","ok":true,"ms":1900.0},{"url":"https://www.thisav02.net/cn","testUrl":"https://www.thisav02.net/status.html","ok":true,"ms":1977.0},{"url":"https://www.thisav33.net/cn","testUrl":"https://www.thisav33.net/status.html","ok":true,"ms":2302.0},{"url":"https://www.missav123.nl/cn","testUrl":"https://www.missav123.nl/status.html","ok":true,"ms":2343.0},{"url":"https://www.missav08.com/cn","testUrl":"https://www.missav08.com/status.html","ok":true,"ms":3544.0},{"url":"https://www.thisav66.com/cn","testUrl":"https://www.thisav66.com/status.html","ok":true,"ms":3662.0},{"url":"https://www.thisav33.com/cn","testUrl":"https://www.thisav33.com/status.html","ok":true,"ms":4127.0},{"url":"https://www.njavtv.my/cn","testUrl":"https://www.njavtv.my/status.html","ok":false,"ms":651.0},{"url":"https://www.missav1.vip/cn","testUrl":"https://www.missav1.vip/status.html","ok":false,"ms":784.0},{"url":"https://www.missav3.one/cn","testUrl":"https://www.missav3.one/status.html","ok":false,"ms":1010.0},{"url":"https://www.missav365.icu/cn","testUrl":"https://www.missav365.icu/status.html","ok":false,"ms":1659.0},{"url":"https://www.thisav.sbs/cn","testUrl":"https://www.thisav.sbs/status.html","ok":false,"ms":1688.0},{"url":"https://www.missav365.one/cn","testUrl":"https://www.missav365.one/status.html","ok":false,"ms":1908.0},{"url":"https://www.njavtv.art/cn","testUrl":"https://www.njavtv.art/status.html","ok":false,"ms":1950.0}],"classes":[{"type_id":"20","type_name":"国产"},{"type_id":"21","type_name":"日本有码"},{"type_id":"22","type_name":"日本无码"},{"type_id":"28","type_name":"中文字幕"},{"type_id":"23","type_name":"欧美"},{"type_id":"24","type_name":"动漫"},{"type_id":"25","type_name":"伦理"}]},{"key":"x99_531d29bb","name":"Hanime1","kind":"video","adapter":"hanime","desc":"著名动漫视频站点","icon":"play.rectangle.fill","url":"https://www.hanime16.com/enter","lines":[{"url":"https://www.hanime169.net/enter","testUrl":"https://www.hanime169.net/status.html","ok":true,"ms":464.0},{"url":"https://www.hanime101.com/enter","testUrl":"https://www.hanime101.com/status.html","ok":true,"ms":527.0},{"url":"https://www.hanime101.net/enter","testUrl":"https://www.hanime101.net/status.html","ok":true,"ms":593.0},{"url":"https://www.hanime163.com/enter","testUrl":"https://www.hanime163.com/status.html","ok":true,"ms":606.0},{"url":"https://www.hanime666.net/enter","testUrl":"https://www.hanime666.net/status.html","ok":true,"ms":629.0},{"url":"https://www.hanime02.com/enter","testUrl":"https://www.hanime02.com/status.html","ok":true,"ms":641.0},{"url":"https://www.hanime123.org/enter","testUrl":"https://www.hanime123.org/status.html","ok":true,"ms":749.0},{"url":"https://www.hanime169.cc/enter","testUrl":"https://www.hanime169.cc/status.html","ok":true,"ms":797.0},{"url":"https://www.hanime169.com/enter","testUrl":"https://www.hanime169.com/status.html","ok":true,"ms":816.0},{"url":"https://www.hanime999.com/enter","testUrl":"https://www.hanime999.com/status.html","ok":true,"ms":849.0},{"url":"https://www.hanime2.icu/enter","testUrl":"https://www.hanime2.icu/status.html","ok":true,"ms":863.0},{"url":"https://www.hanime103.com/enter","testUrl":"https://www.hanime103.com/status.html","ok":true,"ms":1015.0},{"url":"https://www.hanime999.cc/enter","testUrl":"https://www.hanime999.cc/status.html","ok":true,"ms":1017.0},{"url":"https://www.hanime1.my/enter","testUrl":"https://www.hanime1.my/status.html","ok":true,"ms":1020.0},{"url":"https://www.hanime102.net/enter","testUrl":"https://www.hanime102.net/status.html","ok":true,"ms":1031.0},{"url":"https://www.hanime123.cc/enter","testUrl":"https://www.hanime123.cc/status.html","ok":true,"ms":1158.0},{"url":"https://www.hanime1.life/enter","testUrl":"https://www.hanime1.life/status.html","ok":true,"ms":1239.0},{"url":"https://www.hanime999.net/enter","testUrl":"https://www.hanime999.net/status.html","ok":true,"ms":1449.0},{"url":"https://www.hanime102.com/enter","testUrl":"https://www.hanime102.com/status.html","ok":true,"ms":1516.0},{"url":"https://www.hanime103.net/enter","testUrl":"https://www.hanime103.net/status.html","ok":true,"ms":1681.0},{"url":"https://www.hanime123.sbs/enter","testUrl":"https://www.hanime123.sbs/status.html","ok":true,"ms":1723.0},{"url":"https://www.hanime123.one/enter","testUrl":"https://www.hanime123.one/status.html","ok":true,"ms":2281.0},{"url":"https://www.hanime16.com/enter","testUrl":"https://www.hanime16.com/status.html","ok":true,"ms":3426.0},{"url":"https://www.hanime1.art/enter","testUrl":"https://www.hanime1.art/status.html","ok":true,"ms":3966.0},{"url":"https://www.hanime104.com/enter","testUrl":"https://www.hanime104.com/status.html","ok":true,"ms":9369.0},{"url":"https://www.hanime163.net/enter","testUrl":"https://www.hanime163.net/status.html","ok":true,"ms":11410.0},{"url":"https://www.hanime1-me.cc/enter","testUrl":"https://www.hanime1-me.cc/status.html","ok":false,"ms":945.0},{"url":"https://www.hanime2.one/enter","testUrl":"https://www.hanime2.one/status.html","ok":false,"ms":1022.0},{"url":"https://www.hanime1.pw/enter","testUrl":"https://www.hanime1.pw/status.html","ok":false,"ms":1096.0},{"url":"https://www.hanime888.net/enter","testUrl":"https://www.hanime888.net/status.html","ok":false,"ms":1139.0},{"url":"https://www.hanime2.org/enter","testUrl":"https://www.hanime2.org/status.html","ok":false,"ms":1332.0},{"url":"https://www.hanime2.cfd/enter","testUrl":"https://www.hanime2.cfd/status.html","ok":false,"ms":2362.0}],"classes":[]},{"key":"x99_5e2df580","name":"LissAV","kind":"video","adapter":"kvs","desc":"最全日本AV站点","icon":"play.rectangle.fill","url":"https://huangguo04.net/asian/zh-CN","lines":[{"url":"https://tktube.vip/asian/zh-CN","testUrl":"https://tktube.vip/status.html","ok":true,"ms":484.0},{"url":"https://huangguo01.net/asian/zh-CN","testUrl":"https://huangguo01.net/status.html","ok":true,"ms":810.0},{"url":"https://lissav.nl/asian/zh-CN","testUrl":"https://lissav.nl/status.html","ok":true,"ms":915.0},{"url":"https://lissav.vip/asian/zh-CN","testUrl":"https://lissav.vip/status.html","ok":true,"ms":954.0},{"url":"https://tktube.nl/asian/zh-CN","testUrl":"https://tktube.nl/status.html","ok":true,"ms":1042.0},{"url":"https://lissav.my/asian/zh-CN","testUrl":"https://lissav.my/status.html","ok":true,"ms":1073.0},{"url":"https://lissav.ws/asian/zh-CN","testUrl":"https://lissav.ws/status.html","ok":true,"ms":1176.0},{"url":"https://madou8.ws/asian/zh-CN","testUrl":"https://madou8.ws/status.html","ok":true,"ms":1332.0},{"url":"https://madou666.net/asian/zh-CN","testUrl":"https://madou666.net/status.html","ok":true,"ms":1602.0},{"url":"https://lissav.net/asian/zh-CN","testUrl":"https://lissav.net/status.html","ok":true,"ms":1719.0},{"url":"https://mdba8.com/asian/zh-CN","testUrl":"https://mdba8.com/status.html","ok":true,"ms":1908.0},{"url":"https://madou8.pw/asian/zh-CN","testUrl":"https://madou8.pw/status.html","ok":true,"ms":2182.0},{"url":"https://lissav1.com/asian/zh-CN","testUrl":"https://lissav1.com/status.html","ok":true,"ms":2215.0},{"url":"https://madou8.my/asian/zh-CN","testUrl":"https://madou8.my/status.html","ok":true,"ms":2566.0},{"url":"https://huangguo04.net/asian/zh-CN","testUrl":"https://huangguo04.net/status.html","ok":true,"ms":2960.0},{"url":"https://huangguo02.net/asian/zh-CN","testUrl":"https://huangguo02.net/status.html","ok":true,"ms":4656.0},{"url":"https://huangguo123.com/asian/zh-CN","testUrl":"https://huangguo123.com/status.html","ok":true,"ms":4716.0},{"url":"https://huangguo03.net/asian/zh-CN","testUrl":"https://huangguo03.net/status.html","ok":true,"ms":4726.0},{"url":"https://mdba8.net/asian/zh-CN","testUrl":"https://mdba8.net/status.html","ok":true,"ms":5592.0},{"url":"https://javxx.sbs/asian/zh-CN","testUrl":"https://javxx.sbs/status.html","ok":true,"ms":13261.0},{"url":"https://lissav.one/asian/zh-CN","testUrl":"https://lissav.one/status.html","ok":true,"ms":16098.0},{"url":"https://lissav.com/asian/zh-CN","testUrl":"https://lissav.com/status.html","ok":false,"ms":1897.0}],"classes":[]},{"key":"x99_2828ee09","name":"LissAV国产区","kind":"video","adapter":"kvs","desc":"数十万精品AV","icon":"play.rectangle.fill","url":"https://huangguo04.net/domestic/zh-CN","lines":[{"url":"https://huangguo01.net/domestic/zh-CN","testUrl":"https://huangguo01.net/status.html","ok":true,"ms":130.0},{"url":"https://lissav1.com/domestic/zh-CN","testUrl":"https://lissav1.com/status.html","ok":true,"ms":175.0},{"url":"https://huangguo123.com/domestic/zh-CN","testUrl":"https://huangguo123.com/status.html","ok":true,"ms":204.0},{"url":"https://madou8.ws/domestic/zh-CN","testUrl":"https://madou8.ws/status.html","ok":true,"ms":222.0},{"url":"https://mdba8.net/domestic/zh-CN","testUrl":"https://mdba8.net/status.html","ok":true,"ms":417.0},{"url":"https://tktube.nl/domestic/zh-CN","testUrl":"https://tktube.nl/status.html","ok":true,"ms":482.0},{"url":"https://huangguo02.net/domestic/zh-CN","testUrl":"https://huangguo02.net/status.html","ok":true,"ms":509.0},{"url":"https://lissav.one/domestic/zh-CN","testUrl":"https://lissav.one/status.html","ok":true,"ms":547.0},{"url":"https://lissav.nl/domestic/zh-CN","testUrl":"https://lissav.nl/status.html","ok":true,"ms":567.0},{"url":"https://lissav.net/domestic/zh-CN","testUrl":"https://lissav.net/status.html","ok":true,"ms":1088.0},{"url":"https://madou8.pw/domestic/zh-CN","testUrl":"https://madou8.pw/status.html","ok":true,"ms":1088.0},{"url":"https://tktube.vip/domestic/zh-CN","testUrl":"https://tktube.vip/status.html","ok":true,"ms":1114.0},{"url":"https://lissav.my/domestic/zh-CN","testUrl":"https://lissav.my/status.html","ok":true,"ms":1133.0},{"url":"https://madou8.my/domestic/zh-CN","testUrl":"https://madou8.my/status.html","ok":true,"ms":1353.0},{"url":"https://madou666.net/domestic/zh-CN","testUrl":"https://madou666.net/status.html","ok":true,"ms":1668.0},{"url":"https://mdba8.com/domestic/zh-CN","testUrl":"https://mdba8.com/status.html","ok":true,"ms":3124.0},{"url":"https://huangguo03.net/domestic/zh-CN","testUrl":"https://huangguo03.net/status.html","ok":true,"ms":3202.0},{"url":"https://lissav.ws/domestic/zh-CN","testUrl":"https://lissav.ws/status.html","ok":true,"ms":4031.0},{"url":"https://huangguo04.net/domestic/zh-CN","testUrl":"https://huangguo04.net/status.html","ok":true,"ms":4073.0},{"url":"https://javxx.sbs/domestic/zh-CN","testUrl":"https://javxx.sbs/status.html","ok":true,"ms":7681.0},{"url":"https://lissav.vip/domestic/zh-CN","testUrl":"https://lissav.vip/status.html","ok":true,"ms":13332.0},{"url":"https://lissav.com/domestic/zh-CN","testUrl":"https://lissav.com/status.html","ok":false,"ms":1900.0}],"classes":[]},{"key":"x99_2721419a","name":"Jable","kind":"video","adapter":"jable","desc":"另一个亚洲视频站点","icon":"play.rectangle.fill","url":"https://jable02.com/enter","lines":[{"url":"https://jable02.com/enter","testUrl":"https://jable02.com/status.html","ok":true,"ms":176.0},{"url":"https://jable1.cc/enter","testUrl":"https://jable1.cc/status.html","ok":true,"ms":507.0},{"url":"https://jable888.com/enter","testUrl":"https://jable888.com/status.html","ok":true,"ms":599.0},{"url":"https://jable666.net/enter","testUrl":"https://jable666.net/status.html","ok":true,"ms":760.0},{"url":"https://jable.cfd/enter","testUrl":"https://jable.cfd/status.html","ok":true,"ms":848.0},{"url":"https://jable666.com/enter","testUrl":"https://jable666.com/status.html","ok":true,"ms":874.0},{"url":"https://jable18.top/enter","testUrl":"https://jable18.top/status.html","ok":true,"ms":915.0},{"url":"https://jable01.net/enter","testUrl":"https://jable01.net/status.html","ok":true,"ms":1049.0},{"url":"https://jable1.xyz/enter","testUrl":"https://jable1.xyz/status.html","ok":true,"ms":1337.0},{"url":"https://91jable.top/enter","testUrl":"https://91jable.top/status.html","ok":true,"ms":1537.0},{"url":"https://91jable.icu/enter","testUrl":"https://91jable.icu/status.html","ok":true,"ms":1579.0},{"url":"https://jable1.vip/enter","testUrl":"https://jable1.vip/status.html","ok":true,"ms":1847.0},{"url":"https://jable01.com/enter","testUrl":"https://jable01.com/status.html","ok":true,"ms":2295.0},{"url":"https://jable1.net/enter","testUrl":"https://jable1.net/status.html","ok":true,"ms":2776.0},{"url":"https://jable888.net/enter","testUrl":"https://jable888.net/status.html","ok":true,"ms":4790.0},{"url":"https://jable1.lat/enter","testUrl":"https://jable1.lat/status.html","ok":true,"ms":7908.0},{"url":"https://jable1.com/enter","testUrl":"https://jable1.com/status.html","ok":false,"ms":1557.0}],"classes":[]},{"key":"x99_f3faa727","name":"xhamster","kind":"video","adapter":"xhamster","desc":"著名视频站点","icon":"play.rectangle.fill","url":"https://zh.xhamster02.com/enter","lines":[{"url":"https://zh.xv123.top/enter","testUrl":"https://zh.xv123.top/status.html","ok":true,"ms":561.0},{"url":"https://zh.xhamster1.cc/enter","testUrl":"https://zh.xhamster1.cc/status.html","ok":true,"ms":662.0},{"url":"https://zh.xhamster02.com/enter","testUrl":"https://zh.xhamster02.com/status.html","ok":true,"ms":730.0},{"url":"https://zh.xhamster1.art/enter","testUrl":"https://zh.xhamster1.art/status.html","ok":true,"ms":776.0},{"url":"https://zh.xhamster1.one/enter","testUrl":"https://zh.xhamster1.one/status.html","ok":true,"ms":1576.0},{"url":"https://zh.xhamster01.net/enter","testUrl":"https://zh.xhamster01.net/status.html","ok":true,"ms":1582.0},{"url":"https://zh.xhamster1.net/enter","testUrl":"https://zh.xhamster1.net/status.html","ok":true,"ms":1705.0},{"url":"https://zh.xhamster1.top/enter","testUrl":"https://zh.xhamster1.top/status.html","ok":true,"ms":1721.0},{"url":"https://zh.xhamster1.vip/enter","testUrl":"https://zh.xhamster1.vip/status.html","ok":true,"ms":1870.0},{"url":"https://zh.xhamster.ist/enter","testUrl":"https://zh.xhamster.ist/status.html","ok":true,"ms":1959.0},{"url":"https://zh.xv123.icu/enter","testUrl":"https://zh.xv123.icu/status.html","ok":true,"ms":2082.0},{"url":"https://zh.xhamster1.nl/enter","testUrl":"https://zh.xhamster1.nl/status.html","ok":true,"ms":3138.0},{"url":"https://zh.xhamster1.pw/enter","testUrl":"https://zh.xhamster1.pw/status.html","ok":true,"ms":3212.0},{"url":"https://zh.xhamster1.icu/enter","testUrl":"https://zh.xhamster1.icu/status.html","ok":true,"ms":3388.0},{"url":"https://zh.xv123.xyz/enter","testUrl":"https://zh.xv123.xyz/status.html","ok":true,"ms":5012.0}],"classes":[]},{"key":"x99_8be4dcd9","name":"肉视频","kind":"video","adapter":"rou","desc":"国产视频为主,AI短剧","icon":"play.rectangle.fill","url":"https://rou07.net/home","lines":[{"url":"https://rou07.net/home","testUrl":"https://rou07.net/status.html","ok":true,"ms":173.0},{"url":"https://rou08.com/home","testUrl":"https://rou08.com/status.html","ok":true,"ms":519.0},{"url":"https://rou163.top/home","testUrl":"https://rou163.top/status.html","ok":true,"ms":852.0},{"url":"https://rouav.sbs/home","testUrl":"https://rouav.sbs/status.html","ok":true,"ms":945.0},{"url":"https://rou08.net/home","testUrl":"https://rou08.net/status.html","ok":true,"ms":1010.0},{"url":"https://rou07.com/home","testUrl":"https://rou07.com/status.html","ok":true,"ms":1102.0},{"url":"https://rou1.men/home","testUrl":"https://rou1.men/status.html","ok":true,"ms":1285.0},{"url":"https://rou01.cc/home","testUrl":"https://rou01.cc/status.html","ok":true,"ms":1299.0},{"url":"https://rou168.com/home","testUrl":"https://rou168.com/status.html","ok":true,"ms":1827.0},{"url":"https://rou1.art/home","testUrl":"https://rou1.art/status.html","ok":true,"ms":1888.0},{"url":"https://rou1.my/home","testUrl":"https://rou1.my/status.html","ok":true,"ms":1895.0},{"url":"https://rou888.net/home","testUrl":"https://rou888.net/status.html","ok":true,"ms":1970.0},{"url":"https://rou1.sbs/home","testUrl":"https://rou1.sbs/status.html","ok":true,"ms":1982.0},{"url":"https://rou666.com/home","testUrl":"https://rou666.com/status.html","ok":true,"ms":2343.0},{"url":"https://rou666.net/home","testUrl":"https://rou666.net/status.html","ok":true,"ms":2458.0},{"url":"https://rou06.cc/home","testUrl":"https://rou06.cc/status.html","ok":true,"ms":2546.0},{"url":"https://rou1.pw/home","testUrl":"https://rou1.pw/status.html","ok":true,"ms":3323.0},{"url":"https://rouxxx.net/home","testUrl":"https://rouxxx.net/status.html","ok":true,"ms":3423.0},{"url":"https://rou06.net/home","testUrl":"https://rou06.net/status.html","ok":true,"ms":8858.0},{"url":"https://rouxxx.sbs/home","testUrl":"https://rouxxx.sbs/status.html","ok":false,"ms":611.0},{"url":"https://rouxxx.cc/home","testUrl":"https://rouxxx.cc/status.html","ok":false,"ms":1707.0}],"classes":[]},{"key":"x99_f642a3a3","name":"好色TV","kind":"video","adapter":"hsex","desc":"国产中短精选视频","icon":"play.rectangle.fill","url":"https://hsex02.com/enter","lines":[{"url":"https://pb365.top/enter","testUrl":"https://pb365.top/status.html","ok":true,"ms":472.0},{"url":"https://hsex02.com/enter","testUrl":"https://hsex02.com/status.html","ok":true,"ms":573.0},{"url":"https://hsex.nl/enter","testUrl":"https://hsex.nl/status.html","ok":true,"ms":785.0},{"url":"https://hsex01.net/enter","testUrl":"https://hsex01.net/status.html","ok":true,"ms":896.0},{"url":"https://pb365.one/enter","testUrl":"https://pb365.one/status.html","ok":true,"ms":1019.0},{"url":"https://hsex.top/enter","testUrl":"https://hsex.top/status.html","ok":true,"ms":1031.0},{"url":"https://hsex1.sbs/enter","testUrl":"https://hsex1.sbs/status.html","ok":true,"ms":1056.0},{"url":"https://hsex01.com/enter","testUrl":"https://hsex01.com/status.html","ok":true,"ms":1057.0},{"url":"https://hsex1.cc/enter","testUrl":"https://hsex1.cc/status.html","ok":true,"ms":1214.0},{"url":"https://hsex1.icu/enter","testUrl":"https://hsex1.icu/status.html","ok":true,"ms":1253.0},{"url":"https://hsex1.top/enter","testUrl":"https://hsex1.top/status.html","ok":true,"ms":1319.0},{"url":"https://hsex.cfd/enter","testUrl":"https://hsex.cfd/status.html","ok":true,"ms":1330.0},{"url":"https://hsex.sbs/enter","testUrl":"https://hsex.sbs/status.html","ok":true,"ms":1643.0},{"url":"https://hsex.one/enter","testUrl":"https://hsex.one/status.html","ok":true,"ms":2051.0},{"url":"https://pb365.sbs/enter","testUrl":"https://pb365.sbs/status.html","ok":true,"ms":2253.0},{"url":"https://hsex1.vip/enter","testUrl":"https://hsex1.vip/status.html","ok":true,"ms":2985.0},{"url":"https://hsex.mom/enter","testUrl":"https://hsex.mom/status.html","ok":false,"ms":1402.0},{"url":"https://pb365.nl/enter","testUrl":"https://pb365.nl/status.html","ok":false,"ms":2197.0}],"classes":[]},{"key":"x99_99fa5c38","name":"321AV","kind":"video","adapter":"maccms","desc":"视频站点，速度更快","icon":"play.rectangle.fill","url":"https://321av.art/enter","lines":[{"url":"https://321xav.cc/enter","testUrl":"https://321xav.cc/status.html","ok":true,"ms":193.0},{"url":"https://321av.men/enter","testUrl":"https://321av.men/status.html","ok":true,"ms":332.0},{"url":"https://321av.org/enter","testUrl":"https://321av.org/status.html","ok":true,"ms":409.0},{"url":"https://321av.xyz/enter","testUrl":"https://321av.xyz/status.html","ok":true,"ms":595.0},{"url":"https://321av.fans/enter","testUrl":"https://321av.fans/status.html","ok":true,"ms":1035.0},{"url":"https://321av.ws/enter","testUrl":"https://321av.ws/status.html","ok":true,"ms":1056.0},{"url":"https://321av.sbs/enter","testUrl":"https://321av.sbs/status.html","ok":true,"ms":2066.0},{"url":"https://321av.icu/enter","testUrl":"https://321av.icu/status.html","ok":true,"ms":2870.0},{"url":"https://321av.art/enter","testUrl":"https://321av.art/status.html","ok":true,"ms":3070.0},{"url":"https://321av.top/enter","testUrl":"https://321av.top/status.html","ok":true,"ms":6460.0},{"url":"https://321av.vip/enter","testUrl":"https://321av.vip/status.html","ok":false,"ms":1767.0}],"classes":[{"type_id":"20","type_name":"有码影片","href":"/vodtype/20.html"},{"type_id":"21","type_name":"无码影片","href":"/vodtype/21.html"},{"type_id":"22","type_name":"中文字幕","href":"/vodtype/22.html"}]},{"key":"x99_5b25e3c1","name":"rouAV","kind":"video","adapter":"maccms","desc":"高品质国产AV","icon":"play.rectangle.fill","url":"https://rou123.ws/enter","lines":[{"url":"https://rou123.cc/enter","testUrl":"https://rou123.cc/status.html","ok":true,"ms":273.0},{"url":"https://rou123.cfd/enter","testUrl":"https://rou123.cfd/status.html","ok":true,"ms":1031.0},{"url":"https://rou123.ws/enter","testUrl":"https://rou123.ws/status.html","ok":true,"ms":1179.0},{"url":"https://rou123.org/enter","testUrl":"https://rou123.org/status.html","ok":true,"ms":1474.0},{"url":"https://rou123.top/enter","testUrl":"https://rou123.top/status.html","ok":true,"ms":1753.0},{"url":"https://rou123.sbs/enter","testUrl":"https://rou123.sbs/status.html","ok":true,"ms":1793.0},{"url":"https://rou123.one/enter","testUrl":"https://rou123.one/status.html","ok":false,"ms":1161.0},{"url":"https://rou123.vip/enter","testUrl":"https://rou123.vip/status.html","ok":false,"ms":1376.0}],"classes":[{"type_id":"7","type_name":"国产AV","href":"/vodtype/7.html"},{"type_id":"3","type_name":"日本","href":"/vodtype/3.html"},{"type_id":"6","type_name":"自拍流出","href":"/vodtype/6.html"},{"type_id":"5","type_name":"探花","href":"/vodtype/5.html"},{"type_id":"4","type_name":"OnlyFans","href":"/vodtype/4.html"},{"type_id":"1","type_name":"其他","href":"/vodtype/1.html"}]},{"key":"x99_d7f940f5","name":"黄色仓库","kind":"video","adapter":"maccms","desc":"最新麻豆视频,麻豆视频在线观看,天美传媒,91制片厂,天美传媒,精东影业,蜜桃传媒,麻豆网","icon":"play.rectangle.fill","url":"https://www.hsck01.net/enter","lines":[{"url":"https://www.69ck1.net/enter","testUrl":"https://www.69ck1.net/status.html","ok":true,"ms":551.0},{"url":"https://www.69ck1.com/enter","testUrl":"https://www.69ck1.com/status.html","ok":true,"ms":680.0},{"url":"https://www.hsck.nl/enter","testUrl":"https://www.hsck.nl/status.html","ok":true,"ms":840.0},{"url":"https://www.69ck.one/enter","testUrl":"https://www.69ck.one/status.html","ok":true,"ms":841.0},{"url":"https://www.hsck.sbs/enter","testUrl":"https://www.hsck.sbs/status.html","ok":true,"ms":1004.0},{"url":"https://www.hsck01.net/enter","testUrl":"https://www.hsck01.net/status.html","ok":true,"ms":1365.0},{"url":"https://www.69ck.ws/enter","testUrl":"https://www.69ck.ws/status.html","ok":true,"ms":2140.0}],"classes":[{"type_id":"1","type_name":"麻豆","href":"/index.php/vod/type/id/1.html"},{"type_id":"2","type_name":"中字","href":"/index.php/vod/type/id/2.html"},{"type_id":"3","type_name":"国产","href":"/index.php/vod/type/id/3.html"},{"type_id":"4","type_name":"欧美","href":"/index.php/vod/type/id/4.html"},{"type_id":"5","type_name":"日韩","href":"/index.php/vod/type/id/5.html"}]},{"key":"x99_2eb3f212","name":"18av","kind":"video","adapter":"18av","desc":"综合性成人站点，包含视频、小说、色图、漫画等","icon":"play.rectangle.fill","url":"https://www.18av02.com/enter","lines":[{"url":"https://www.18av.ws/enter","testUrl":"https://www.18av.ws/status.html","ok":true,"ms":513.0},{"url":"https://www.18av.nl/enter","testUrl":"https://www.18av.nl/status.html","ok":true,"ms":798.0},{"url":"https://www.18av01.cc/enter","testUrl":"https://www.18av01.cc/status.html","ok":true,"ms":939.0},{"url":"https://www.18av02.com/enter","testUrl":"https://www.18av02.com/status.html","ok":true,"ms":1127.0},{"url":"https://www.18av01.net/enter","testUrl":"https://www.18av01.net/status.html","ok":true,"ms":1681.0},{"url":"https://www.18av.pw/enter","testUrl":"https://www.18av.pw/status.html","ok":true,"ms":2571.0}],"classes":[{"type_id":"chinese_list","type_name":"中文字幕"},{"type_id":"censored_list","type_name":"有碼AV"},{"type_id":"uncensored_list","type_name":"無碼AV"},{"type_id":"amateurjav_list","type_name":"素人AV"},{"type_id":"reducing-mosaic_list","type_name":"無碼破解"},{"type_id":"animation_list","type_name":"H動畫"},{"type_id":"dt_list","type_name":"國產自拍"}]},{"key":"x99_f7ba81a6","name":"大哥视频","kind":"video","adapter":"dage","desc":"最新各类国产、日韩、欧美等视频","icon":"play.rectangle.fill","url":"https://dage.one/enter","lines":[{"url":"https://dage.one/enter","testUrl":"https://dage.one/status.html","ok":true,"ms":192.0},{"url":"https://dage01.net/enter","testUrl":"https://dage01.net/status.html","ok":true,"ms":692.0}],"classes":[]},{"key":"x99_a4235f12","name":"Pornhub","kind":"video","adapter":"pornhub","desc":"P站","icon":"play.rectangle.fill","url":"https://cn.pornhub06.com/enter","lines":[{"url":"https://cn.pornhub06.com/enter","testUrl":"https://cn.pornhub06.com/status.html","ok":true,"ms":406.0},{"url":"https://cn.pornhub03.net/enter","testUrl":"https://cn.pornhub03.net/status.html","ok":true,"ms":940.0},{"url":"https://cn.pornhub02.net/enter","testUrl":"https://cn.pornhub02.net/status.html","ok":true,"ms":1187.0},{"url":"https://cn.pornhub163.com/enter","testUrl":"https://cn.pornhub163.com/status.html","ok":true,"ms":1281.0},{"url":"https://cn.pornhub163.net/enter","testUrl":"https://cn.pornhub163.net/status.html","ok":true,"ms":1465.0},{"url":"https://cn.pornhub365.com/enter","testUrl":"https://cn.pornhub365.com/status.html","ok":true,"ms":1604.0},{"url":"https://cn.pornhub03.com/enter","testUrl":"https://cn.pornhub03.com/status.html","ok":true,"ms":1636.0},{"url":"https://cn.pornhub365.sbs/enter","testUrl":"https://cn.pornhub365.sbs/status.html","ok":true,"ms":2526.0},{"url":"https://cn.pornhub02.com/enter","testUrl":"https://cn.pornhub02.com/status.html","ok":true,"ms":2650.0},{"url":"https://cn.pornhub666.com/enter","testUrl":"https://cn.pornhub666.com/status.html","ok":true,"ms":2803.0},{"url":"https://cn.pornhub666.cc/enter","testUrl":"https://cn.pornhub666.cc/status.html","ok":true,"ms":2991.0},{"url":"https://cn.pornhub1.icu/enter","testUrl":"https://cn.pornhub1.icu/status.html","ok":true,"ms":3134.0},{"url":"https://cn.pornhub365.top/enter","testUrl":"https://cn.pornhub365.top/status.html","ok":false,"ms":1876.0},{"url":"https://cn.pornhub1.mom/enter","testUrl":"https://cn.pornhub1.mom/status.html","ok":false,"ms":1945.0},{"url":"https://cn.pornhub1.cc/enter","testUrl":"https://cn.pornhub1.cc/status.html","ok":false,"ms":2617.0},{"url":"https://cn.pornhub365.mom/enter","testUrl":"https://cn.pornhub365.mom/status.html","ok":false,"ms":2873.0}],"classes":[]},{"key":"x99_63401799","name":"XVIDEOS","kind":"video","adapter":"xvideos","desc":"X站","icon":"play.rectangle.fill","url":"https://www.xvideos163.top/enter","lines":[{"url":"https://www.91xvideos.top/enter","testUrl":"https://www.91xvideos.top/status.html","ok":true,"ms":1292.0},{"url":"https://www.xvideos1.icu/enter","testUrl":"https://www.xvideos1.icu/status.html","ok":true,"ms":2319.0},{"url":"https://www.x123.xyz/enter","testUrl":"https://www.x123.xyz/status.html","ok":false,"ms":1378.0},{"url":"https://www.x123.one/enter","testUrl":"https://www.x123.one/status.html","ok":false,"ms":1685.0},{"url":"https://www.xvideos163.top/enter","testUrl":"https://www.xvideos163.top/status.html","ok":false,"ms":12684.0}],"classes":[]},{"key":"x99_a4cb289c","name":"Xanimu","kind":"video","adapter":"xanimu","desc":"免费2D、3D、动漫性爱、漫画、卡通","icon":"play.rectangle.fill","url":"https://xanimu.ws/zh-CN/","lines":[{"url":"https://xanimu.one/zh-CN/","testUrl":"https://xanimu.one/status.html","ok":true,"ms":473.0},{"url":"https://xanimu.net/zh-CN/","testUrl":"https://xanimu.net/status.html","ok":true,"ms":515.0},{"url":"https://xanimu.sbs/zh-CN/","testUrl":"https://xanimu.sbs/status.html","ok":true,"ms":884.0},{"url":"https://xanimu.art/zh-CN/","testUrl":"https://xanimu.art/status.html","ok":true,"ms":926.0},{"url":"https://xanimu.ws/zh-CN/","testUrl":"https://xanimu.ws/status.html","ok":true,"ms":1610.0},{"url":"https://xanimu.top/zh-CN/","testUrl":"https://xanimu.top/status.html","ok":true,"ms":2387.0}],"classes":[]},{"key":"x99_becefbcf","name":"avjoy","kind":"video","adapter":"kvs","desc":"成人视频","icon":"play.rectangle.fill","url":"https://cn.avjoy.ws/enter","lines":[{"url":"https://cn.avjoy.nl/enter","testUrl":"https://cn.avjoy.nl/status.html","ok":true,"ms":197.0},{"url":"https://cn.avjoy.top/enter","testUrl":"https://cn.avjoy.top/status.html","ok":true,"ms":1341.0},{"url":"https://cn.avjoy.ws/enter","testUrl":"https://cn.avjoy.ws/status.html","ok":true,"ms":2714.0}],"classes":[]},{"key":"x99_aa4a47f1","name":"SuperPorn","kind":"video","adapter":"superporn","desc":"高质量海外视频","icon":"play.rectangle.fill","url":"https://cn.superporn.ws/enter","lines":[{"url":"https://cn.superporn.me/enter","testUrl":"https://cn.superporn.me/status.html","ok":false,"ms":1628.0},{"url":"https://cn.superporn.ws/enter","testUrl":"https://cn.superporn.ws/status.html","ok":false,"ms":1733.0},{"url":"https://cn.superporn.icu/enter","testUrl":"https://cn.superporn.icu/status.html","ok":false,"ms":1857.0}],"classes":[]},{"key":"x99_73234a95","name":"亚洲素人精选","kind":"video","adapter":"91av","desc":"亚洲素人精选AV","icon":"play.rectangle.fill","url":"https://591av.ws/enter","lines":[{"url":"https://91-av.one/enter","testUrl":"https://91-av.one/status.html","ok":true,"ms":1188.0},{"url":"https://591av.sbs/enter","testUrl":"https://591av.sbs/status.html","ok":true,"ms":1778.0},{"url":"https://591av.ws/enter","testUrl":"https://591av.ws/status.html","ok":true,"ms":1910.0},{"url":"https://91-av.men/enter","testUrl":"https://91-av.men/status.html","ok":true,"ms":2140.0},{"url":"https://591av.net/enter","testUrl":"https://591av.net/status.html","ok":true,"ms":2243.0}],"classes":[]},{"key":"x99_52cd8432","name":"YesPorn","kind":"video","adapter":"yesporn","desc":"很多收费完整视频(免费)","icon":"play.rectangle.fill","url":"https://cn.yesporn.ws/enter","lines":[{"url":"https://cn.yesporn1.cc/enter","testUrl":"https://cn.yesporn1.cc/status.html","ok":true,"ms":1871.0},{"url":"https://cn.yesporn.ws/enter","testUrl":"https://cn.yesporn.ws/status.html","ok":true,"ms":2390.0}],"classes":[]},{"key":"x99_e85133d7","name":"CartoonPorno","kind":"video","adapter":"cartoon","desc":"免费精品动漫卡通视频","icon":"play.rectangle.fill","url":"https://www.cartoonporno.vip/?hl=zh","lines":[{"url":"https://www.cartoonporno.ws/?hl=zh","testUrl":"https://www.cartoonporno.ws/status.html","ok":true,"ms":1056.0},{"url":"https://www.cartoonporno.vip/?hl=zh","testUrl":"https://www.cartoonporno.vip/status.html","ok":true,"ms":1359.0},{"url":"https://www.cartoonporno.cc/?hl=zh","testUrl":"https://www.cartoonporno.cc/status.html","ok":false,"ms":752.0},{"url":"https://www.cartoonporno.top/?hl=zh","testUrl":"https://www.cartoonporno.top/status.html","ok":false,"ms":1011.0},{"url":"https://www.cartoonporno.art/?hl=zh","testUrl":"https://www.cartoonporno.art/status.html","ok":false,"ms":1055.0}],"classes":[]},{"key":"x99_9364c1e5","name":"Hentai","kind":"video","adapter":"acgmh","desc":"提供 漫画、同人志、艺术图集、游戏CG、小说插图 等","icon":"play.rectangle.fill","url":"https://cn.acgmh.art/enter","lines":[{"url":"https://cn.acgmh.icu/enter","testUrl":"https://cn.acgmh.icu/status.html","ok":true,"ms":361.0},{"url":"https://cn.acgmh.art/enter","testUrl":"https://cn.acgmh.art/status.html","ok":true,"ms":833.0},{"url":"https://cn.bato.icu/enter","testUrl":"https://cn.bato.icu/status.html","ok":true,"ms":1152.0},{"url":"https://cn.acgmh.top/enter","testUrl":"https://cn.acgmh.top/status.html","ok":true,"ms":1796.0},{"url":"https://cn.acgmh.vip/enter","testUrl":"https://cn.acgmh.vip/status.html","ok":true,"ms":1832.0},{"url":"https://cn.acgmh.sbs/enter","testUrl":"https://cn.acgmh.sbs/status.html","ok":true,"ms":4701.0}],"classes":[]},{"key":"x99_e8d1404a","name":"OKXXX","kind":"video","adapter":"okxxx","desc":"OKXXX","icon":"play.rectangle.fill","url":"https://okav.art/enter","lines":[{"url":"https://okx18.icu/enter","testUrl":"https://okx18.icu/status.html","ok":true,"ms":1076.0},{"url":"https://okxxx.win/enter","testUrl":"https://okxxx.win/status.html","ok":true,"ms":1497.0},{"url":"https://okav.art/enter","testUrl":"https://okav.art/status.html","ok":true,"ms":1708.0},{"url":"https://okx18.vip/enter","testUrl":"https://okx18.vip/status.html","ok":true,"ms":1721.0},{"url":"https://okxxxx.net/enter","testUrl":"https://okxxxx.net/status.html","ok":true,"ms":1836.0},{"url":"https://okxxx.one/enter","testUrl":"https://okxxx.one/status.html","ok":true,"ms":1876.0},{"url":"https://okxxx.ws/enter","testUrl":"https://okxxx.ws/status.html","ok":true,"ms":1934.0},{"url":"https://okxxx.men/enter","testUrl":"https://okxxx.men/status.html","ok":true,"ms":2201.0},{"url":"https://okxxx.icu/enter","testUrl":"https://okxxx.icu/status.html","ok":true,"ms":2204.0},{"url":"https://okx18.cc/enter","testUrl":"https://okx18.cc/status.html","ok":true,"ms":2911.0}],"classes":[]},{"key":"x99_86c9c1d3","name":"VJAV","kind":"video","adapter":"vjav","desc":"VJAV","icon":"play.rectangle.fill","url":"https://vjav1.sbs/enter","lines":[{"url":"https://vjav-com.icu/enter","testUrl":"https://vjav-com.icu/status.html","ok":true,"ms":434.0},{"url":"https://vjav1.top/enter","testUrl":"https://vjav1.top/status.html","ok":true,"ms":630.0},{"url":"https://vjav-com.top/enter","testUrl":"https://vjav-com.top/status.html","ok":true,"ms":805.0},{"url":"https://vjav.icu/enter","testUrl":"https://vjav.icu/status.html","ok":true,"ms":1634.0},{"url":"https://vjav1.sbs/enter","testUrl":"https://vjav1.sbs/status.html","ok":true,"ms":2048.0}],"classes":[]},{"key":"x99_30b320d4","name":"成人影片数据库","kind":"video","adapter":"javdb","desc":"不错的下片站点，巨多高清无广告资源，完全免费，下片爱好者进","icon":"play.rectangle.fill","url":"https://javdb02.com/?locale=zh","lines":[{"url":"https://javdb.nl/?locale=zh","testUrl":"https://javdb.nl/status.html","ok":true,"ms":541.0},{"url":"https://javdb1.art/?locale=zh","testUrl":"https://javdb1.art/status.html","ok":true,"ms":586.0},{"url":"https://javdb.icu/?locale=zh","testUrl":"https://javdb.icu/status.html","ok":true,"ms":728.0},{"url":"https://javdb02.com/?locale=zh","testUrl":"https://javdb02.com/status.html","ok":true,"ms":735.0},{"url":"https://javdb1.top/?locale=zh","testUrl":"https://javdb1.top/status.html","ok":true,"ms":819.0},{"url":"https://javdb.sbs/?locale=zh","testUrl":"https://javdb.sbs/status.html","ok":true,"ms":820.0},{"url":"https://javdb.pw/?locale=zh","testUrl":"https://javdb.pw/status.html","ok":true,"ms":1076.0},{"url":"https://javdb1.sbs/?locale=zh","testUrl":"https://javdb1.sbs/status.html","ok":true,"ms":1768.0},{"url":"https://javdb01.net/?locale=zh","testUrl":"https://javdb01.net/status.html","ok":true,"ms":2835.0}],"classes":[]},{"key":"x99_a5b6d0eb","name":"三级片资源，稀缺资源","kind":"video","adapter":"ptt","desc":"最新最热门的电影电视剧动漫综艺台湾剧大陆剧日剧韩剧美剧，完全免费","icon":"play.rectangle.fill","url":"https://ptt03.net/p/1","lines":[{"url":"https://ptt2.one/p/1","testUrl":"https://ptt2.one/status.html","ok":true,"ms":140.0},{"url":"https://ptt2.nl/p/1","testUrl":"https://ptt2.nl/status.html","ok":true,"ms":180.0},{"url":"https://ptt01.com/p/1","testUrl":"https://ptt01.com/status.html","ok":true,"ms":430.0},{"url":"https://ptt01.ws/p/1","testUrl":"https://ptt01.ws/status.html","ok":true,"ms":573.0},{"url":"https://ptt02.cc/p/1","testUrl":"https://ptt02.cc/status.html","ok":true,"ms":621.0},{"url":"https://ptt02.com/p/1","testUrl":"https://ptt02.com/status.html","ok":true,"ms":730.0},{"url":"https://ptt2.my/p/1","testUrl":"https://ptt2.my/status.html","ok":true,"ms":1074.0},{"url":"https://ptt03.net/p/1","testUrl":"https://ptt03.net/status.html","ok":true,"ms":1254.0},{"url":"https://ptt02.nl/p/1","testUrl":"https://ptt02.nl/status.html","ok":true,"ms":1608.0},{"url":"https://ptt2.top/p/1","testUrl":"https://ptt2.top/status.html","ok":true,"ms":1779.0},{"url":"https://ptt03.com/p/1","testUrl":"https://ptt03.com/status.html","ok":true,"ms":2254.0},{"url":"https://ptt02.net/p/1","testUrl":"https://ptt02.net/status.html","ok":true,"ms":2643.0},{"url":"https://ptt2.art/p/1","testUrl":"https://ptt2.art/status.html","ok":true,"ms":2854.0}],"classes":[]}]}')
 
 # ---- 运行参数（方案 v8 定稿）----
 CACHE_TTL = 600          # 线路/入口胜者缓存
@@ -262,11 +262,18 @@ class _BaseAdapter(object):
         return self.host.rstrip("/") + "/" + path.lstrip("/")
 
     def _abs(self, url):
-        """相对地址绝对化（图片、详情链接）。"""
+        """相对地址绝对化（图片、详情链接）。
+
+        注意 `//host/path` 是协议相对地址，要补 scheme；直接 lstrip("/") 会得到
+        `https://本站/对方主机/...` 这种坏 URL（99漫画的 CDN 图片就是这个形态）。
+        """
         if not url:
             return ""
         if url.startswith("http"):
             return url
+        if url.startswith("//"):
+            scheme = urllib.parse.urlsplit(self.host or "").scheme or "https"
+            return scheme + ":" + url
         return urllib.parse.urljoin(self.host.rstrip("/") + "/", url.lstrip("/"))
 
     def categories(self):
@@ -1727,21 +1734,30 @@ class _XanimuAdapter(_BaseAdapter):
 
 
 class _KvsAdapter(_BaseAdapter):
-    """KVS 系（TKTube / avjoy）：列表 /video/… 卡片；播放需 streamitUser 登录态，
-    详情页无可用直链，play 返回空（列表仍可用）。"""
+    """KVS / streamit 系（LissAV / LissAV国产区 / avjoy）。
+
+    列表：入口路径本身就是内容根（LissAV `/asian/zh-CN`、国产区 `/domestic/zh-CN`、
+    avjoy `/enter`）；卡片 `<a href="…/video/…">`，标题在 `aria-label`/`title`/`img alt`，
+    封面在 `style` 背景图或 `img src`。
+
+    **播放不需要登录**（旧结论"播放需 streamitUser 登录态"是误判——之前用 POST 打的，
+    接口其实是 GET）：
+      · streamit 皮肤（LissAV 系）：详情页内联脚本给 `videoUid`，
+        `GET {入口前缀}/api/video/stream?video_uid={uid}` 直接回 JSON，无 Cookie/token，
+        `playlist[].url` 是多画质 m3u8（720p/原画）；
+      · dark-magenta 皮肤（avjoy）：`<video><source src="…_480p.mp4">` 签名直链。
+    两种直链都带时间戳时效，所以存详情页地址、`play()` 每次现取。
+    取流必须带站点 Referer，否则回 132 字节提示页。
+    """
 
     UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                   "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
     CARD_RE = re.compile(
         r'<a[^>]+href="([^"]*?/video/[^"]+)"([^>]*)>(.*?)</a>', re.S)
-    TITLE_RE = re.compile(r'(?:aria-label|title)="([^"]+)"', re.S)
+    TITLE_RE = re.compile(r'(?:aria-label|title|alt)="([^"]+)"', re.S)
     THUMB_RE = re.compile(
         r'(?:background-image:\s*url\(([^)]+)\)|<img[^>]+(?:data-original|src)="([^"]+)")',
         re.S)
-
-    def _page(self, path, referer=None):
-        return self.s.http(self._url(path), referer=referer,
-                           headers={"User-Agent": self.UA_DESKTOP}) or ""
 
     def _page(self, path, referer=None):
         # 分类路径可能含中文（/videos/genre/探花），需按 UTF-8 百分号编码
@@ -1825,25 +1841,75 @@ class _KvsAdapter(_BaseAdapter):
             })
         return {"list": videos, "page": page, "pagecount": page + 1}
 
+    @staticmethod
+    def _detail_title(html):
+        """streamit 用 .video-detail-headline，avjoy 用 .well-filters 里的 h1。"""
+        for pat in (r'video-detail-headline[^>]*>(.*?)</h[1-6]>',
+                    r'class="well-filters"[^>]*>\s*<h[1-6][^>]*>(.*?)</h[1-6]>',
+                    r"<h1[^>]*>(.*?)</h1>"):
+            m = re.search(pat, html, re.S)
+            if m:
+                text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+                text = re.sub(r"^[^|]{1,14}\s*\|\s*", "", text)          # "TKTube | …"
+                text = re.sub(r"\s*[-–—]\s*AVJOY\s*$", "", text, flags=re.I)
+                if text:
+                    return text
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+            return re.sub(r"^[^|]{1,14}\s*\|\s*", "", text).strip()
+        return ""
+
+    def _stream_of(self, page_url, html):
+        """先试 stream API（videoUid → playlist[0]），再退 mp4 <source>。"""
+        m = re.search(r'videoUid\s*=\s*"([\w]+)"', html or "")
+        if m:
+            prefix = (page_url or "").split("/video/")[0].rstrip("/")
+            if prefix:
+                api = "%s/api/video/stream?video_uid=%s" % (prefix, m.group(1))
+                text = self.s.http(api, referer=page_url, headers={
+                    "User-Agent": self.UA_DESKTOP,
+                    "Accept": "application/json, text/plain, */*",
+                    "X-Requested-With": "XMLHttpRequest",
+                }) or ""
+                if text.strip().startswith("{"):
+                    try:
+                        data = json.loads(text)
+                    except Exception:
+                        data = {}
+                    for item in (data.get("playlist") or []):
+                        url = str(item.get("url") or "").replace("\\/", "/").strip()
+                        if url:
+                            return url
+        m = re.search(r'<source[^>]+src="([^"]+)"', html or "")
+        return m.group(1).replace("&amp;", "&") if m else ""
+
     def detail(self, vid):
         url = self._abs(vid)
         html = self._page(url, referer=self.host + "/")
-        title = ""
-        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        pic = ""
+        m = re.search(r'poster="([^"]+)"', html)
         if m:
-            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+            pic = self._abs(m.group(1))
         vod = {
             "vod_id": self.p["key"] + "::" + url,
-            "vod_name": title or vid,
-            "vod_pic": "",
+            "vod_name": self._detail_title(html) or vid,
+            "vod_pic": pic,
             "vod_content": "",
             "vod_play_from": "直连",
-            "vod_play_url": "",  # KVS 播放需登录态，无直链
+            # 直链签名带时效（小时～天级），存详情页地址，play() 现取
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], url),
         }
         return {"list": [vod]}
 
     def play(self, flag, url):
-        return {"parse": "0", "url": ""}
+        target = str(url or "").strip()
+        stream = ""
+        if target:
+            page = self._abs(target)
+            stream = self._stream_of(page, self._page(page, referer=self.host + "/"))
+        return {"parse": "0", "url": stream or target,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
 class _PornhubAdapter(_BaseAdapter):
@@ -2129,37 +2195,214 @@ class _HsexAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _XvideosAdapter(_BaseAdapter):
+    """XVIDEOS 系（xvideos.com 皮肤镜像：91xvideos.top / xvideos1.icu）。
+
+    首页先回 2337 字节「继续访问」壳页，壳页 JS 只做一件事：
+    写 `x-index-auth=authed` 再跳 `/enter`——服务端不校验 Referer/UA，
+    直接带上这个 Cookie 就能拿到全量 HTML（143KB），所以壳页不是反爬。
+
+    列表：`/enter` = 第 1 页，`/new/{n-1}` = 第 n 页（站内页码比路径大 1）；
+    分类 `/c/{slug}` = 第 1 页，`/c/{slug}/{n-1}` = 第 n 页。
+    卡片 `div.frame-block.thumb-block` → 标题锚点 `<a href="/video.{id}/{shard}/{n}/{slug}"
+    title="…">`，封面在 `img[data-src]`，清晰度在 `span.video-hd-mark`。
+    详情：`html5player.setVideoHLS('…/hls.m3u8')` = 多码率主播放列表
+    （480p/1080p/360p），`setVideoUrlHigh/Low` 是同源签名 mp4；
+    取流必须带站点 Referer，否则回 143 字节 `tip.ts` 提示页。
+    签名带 `secure=…,<过期时间戳>`（数小时），所以 play() 每次回详情页现取。
+    """
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    COOKIE = "x-index-auth=authed"
+    BLOCK_RE = re.compile(
+        r'<div[^>]+class="frame-block thumb-block[^"]*"(.*?)(?=<div[^>]+class="frame-block thumb-block|</body>)',
+        re.S)
+    HREF_RE = re.compile(r'<a\s+href="(/video\.[^"]+)"')
+    TITLE_RE = re.compile(r'<a\s+href="/video\.[^"]*"\s+title="([^"]*)"')
+    IMG_RE = re.compile(r'data-src="([^"]+)"')
+    HD_RE = re.compile(r'class="video-hd-mark"[^>]*>([^<]{1,8})<')
+    DUR_RE = re.compile(r'class="duration"[^>]*>([^<]{1,12})<')
+
+    @staticmethod
+    def _text(raw):
+        """HTML 实体还原 + 压缩空白（标题里有 &amp; / &#039;）。"""
+        if not raw:
+            return ""
+        raw = re.sub(r"&#(\d+);", lambda m: chr(int(m.group(1))), raw)
+        raw = re.sub(r"&#[xX]([0-9a-fA-F]+);", lambda m: chr(int(m.group(1), 16)), raw)
+        for entity, char in (("&amp;", "&"), ("&lt;", "<"), ("&gt;", ">"),
+                             ("&quot;", '"'), ("&apos;", "'"), ("&nbsp;", " ")):
+            raw = raw.replace(entity, char)
+        return re.sub(r"\s+", " ", raw).strip()
+
+    def _page(self, path, referer=None):
+        return self.s.http(self._url(path),
+                           referer=referer or (self.host + "/enter"),
+                           headers={"User-Agent": self.UA_DESKTOP,
+                                    "Cookie": self.COOKIE}) or ""
+
+    def categories(self):
+        """首页主导航 ul.sub-list：/c/{Slug}-{id} → 名称。"""
+        html = self._page("/enter")
+        cats, seen = [], set()
+        for m in re.finditer(r'href="/c/([^"/]+)"[^>]*>\s*([^<]{1,32}?)\s*</a>', html):
+            tid, name = m.group(1), self._text(m.group(2))
+            if not tid or not name or tid in seen:
+                continue
+            seen.add(tid)
+            cats.append({"type_id": tid, "type_name": name[:24]})
+        return cats or (self.p.get("classes") or [])
+
+    def _cards(self, html):
+        videos, seen = [], set()
+        for block in self.BLOCK_RE.findall(html):
+            href = self.HREF_RE.search(block)
+            if not href or href.group(1) in seen:
+                continue
+            seen.add(href.group(1))
+            title = self.TITLE_RE.search(block)
+            name = self._text(title.group(1)) if title else ""
+            if not name:
+                # 无 title 属性时退回锚点文本（去掉尾部时长）
+                m = re.search(r'<a\s+href="/video\.[^"]*"[^>]*>(.*?)</a>', block, re.S)
+                name = self._text(re.sub(r"<[^>]+>", " ", m.group(1))) if m else ""
+            img = self.IMG_RE.search(block)
+            hd = self.HD_RE.search(block)
+            dur = self.DUR_RE.search(block)
+            marks = [x for x in (self._text(hd.group(1)) if hd else "",
+                                 self._text(dur.group(1)) if dur else "") if x]
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href.group(1)),
+                "vod_name": name,
+                "vod_pic": self._abs(img.group(1)) if img else "",
+                "vod_remarks": " · ".join(marks),
+            })
+        return videos
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        # 平台级 Tab 会把 cate 传成 "0"，那不是分类（分类 id 形如 AI-239）
+        cate = str(cate or "").strip()
+        if cate.isdigit():
+            cate = ""
+        if cate:
+            path = "/c/%s" % cate if page <= 1 else "/c/%s/%d" % (cate, page - 1)
+        else:
+            path = "/enter" if page <= 1 else "/new/%d" % (page - 1)
+        return {"list": self._cards(self._page(path)), "page": page, "pagecount": page + 1}
+
+    def _detail_html(self, url):
+        return self._page(url, referer=self.host + "/enter")
+
+    @staticmethod
+    def _setting(html, name):
+        m = re.search(r"html5player\.%s\(\s*'([^']*)'" % name, html)
+        return (m.group(1).replace("\\/", "/") if m else "").strip()
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._detail_html(url)
+        title = self._text(self._setting(html, "setVideoTitle"))
+        if not title:
+            m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+            title = self._text(re.sub(r"<[^>]+>", " ", m.group(1))) if m else ""
+            title = re.split(r"\s*-\s*91xvideos|\s*-\s*xvideos", title)[0].strip()
+        pic = self._setting(html, "setThumbUrl169") or self._setting(html, "setThumbUrl")
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": pic,
+            "vod_content": "",
+            "vod_play_from": "直连",
+            # 签名 secure=…,<过期戳> 只活几小时（实测约 4h），所以存详情页地址，
+            # play() 每次回详情页现取 setVideoHLS（和 Pornhub/VJAV 同思路）
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        target = str(url or "").strip()
+        if target and ".m3u8" not in target and ".mp4" not in target:
+            html = self._detail_html(self._abs(target))
+            target = self._setting(html, "setVideoHLS") or \
+                self._setting(html, "setVideoUrlHigh") or target
+        return {"parse": "0", "url": target,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _HanimeAdapter(_BaseAdapter):
-    """hanime999.cc：/watch?v={id} 详情页直接带 mp4 直链。"""
+    """Hanime1 系（hanime169/101/999… 33 条同模板线路，实测 27 条可用）。
+
+    推翻旧结论「站点长期 500，抓不到分类」：**只有首页 `/` 恒回 2337 字节
+    "继续访问"壳页**（所有线路都一样），而 `/watch?v={id}` 与
+    `/search?genre={名称}` 直接 200 全量页面。所以列表与分类都不碰 `/`：
+    列表用任一观看页当种子（该页含 90 条推荐），分类取顶部导航的 10 个
+    `/search?genre={中文名}`（中文必须百分号编码）。
+    详情 `/watch?v={id}` 页内 `-720p.mp4` 直链；用 iPhone UA。
+    """
 
     WATCH_RE = re.compile(r'href="(?:https?://[^"]+)?(/watch\?v=(\d+))"[^>]*>(.*?)</a>', re.S)
 
-    BASE = "https://www.hanime999.cc"
-    COOKIE = {}   # 实测无需 Cookie：iPhone UA + /watch?v= 即可
+    FALLBACK = "https://www.hanime999.cc"
+    SEED = "/watch?v=407765"          # 首页是壳页，拿这个当列表种子
+    SHELL_MAX = 60000                 # 壳页 2337 字节，真页面 ≥110KB
     MOBILE_UA = ("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
                  "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1")
 
-    def _page(self, path):
-        if self.COOKIE:
-            _COOKIES.setdefault("www.hanime999.cc", dict(self.COOKIE))
-        return self.s.http(self.BASE + path, headers={"User-Agent": self.MOBILE_UA}) or ""
+    def _page(self, path, host=None):
+        """取页面；主线路拿到壳页/500 时换备用域再试一次。"""
+        base = (host or self.host or "").rstrip("/") or self.FALLBACK
+
+        def one(root):
+            url = root.rstrip("/") + path
+            if any(ord(ch) > 127 for ch in url):   # /search?genre=裏番
+                url = urllib.parse.quote(url, safe=":/?&=%#")
+            return self.s.http(url, headers={"User-Agent": self.MOBILE_UA}) or ""
+
+        html = one(base)
+        if len(html) < self.SHELL_MAX and base != self.FALLBACK:
+            alt = one(self.FALLBACK)
+            if len(alt) > len(html):
+                return alt
+        return html
+
+    def categories(self):
+        """顶部导航 10 个 /search?genre={中文名}。"""
+        html = self._page(self.SEED)
+        cats, seen = [], set()
+        for m in re.finditer(
+                r'<a class="[^"]*nav-desktop-items[^"]*"[^>]*href="[^"]*?/search\?genre=([^"&]+)"'
+                r"[^>]*>([^<]{1,20})</a>", html):
+            genre = urllib.parse.unquote(m.group(1)).strip()
+            name = re.sub(r"\s+", " ", m.group(2)).strip()
+            if not genre or not name or genre in seen:
+                continue
+            seen.add(genre)
+            cats.append({"type_id": "/search?genre=" + urllib.parse.quote(genre),
+                         "type_name": name[:14]})
+        return cats or (self.p.get("classes") or [])
 
     def list(self, cate, page):
-        html = self._page("/")
-        if "/watch?v=" not in html:
-            # 首页被"继续访问"挡住时，用任一详情页当列表种子（该页含 300+ 推荐链接）
-            html = self._page("/watch?v=407765")
-        if int(page) > 1:
-            more = self._page("/?page=%d" % int(page))
-            if "/watch?v=" in more:
-                html = more
+        page = max(1, int(page))
+        cid = str(cate or "").strip()
+        if cid.startswith("/search"):
+            path = cid if page <= 1 else cid + ("&" if "?" in cid else "?") + "page=%d" % page
+            html = self._page(path)
+        else:
+            html = self._page(self.SEED)
+            if page > 1:
+                more = self._page("/?page=%d" % page)
+                if "/watch?v=" in more:
+                    html = more
         videos, seen = [], set()
         for href, vid, inner in self.WATCH_RE.findall(html):
             if vid in seen:
                 continue
             seen.add(vid)
             title = re.sub(r"<[^>]+>", " ", inner)
-            title = re.sub(r"\s+", " ", title).strip()[:60] or ("视频 " + vid)
+            title = re.sub(r"\s+", " ", title.replace("&nbsp;", " ").replace("&amp;", "&")).strip()[:60]
+            title = title or ("视频 " + vid)
             img = ""
             found = re.search(r'(?:data-src|data-original|src)="([^"]+)"', inner)
             if found:
@@ -2170,7 +2413,7 @@ class _HanimeAdapter(_BaseAdapter):
                 "vod_pic": self._abs(img),
                 "vod_remarks": "",
             })
-        return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
+        return {"list": videos, "page": page, "pagecount": page + 1}
 
     def detail(self, vid):
         html = self._page("/watch?v=" + str(vid))
@@ -2180,6 +2423,8 @@ class _HanimeAdapter(_BaseAdapter):
             title = found.group(1).strip()
         elif re.search(r"<title[^>]*>(.*?)</title>", html, re.S):
             title = re.sub(r"\s+", " ", re.search(r"<title[^>]*>(.*?)</title>", html, re.S).group(1)).strip()
+            title = re.split(r"\s+-\s+hanime[\w.\-]*", title)[0].strip()   # 去掉 "- hanime169.net"
+        title = re.sub(r"\s+", " ", title.replace("&nbsp;", " ").replace("&amp;", "&")).strip()
         direct = ""
         found = re.search(r'href="([^"]*?(?:-720p\.mp4|\.m3u8)[^"]*)"', html)
         if found:
@@ -2681,16 +2926,33 @@ class _AmdAdapter(_BaseAdapter):
 
 
 class _WnacgAdapter(_BaseAdapter):
-    """99漫画(wnacg)：/enter 列表 /photos-index-aid-{aid}.html 卡片；
-    详情同路径（含章节），阅读页 /photos-view-aid-{aid}-pid-{pid}.html。
-    站点抖动大（500/403），列表已通，详情/阅读为兜底实现。"""
+    """99漫画(wnacg · MeiuPic)：/enter 列表 /photos-index-aid-{aid}.html 卡片。
+
+    第十二轮复测结论（推翻「详情站点维护中」的旧结论，逐条实测）：
+
+      · 专辑页 `/photos-index-aid-{aid}.html` —— **200**（多数 aid；少数 aid 回 403），
+        标题/封面齐全；
+      · **图集数据接口 `/photos-item-aid-{aid}.html` —— 200**，内容是
+        `mReader.initData({"page_url":[…]})`，一次给出整册全部原图（实测 53/250/520 张），
+        **不需要登录、不需要 Cookie**。这是本适配器的播放入口；
+      · 阅读页 `/photos-view-id-*.html`、`/photos-slide-*` —— 全线路 403
+        （换桌面/移动 UA、加 Referer、带 `/enter` 下的 `x-index-auth` Cookie 都无效），
+        所以**不碰阅读页**；
+      · 但图片 CDN 的签名当前是**过期**的：`verify=<时间戳>-<签名>`，
+        实测 aid 399855 的时间戳是 2026-10-30（-9 天）、399000 是 2026-10-26（-13 天），
+        拿这个签名去取图一律 404/拒连。也就是说站点页面数据没刷新，
+        **本站目前取不到图**；站方刷新签名后本适配器无需改动即可出图。
+
+    列表：`/enter` 卡片 / 图集：`photos-item-aid-{aid}` → pics:// 图片序列。
+    """
 
     UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                   "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
     CARD_RE = re.compile(
         r'<a href="(/photos-index-aid-\d+\.html)" title="([^"]*)"[^>]*>\s*<img[^>]+src="([^"]+)"',
         re.S)
-    VIEW_RE = re.compile(r'href="(/photos-view-aid-\d+[^"]*)"')
+    VIEW_RE = re.compile(r'href="(/photos-view-(?:id|aid)-\d+[^"]*)"')
+    ITEM_RE = re.compile(r'"(https?://[^"]+?\.(?:webp|jpg|jpeg|png)\?verify=[^"]*)"')
 
     def _page(self, path, referer=None):
         """壳页(2337/2563B)多为频率限制：退避重试；维护页(403)快速放弃；跨线路兜底。"""
@@ -2739,39 +3001,51 @@ class _WnacgAdapter(_BaseAdapter):
             })
         return {"list": videos, "page": int(page), "pagecount": int(page) + 1}
 
+    @staticmethod
+    def _clean_title(html):
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if not m:
+            return ""
+        text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+        text = re.split(r"\s*-\s*绅士漫画|\s*-\s*99漫画", text)[0].strip()
+        return text.replace("&amp;", "&")
+
     def detail(self, vid):
         path = vid if vid.startswith("/") else "/" + vid.lstrip("/")
         html = self._page(path, referer=self.host + "/enter")
-        title = ""
-        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
-        if m:
-            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
-        views = list(dict.fromkeys(self.VIEW_RE.findall(html)))
-        if not views:
+        if not html:
             return {"list": []}
-        eps = "#".join("第%d話$%s::%s" % (i + 1, self.p["key"], p)
-                       for i, p in enumerate(views))
+        pic = ""
+        m = re.search(r'<img[^>]+src="([^"]+\.(?:webp|jpg|jpeg|png))"', html)
+        if m:
+            pic = self._abs(m.group(1))
         vod = {
             "vod_id": self.p["key"] + "::" + path,
-            "vod_name": title or path,
-            "vod_pic": "",
-            "vod_content": "",
-            "vod_play_from": "漫画",
-            "vod_play_url": eps,
+            "vod_name": self._clean_title(html) or path,
+            "vod_pic": pic,
+            "vod_content": "整册图集（/photos-item-aid 一次取全）",
+            "vod_play_from": "图集",
+            # 一整册就是一个 vod：目标存专辑路径，play() 去 photos-item 接口取全套图
+            "vod_play_url": "全集$%s::%s" % (self.p["key"], path),
         }
         return {"list": [vod]}
 
     def play(self, flag, url):
-        path = url if url.startswith("/") else "/" + url.lstrip("/")
-        html = self._page(path, referer=self.host + "/enter")
+        """专辑路径 → /photos-item-aid-{aid}.html → mReader.initData 的 page_url 序列。"""
+        path = str(url or "")
+        m = re.search(r"aid-(\d+)", path) or re.search(r"(?:^|/)(\d+)(?:\.html)?$", path)
+        if not m:
+            return {"parse": "0", "url": ""}
+        data = self._page("/photos-item-aid-%s.html" % m.group(1),
+                          referer=self.host + path)
         imgs, seen = [], set()
-        for src in re.findall(r'(?:data-original|src)="(https?://[^"]+?\.(?:webp|jpg|jpeg|png))"', html):
-            if any(k in src for k in ("themes/", "logo", "blank", "ico", "icon")):
-                continue
-            full = self._abs(src)
-            if full and full not in seen:
-                seen.add(full)
-                imgs.append(full)
+        for src in self.ITEM_RE.findall(data or ""):
+            src = src.replace("\\/", "/")
+            if src.startswith("http://"):
+                src = "https://" + src[len("http://"):]
+            if src not in seen:
+                seen.add(src)
+                imgs.append(src)
         if not imgs:
             return {"parse": "0", "url": ""}
         return {"parse": "0", "url": "pics://" + "&&".join(imgs),
@@ -2988,6 +3262,7 @@ ADAPTERS = {
     "superporn": _SuperpornAdapter,
     "dage": _DageAdapter,
     "javdb": _JavdbAdapter,
+    "xvideos": _XvideosAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
