@@ -52,6 +52,7 @@ NAV_TTL = 21600          # 快照刷新
 #               18av、99漫画（试过的形态全 4xx/壳页）。
 SEARCH_PLATFORMS = frozenset((
     "MissAV", "Pornhub", "Jable", "xhamster", "avjoy", "Hentai",   # 视频蜘蛛
+    "18av",                                                        # 视频蜘蛛（看板娘区不算，走视频区）
     "禁漫天堂", "爱漫岛",                                             # 漫画蜘蛛
 ))
 SEARCH_BUDGET = 6.0      # 并行搜索总预算（秒）；客户端 8s 超时，留 2s 回传
@@ -754,12 +755,9 @@ class _Av18Adapter(_BaseAdapter):
         streams.sort(reverse=True)
         return streams
 
-    def list(self, cate, page):
-        slug = cate if cate and not str(cate).isdigit() else "chinese_list"
-        page = max(1, int(page))
-        html = self._page("/zh/%s/all/%d.html" % (slug, page))
+    def _parse(self, html, page):
         videos = []
-        for block in self.POST_SPLIT.split(html)[1:]:
+        for block in self.POST_SPLIT.split(html or "")[1:]:
             href = self.CONTENT_HREF.search(block)
             if not href:
                 continue
@@ -775,9 +773,28 @@ class _Av18Adapter(_BaseAdapter):
                 "vod_remarks": re.sub(r"<[^>]+>", "", meta.group(1)).strip() if meta else "",
             })
         total = 0
-        for num in re.findall(r"/all/(\d+)\.html", html):
+        for num in re.findall(r"/all/(\d+)\.html", html or ""):
             total = max(total, int(num))
-        return {"list": videos, "page": page, "pagecount": total or page + 1}
+        return videos, (total or page + 1)
+
+    def list(self, cate, page):
+        slug = cate if cate and not str(cate).isdigit() else "chinese_list"
+        page = max(1, int(page))
+        html = self._page("/zh/%s/all/%d.html" % (slug, page))
+        videos, pagecount = self._parse(html, page)
+        return {"list": videos, "page": page, "pagecount": pagecount}
+
+    def search(self, keyword, page):
+        """18av 视频区搜索：/zh/chinese_search/all/{关键词}/{页码}.html（实测 24 个可解析块）。
+
+        注意区分：首页里出现的 `cg_search` 是**看板娘/写真区**（内容是图片相册，
+        href 走 /zh/cg_content/），不是本适配器播的视频区；视频区的 slug 是 `chinese_`。
+        """
+        page = max(1, int(page))
+        html = self._page("/zh/chinese_search/all/%s/%d.html"
+                          % (urllib.parse.quote(str(keyword)), page))
+        videos, _ = self._parse(html, page)
+        return videos
 
     def detail(self, vid):
         url = self._abs_url(self.host, vid)
