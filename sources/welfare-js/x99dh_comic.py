@@ -1346,6 +1346,75 @@ class _OkxxxAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _XanimuAdapter(_BaseAdapter):
+    """Xanimu（WP 系动漫站）：列表 video-block 卡片；详情页 _high.mp4/_low.mp4
+    正片直链（nosofiles CDN，带 verify 签名）。trailer/preview 要排除。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<div class="video-block[^"]*"[^>]*data-post-id="(\d+)"[^>]*>.*?'
+        r'<a class="thumb" href="([^"]+)"[^>]*>.*?<img[^>]+src="([^"]+)".*?'
+        r'<a class="infos"[^>]*>.*?<span class="title">([^<]+)</span>',
+        re.S)
+
+    def _page(self, path, referer=None):
+        if path and not path.startswith(("/", "http")):
+            path = "/" + path
+        return self.s.http(self._url(path or "/"), referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        base = urllib.parse.urlsplit((self.p.get("lines") or [{}])[0].get("url", "")).path or "/zh-CN/"
+        path = base if page <= 1 else "%s/page/%d/" % (base.rstrip("/"), page)
+        html = self._page(path)
+        videos, seen = [], set()
+        for _pid, href, img, title in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": title.strip()[:120],
+                "vod_pic": self._abs(img),
+                "vod_remarks": "",
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url, referer=self.host + "/")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+            title = re.split(r"\s*-\s*xanimu", title)[0]
+        mp4 = ""
+        links = [u for u in dict.fromkeys(
+            re.findall(r'https?://[^"\'\s<>]+?\.mp4[^"\'\s<>]*', html))
+            if "trailer" not in u and "preview" not in u]
+        for u in links:
+            if "_high" in u:
+                mp4 = u
+                break
+        if not mp4 and links:
+            mp4 = links[0]
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": "",
+            "vod_content": "",
+            "vod_play_from": "直连",
+            "vod_play_url": "正片$%s::%s" % (self.p["key"], mp4 or url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _KvsAdapter(_BaseAdapter):
     """KVS 系（TKTube / avjoy）：列表 /video/… 卡片；播放需 streamitUser 登录态，
     详情页无可用直链，play 返回空（列表仍可用）。"""
@@ -1895,6 +1964,7 @@ ADAPTERS = {
     "pornhub": _PornhubAdapter,
     "okxxx": _OkxxxAdapter,
     "kvs": _KvsAdapter,
+    "xanimu": _XanimuAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
