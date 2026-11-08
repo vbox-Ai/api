@@ -3180,36 +3180,45 @@ class _WnacgAdapter(_BaseAdapter):
     ITEM_RE = re.compile(r'"(https?://[^"]+?\.(?:webp|jpg|jpeg|png)\?verify=[^"]*)"')
 
     def _page(self, path, referer=None):
-        """壳页(2337/2563B)多为频率限制：退避重试；维护页(403)快速放弃；跨线路兜底。"""
+        """壳页(2337/2563B)多为频率限制：退避重试；维护页 → **换线路**；跨线路兜底。
+
+        注意「站点维护中」是**按线路**的（实测 99mh.men 的 /enter 列表正常，
+        但同一线路的专辑页 `/photos-index-aid-*.html` 回 321 字节维护页，
+        换 wnacg888.com 就正常）。所以遇到维护页**不能直接 return**，
+        要跳过该线路去试别的——之前这里两处 `return ""` 把 18 条线路全短路了，
+        表现为「列表有数据、详情全空」。
+        """
         url = path if path.startswith("http") else self._url(path)
+        html = ""
+
+        def usable(text):
+            return len(text) > 4000 and "站点维护中" not in text
 
         def fetch(u, ref):
-            html = self.s.http(u, referer=ref, headers={"User-Agent": self.UA_DESKTOP}) or ""
-            return html
+            return self.s.http(u, referer=ref, headers={"User-Agent": self.UA_DESKTOP}) or ""
 
         for attempt in range(3):
             html = fetch(url, referer)
-            if len(html) > 4000:
+            if usable(html):
                 return html
             if "站点维护中" in html:
-                return ""  # 站点侧维护，重试无意义
+                break          # 本线路维护，别退避重试，直接去换线路
             time.sleep(1.2 * (attempt + 1))
+
         tried = 0
         for line in (self.p.get("lines") or []):
             other = (line.get("url") or "")
-            if not other or tried >= 3:
+            if not other or tried >= 5:
                 break
             root = other.split("://")[0] + "://" + other.split("://")[1].split("/")[0]
             if root == self.host:
                 continue
             tried += 1
             html = fetch(root + path, root + "/")
-            if len(html) > 4000:
-                self.host = root
+            if usable(html):
+                self.host = root     # 记住可用线路，后续调用直接用
                 return html
-            if "站点维护中" in html:
-                return ""
-        return html
+        return ""
 
     def list(self, cate, page):
         html = self._page("/enter")
@@ -3235,20 +3244,46 @@ class _WnacgAdapter(_BaseAdapter):
         text = re.split(r"\s*-\s*绅士漫画|\s*-\s*99漫画", text)[0].strip()
         return text.replace("&amp;", "&")
 
+    def _album_title(self, path):
+        """专辑页标题（**best effort，只试一次**）。
+
+        站点近期对**全部 17 条线路**的 `/photos-index-aid-*.html` 都回 321 字节
+        「站点维护中」页（实测逐条线路跑过），所以这里**绝不能走 `_page()` 的多线路兜底**
+        ——那会为了拿一个标题把 detail 拖到 20s+。一次请求拿不到就返回空。
+        """
+        try:
+            html = self.s.http(self._url(path), referer=self.host + "/enter",
+                               headers={"User-Agent": self.UA_DESKTOP}) or ""
+        except Exception:
+            return ""
+        if len(html) < 4000 or "站点维护中" in html:
+            return ""
+        return self._clean_title(html)
+
     def detail(self, vid):
+        """**只依赖图集数据接口**（`/photos-item-aid-{aid}.html`，全线路都通）。
+
+        专辑 HTML 页现在全线路维护，依赖它就等于详情全空（2026-11-08 实测）；
+        图集接口一次给出整册图片与张数，足够撑起详情页。标题降级为「99漫画 图集 {aid}」
+        （客户端列表页已经显示过真标题，详情页降级可接受）。
+        """
         path = vid if vid.startswith("/") else "/" + vid.lstrip("/")
-        html = self._page(path, referer=self.host + "/enter")
-        if not html:
+        found = re.search(r"aid-(\d+)", path) or re.search(r"(\d+)", path)
+        if not found:
             return {"list": []}
-        pic = ""
-        m = re.search(r'<img[^>]+src="([^"]+\.(?:webp|jpg|jpeg|png))"', html)
-        if m:
-            pic = self._abs(m.group(1))
+        aid = found.group(1)
+        data = self._page("/photos-item-aid-%s.html" % aid, referer=self.host + path)
+        pics = [s.replace("\\/", "/") for s in self.ITEM_RE.findall(data or "")]
+        if not pics:
+            return {"list": []}
+        pic = pics[0]
+        if pic.startswith("http://"):
+            pic = "https://" + pic[len("http://"):]
         vod = {
             "vod_id": self.p["key"] + "::" + path,
-            "vod_name": self._clean_title(html) or path,
+            "vod_name": self._album_title(path) or ("99漫画 图集 " + aid),
             "vod_pic": pic,
-            "vod_content": "整册图集（/photos-item-aid 一次取全）",
+            "vod_content": "整册图集 %d 张（/photos-item-aid 一次取全）" % len(pics),
             "vod_play_from": "图集",
             # 一整册就是一个 vod：目标存专辑路径，play() 去 photos-item 接口取全套图
             "vod_play_url": "全集$%s::%s" % (self.p["key"], path),
