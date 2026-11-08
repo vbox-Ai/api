@@ -784,9 +784,40 @@ class _JableAdapter(_BaseAdapter):
         return self.s.http(self._url(path), referer=referer,
                            headers={"User-Agent": self.UA_MOBILE}) or ""
 
+    def categories(self):
+        """从 /categories/ 取分类（slug）与标签，合并成 type_id=slug。"""
+        html = self._page("/categories/")
+        cats, seen = [], set()
+        for m in re.finditer(
+                r'href="(?:https?://[^"]+)?/categories/([a-z0-9\-]+)/?"[^>]*>(.*?)</a>',
+                html, re.S):
+            slug = m.group(1)
+            if slug in seen:
+                continue
+            text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(2))).strip()
+            if text and len(text) < 24:
+                seen.add(slug)
+                cats.append({"type_id": slug, "type_name": text[:24]})
+        for m in re.finditer(
+                r'href="(?:https?://[^"]+)?/tags/([a-z0-9\-]+)/?"[^>]*>(.*?)</a>',
+                html, re.S):
+            slug = m.group(1)
+            if slug in seen or len(cats) >= 60:
+                continue
+            text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(2))).strip()
+            if text and len(text) < 24:
+                seen.add(slug)
+                cats.append({"type_id": slug, "type_name": text[:24]})
+        return cats[:60] or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        html = self._page("/latest-updates/%d/" % page)
+        cid = str(cate or "").strip()
+        if cid and not cid.isdigit():
+            path = "/categories/%s/%d/" % (cid, page)
+            html = self._page(path, referer=self.host + "/categories/")
+        else:
+            html = self._page("/latest-updates/%d/" % page)
         videos, seen = [], set()
         for href, inner in self.CARD_RE.findall(html):
             if href in seen:
@@ -911,9 +942,28 @@ class _RouAdapter(_BaseAdapter):
             })
         return out
 
+    def categories(self):
+        """从 /cat 页取标签（type_id = "/t/{urlencoded}"，list 直接用该路径）。"""
+        html = self._page("/cat")
+        cats, seen = [], set()
+        for m in re.finditer(r'href="(/t/[^"?#]+)"[^>]*>\s*([^<]{1,20})\s*<', html, re.S):
+            path, name = m.group(1), m.group(2).strip()
+            if path in seen or not name or len(name) > 12:
+                continue
+            # 排除把 query 拼进 href 的脏值
+            if "?" in path or "&" in path:
+                continue
+            seen.add(path)
+            cats.append({"type_id": path, "type_name": name})
+        return cats[:60] or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        html = self._page("/home" if page == 1 else "/home?page=%d" % page)
+        cid = str(cate or "").strip()
+        if cid.startswith("/t/"):
+            html = self._page(cid, referer=self.host + "/cat")
+        else:
+            html = self._page("/home" if page == 1 else "/home?page=%d" % page)
         videos = []
         for rec in self._records(html):
             minutes = int(rec["duration"] // 60) if rec["duration"] else 0
@@ -1301,9 +1351,29 @@ class _CartoonAdapter(_BaseAdapter):
         return self.s.http(self._url(path), referer=referer,
                            headers={"User-Agent": self.UA_DESKTOP}) or ""
 
+    def categories(self):
+        """从 /categories 取分类（type_id = "{id}/{slug}"，list 走 /categories/{id}/{slug}）。"""
+        html = self._page("/categories?hl=zh")
+        cats, seen = [], set()
+        for m in re.finditer(
+                r'href="(?:https?://[^"]+)?/categories/(\d+)/([a-z0-9\-]+)\?hl=zh"[^>]*>\s*([^<]{1,24})',
+                html, re.S):
+            cid, slug, name = m.group(1), m.group(2), m.group(3).strip()
+            key = "%s/%s" % (cid, slug)
+            if key in seen or not name:
+                continue
+            seen.add(key)
+            cats.append({"type_id": key, "type_name": name[:24]})
+        return cats[:80] or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        html = self._page("/videos?hl=zh")
+        cid = str(cate or "").strip()
+        if cid and "/" in cid:
+            html = self._page("/categories/%s?hl=zh" % cid,
+                              referer=self.host + "/categories?hl=zh")
+        else:
+            html = self._page("/videos?hl=zh")
         videos, seen = [], set()
         for vid, slug, title, img in self.CARD_RE.findall(html):
             href = "/v/%s%s?hl=zh" % (vid, slug)
@@ -1359,9 +1429,26 @@ class _OkxxxAdapter(_BaseAdapter):
         return self.s.http(self._url(path), referer=referer,
                            headers={"User-Agent": self.UA_DESKTOP}) or ""
 
+    def categories(self):
+        """从首页取片商频道（/sites/{slug}/），比 1.7MB 的 /tags/ 轻得多。"""
+        html = self._page("/enter")
+        cats, seen = [], set()
+        for m in re.finditer(r'href="(/sites/[a-z0-9\-]+/)"[^>]*>\s*(?:<[^>]+>\s*)*([^<]{1,26})',
+                             html, re.S):
+            path, name = m.group(1), re.sub(r"\s+", " ", m.group(2)).strip()
+            if path in seen or not name:
+                continue
+            seen.add(path)
+            cats.append({"type_id": path, "type_name": name[:26]})
+        return cats[:60] or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        html = self._page("/enter")
+        cid = str(cate or "").strip()
+        if cid.startswith("/"):
+            html = self._page(cid, referer=self.host + "/")
+        else:
+            html = self._page("/enter")
         videos, seen = [], set()
         for href, title, img in self.CARD_RE.findall(html):
             if href in seen:
@@ -1625,8 +1712,17 @@ class _PornhubAdapter(_BaseAdapter):
         re.S)
 
     def _page(self, path, referer=None):
-        return self.s.http(self._url(path), referer=referer,
+        """Pornhub 连续请求会触发 321B 维护页，退避重试一次。"""
+        html = self.s.http(self._url(path), referer=referer,
                            headers={"User-Agent": self.UA_DESKTOP}) or ""
+        if len(html) > 50000:
+            return html
+        time.sleep(1.2)
+        if referer is None:
+            self.s.http(self._url("/enter"), headers={"User-Agent": self.UA_DESKTOP}) or ""
+        html2 = self.s.http(self._url(path), referer=self.host + "/",
+                            headers={"User-Agent": self.UA_DESKTOP}) or ""
+        return html2 if len(html2) > len(html) else html
 
     @staticmethod
     def _balanced(text, start):
@@ -1800,6 +1896,19 @@ class _HsexAdapter(_BaseAdapter):
     def _page(self, path, referer=None):
         return self.s.http(self._url(path), referer=referer,
                            headers={"User-Agent": self.UA_DESKTOP}) or ""
+
+    def categories(self):
+        """导航栏是榜单/时长筛选（list-1 / top7_list-1 / top_list-1 / 5min_list-1 / long_list-1）。"""
+        html = self._page("/enter")
+        cats, seen = [], set()
+        for m in re.finditer(
+                r'href="((?:[a-z0-9]+_)?list-\d+)\.htm"[^>]*>\s*([^<]{1,20})', html, re.S):
+            tid, name = m.group(1), re.sub(r"\s+", " ", m.group(2)).strip()
+            if tid in seen or not name or name.isdigit():
+                continue
+            seen.add(tid)
+            cats.append({"type_id": tid, "type_name": name[:20]})
+        return cats or (self.p.get("classes") or [])
 
     def list(self, cate, page):
         page = max(1, int(page))
