@@ -1796,13 +1796,15 @@ class _KvsAdapter(_BaseAdapter):
         page = max(1, int(page))
         entry = (self.p.get("lines") or [{}])[0].get("url", "")
         base = self._kvs_base(entry)
+        # 首页列表要用完整入口路径（avjoy 的 /enter 才有卡片，剥掉会拿到 2337 壳页）
+        home = urllib.parse.urlsplit(entry).path.rstrip("/") or "/"
         cid = str(cate or "").strip()
         if cid.startswith("/search/videos/"):
             path = cid if page <= 1 else "%s?page=%d" % (cid, page)
         elif cid.startswith("/") and "/videos/genre/" in cid:
             path = cid if page <= 1 else "%s?page=%d" % (cid, page)
         else:
-            path = base if page <= 1 else "%s?page=%d" % (base, page)
+            path = home if page <= 1 else "%s?page=%d" % (home, page)
         html = self._page(path, referer=entry)
         videos, seen = [], set()
         for href, attrs, inner in self.CARD_RE.findall(html):
