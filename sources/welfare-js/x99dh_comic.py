@@ -1279,6 +1279,69 @@ class _CartoonAdapter(_BaseAdapter):
                 "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
 
 
+class _AcgmhAdapter(_BaseAdapter):
+    """Hentai(acgmh)：首页 /g/{id}/ 画廊卡片；详情页 reader 图片数组 → pics:// 图集。
+    API 被 403，纯 HTML 解析。"""
+
+    UA_DESKTOP = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+    CARD_RE = re.compile(
+        r'<a href="(/g/[0-9a-f]+/)" class="cover"[^>]*>.*?<img[^>]+src="([^"]+)"[^>]*>.*?<div class="caption">([^<]+)</div>',
+        re.S)
+
+    def _page(self, path, referer=None):
+        html = self.s.http(self._url(path), referer=referer,
+                           headers={"User-Agent": self.UA_DESKTOP}) or ""
+        if len(html) < 4000 and "继续访问" in html:
+            self.s.http(self._url("/enter"),
+                        headers={"User-Agent": self.UA_DESKTOP}) or ""
+            html = self.s.http(self._url(path), referer=referer,
+                               headers={"User-Agent": self.UA_DESKTOP}) or ""
+        return html
+
+    def list(self, cate, page):
+        page = max(1, int(page))
+        html = self._page("/enter")
+        videos, seen = [], set()
+        for href, img, title in self.CARD_RE.findall(html):
+            if href in seen:
+                continue
+            seen.add(href)
+            videos.append({
+                "vod_id": self.p["key"] + "::" + self._abs(href),
+                "vod_name": title.strip(),
+                "vod_pic": self._abs(img),
+                "vod_remarks": "",
+            })
+        return {"list": videos, "page": page, "pagecount": page + 1}
+
+    def detail(self, vid):
+        url = self._abs(vid)
+        html = self._page(url, referer=self.host + "/")
+        title = ""
+        m = re.search(r"<title[^>]*>(.*?)</title>", html, re.S)
+        if m:
+            title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
+        imgs = []
+        for u in re.findall(r'<img[^>]+src="(https?://[^"]+\.(?:webp|png|jpg))"', html):
+            if "cover" in u or "thumb" in u:
+                continue
+            imgs.append(u)
+        vod = {
+            "vod_id": self.p["key"] + "::" + url,
+            "vod_name": title or vid,
+            "vod_pic": "",
+            "vod_content": "pics:%d" % len(imgs),
+            "vod_play_from": "图集",
+            "vod_play_url": "图集$%s::pics://%s" % (self.p["key"], "&&".join(imgs[:20])) if imgs else "正片$%s::%s" % (self.p["key"], url),
+        }
+        return {"list": [vod]}
+
+    def play(self, flag, url):
+        return {"parse": "0", "url": url,
+                "header": {"User-Agent": self.UA_DESKTOP, "Referer": self.host + "/"}}
+
+
 class _HsexAdapter(_BaseAdapter):
     """好色TV(hsex)：/enter 列表 video-{id}.htm 卡片；详情页 player.html?video_url=<m3u8>，
     取流需站点 Referer + gzip（无 Referer 返回 143 字节提示页）。"""
@@ -1608,6 +1671,7 @@ ADAPTERS = {
     "91av": _91avAdapter,
     "yesporn": _YespornAdapter,
     "cartoon": _CartoonAdapter,
+    "acgmh": _AcgmhAdapter,
     "comic": _ComicAdapter,
     "generic": _GenericAdapter,
 }
