@@ -1148,9 +1148,37 @@ class _VjavAdapter(_BaseAdapter):
         except Exception:
             return ""
 
+    def categories(self):
+        """从列表项的 categories_data（"slug|id|名称,slug|id|名称"）聚合出全部分类。"""
+        path = "/api/json/videos2/86400/str/latest-updates/60/..1.all...json"
+        data = self._json(path, referer=self.host + "/")
+        seen, cats = set(), []
+        for it in (data or {}).get("videos") or []:
+            raw = str(it.get("categories_data") or "")
+            for part in raw.split(","):
+                bits = part.split("|")
+                if len(bits) < 3:
+                    continue
+                slug, cid, name = bits[0].strip(), bits[1].strip(), bits[2].strip()
+                if not cid or not cid.isdigit() or cid in seen or not name:
+                    continue
+                # 名称是纯数字的是编码类标签（如 "69"），不是内容分类
+                if name.isdigit():
+                    continue
+                seen.add(cid)
+                cats.append({"type_id": cid, "type_name": name[:24]})
+        cats.sort(key=lambda c: c["type_name"])
+        return cats[:60] or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        path = "/api/json/videos2/86400/str/latest-updates/60/..%d.all...json" % page
+        cid = str(cate or "").strip()
+        if cid and cid.isdigit():
+            # 路径第 7 段是 categories 筛选：…/..{page}.all.{cid}..json
+            path = ("/api/json/videos2/86400/str/latest-updates/60/"
+                    "..%d.all.%s..json" % (page, cid))
+        else:
+            path = "/api/json/videos2/86400/str/latest-updates/60/..%d.all...json" % page
         data = self._json(path, referer=self.host + "/")
         videos = []
         for it in (data or {}).get("videos") or []:
@@ -1294,9 +1322,32 @@ class _YespornAdapter(_BaseAdapter):
         return self.s.http(self._url(path), referer=referer,
                            headers={"User-Agent": self.UA_DESKTOP}) or ""
 
+    def categories(self):
+        """从 /categories/ 取分类（<a href="…/categories/{slug}/" title="名称">）。"""
+        html = self._page("/categories/")
+        cats, seen = [], set()
+        for m in re.finditer(
+                r'href="(?:https?://[^"]+)?/categories/([a-z0-9\-]+)/"[^>]*title="([^"]{1,24})"',
+                html, re.S):
+            slug, name = m.group(1), m.group(2).strip()
+            if slug in seen or not name:
+                continue
+            seen.add(slug)
+            cats.append({"type_id": slug, "type_name": name[:24]})
+            if len(cats) >= 60:
+                break
+        return cats or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        html = self._page("/enter")
+        cid = str(cate or "").strip()
+        if cid and not cid.isdigit():
+            path = "/categories/%s/" % cid
+            if page > 1:
+                path += "%d/" % page
+            html = self._page(path, referer=self.host + "/categories/")
+        else:
+            html = self._page("/enter")
         videos, seen = [], set()
         for href, title, img in self.CARD_RE.findall(html):
             if href in seen:
@@ -1842,9 +1893,33 @@ class _AcgmhAdapter(_BaseAdapter):
                                headers={"User-Agent": self.UA_DESKTOP}) or ""
         return html
 
+    def categories(self):
+        """从 /tags/ 取热门标签（/tag/{slug}/ + span.name）。"""
+        html = self._page("/tags/")
+        cats, seen = [], set()
+        for m in re.finditer(
+                r'href="/tag/([a-z0-9\-]+)/"[^>]*>.*?<span class="name[^"]*"[^>]*>(.*?)</span>',
+                html, re.S):
+            slug, name = m.group(1), re.sub(r"\s+", " ",
+                                            re.sub(r"<[^>]+>|<!--.*?-->", " ", m.group(2))).strip()
+            if slug in seen or not name:
+                continue
+            seen.add(slug)
+            cats.append({"type_id": slug, "type_name": name[:24]})
+            if len(cats) >= 60:
+                break
+        return cats or (self.p.get("classes") or [])
+
     def list(self, cate, page):
         page = max(1, int(page))
-        html = self._page("/enter")
+        cid = str(cate or "").strip()
+        if cid and not cid.isdigit() and not cid.startswith("/"):
+            path = "/tag/%s/" % cid
+            if page > 1:
+                path += "?page=%d" % page
+            html = self._page(path, referer=self.host + "/tags/")
+        else:
+            html = self._page("/enter")
         videos, seen = [], set()
         for href, img, title in self.CARD_RE.findall(html):
             if href in seen:
