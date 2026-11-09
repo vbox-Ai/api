@@ -213,28 +213,6 @@
       "visibleInHome": false
     },
     {
-      "platformKey": "fulao2_py",
-      "name": "Fulao2",
-      "category": "video",
-      "icon": "play.circle.fill",
-      "desc": "Python蜘蛛版 — 4线路高清视频",
-      "serviceType": "python_spider",
-      "defaultHosts": [
-        "https://api-al.yuytyr.online"
-      ],
-      "sortOrder": 68,
-      "defaultProxy": false,
-      "notes": "Python 蜘蛛版 Fulao2，纯 Python AES-256-CBC 请求加密 + AES-256-CBC 响应/m3u8解密 + AES-128-CBC 图片解密。localProxy 模式代理 m3u8/TS/图片（替代原内置 HTTP 服务器）。4条CDN线路(高速/海外)，每线路480p/240p双清晰度。",
-      "api": "./sources/welfare-js/fulao2.py",
-      "scriptType": "python",
-      "engine": "python",
-      "sslBypass": true,
-      "contentType": "video",
-      "visibleInNormalSpider": false,
-      "visibleInGlobalSearch": false,
-      "visibleInHome": false
-    },
-    {
       "platformKey": "missav_py",
       "name": "MissAV",
       "category": "video",
@@ -2783,5 +2761,5 @@
       "visibleInHome": false
     }
   ],
-  "updatedAt": "2026-11-09T05:50:23+08:00"
+  "updatedAt": "2026-11-09T21:45:11+08:00"
 }
